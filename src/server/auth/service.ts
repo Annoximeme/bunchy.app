@@ -11,6 +11,8 @@ import {
 import { sendEmail } from "@/server/email";
 import { env } from "@/server/env";
 import { NOTIFICATION_DEFAULTS } from "@/server/modules/notifications/defaults";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
@@ -85,6 +87,10 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
   });
 
   await sendVerificationEmail(user.id, user.email);
+  track({
+    name: ANALYTICS_EVENTS.ACCOUNT_CREATED,
+    profileId: user.profile?.id ?? null,
+  });
   const session = await createSession(user.id, context);
 
   return {
@@ -221,6 +227,12 @@ export async function verifyEmail(token: string): Promise<void> {
       data: { emailVerifiedAt: new Date() },
     }),
   ]);
+
+  const profile = await db.profile.findUnique({
+    where: { userId: record.userId },
+    select: { id: true },
+  });
+  track({ name: ANALYTICS_EVENTS.EMAIL_VERIFIED, profileId: profile?.id ?? null });
 }
 
 // --- Password reset --------------------------------------------------------

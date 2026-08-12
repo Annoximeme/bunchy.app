@@ -20,6 +20,8 @@ import type {
   PrivacyInput,
 } from "@/server/modules/profile/schemas";
 import type { OnboardingStage } from "@/generated/prisma/enums";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Profile and onboarding.
@@ -100,6 +102,8 @@ export async function saveBasics(
       data: { birthYear: input.birthYear },
     }),
   ]);
+
+  track({ name: ANALYTICS_EVENTS.ONBOARDING_BASICS, profileId });
 }
 
 export async function saveInterests(
@@ -196,6 +200,12 @@ export async function saveInterests(
       data: { onboardingStage: advance(stage, "INTERESTS") },
     });
   });
+
+  track({
+    name: ANALYTICS_EVENTS.ONBOARDING_INTERESTS,
+    profileId,
+    properties: { count: unique.size },
+  });
 }
 
 export async function savePersonality(
@@ -215,6 +225,8 @@ export async function savePersonality(
       data: { onboardingStage: advance(stage, "PERSONALITY") },
     }),
   ]);
+
+  track({ name: ANALYTICS_EVENTS.ONBOARDING_PERSONALITY, profileId });
 }
 
 export async function saveGoals(
@@ -233,6 +245,12 @@ export async function saveGoals(
       data: { onboardingStage: advance(stage, "GOALS") },
     }),
   ]);
+
+  track({
+    name: ANALYTICS_EVENTS.ONBOARDING_GOALS,
+    profileId,
+    properties: { goals: input.goals },
+  });
 }
 
 export async function saveAvailability(
@@ -249,6 +267,8 @@ export async function saveAvailability(
       data: { onboardingStage: "COMPLETE", onboardedAt: new Date() },
     }),
   ]);
+
+  track({ name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED, profileId });
 }
 
 export async function savePrivacy(

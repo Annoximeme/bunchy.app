@@ -81,6 +81,9 @@ Phase 1 of the roadmap is complete and working end to end.
   search with suspend/ban/role actions, bunch and activity moderation, interest
   curation (including duplicate merging), platform metrics with the north-star
   figure, and an append-only audit log of every staff action.
+- **Analytics** — a typed event spine wired into every lifecycle moment, with
+  weekly cohort retention, onboarding funnel drop-off and network health. No
+  page-view or session-duration events exist, by design.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.

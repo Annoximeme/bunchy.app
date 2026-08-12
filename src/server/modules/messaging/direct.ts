@@ -5,6 +5,8 @@ import { isBlockedBetween } from "@/server/modules/moderation/service";
 import { notify } from "@/server/modules/notifications/service";
 import { assistant } from "@/server/modules/ai";
 import { GOAL_LABELS } from "@/server/modules/profile/serialize";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Direct messages between connected members.
@@ -190,6 +192,12 @@ export async function sendDirectMessage(
       data: { lastMessageAt: new Date() },
     }),
   ]);
+
+  track({
+    name: ANALYTICS_EVENTS.DIRECT_MESSAGE_SENT,
+    profileId: senderId,
+    properties: { conversationId },
+  });
 
   const sender = await db.profile.findUnique({
     where: { id: senderId },

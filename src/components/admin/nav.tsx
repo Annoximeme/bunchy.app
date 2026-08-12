@@ -13,6 +13,7 @@ interface NavItem {
 
 const ITEMS: NavItem[] = [
   { href: "/admin", label: "Overview", exact: true },
+  { href: "/admin/analytics", label: "Analytics" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/users", label: "People" },
   { href: "/admin/bunches", label: "Bunches" },

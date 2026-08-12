@@ -7,6 +7,8 @@ import {
   loadMatchProfile,
 } from "@/server/modules/matching/repository";
 import type { MatchProfile, PersonMatch } from "@/server/modules/matching/types";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Orchestration: load, filter, score, rank, persist.
@@ -66,6 +68,18 @@ export async function recommendPeople(
   if (ranked.length === 0) return [];
 
   await persistPersonRecommendations(profileId, ranked, now);
+
+  track({
+    name: ANALYTICS_EVENTS.RECOMMENDATIONS_SERVED,
+    profileId,
+    properties: {
+      kind: "PERSON",
+      served: ranked.length,
+      poolSize: candidates.length,
+      scorer: scorer().id,
+      topScore: ranked[0]?.score ?? null,
+    },
+  });
 
   return decorate(ranked, candidates);
 }
@@ -201,6 +215,17 @@ export async function recordMatchFeedback(
   await db.recommendation.updateMany({
     where: { profileId, kind: "PERSON", targetId },
     data: { dismissedAt: new Date() },
+  });
+
+  // Feeds the recommendation-quality loop (spec §63): served vs dismissed is
+  // how we tell whether the matching engine is actually getting better.
+  track({
+    name:
+      signal === "NOT_INTERESTED"
+        ? ANALYTICS_EVENTS.RECOMMENDATION_DISMISSED
+        : ANALYTICS_EVENTS.RECOMMENDATIONS_SERVED,
+    profileId,
+    properties: { kind: "PERSON", signal },
   });
 }
 

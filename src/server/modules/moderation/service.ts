@@ -2,6 +2,8 @@ import { db } from "@/server/db/client";
 import { blocked, conflict, notFound } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
 import type { ReportReason, ReportTargetType } from "@/generated/prisma/enums";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Blocks and reports.
@@ -79,6 +81,8 @@ export async function blockProfile(
       },
     });
   });
+
+  track({ name: ANALYTICS_EVENTS.MEMBER_BLOCKED, profileId: blockerId });
 }
 
 export async function unblockProfile(
@@ -157,6 +161,12 @@ export async function fileReport(
       details: input.details?.slice(0, 2000),
     },
     select: { id: true },
+  });
+
+  track({
+    name: ANALYTICS_EVENTS.REPORT_FILED,
+    profileId: reporterId,
+    properties: { targetType: input.targetType, reason: input.reason },
   });
 
   return report;
