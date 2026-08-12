@@ -1072,3 +1072,27 @@ service layer, where the guards actually live: direct messages readable by the
 two people in them and nobody else, bunch chat closed to non-members for both
 reading and posting, and an export that contains the requester's own account and
 never the other party's email.
+
+### The three things that pass were also checked, not assumed
+
+**CSRF.** The session cookie is `Secure; HttpOnly; SameSite=lax`, confirmed on
+the wire rather than in the source, so a cross-site `POST`/`PATCH`/`DELETE`
+never carries it. `Lax` does send the cookie on a top-level `GET` navigation,
+but every `GET` here is read-only and same-origin policy stops the initiating
+page from reading the response — including `/api/account/export`, which a
+navigation would download to the victim's own disk and nowhere else.
+
+**Rate limits.** All nine configured rules have a live consumer; none is
+configured-but-unenforced, which is the failure mode that leaves a limit looking
+present in a config file and absent in the request path.
+
+**The live chat stream.** A non-member gets 403. More importantly, membership is
+re-checked on *every* poll rather than once at connection — a stream opened
+legitimately and left running would otherwise outlive being removed from the
+bunch. Verified by opening a stream, revoking membership three seconds in, and
+watching the connection close on the next tick.
+
+That guarantee rests on something subtle enough to regress: a removed member
+still has a `BunchMembership` row, so a guard that merely looked one up would
+let them through. There is now a test asserting `REMOVED`, `LEFT`, `REQUESTED`
+and `INVITED` are all refused.
