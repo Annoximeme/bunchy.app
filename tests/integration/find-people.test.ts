@@ -424,14 +424,21 @@ describe("starting a bunch from a sentence", () => {
     const host = await member("host");
     const startsAt = new Date(NOW.getTime() + 4 * 3_600_000);
 
-    const created = await createInstantBunch(host.profileId, {
-      name: "Warhammer tonight",
-      description: "d",
-      profileIds: [],
-      interestSlugs: ["warhammer"],
-      startsAt,
-      mode: "OFFLINE",
-    });
+    const created = await createInstantBunch(
+      host.profileId,
+      {
+        name: "Warhammer tonight",
+        description: "d",
+        profileIds: [],
+        interestSlugs: ["warhammer"],
+        startsAt,
+        mode: "OFFLINE",
+      },
+      // The same fixed clock the rest of the file uses. Without it the service
+      // compared a pinned start time against the real one, so this passed or
+      // failed depending on the hour it was run.
+      NOW,
+    );
 
     expect(created.activityId).not.toBeNull();
     const activity = await db.activity.findUniqueOrThrow({

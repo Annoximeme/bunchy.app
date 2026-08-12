@@ -95,6 +95,12 @@ export interface CreateInstantBunchResult {
 export async function createInstantBunch(
   profileId: string,
   input: CreateInstantBunchInput,
+  /**
+   * Injectable so the time checks below are deterministic. Reading the wall
+   * clock directly made a test that pinned "now" to a fixed instant pass in
+   * the morning and fail in the evening.
+   */
+  now = new Date(),
 ): Promise<CreateInstantBunchResult> {
   await consume("bunchCreate", profileId);
 
@@ -107,10 +113,10 @@ export async function createInstantBunch(
   if (input.startsAt) {
     const ms = input.startsAt.getTime();
     if (!Number.isFinite(ms)) throw validationFailed("That start time isn't valid.");
-    if (ms < Date.now() - 60 * 60 * 1000) {
+    if (ms < now.getTime() - 60 * 60 * 1000) {
       throw validationFailed("That time has already passed.");
     }
-    if (ms > Date.now() + 365 * 24 * 60 * 60 * 1000) {
+    if (ms > now.getTime() + 365 * 24 * 60 * 60 * 1000) {
       throw validationFailed("Pick a time within the next year.");
     }
   }
