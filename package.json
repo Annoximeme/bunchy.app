@@ -21,7 +21,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "verify": "npm run typecheck && npm run lint && npm run test",
-    "role": "node --env-file=.env node_modules/.bin/tsx scripts/grant-role.ts"
+    "role": "node --env-file=.env node_modules/.bin/tsx scripts/grant-role.ts",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "verify:all": "npm run verify && npm run test:integration"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

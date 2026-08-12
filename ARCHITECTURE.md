@@ -235,7 +235,66 @@ sign-in button that cannot complete a round trip.
 
 ## 9. Testing and verification
 
-- `npm run verify` — typecheck, lint, unit tests. All clean.
+Two suites, deliberately separate.
+
+| Command | What it runs | Needs a database |
+| --- | --- | --- |
+| `npm run verify` | typecheck, lint, 70 unit tests | no |
+| `npm run test:integration` | 24 tests against real PostgreSQL | yes |
+| `npm run verify:all` | both | yes |
+
+`npm test` stays fast and runnable with no infrastructure, because a suite
+people skip for needing a database is a suite that stops being run.
+
+**The integration suite exists for assertions a mock cannot make.** Cascade
+behaviour, `SetNull` on a foreign key, a transaction that must not half-commit —
+these are properties of the database. A test double would have happily agreed
+that deleting an account preserves the reports it filed.
+
+It runs against its own `bunchy_test` database, with the URL derived in the
+setup file rather than read from the environment, so no configuration mistake
+can point it at real data. Migrations run once; every table is truncated between
+tests, which is milliseconds rather than the minutes a re-migration would take.
+One worker, serially — parallel workers truncating each other's rows is a flake
+generator, not a speed-up.
+
+What it covers is what earlier phases had verified with throwaway probes:
+deletion's consequences for other people (bunch handover, cancellation notices,
+report anonymization, message authors detaching), referral attribution and its
+two refusals, the founding-member boundary at its real limit of 1000, formation
+end to end against the actual scorer, and notification delivery and read-state
+isolation.
+
+**The suite was mutation-tested rather than trusted.** Reverting one line —
+`notify()`'s fallback back to `?? true` — made exactly one test fail, and
+restoring it made the suite green again. A suite that has never been seen to
+fail is not evidence of anything.
+
+### The incident that shaped it
+
+The first `npm run verify` after adding these files ran them against
+`bunchy_dev`: the unit config's `tests/**` glob matched
+`tests/integration/**`, so the integration files executed with none of the
+integration setup — no separate database, and a `beforeEach` that truncates
+every table. A thousand rows from the founding-member boundary test landed in
+the development database before the failure output made it obvious.
+
+Nothing was lost that mattered (the seed is reproducible, and the dev database
+was restored to its 13 seeded members), but the fix is in three layers rather
+than one, because the first layer is a glob and globs get edited:
+
+1. The unit config excludes `tests/integration/**`.
+2. Integration tests cannot import the database directly. They import
+   `tests/integration/db.ts`, which throws unless `DATABASE_URL` names
+   `bunchy_test` — and the check runs *before* the client module is imported,
+   since a static import would be hoisted above it.
+3. That guard is itself unit tested (`tests/integration-guard.test.ts`),
+   including that it refuses an unset URL and does not print the password in
+   the error. It lives in the unit suite on purpose: its job is to fire when
+   the integration suite is invoked wrongly, so the integration suite is the
+   one place that can never exercise it.
+
+- Matching is unit tested against the cases that matter (see below).
 - Matching is unit tested against the cases that matter: the photographer/hiker
   pair from the brief, teach/learn asymmetry beating two identical practitioners,
   a good fit with two shared tags outranking a bad fit with four, distance
@@ -246,9 +305,10 @@ sign-in button that cannot complete a round trip.
   AI starters, direct message, bunch chat, block enforcement, report handling,
   and unauthenticated redirects.
 
-**Deliberately not tested yet:** there is no integration test suite that boots a
-database. The service layer is written to make that straightforward (pure
-functions, injectable stores), and it is the first thing to add.
+**Still untested:** the React components. The logic worth protecting lives in
+`src/server`, and the UI is verified by driving a real browser during
+development rather than by asserting on rendered markup — but that is a gap, not
+a principle, and a component suite is the next thing to add.
 
 ---
 
@@ -287,9 +347,8 @@ Stated plainly rather than hidden:
 **Next up, in priority order** (spec §68):
 
 1. Email delivery for the notification preferences that already exist.
-4. An integration suite that boots a database — the service layer is written
-   for it (pure functions, injectable stores, and now a vitest setup that loads
-   the environment), but it does not exist yet.
+2. A component test suite — the integration and unit suites cover the domain,
+   the UI is still only checked by hand.
 
 **Later:** local discovery, monetization, events marketplace, B2B communities,
 mobile apps, a learned ranker trained on the recommendation feedback the event
