@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>Bunchy</title>
+  <rect x="4.8" y="6.2" width="21.4" height="21.4" rx="7.2" transform="rotate(-7 15.5 16.9)" fill="#FF5C6C"/>
+  <rect x="29" y="10.4" width="14.2" height="14.2" rx="4.8" transform="rotate(13 36.1 17.5)" fill="#7657FF"/>
+  <rect x="7.6" y="30.6" width="14.6" height="14.6" rx="4.9" transform="rotate(8 14.9 37.9)" fill="#55D6BE"/>
+  <rect x="26.4" y="28.4" width="16.2" height="16.2" rx="5.5" transform="rotate(-10 34.5 36.5)" fill="#FFC857"/>
+</svg>

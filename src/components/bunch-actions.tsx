@@ -237,7 +237,13 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
 
   return (
     <Card>
-      <h2 className="text-sm font-semibold">Bunchy AI</h2>
+      <h2 className="flex items-center gap-2 text-sm font-semibold">
+        <span
+          aria-hidden
+          className="inline-block size-2 shrink-0 rounded-full bg-purple"
+        />
+        Bunchy AI
+      </h2>
       <p className="mt-1 text-sm text-muted">
         Ask for a catch-up, or an idea for something to do.
       </p>
@@ -282,7 +288,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
           )}
           <a
             href={`/activities/new?bunchId=${bunchId}&title=${encodeURIComponent(idea.title)}&description=${encodeURIComponent(idea.description)}`}
-            className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
+            className="mt-3 inline-block text-sm font-medium text-accent-ink hover:underline"
           >
             Turn this into a plan →
           </a>

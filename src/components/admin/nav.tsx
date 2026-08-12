@@ -51,7 +51,7 @@ export function AdminNav({
                 className={cn(
                   "flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition-colors",
                   active
-                    ? "border-accent text-accent"
+                    ? "border-accent text-accent-ink"
                     : "border-transparent text-ink-soft hover:text-ink",
                 )}
               >

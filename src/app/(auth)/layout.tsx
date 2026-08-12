@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { brand } from "@/lib/brand";
+import { BunchyLogo } from "@/components/logo";
 
 export default function AuthLayout({
   children,
@@ -7,9 +8,8 @@ export default function AuthLayout({
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="mx-auto w-full max-w-6xl px-5 py-6">
-        <Link href="/" className="text-xl font-semibold tracking-tight">
-          {brand.name}
-          <span className="text-accent">.</span>
+        <Link href="/" aria-label={brand.name}>
+          <BunchyLogo height={22} color="var(--color-ink)" />
         </Link>
       </header>
       <main

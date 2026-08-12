@@ -51,7 +51,7 @@ export function OnboardingShell({
       </ol>
 
       <div className="animate-rise">
-        <p className="text-sm font-medium text-accent">
+        <p className="text-sm font-medium text-accent-ink">
           Step {index + 1} of {ONBOARDING_STEPS.length}
         </p>
         <h1 className="mt-2 text-balance text-3xl font-semibold tracking-tight md:text-4xl">

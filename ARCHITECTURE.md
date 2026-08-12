@@ -467,3 +467,72 @@ edge — in `ui.tsx` since the first commit, on every settings screen. Fixed in
 both, and verified by measuring every `[role="switch"]` in a real browser rather
 than by eye: 26 switches, 0 knobs outside their track, symmetric 2px insets in
 both states.
+
+---
+
+## 16. The visual identity
+
+`src/app/globals.css` (tokens), `src/components/logo.tsx` (mark + wordmark),
+`brand/index.html` (the guide, rendered from the same values).
+
+### One finding shaped the whole system
+
+**White text on the signature coral is 3.00:1.** That is below AA for a button
+label, and the coral is `#FF5C6C` by specification — not something to tune away.
+So the primary button carries a **deep navy label** (5.42:1) instead of the white
+one every other consumer app reaches for. The signature colour is untouched; the
+label moved. Coral as *text* on cream is 2.87:1 and appears nowhere: the 39 call
+sites that said `text-accent` now say `text-accent-ink` (`#CE2F45`, 4.88:1).
+
+Every accent therefore carries three tokens, and the split is the reason the
+palette is both on-brand and legible:
+
+| | fill | text-safe ink | label on the fill |
+|---|---|---|---|
+| Coral | `#FF5C6C` | `#CE2F45` (4.88:1) | navy (5.42:1) |
+| Purple | `#7657FF` | `#6A47F5` (5.24:1) | white (4.59:1) |
+| Yellow | `#FFC857` | `#8A5E00` (5.46:1) | navy (10.58:1) |
+| Mint | `#55D6BE` | `#0E7A69` (5.02:1) | navy (9.10:1) |
+
+Ratios are computed, not guessed — WCAG 2.1 relative luminance, and the failing
+combinations are recorded in the guide next to the passing ones so nobody
+reintroduces them.
+
+**Danger is not coral.** When the primary action is red, a bright red
+destructive button is a trap. Danger is `#B3261E` — deeper and browner — and
+destructive actions render tinted rather than filled so they never compete with
+the primary button.
+
+### Colour means something
+
+Coral is the brand and the primary action; purple is anything the system
+inferred (match reasons, Bunchy AI); yellow is activities — the "when" on an
+activity card, every time; mint is success and connection. Interest chips went
+back to neutral: they repeat four to a card on every card, and colouring them
+made mint the second most present colour on the page, which is how a palette
+stops being a signal. `Chip` has no yellow tone, because nothing yet needs a
+yellow chip and shipping the API before the caller is just dead surface.
+
+### The logo
+
+Four rounded squircles at four sizes and four angles, clustered with an even
+gap. The sizes are the individuality, the gap is what makes it read as *several*
+rather than one blob — which is why the shapes never touch, and why the mark
+still resolves at 16px and in flat monochrome. The largest is coral, so the
+signature colour survives favicon size.
+
+The wordmark is **drawn as stroked paths, not set in a typeface**: monoline,
+round caps, cap height 100, stroke 20. It needs no font to load, cannot be
+silently substituted on a machine missing the licensed face, and renders
+identically everywhere. Letter spacing is optical — the round `c` sits tighter
+than the flat-sided letters, the diagonal of the `y` tighter still.
+
+Assets: `src/app/icon.svg` (scalable favicon) and `src/app/apple-icon.png`
+(180×180 on cream), both picked up by the App Router conventions.
+
+### Dark mode is the brand dimmed
+
+Navy all the way down (`#101826`), not neutral grey. Fills and their labels do
+not change between modes — a coral button with a navy label is the same object
+at midnight. Only text colours move, because only they depend on what is behind
+them.

@@ -138,7 +138,7 @@ export function NotificationList({
                 <button
                   type="button"
                   onClick={() => markOne(item.id)}
-                  className="shrink-0 text-xs text-accent hover:underline"
+                  className="shrink-0 text-xs text-accent-ink hover:underline"
                 >
                   Mark read
                 </button>

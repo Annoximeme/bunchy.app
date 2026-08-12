@@ -111,8 +111,10 @@ export function PersonCard({ person }: { person: PersonCardData }) {
       {person.highlights.length > 0 && (
         <ul className="mt-4 space-y-1.5 border-t border-line pt-4">
           {person.highlights.map((highlight) => (
+            /* Purple, because these lines are the one thing on the card the
+               system inferred rather than the member wrote. */
             <li key={highlight} className="flex gap-2 text-sm text-ink-soft">
-              <span aria-hidden className="text-accent">
+              <span aria-hidden className="text-purple-ink">
                 ·
               </span>
               {highlight}
@@ -193,7 +195,7 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
       {bunch.interests.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {bunch.interests.slice(0, 4).map((interest) => (
-            <Chip key={interest} tone="teal">
+            <Chip key={interest} tone="neutral">
               {interest}
             </Chip>
           ))}
@@ -243,7 +245,9 @@ export function ActivityCard({ activity }: { activity: ActivityCardData }) {
       className="card-surface group flex items-start justify-between gap-4 p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]"
     >
       <div className="min-w-0">
-        <p className="text-sm font-medium text-accent">
+        {/* Yellow marks activities throughout the product — the "when" is the
+            first thing you look for, and it is the same colour every time. */}
+        <p className="text-sm font-medium text-yellow-ink">
           {activityWhen(activity.startsAt)}
         </p>
         <h3 className="mt-1 truncate font-semibold tracking-tight group-hover:underline">
