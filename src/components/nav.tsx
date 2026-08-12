@@ -25,13 +25,23 @@ import { BunchyLogo } from "@/components/logo";
 const ITEMS = [
   { href: "/discover", label: "Discover", icon: CompassIcon },
   { href: "/bunches", label: "Bunches", icon: BunchesIcon },
+  { href: "/radar", label: "Radar", icon: RadarIcon },
   { href: "/activities", label: "Activities", icon: CalendarIcon },
   { href: "/messages", label: "Messages", icon: ChatIcon },
 ] as const;
 
-/** Split either side of the compose button on mobile. */
-const MOBILE_LEFT = ITEMS.slice(0, 2);
-const MOBILE_RIGHT = ITEMS.slice(2);
+/**
+ * The mobile bar carries four destinations plus You, split either side of the
+ * compose button.
+ *
+ * Radar is deliberately not among them. Six items plus the button in 390px
+ * gives ~48px targets with no breathing room, against the 67px the current
+ * five get — and §16 asks for large touch targets before it asks for
+ * completeness. On a phone the radar is reached from Discover.
+ */
+const MOBILE_ITEMS = ITEMS.filter((item) => item.href !== "/radar");
+const MOBILE_LEFT = MOBILE_ITEMS.slice(0, 2);
+const MOBILE_RIGHT = MOBILE_ITEMS.slice(2);
 
 export function AppNav({
   displayName,
@@ -389,6 +399,16 @@ function BellIcon({ className }: { className?: string }) {
         strokeWidth="1.7"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function RadarIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M12 12 18 6.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
   );
 }

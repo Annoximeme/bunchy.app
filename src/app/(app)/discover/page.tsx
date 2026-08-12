@@ -83,6 +83,12 @@ export default async function DiscoverPage() {
         </div>
       )}
 
+      <div className="mb-4 md:hidden">
+        <LinkButton href="/radar" variant="secondary" size="sm">
+          Open the radar
+        </LinkButton>
+      </div>
+
       <div className="mb-8">
         <WhosUp
           status={

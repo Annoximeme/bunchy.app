@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getBunch } from "@/server/modules/bunches/service";
-import { bunchHealth } from "@/server/modules/bunches/health";
+import { readChemistry } from "@/server/modules/bunches/health";
 import { listMessages } from "@/server/modules/messaging/bunch-chat";
 import { listActivities } from "@/server/modules/activities/service";
 import { PageShell } from "@/components/page-header";
@@ -63,7 +63,9 @@ export default async function BunchPage({
   const isModerator = bunch.viewerRole === "OWNER" || bunch.viewerRole === "MODERATOR";
 
   // Only members see this, and only the observations — never the score.
-  const health = bunch.isMember ? await bunchHealth(bunch.id) : null;
+  // The stored reading, not a fresh one: scoring every pair costs 78ms and
+  // belongs in the job that already runs hourly.
+  const health = bunch.isMember ? await readChemistry(bunch.id) : null;
 
   return (
     <PageShell>
@@ -176,7 +178,12 @@ export default async function BunchPage({
           )}
 
           {bunch.isMember && health && (
-            <BunchHealth observations={health.observations} />
+            <BunchHealth
+              score={health.score}
+              previousScore={health.previousScore}
+              confidence={health.confidence}
+              observations={health.observations}
+            />
           )}
 
           {bunch.isMember && <BunchAssistant bunchId={bunch.id} />}

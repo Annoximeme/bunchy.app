@@ -596,6 +596,7 @@ model Bunch {
   createdBy   Profile?           @relation("BunchCreator", fields: [createdById], references: [id], onDelete: SetNull)
   interests   BunchInterest[]
   memberships BunchMembership[]
+  chemistry   BunchChemistry?
   messages    BunchMessage[]
   activities  Activity[]
 
@@ -1054,4 +1055,39 @@ model AvailabilityStatus {
 
   @@index([expiresAt])
   @@index([kind, expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Bunch chemistry
+// ---------------------------------------------------------------------------
+
+/// The latest chemistry reading for a bunch.
+///
+/// Keyed on the bunch, so there is one row per group and it is replaced rather
+/// than appended. A table of every reading ever taken would be a record of each
+/// group's decline, which is not something this product should be able to hand
+/// anybody — and `previousScore` covers the only comparison the feature needs
+/// ("more active than last week") without keeping a history.
+///
+/// Written by the scheduled job, never during a page render. Computing it means
+/// loading every member's match profile and scoring every pair; measured at
+/// 78ms against 4ms for the rest of the bunch page, which is exactly the sort of
+/// thing §21 says to precompute.
+model BunchChemistry {
+  bunchId    String   @id
+  /// 0-100, or null when there is genuinely not enough evidence yet.
+  score      Int?
+  /// The reading before this one, for "up from last week". Never a series.
+  previousScore Int?
+  /// "none" | "low" | "good" — how much the number should be trusted.
+  confidence String
+  /// Per-signal breakdown, as the pure scorer produced it.
+  signals    Json
+  /// Plain sentences safe to show a member, most actionable first.
+  observations Json
+  computedAt DateTime @default(now())
+
+  bunch Bunch @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+
+  @@index([computedAt])
 }

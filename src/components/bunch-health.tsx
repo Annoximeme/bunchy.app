@@ -1,41 +1,96 @@
-import { Card } from "@/components/ui";
+import { Card, cn } from "@/components/ui";
 
 /**
- * What the bunch could do next.
+ * Bunch chemistry, as a member sees it.
  *
- * Deliberately not a chemistry score. The number exists — it ranks
- * recommendations, proposes new bunches and tells staff when a group is dying —
- * but showing a group "your chemistry: 41%" turns a set of friendships into a
- * metric people feel judged by, and the reliable way to raise a number like
- * that is to post more, which is the behaviour this product exists not to
- * reward.
+ * An earlier version of this component showed the observations and deliberately
+ * hid the number, on the grounds that scoring a group's friendships invites
+ * people to perform for it. §7 asks for the number, so it is here — but the
+ * shape of what surrounds it is doing the work that argument was worried about:
  *
- * So members get the observations instead: specific, factual, and every one of
- * them something a person could act on this afternoon. When there is nothing
- * worth saying, this renders nothing at all rather than inventing a nudge.
+ * - **The observations come first and are the point.** The score is a small
+ *   figure beside a heading; the actionable sentences get the space. Nobody can
+ *   raise the number by reading this card, and nothing here suggests they
+ *   should try.
+ * - **No member is named or ranked.** Every observation is about the group.
+ *   "Three members haven't said anything" is a fact about the bunch's shape;
+ *   "Milan has been quiet" would be a report card on a person, and §7 forbids
+ *   it explicitly.
+ * - **Low confidence is stated, not smoothed.** A bunch four days old shows
+ *   "too new to tell" rather than a plausible-looking 60%, because a confident
+ *   number derived from four days of nothing is worse than an honest gap.
+ * - **There is no trend line and no history.** One reading, and at most a note
+ *   that it moved since the last one.
  */
-export function BunchHealth({ observations }: { observations: string[] }) {
-  if (observations.length === 0) return null;
+
+export function BunchHealth({
+  score,
+  previousScore,
+  confidence,
+  observations,
+}: {
+  score: number | null;
+  previousScore?: number | null;
+  confidence?: string;
+  observations: string[];
+}) {
+  const hasScore = score !== null && confidence !== "none";
+  if (!hasScore && observations.length === 0) return null;
+
+  const change =
+    hasScore && previousScore !== null && previousScore !== undefined
+      ? score - previousScore
+      : null;
 
   return (
     <Card>
-      <h2 className="flex items-center gap-2 text-sm font-semibold">
-        <span
-          aria-hidden
-          className="inline-block size-2 shrink-0 rounded-full bg-purple"
-        />
-        Worth knowing
-      </h2>
-      <ul className="mt-3 space-y-2">
-        {observations.map((line) => (
-          <li key={line} className="flex gap-2 text-sm text-ink-soft">
-            <span aria-hidden className="text-purple-ink">
-              ·
-            </span>
-            {line}
-          </li>
-        ))}
-      </ul>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 className="flex items-center gap-2 text-sm font-semibold">
+          <span
+            aria-hidden
+            className="inline-block size-2 shrink-0 rounded-full bg-purple"
+          />
+          Bunch chemistry
+        </h2>
+
+        {hasScore ? (
+          <p className="flex items-baseline gap-1.5">
+            <span className="text-xl font-semibold tabular-nums">{score}%</span>
+            {change !== null && change !== 0 && (
+              <span
+                className={cn(
+                  "text-xs font-medium tabular-nums",
+                  change > 0 ? "text-positive" : "text-muted",
+                )}
+              >
+                {change > 0 ? "+" : ""}
+                {change} since last week
+              </span>
+            )}
+          </p>
+        ) : (
+          <p className="text-sm text-muted">Too new to tell</p>
+        )}
+      </div>
+
+      {hasScore && confidence === "low" && (
+        <p className="mt-1 text-xs text-muted">
+          Based on a short history, so treat it loosely.
+        </p>
+      )}
+
+      {observations.length > 0 && (
+        <ul className="mt-3 space-y-2">
+          {observations.map((line) => (
+            <li key={line} className="flex gap-2 text-sm text-ink-soft">
+              <span aria-hidden className="text-muted">
+                ·
+              </span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   );
 }

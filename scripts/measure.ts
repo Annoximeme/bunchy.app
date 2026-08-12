@@ -47,13 +47,16 @@ async function main() {
   const small = (await db.bunch.findFirst({ where: { slug: { not: "perf-probe" } }, select: { id: true, slug: true, _count: { select: { memberships: true } } } }))!;
 
   const { recommendPeople } = await import("@/server/modules/matching/engine");
-  const { bunchHealth } = await import("@/server/modules/bunches/health");
+  const { recomputeChemistry, readChemistry } = await import("@/server/modules/bunches/health");
   const { getBunch, listMyBunches } = await import("@/server/modules/bunches/service");
 
   console.log(`(small bunch = ${small._count.memberships} members, big = 12)\n`);
   await measure("recommendPeople(limit 8)", () => recommendPeople(sarah.id, { limit: 8 }));
-  await measure(`bunchHealth — ${small._count.memberships} members`, () => bunchHealth(small.id));
-  await measure("bunchHealth — 12 members", () => bunchHealth(big.id));
+  // What the page actually does now — one indexed lookup.
+  await measure("readChemistry (page path)", () => readChemistry(big.id));
+  // What the hourly job does. Allowed to be slow; must not be on a render.
+  await measure(`recomputeChemistry — ${small._count.memberships} members`, () => recomputeChemistry(small.id));
+  await measure("recomputeChemistry — 12 members", () => recomputeChemistry(big.id));
   await measure("getBunch(slug)", () => getBunch(small.slug, sarah.id));
   await measure("listMyBunches", () => listMyBunches(sarah.id));
 
