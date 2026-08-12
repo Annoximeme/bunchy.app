@@ -1,0 +1,49 @@
+# Bunchy — TLS termination and reverse proxy.
+#
+# Caddy is here rather than nginx for one reason: certificates. It obtains and
+# renews them from Let's Encrypt automatically, with no certbot, no cron entry
+# and no renewal that quietly stops working in ninety days. For a platform run
+# by one person that is the difference between TLS that keeps working and TLS
+# that expires on a Sunday.
+
+{
+	email {$TLS_EMAIL}
+	# Uncomment to test against the staging CA, which has far looser rate
+	# limits. Certificates it issues are not trusted by browsers — use it while
+	# getting DNS right, then comment it out again.
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+{$DOMAIN}, www.{$DOMAIN} {
+	encode zstd gzip
+
+	# HSTS. Deliberately not preloaded: preloading is close to irreversible,
+	# and it should be a decision taken once the domain is settled rather than
+	# something a deploy config does to you.
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# The app sets its own X-Frame-Options, nosniff, Referrer-Policy and
+		# Permissions-Policy in next.config.ts. They are not duplicated here —
+		# two places setting the same header is how they end up disagreeing.
+		-Server
+	}
+
+	# Next emits content-hashed filenames under this path, so they can be
+	# cached hard. Nothing else can: every page depends on who is signed in.
+	@immutable path /_next/static/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	reverse_proxy app:3000 {
+		# Without this the app sees Caddy's container IP as the client address,
+		# which would make rate limiting count the whole internet as one person.
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+		health_uri /api/health
+		health_interval 30s
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

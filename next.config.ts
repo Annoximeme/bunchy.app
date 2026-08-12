@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Emits `.next/standalone` — a self-contained server with only the modules
+  // actually reached, traced from the entry points. It is what makes the
+  // production image ~200MB instead of ~1.5GB, and it is inert during
+  // development, so it costs nothing to leave on.
+  output: "standalone",
   // The Prisma engine and pg driver must stay external to the server bundle.
   serverExternalPackages: ["@prisma/client", "@prisma/adapter-pg"],
   async headers() {
