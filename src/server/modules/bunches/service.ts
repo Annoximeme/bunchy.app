@@ -363,10 +363,22 @@ export async function acceptInvite(
     select: { displayName: true },
   });
 
+  // A bunch proposed by staff is created with every member INVITED and nobody
+  // in it, so the first person through the door takes ownership. Without this
+  // such a bunch would have no owner and nobody able to moderate it.
+  const hasOwner =
+    (await db.bunchMembership.count({
+      where: { bunchId, role: "OWNER", status: "ACTIVE" },
+    })) > 0;
+
   await db.$transaction([
     db.bunchMembership.update({
       where: { bunchId_profileId: { bunchId, profileId } },
-      data: { status: "ACTIVE", joinedAt: new Date() },
+      data: {
+        status: "ACTIVE",
+        joinedAt: new Date(),
+        ...(hasOwner ? {} : { role: "OWNER" as const }),
+      },
     }),
     db.bunchMessage.create({
       data: {

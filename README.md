@@ -91,6 +91,14 @@ Phase 1 of the roadmap is complete and working end to end.
 - **Visual identity** — coral/purple/yellow/mint on soft cream with deep navy
   text, a four-shape logo and a drawn wordmark, every accent paired with a
   text-safe ink at a measured contrast ratio. The guide is `brand/index.html`.
+- **Bunch chemistry** — whether a group is actually working, not just whether
+  it looks compatible: how many members are in the conversation, how evenly it's
+  shared, whether anyone turns up. Members see what they could act on, never a
+  score.
+- **Bunch formation** — proposes groups of five to twelve from members who
+  aren't in a bunch, admitting people on their weakest link so a group never
+  forms around one popular person. Staff review it; everyone proposed gets an
+  invitation they can decline.
 - **Leaving** — download everything we hold as one JSON file, straight away, and
   delete the account for real: immediate, password-confirmed, no thirty-day
   "recovery window". Bunch conversations keep their shape with the author

@@ -4,11 +4,13 @@ import { notFound } from "next/navigation";
 import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getBunch } from "@/server/modules/bunches/service";
+import { bunchHealth } from "@/server/modules/bunches/health";
 import { listMessages } from "@/server/modules/messaging/bunch-chat";
 import { listActivities } from "@/server/modules/activities/service";
 import { PageShell } from "@/components/page-header";
 import { ActivityCard } from "@/components/cards";
 import { BunchChat } from "@/components/bunch-chat";
+import { BunchHealth } from "@/components/bunch-health";
 import {
   BunchAssistant,
   BunchMembershipButton,
@@ -59,6 +61,9 @@ export default async function BunchPage({
   ]);
 
   const isModerator = bunch.viewerRole === "OWNER" || bunch.viewerRole === "MODERATOR";
+
+  // Only members see this, and only the observations — never the score.
+  const health = bunch.isMember ? await bunchHealth(bunch.id) : null;
 
   return (
     <PageShell>
@@ -168,6 +173,10 @@ export default async function BunchPage({
         <aside className="space-y-4">
           {isModerator && (
             <JoinRequestList bunchId={bunch.id} requests={bunch.joinRequests} />
+          )}
+
+          {bunch.isMember && health && (
+            <BunchHealth observations={health.observations} />
           )}
 
           {bunch.isMember && <BunchAssistant bunchId={bunch.id} />}
