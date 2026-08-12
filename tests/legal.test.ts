@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { LEGAL, legalDetailsComplete } from "@/lib/legal";
+import { LEGAL, legalReviewComplete } from "@/lib/legal";
 
 /**
  * The policy pages describe what the code does. Two things can rot: the
@@ -8,31 +8,30 @@ import { LEGAL, legalDetailsComplete } from "@/lib/legal";
  * behaviour it claims. This catches the first and pins the load-bearing claims
  * of the second.
  */
-describe("legal details", () => {
-  it("lists every field a lawyer must fill in", () => {
-    // Fails deliberately until the entity, address and jurisdiction are real.
-    // Delete nothing here to make it pass — fill in src/lib/legal.ts.
-    const missing = Object.entries(LEGAL)
-      .filter(([, value]) => value.startsWith("TODO_"))
-      .map(([key]) => key);
-
-    expect(
-      missing,
-      `Unfilled legal details: ${missing.join(", ")}. These are drafts by an ` +
-        `engineer, not legal advice — fill them in and get the documents ` +
-        `reviewed before launch.`,
-    ).toEqual([
-      "entity",
-      "address",
-      "registration",
-      "jurisdiction",
-      "supervisoryAuthority",
-      "effectiveDate",
-    ]);
+describe("who operates Bunchy", () => {
+  it("names a real person, with no placeholders left", () => {
+    const placeholder = Object.entries(LEGAL).find(
+      ([, value]) => typeof value === "string" && value.startsWith("TODO_"),
+    );
+    expect(placeholder).toBeUndefined();
+    expect(LEGAL.operator).toBe("Gianni Goossens");
   });
 
-  it("shows a draft notice while anything is unfilled", () => {
-    expect(legalDetailsComplete()).toBe(false);
+  it("publishes no postal address", () => {
+    // The operator is a sole trader; a registered address is a home address.
+    // The GDPR wants identity and contact details, and an email that reaches a
+    // person satisfies the latter. If a street ever appears in here, that was
+    // probably not deliberate.
+    const values = Object.values(LEGAL).filter((v) => typeof v === "string");
+    for (const value of values) {
+      expect(value).not.toMatch(/\b\d{1,4}\s+\w+(straat|laan|weg|street|road|avenue)\b/i);
+    }
+  });
+
+  it("keeps “details filled in” separate from “reviewed by a lawyer”", () => {
+    // Conflating them would let a complete-looking page imply a review that
+    // has not happened. Flip lawyerReviewed once one has.
+    expect(legalReviewComplete()).toBe(false);
   });
 });
 

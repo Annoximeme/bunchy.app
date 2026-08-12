@@ -3,6 +3,10 @@ import { conflict, notFound, validationFailed } from "@/server/errors";
 import { revokeAllSessionsForUser } from "@/server/auth/session";
 import { recordModerationEventTx } from "@/server/modules/admin/audit";
 import {
+  blockEmailTx,
+  unblockEmailTx,
+} from "@/server/modules/moderation/banned-emails";
+import {
   refusalToActOn,
   type StaffViewer,
 } from "@/server/modules/admin/guard";
@@ -293,6 +297,9 @@ export async function banUser(
         data: { discoverable: false },
       });
     }
+    // Inside the transaction: an account that is banned but whose address is
+    // still free is exactly the window this closes.
+    await blockEmailTx(tx, target.email, reason);
     await recordModerationEventTx(tx, {
       actor,
       action: "USER_BANNED",
@@ -320,6 +327,7 @@ export async function unbanUser(
       where: { id: target.id },
       data: { status: "ACTIVE" },
     });
+    await unblockEmailTx(tx, target.email);
     await recordModerationEventTx(tx, {
       actor,
       action: "USER_UNBANNED",

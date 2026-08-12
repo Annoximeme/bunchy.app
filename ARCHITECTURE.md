@@ -665,11 +665,9 @@ the shared bunch survived with ownership handed to the remaining member; the sol
 bunch was removed; the report survived with the reporter anonymized and the
 target intact; and the participant was notified before the activity disappeared.
 
-**Known limitation:** deleting an account frees the email address, so a banned
-member can delete and re-register with it. Closing that needs a retained hash of
-banned addresses, which is a deliberate privacy trade — keeping a fingerprint of
-someone who asked to be forgotten — and wants a policy decision rather than a
-quiet implementation.
+**This used to be a known limitation** — deleting an account freed the email
+address, so a banned member could delete and re-register in one click. Closed in
+§24, with the trade-off stated rather than hidden.
 
 ---
 
@@ -1004,3 +1002,43 @@ processor here before it goes live", "nothing you write is sent to an external
 AI provider today, and we will say so before that changes" — these are
 promises the current architecture makes easy to keep and would make obvious to
 break, which is the only kind worth writing down.
+
+
+---
+
+## 24. Ban evasion
+
+`src/server/modules/moderation/banned-emails.ts`.
+
+Deleting an account frees its email address. Without something here, a banned
+member deletes, signs straight back up, and every block, report and moderation
+decision about them is void — which fails the people the ban was for.
+
+Closing it means retaining a fingerprint of someone who may have asked to be
+forgotten. That is a real cost, and worth stating rather than pretending it is
+free. **The judgement made:** the people a ban protects have a stronger interest
+in not meeting that person again than the banned person has in the erasure of
+one opaque hash. Four constraints keep it proportionate:
+
+1. **Keyed, not merely hashed.** A plain SHA-256 of an email is reversible in
+   practice — the address space is small enough to enumerate. An HMAC under
+   `AUTH_SECRET` means a copy of the table alone tells an attacker nothing.
+2. **No foreign key to `User`.** That is the entire point: a cascade would take
+   the row with the account, which is exactly the evasion path.
+3. **Bans only, and reversible.** Suspensions never write a row — blocking an
+   address would quietly turn a temporary measure into a permanent one — a
+   member simply leaving never writes one, and lifting a ban deletes it.
+4. **Written in the ban transaction.** An account that is banned but whose
+   address is still free is the window this closes.
+
+### The refusal message is deliberately the wrong one
+
+Signup answers a banned address with *"An account with that email already
+exists"* — the same words as an address genuinely in use. A distinct message
+would be an oracle: anyone could type an address at signup and learn whether
+that person had been banned. Someone actually banned already knows, and can
+write to support. There is an integration test asserting the two messages are
+identical, because the tempting "improvement" here is a clearer error.
+
+Documented in the privacy policy as the one place where deleting an account does
+not remove everything, along with the reasoning and an invitation to object.
