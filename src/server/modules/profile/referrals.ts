@@ -21,10 +21,16 @@ import { db } from "@/server/db/client";
  */
 
 /**
- * Unambiguous alphabet: no O/0, I/1/l, U (to avoid accidental words). These
- * codes get read aloud and typed from memory.
+ * Unambiguous alphabet, following Crockford: no `I`, `L` or `O` (misread as
+ * `1`, `1` and `0`), no `0`/`1` for the same reason, and no `U` so a code
+ * cannot spell something unfortunate. These get read aloud and typed from
+ * memory, so the confusable characters are worth the smaller keyspace —
+ * 28^8 is still 3.8×10^11.
+ *
+ * Existing codes are unaffected: `resolveReferrer` accepts any A–Z0–9 string,
+ * so narrowing what we *mint* never invalidates a link already in the wild.
  */
-const ALPHABET = "ABCDEFGHJKLMNPQRSTVWXYZ23456789";
+const ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789";
 const CODE_LENGTH = 8;
 
 function generateCode(): string {

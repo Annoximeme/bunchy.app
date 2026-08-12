@@ -46,7 +46,9 @@ default `console` email transport, so those flows are fully usable locally.
 | `npm run dev`       | Development server                                   |
 | `npm run build`     | `prisma generate` + production build                 |
 | `npm run verify`    | Typecheck, lint, and unit tests                      |
-| `npm test`          | Unit tests (Vitest)                                  |
+| `npm test`          | Unit tests (Vitest) — no database needed             |
+| `npm run test:integration` | Integration tests against a real `bunchy_test` DB |
+| `npm run verify:all`| Everything                                           |
 | `npm run db:migrate`| Create/apply a migration                             |
 | `npm run db:seed`   | Reset and reseed development data                    |
 | `npm run db:studio` | Prisma Studio                                        |
