@@ -23,7 +23,7 @@ export interface RecommendedActivity {
   cityLabel: string | null;
   maxParticipants: number;
   participantCount: number;
-  circle: { id: string; slug: string; name: string } | null;
+  bunch: { id: string; slug: string; name: string } | null;
   organizer: { username: string; displayName: string; avatarUrl: string | null };
   score: number;
   highlights: string[];
@@ -62,8 +62,8 @@ interface ActivityRow {
   cityLabel: string | null;
   countryCode: string | null;
   maxParticipants: number;
-  circleId: string | null;
-  circle: {
+  bunchId: string | null;
+  bunch: {
     id: string;
     slug: string;
     name: string;
@@ -81,19 +81,19 @@ function scoreActivity(subject: MatchProfile, activity: ActivityRow, now: Date) 
   const highlights: string[] = [];
 
   // --- Already part of the community that is organizing it ------------------
-  const inCircle =
-    activity.circleId !== null && subject.circleIds.includes(activity.circleId);
-  if (inCircle && activity.circle) {
-    highlights.push(`From your circle ${activity.circle.name}`);
+  const inBunch =
+    activity.bunchId !== null && subject.bunchIds.includes(activity.bunchId);
+  if (inBunch && activity.bunch) {
+    highlights.push(`From your bunch ${activity.bunch.name}`);
   }
 
-  // --- Topic fit, borrowed from the hosting circle --------------------------
-  let interestScore = inCircle ? 0.85 : 0.35;
-  const circleInterests = activity.circle?.interests ?? [];
-  if (circleInterests.length > 0 && subject.interests.length > 0) {
+  // --- Topic fit, borrowed from the hosting bunch --------------------------
+  let interestScore = inBunch ? 0.85 : 0.35;
+  const bunchInterests = activity.bunch?.interests ?? [];
+  if (bunchInterests.length > 0 && subject.interests.length > 0) {
     let total = 0;
     const matched: string[] = [];
-    for (const { interest } of circleInterests) {
+    for (const { interest } of bunchInterests) {
       let best = 0;
       for (const own of subject.interests) {
         const affinity = interestAffinity(own, interest) * (own.strength / 3);
@@ -102,8 +102,8 @@ function scoreActivity(subject: MatchProfile, activity: ActivityRow, now: Date) 
       total += best;
       if (best >= 0.75) matched.push(interest.label);
     }
-    interestScore = Math.max(interestScore, clamp(total / circleInterests.length));
-    if (matched.length > 0 && !inCircle) {
+    interestScore = Math.max(interestScore, clamp(total / bunchInterests.length));
+    if (matched.length > 0 && !inBunch) {
       highlights.push(`Matches your interest in ${matched.slice(0, 2).join(" and ")}`);
     }
   }
@@ -116,12 +116,12 @@ function scoreActivity(subject: MatchProfile, activity: ActivityRow, now: Date) 
   } else if (
     subject.location.approxLat !== null &&
     subject.location.approxLng !== null &&
-    activity.circle?.approxLat != null &&
-    activity.circle.approxLng != null
+    activity.bunch?.approxLat != null &&
+    activity.bunch.approxLng != null
   ) {
     const km = distanceKm(
       { lat: subject.location.approxLat, lng: subject.location.approxLng },
-      { lat: activity.circle.approxLat, lng: activity.circle.approxLng },
+      { lat: activity.bunch.approxLat, lng: activity.bunch.approxLng },
     );
     locationScore = clamp(1 - Math.max(0, km - NEAR_KM) / (FAR_KM - NEAR_KM));
   } else if (activity.cityLabel && activity.cityLabel === subject.location.cityLabel) {
@@ -175,12 +175,12 @@ export async function recommendActivities(
     where: {
       status: "SCHEDULED",
       startsAt: { gte: now, lte: horizon },
-      // Not already going, and nothing hosted in a private circle they cannot see.
+      // Not already going, and nothing hosted in a private bunch they cannot see.
       participants: { none: { profileId, status: { in: ["JOINED", "WAITLISTED"] } } },
       OR: [
-        { circleId: null },
-        { circle: { visibility: "PUBLIC", archivedAt: null } },
-        { circle: { memberships: { some: { profileId, status: "ACTIVE" } } } },
+        { bunchId: null },
+        { bunch: { visibility: "PUBLIC", archivedAt: null } },
+        { bunch: { memberships: { some: { profileId, status: "ACTIVE" } } } },
       ],
       organizer: {
         blocksMade: { none: { blockedId: profileId } },
@@ -197,8 +197,8 @@ export async function recommendActivities(
       cityLabel: true,
       countryCode: true,
       maxParticipants: true,
-      circleId: true,
-      circle: {
+      bunchId: true,
+      bunch: {
         select: {
           id: true,
           slug: true,
@@ -234,8 +234,8 @@ export async function recommendActivities(
         cityLabel: activity.cityLabel,
         maxParticipants: activity.maxParticipants,
         participantCount: activity._count.participants,
-        circle: activity.circle
-          ? { id: activity.circle.id, slug: activity.circle.slug, name: activity.circle.name }
+        bunch: activity.bunch
+          ? { id: activity.bunch.id, slug: activity.bunch.slug, name: activity.bunch.name }
           : null,
         organizer: activity.organizer,
         score,

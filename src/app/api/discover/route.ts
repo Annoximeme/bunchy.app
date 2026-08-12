@@ -1,6 +1,6 @@
 import { handleAuthed } from "@/server/http/route";
 import { recommendPeople } from "@/server/modules/matching/engine";
-import { recommendCircles } from "@/server/modules/matching/circles";
+import { recommendBunches } from "@/server/modules/matching/bunches";
 import { recommendActivities } from "@/server/modules/matching/activities";
 
 /**
@@ -12,12 +12,12 @@ import { recommendActivities } from "@/server/modules/matching/activities";
  */
 export async function GET() {
   return handleAuthed(async (viewer) => {
-    const [people, circles, activities] = await Promise.all([
+    const [people, bunches, activities] = await Promise.all([
       recommendPeople(viewer.profileId, { limit: 8 }),
-      recommendCircles(viewer.profileId, 6),
+      recommendBunches(viewer.profileId, 6),
       recommendActivities(viewer.profileId, 6),
     ]);
 
-    return { people, circles, activities };
+    return { people, bunches, activities };
   });
 }

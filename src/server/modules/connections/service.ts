@@ -19,7 +19,7 @@ import type { AudienceScope } from "@/generated/prisma/enums";
  * How `whoCanSendRequests` / `whoCanMessage` are interpreted:
  *
  * - EVERYONE       anyone on Bunchy
- * - CIRCLE_MEMBERS only people who share an active circle
+ * - BUNCH_MEMBERS only people who share an active bunch
  * - CONNECTIONS    only people with a connection in common (friend of a friend)
  * - NOBODY         nobody, full stop
  */
@@ -33,16 +33,16 @@ export async function satisfiesAudience(
       return true;
     case "NOBODY":
       return false;
-    case "CIRCLE_MEMBERS": {
-      const shared = await db.circleMembership.findFirst({
+    case "BUNCH_MEMBERS": {
+      const shared = await db.bunchMembership.findFirst({
         where: {
           profileId: senderProfileId,
           status: "ACTIVE",
-          circle: {
+          bunch: {
             memberships: { some: { profileId: recipientProfileId, status: "ACTIVE" } },
           },
         },
-        select: { circleId: true },
+        select: { bunchId: true },
       });
       return shared !== null;
     }

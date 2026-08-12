@@ -133,6 +133,8 @@ const GOAL_LABELS: Record<string, string> = {
   MENTORS: "Mentors",
   SIMILAR_INTERESTS: "Similar interests",
   LOCAL_COMMUNITIES: "Local communities",
+  TRAVEL_COMPANIONS: "Travel companions",
+  ACTIVITY_PARTNERS: "Activity partners",
 };
 
 /**
@@ -205,7 +207,7 @@ export async function recordMatchFeedback(
 /** Marks a recommendation as acted on, which is how we measure whether it worked. */
 export async function markRecommendationActed(
   profileId: string,
-  kind: "PERSON" | "CIRCLE" | "ACTIVITY",
+  kind: "PERSON" | "BUNCH" | "ACTIVITY",
   targetId: string,
 ): Promise<void> {
   await db.recommendation

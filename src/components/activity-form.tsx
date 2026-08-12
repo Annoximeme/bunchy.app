@@ -21,15 +21,15 @@ function defaultStart(): string {
 }
 
 export function ActivityForm({
-  circles,
-  defaultCircleId,
+  bunches,
+  defaultBunchId,
   defaultTitle,
   defaultDescription,
   defaultCity,
   defaultCountry,
 }: {
-  circles: Array<{ id: string; name: string }>;
-  defaultCircleId?: string;
+  bunches: Array<{ id: string; name: string }>;
+  defaultBunchId?: string;
   defaultTitle?: string;
   defaultDescription?: string;
   defaultCity: string | null;
@@ -46,7 +46,7 @@ export function ActivityForm({
     setError(null);
 
     const data = new FormData(event.currentTarget);
-    const circleId = String(data.get("circleId") ?? "");
+    const bunchId = String(data.get("bunchId") ?? "");
 
     try {
       const result = await api<{ activity: { id: string } }>("/api/activities", {
@@ -67,7 +67,7 @@ export function ActivityForm({
                   : {}),
               }
             : { onlineUrl: String(data.get("onlineUrl") ?? "") || undefined }),
-          ...(circleId ? { circleId } : {}),
+          ...(bunchId ? { bunchId } : {}),
         },
       });
       router.push(`/activities/${result.activity.id}`);
@@ -175,17 +175,17 @@ export function ActivityForm({
         </Field>
       )}
 
-      {circles.length > 0 && (
+      {bunches.length > 0 && (
         <Field
-          label="For a circle?"
-          htmlFor="circleId"
-          hint="Circle members get told about it. Leave empty to make it open to everyone."
+          label="For a bunch?"
+          htmlFor="bunchId"
+          hint="Bunch members get told about it. Leave empty to make it open to everyone."
         >
-          <Select id="circleId" name="circleId" defaultValue={defaultCircleId ?? ""}>
+          <Select id="bunchId" name="bunchId" defaultValue={defaultBunchId ?? ""}>
             <option value="">Open to anyone</option>
-            {circles.map((circle) => (
-              <option key={circle.id} value={circle.id}>
-                {circle.name}
+            {bunches.map((bunch) => (
+              <option key={bunch.id} value={bunch.id}>
+                {bunch.name}
               </option>
             ))}
           </Select>

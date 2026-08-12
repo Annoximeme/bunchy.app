@@ -153,7 +153,7 @@ export function PersonCard({ person }: { person: PersonCardData }) {
   );
 }
 
-export interface CircleCardData {
+export interface BunchCardData {
   id: string;
   slug: string;
   name: string;
@@ -167,32 +167,32 @@ export interface CircleCardData {
   membershipStatus?: string | null;
 }
 
-export function CircleCard({ circle }: { circle: CircleCardData }) {
-  const spotsLeft = circle.maxMembers - circle.memberCount;
+export function BunchCard({ bunch }: { bunch: BunchCardData }) {
+  const spotsLeft = bunch.maxMembers - bunch.memberCount;
 
   return (
     <Link
-      href={`/circles/${circle.slug}`}
+      href={`/bunches/${bunch.slug}`}
       className="card-surface group flex flex-col p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="truncate font-semibold tracking-tight group-hover:underline">
-            {circle.name}
+            {bunch.name}
           </h3>
           <p className="text-sm text-muted">
-            {circle.memberCount} {circle.memberCount === 1 ? "member" : "members"}
-            {circle.locationLabel && ` · ${circle.locationLabel}`}
+            {bunch.memberCount} {bunch.memberCount === 1 ? "member" : "members"}
+            {bunch.locationLabel && ` · ${bunch.locationLabel}`}
           </p>
         </div>
-        {circle.score !== undefined && <CompatibilityBadge score={circle.score} />}
+        {bunch.score !== undefined && <CompatibilityBadge score={bunch.score} />}
       </div>
 
-      <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{circle.description}</p>
+      <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{bunch.description}</p>
 
-      {circle.interests.length > 0 && (
+      {bunch.interests.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {circle.interests.slice(0, 4).map((interest) => (
+          {bunch.interests.slice(0, 4).map((interest) => (
             <Chip key={interest} tone="teal">
               {interest}
             </Chip>
@@ -206,11 +206,11 @@ export function CircleCard({ circle }: { circle: CircleCardData }) {
             ? `${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`
             : "Full"}
         </span>
-        {circle.membershipStatus === "ACTIVE" && (
+        {bunch.membershipStatus === "ACTIVE" && (
           <Chip tone="positive">You&rsquo;re in</Chip>
         )}
-        {circle.membershipStatus === "REQUESTED" && <Chip>Request pending</Chip>}
-        {circle.membershipStatus === "INVITED" && <Chip tone="accent">Invited</Chip>}
+        {bunch.membershipStatus === "REQUESTED" && <Chip>Request pending</Chip>}
+        {bunch.membershipStatus === "INVITED" && <Chip tone="accent">Invited</Chip>}
       </div>
     </Link>
   );
@@ -225,7 +225,7 @@ export interface ActivityCardData {
   cityLabel: string | null;
   participantCount: number;
   maxParticipants: number;
-  circle: { id: string; slug: string; name: string } | null;
+  bunch: { id: string; slug: string; name: string } | null;
   highlights?: string[];
   viewerStatus?: string | null;
 }
@@ -251,7 +251,7 @@ export function ActivityCard({ activity }: { activity: ActivityCardData }) {
         </h3>
         <p className="mt-0.5 truncate text-sm text-muted">
           {where}
-          {activity.circle && ` · ${activity.circle.name}`}
+          {activity.bunch && ` · ${activity.bunch.name}`}
         </p>
         {activity.highlights && activity.highlights.length > 0 && (
           <p className="mt-2 text-sm text-ink-soft">{activity.highlights[0]}</p>

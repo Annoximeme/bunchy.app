@@ -9,15 +9,15 @@ export const metadata: Metadata = { title: "Plan something" };
 export default async function NewActivityPage({
   searchParams,
 }: {
-  searchParams: Promise<{ circleId?: string; title?: string; description?: string }>;
+  searchParams: Promise<{ bunchId?: string; title?: string; description?: string }>;
 }) {
   const viewer = await requireViewer();
   const params = await searchParams;
 
   const [memberships, profile] = await Promise.all([
-    db.circleMembership.findMany({
+    db.bunchMembership.findMany({
       where: { profileId: viewer.profileId, status: "ACTIVE" },
-      select: { circle: { select: { id: true, name: true } } },
+      select: { bunch: { select: { id: true, name: true } } },
     }),
     db.profile.findUniqueOrThrow({
       where: { id: viewer.profileId },
@@ -33,8 +33,8 @@ export default async function NewActivityPage({
           subtitle="Small and soon beats ambitious and someday."
         />
         <ActivityForm
-          circles={memberships.map((m) => m.circle)}
-          defaultCircleId={params.circleId}
+          bunches={memberships.map((m) => m.bunch)}
+          defaultBunchId={params.bunchId}
           defaultTitle={params.title}
           defaultDescription={params.description}
           defaultCity={profile.cityLabel}

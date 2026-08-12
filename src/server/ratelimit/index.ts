@@ -26,7 +26,7 @@ export const RULES = {
   passwordReset: { limit: 5, windowMs: 60 * 60 * 1000 },
   connectionRequest: { limit: 30, windowMs: 24 * 60 * 60 * 1000 },
   message: { limit: 60, windowMs: 60 * 1000 },
-  circleCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },
+  bunchCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },
   activityCreate: { limit: 10, windowMs: 24 * 60 * 60 * 1000 },
   report: { limit: 20, windowMs: 24 * 60 * 60 * 1000 },
   aiAssist: { limit: 40, windowMs: 60 * 60 * 1000 },

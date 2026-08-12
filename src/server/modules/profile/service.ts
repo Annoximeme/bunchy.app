@@ -340,7 +340,7 @@ export async function getOwnProfile(profileId: string) {
           whoCanSendRequests: true,
           discoverable: true,
           showApproxLocation: true,
-          invitableToCircles: true,
+          invitableToBunches: true,
           showExactAge: true,
         },
       },

@@ -66,14 +66,14 @@ export default async function ActivityPage({
               {activity.mode === "ONLINE"
                 ? "Online"
                 : (activity.locationLabel ?? activity.cityLabel ?? "Location to confirm")}
-              {activity.circle && (
+              {activity.bunch && (
                 <>
                   {" · "}
                   <Link
-                    href={`/circles/${activity.circle.slug}`}
+                    href={`/bunches/${activity.bunch.slug}`}
                     className="hover:underline"
                   >
-                    {activity.circle.name}
+                    {activity.bunch.name}
                   </Link>
                 </>
               )}

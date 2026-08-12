@@ -157,9 +157,9 @@ model Profile {
 
   conversations    ConversationParticipant[]
   directMessages   DirectMessage[]
-  circleMemberships CircleMembership[]
-  circleMessages   CircleMessage[]
-  createdCircles   Circle[]                  @relation("CircleCreator")
+  bunchMemberships BunchMembership[]
+  bunchMessages   BunchMessage[]
+  createdBunches   Bunch[]                  @relation("BunchCreator")
   reactions        MessageReaction[]
   mentions         MessageMention[]
 
@@ -211,7 +211,7 @@ model PersonalityProfile {
 enum AudienceScope {
   EVERYONE
   CONNECTIONS
-  CIRCLE_MEMBERS
+  BUNCH_MEMBERS
   NOBODY
 }
 
@@ -224,7 +224,7 @@ model PrivacySettings {
   discoverable         Boolean       @default(true)
   /// When false we show country/region only, never the city label.
   showApproxLocation   Boolean       @default(true)
-  invitableToCircles   Boolean       @default(true)
+  invitableToBunches   Boolean       @default(true)
   /// When false the profile renders an age band ("25-34") instead of an age.
   showExactAge         Boolean       @default(true)
 
@@ -249,7 +249,7 @@ model Interest {
   createdAt DateTime @default(now())
 
   users   UserInterest[]
-  circles CircleInterest[]
+  bunches BunchInterest[]
 
   @@index([category])
   @@index([usageCount])
@@ -290,6 +290,8 @@ enum SocialGoal {
   MENTORS
   SIMILAR_INTERESTS
   LOCAL_COMMUNITIES
+  TRAVEL_COMPANIONS
+  ACTIVITY_PARTNERS
 }
 
 model ProfileSocialGoal {
@@ -396,23 +398,23 @@ model DirectMessage {
 }
 
 // ---------------------------------------------------------------------------
-// Circles
+// Bunches
 // ---------------------------------------------------------------------------
 
-enum CircleType {
+enum BunchType {
   INTEREST
   LOCAL
   ACTIVITY
 }
 
-enum CircleVisibility {
+enum BunchVisibility {
   /// Discoverable; joining creates a request a moderator approves.
   PUBLIC
   /// Invite only, hidden from Discover.
   PRIVATE
 }
 
-enum CircleRole {
+enum BunchRole {
   MEMBER
   MODERATOR
   OWNER
@@ -428,14 +430,14 @@ enum MembershipStatus {
   REMOVED
 }
 
-model Circle {
+model Bunch {
   id          String           @id @default(cuid())
   slug        String           @unique
   name        String
   description String
   imageUrl    String?
-  type        CircleType       @default(INTEREST)
-  visibility  CircleVisibility @default(PUBLIC)
+  type        BunchType       @default(INTEREST)
+  visibility  BunchVisibility @default(PUBLIC)
 
   countryCode String?
   regionLabel String?
@@ -443,22 +445,22 @@ model Circle {
   approxLat   Float?
   approxLng   Float?
 
-  /// Circles are deliberately small. Enforced in the membership service.
+  /// Bunches are deliberately small. Enforced in the membership service.
   maxMembers Int     @default(12)
   rules      String?
 
   createdById String?
-  /// Rolling 0-1 measure of how alive the circle is. Recomputed, never shown
+  /// Rolling 0-1 measure of how alive the bunch is. Recomputed, never shown
   /// as a leaderboard rank.
   activityScore Float    @default(0)
   archivedAt    DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  createdBy   Profile?           @relation("CircleCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  interests   CircleInterest[]
-  memberships CircleMembership[]
-  messages    CircleMessage[]
+  createdBy   Profile?           @relation("BunchCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  interests   BunchInterest[]
+  memberships BunchMembership[]
+  messages    BunchMessage[]
   activities  Activity[]
 
   @@index([visibility, archivedAt])
@@ -467,45 +469,45 @@ model Circle {
   @@index([activityScore])
 }
 
-model CircleInterest {
-  circleId   String
+model BunchInterest {
+  bunchId   String
   interestId String
 
-  circle   Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  bunch   Bunch   @relation(fields: [bunchId], references: [id], onDelete: Cascade)
   interest Interest @relation(fields: [interestId], references: [id], onDelete: Cascade)
 
-  @@id([circleId, interestId])
+  @@id([bunchId, interestId])
   @@index([interestId])
 }
 
-model CircleMembership {
-  circleId  String
+model BunchMembership {
+  bunchId  String
   profileId String
-  role      CircleRole       @default(MEMBER)
+  role      BunchRole       @default(MEMBER)
   status    MembershipStatus @default(ACTIVE)
   joinedAt  DateTime         @default(now())
   lastReadAt DateTime?
 
-  circle  Circle  @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  bunch  Bunch  @relation(fields: [bunchId], references: [id], onDelete: Cascade)
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  @@id([circleId, profileId])
+  @@id([bunchId, profileId])
   @@index([profileId, status])
-  @@index([circleId, status])
+  @@index([bunchId, status])
 }
 
-enum CircleMessageKind {
+enum BunchMessageKind {
   TEXT
-  /// "Ana joined the circle", "Activity scheduled" — rendered differently,
+  /// "Ana joined the bunch", "Activity scheduled" — rendered differently,
   /// never notified as if a person spoke.
   SYSTEM
 }
 
-model CircleMessage {
+model BunchMessage {
   id       String            @id @default(cuid())
-  circleId String
+  bunchId String
   authorId String?
-  kind     CircleMessageKind @default(TEXT)
+  kind     BunchMessageKind @default(TEXT)
   body     String
   parentId String?
   createdAt DateTime         @default(now())
@@ -514,14 +516,14 @@ model CircleMessage {
   /// Set when a moderator removes the message.
   moderatedAt DateTime?
 
-  circle    Circle            @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  bunch    Bunch            @relation(fields: [bunchId], references: [id], onDelete: Cascade)
   author    Profile?          @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  parent    CircleMessage?    @relation("MessageReplies", fields: [parentId], references: [id], onDelete: SetNull)
-  replies   CircleMessage[]   @relation("MessageReplies")
+  parent    BunchMessage?    @relation("MessageReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies   BunchMessage[]   @relation("MessageReplies")
   reactions MessageReaction[]
   mentions  MessageMention[]
 
-  @@index([circleId, createdAt])
+  @@index([bunchId, createdAt])
   @@index([parentId])
   @@index([authorId])
 }
@@ -532,7 +534,7 @@ model MessageReaction {
   emoji     String
   createdAt DateTime @default(now())
 
-  message CircleMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message BunchMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   profile Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@id([messageId, profileId, emoji])
@@ -543,7 +545,7 @@ model MessageMention {
   messageId String
   profileId String
 
-  message CircleMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message BunchMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
   profile Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@id([messageId, profileId])
@@ -581,16 +583,16 @@ model Activity {
   maxParticipants Int          @default(8)
   status          ActivityStatus @default(SCHEDULED)
   organizerId     String
-  circleId        String?
+  bunchId        String?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
   organizer    Profile               @relation("ActivityOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
-  circle       Circle?               @relation(fields: [circleId], references: [id], onDelete: SetNull)
+  bunch       Bunch?               @relation(fields: [bunchId], references: [id], onDelete: SetNull)
   participants ActivityParticipant[]
 
   @@index([startsAt, status])
-  @@index([circleId])
+  @@index([bunchId])
   @@index([organizerId])
   @@index([cityLabel, startsAt])
 }
@@ -633,9 +635,9 @@ model Block {
 
 enum ReportTargetType {
   PROFILE
-  CIRCLE_MESSAGE
+  BUNCH_MESSAGE
   DIRECT_MESSAGE
-  CIRCLE
+  BUNCH
   ACTIVITY
 }
 
@@ -700,11 +702,11 @@ enum NotificationType {
   CONNECTION_REQUEST
   CONNECTION_ACCEPTED
   DIRECT_MESSAGE
-  CIRCLE_INVITE
-  CIRCLE_JOIN_REQUEST
-  CIRCLE_MESSAGE_REPLY
-  CIRCLE_MENTION
-  CIRCLE_RECOMMENDATION
+  BUNCH_INVITE
+  BUNCH_JOIN_REQUEST
+  BUNCH_MESSAGE_REPLY
+  BUNCH_MENTION
+  BUNCH_RECOMMENDATION
   ACTIVITY_INVITE
   ACTIVITY_REMINDER
   ACTIVITY_CHANGED
@@ -745,7 +747,7 @@ model NotificationPreference {
 
 enum RecommendationKind {
   PERSON
-  CIRCLE
+  BUNCH
   ACTIVITY
 }
 

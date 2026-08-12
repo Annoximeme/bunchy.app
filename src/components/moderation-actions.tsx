@@ -29,7 +29,7 @@ export function ReportButton({
   targetId,
   label = "Report",
 }: {
-  targetType: "PROFILE" | "CIRCLE_MESSAGE" | "DIRECT_MESSAGE" | "CIRCLE" | "ACTIVITY";
+  targetType: "PROFILE" | "BUNCH_MESSAGE" | "DIRECT_MESSAGE" | "BUNCH" | "ACTIVITY";
   targetId: string;
   label?: string;
 }) {

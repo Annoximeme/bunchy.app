@@ -56,8 +56,8 @@ export interface MatchProfile {
   availability: AvailabilityWindow[];
   personality: PersonalityVector | null;
 
-  /** Community context — circles in common are strong evidence of fit. */
-  circleIds: string[];
+  /** Community context — bunches in common are strong evidence of fit. */
+  bunchIds: string[];
   /** Activities both people attended. Having actually met beats any profile field. */
   attendedActivityIds: string[];
   /** How engaged they are, 0-1. A dormant account is a poor introduction. */

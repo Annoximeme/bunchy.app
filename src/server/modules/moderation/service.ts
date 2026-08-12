@@ -162,7 +162,7 @@ export async function fileReport(
   return report;
 }
 
-/** Finds the member behind a reported message/circle/activity, for the queue. */
+/** Finds the member behind a reported message/bunch/activity, for the queue. */
 async function resolveReportedProfile(
   targetType: ReportTargetType,
   targetId: string,
@@ -175,8 +175,8 @@ async function resolveReportedProfile(
       });
       return profile?.id ?? null;
     }
-    case "CIRCLE_MESSAGE": {
-      const message = await db.circleMessage.findUnique({
+    case "BUNCH_MESSAGE": {
+      const message = await db.bunchMessage.findUnique({
         where: { id: targetId },
         select: { authorId: true },
       });
@@ -196,12 +196,12 @@ async function resolveReportedProfile(
       });
       return activity?.organizerId ?? null;
     }
-    case "CIRCLE": {
-      const circle = await db.circle.findUnique({
+    case "BUNCH": {
+      const bunch = await db.bunch.findUnique({
         where: { id: targetId },
         select: { createdById: true },
       });
-      return circle?.createdById ?? null;
+      return bunch?.createdById ?? null;
     }
     default:
       return null;

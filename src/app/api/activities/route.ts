@@ -5,7 +5,7 @@ import { createActivity, listActivities } from "@/server/modules/activities/serv
 
 const querySchema = z.object({
   scope: z.enum(["upcoming", "mine", "organizing"]).default("upcoming"),
-  circleId: z.string().trim().max(40).optional(),
+  bunchId: z.string().trim().max(40).optional(),
 });
 
 export async function GET(request: Request) {

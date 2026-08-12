@@ -126,9 +126,9 @@ export class LocalAssistant implements Assistant {
   async summarizeConversation(
     input: ConversationSummaryInput,
   ): Promise<string> {
-    const { messages, circleName } = input;
+    const { messages, bunchName } = input;
     if (messages.length === 0) {
-      return `Nothing new in ${circleName} yet.`;
+      return `Nothing new in ${bunchName} yet.`;
     }
 
     const speakers = [...new Set(messages.map((m) => m.author))];
@@ -166,7 +166,7 @@ export class LocalAssistant implements Assistant {
             input.cityLabel ? ` somewhere in ${input.cityLabel}` : ""
           }. Somewhere easy to get to, nothing complicated.`,
       mode: online ? "ONLINE" : "OFFLINE",
-      rationale: `${input.circleName} has been talking about ${topic.toLowerCase()}.`,
+      rationale: `${input.bunchName} has been talking about ${topic.toLowerCase()}.`,
     };
   }
 }

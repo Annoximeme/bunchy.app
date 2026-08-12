@@ -134,7 +134,7 @@ export class AnthropicAssistant implements Assistant {
 
     const text = await this.complete(
       "You summarize group chats for someone catching up. Two sentences maximum, plain and factual, no hype, no invented details.",
-      `Circle: ${input.circleName}\n\n${transcript}\n\nSummarize what happened.`,
+      `Bunch: ${input.bunchName}\n\n${transcript}\n\nSummarize what happened.`,
       200,
     );
 
@@ -150,7 +150,7 @@ export class AnthropicAssistant implements Assistant {
         'Reply with JSON only: {"title","description","mode","rationale"} where mode is "ONLINE" or "OFFLINE".',
       ].join(" "),
       [
-        `Circle: ${input.circleName}`,
+        `Bunch: ${input.bunchName}`,
         `Shared interests: ${input.interests.join(", ") || "unknown"}`,
         input.cityLabel ? `Location: ${input.cityLabel}` : "No shared location.",
         input.recentMessages.length > 0
