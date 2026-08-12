@@ -11,6 +11,8 @@ import { PageShell } from "@/components/page-header";
 import { ActivityCard } from "@/components/cards";
 import { BunchChat } from "@/components/bunch-chat";
 import { BunchHealth } from "@/components/bunch-health";
+import { BunchPlans } from "@/components/bunch-plans";
+import { bunchChallenges, listPlans } from "@/server/modules/bunches/plans";
 import {
   BunchAssistant,
   BunchMembershipButton,
@@ -66,6 +68,14 @@ export default async function BunchPage({
   // The stored reading, not a fresh one: scoring every pair costs 78ms and
   // belongs in the job that already runs hourly.
   const health = bunch.isMember ? await readChemistry(bunch.id) : null;
+  // Members only: plans, icebreakers and challenges are the bunch talking to
+  // itself, and the service re-checks membership on every call regardless.
+  const [plans, challenges] = bunch.isMember
+    ? await Promise.all([
+        listPlans(bunch.id, viewer.profileId),
+        bunchChallenges(bunch.id, viewer.profileId),
+      ])
+    : [null, null];
 
   return (
     <PageShell>
@@ -175,6 +185,15 @@ export default async function BunchPage({
         <aside className="space-y-4">
           {isModerator && (
             <JoinRequestList bunchId={bunch.id} requests={bunch.joinRequests} />
+          )}
+
+          {bunch.isMember && plans && challenges && (
+            <BunchPlans
+              bunchId={bunch.id}
+              plans={plans}
+              challenges={challenges}
+              isModerator={isModerator}
+            />
           )}
 
           {bunch.isMember && health && (

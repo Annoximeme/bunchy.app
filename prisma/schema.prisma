@@ -251,6 +251,10 @@ model Profile {
   availability ProfileAvailability[]
   /// The live "I'm free right now" status, if they have set one. At most one.
   availabilityStatus AvailabilityStatus?
+  plansCreated       SocialPlan[]       @relation("PlanCreator")
+  planVotes          SocialPlanVote[]   @relation("PlanVoter")
+  icebreakersAsked   IcebreakerAsk[]    @relation("IcebreakerAsker")
+  challengesStarted  BunchChallenge[]   @relation("ChallengeStarter")
 
   sentConnections     Connection[] @relation("ConnectionRequester")
   receivedConnections Connection[] @relation("ConnectionAddressee")
@@ -594,11 +598,19 @@ model Bunch {
   updatedAt     DateTime @updatedAt
 
   createdBy   Profile?           @relation("BunchCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  /// Moderators can switch challenges off for their bunch (§12). Icebreakers
+  /// need no such flag — they are only ever posted by someone pressing a
+  /// button, so "off" is simply not pressing it.
+  challengesEnabled Boolean @default(true)
+
   interests   BunchInterest[]
   memberships BunchMembership[]
   chemistry   BunchChemistry?
   messages    BunchMessage[]
   activities  Activity[]
+  plans       SocialPlan[]
+  icebreakers IcebreakerAsk[]
+  challenges  BunchChallenge[]
 
   @@index([visibility, archivedAt])
   @@index([cityLabel])
@@ -638,6 +650,10 @@ enum BunchMessageKind {
   /// "Ana joined the bunch", "Activity scheduled" — rendered differently,
   /// never notified as if a person spoke.
   SYSTEM
+  /// An icebreaker question or a challenge, posted into the chat by a member
+  /// pressing a button. Distinct from SYSTEM because a person chose to ask it,
+  /// and distinct from TEXT because nobody wrote the words.
+  PROMPT
 }
 
 model BunchMessage {
@@ -727,6 +743,8 @@ model Activity {
   organizer    Profile               @relation("ActivityOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   bunch       Bunch?               @relation(fields: [bunchId], references: [id], onDelete: SetNull)
   participants ActivityParticipant[]
+  /// The plan this came out of, when it came out of one.
+  plan         SocialPlan?
 
   @@index([startsAt, status])
   @@index([bunchId])
@@ -1090,4 +1108,135 @@ model BunchChemistry {
   bunch Bunch @relation(fields: [bunchId], references: [id], onDelete: Cascade)
 
   @@index([computedAt])
+}
+
+
+// ---------------------------------------------------------------------------
+// Social plans, icebreakers and challenges
+// ---------------------------------------------------------------------------
+
+enum SocialPlanStatus {
+  OPEN
+  /// A time was chosen. `activityId` points at what it became.
+  DECIDED
+  CANCELLED
+}
+
+/// "When suits everyone?" — a few candidate times and a vote.
+///
+/// Deliberately not a poll engine. There are no arbitrary options, only
+/// datetimes, because the one question this answers is when a group can meet.
+/// A general poll would be a different feature with different moderation
+/// problems, and this is not a quiet way to get one.
+model SocialPlan {
+  id          String           @id @default(cuid())
+  bunchId     String
+  createdById String?
+  title       String
+  note        String?
+  status      SocialPlanStatus @default(OPEN)
+  /// Set when the plan is decided; the option that won.
+  decidedOptionId String?
+  /// The activity it turned into. Creating one is an explicit second step —
+  /// §10 is clear that nothing is booked or committed automatically.
+  activityId  String?          @unique
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  bunch     Bunch              @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+  createdBy Profile?           @relation("PlanCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  activity  Activity?          @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  options   SocialPlanOption[]
+
+  @@index([bunchId, status])
+}
+
+model SocialPlanOption {
+  id       String   @id @default(cuid())
+  planId   String
+  startsAt DateTime
+  /// How the member described it, e.g. "Saturday afternoon". Optional — the
+  /// datetime is the truth, this is only how it reads.
+  label    String?
+
+  plan  SocialPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
+  votes SocialPlanVote[]
+
+  @@index([planId])
+}
+
+/// Three answers rather than two.
+///
+/// "Maybe" is how people actually reply to "can you make Saturday", and
+/// collapsing it into a no loses the difference between a group that cannot
+/// meet and one that has not decided.
+enum PlanVoteResponse {
+  YES
+  MAYBE
+  NO
+}
+
+model SocialPlanVote {
+  optionId  String
+  profileId String
+  response  PlanVoteResponse
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  option  SocialPlanOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  profile Profile          @relation("PlanVoter", fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([optionId, profileId])
+  @@index([profileId])
+}
+
+/// Which icebreaker questions a bunch has already had.
+///
+/// Exists so questions do not repeat — and for nothing else. The *answers* are
+/// ordinary chat messages, which is the whole design: §11 says not to build
+/// permanent personality profiles out of casual answers, and the way to
+/// guarantee that is to have nowhere to put them. An answer here is deleted,
+/// exported and moderated exactly like anything else somebody typed.
+model IcebreakerAsk {
+  id        String   @id @default(cuid())
+  bunchId   String
+  /// Stable key from the question bank, so it is not asked twice.
+  questionKey String
+  askedById String?
+  askedAt   DateTime @default(now())
+
+  bunch   Bunch    @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+  askedBy Profile? @relation("IcebreakerAsker", fields: [askedById], references: [id], onDelete: SetNull)
+
+  @@unique([bunchId, questionKey])
+  @@index([bunchId, askedAt])
+}
+
+enum ChallengeStatus {
+  ACTIVE
+  DONE
+  /// Put down without finishing. Not a failure and never counted as one.
+  DROPPED
+}
+
+/// An optional thing a bunch decided to do together.
+///
+/// Note what is absent: no points, no streak, no expiry, no leaderboard, and
+/// no per-member completion. §12 asks for challenges that encourage
+/// interaction rather than addiction, and every one of those fields is a
+/// mechanism for the opposite. A challenge is active or it is not.
+model BunchChallenge {
+  id          String          @id @default(cuid())
+  bunchId     String
+  /// Key from the challenge bank.
+  challengeKey String
+  status      ChallengeStatus @default(ACTIVE)
+  startedById String?
+  startedAt   DateTime        @default(now())
+  endedAt     DateTime?
+
+  bunch     Bunch    @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+  startedBy Profile? @relation("ChallengeStarter", fields: [startedById], references: [id], onDelete: SetNull)
+
+  @@index([bunchId, status])
 }

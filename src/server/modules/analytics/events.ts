@@ -66,6 +66,16 @@ export const ANALYTICS_EVENTS = {
   INTRODUCTION_ACCEPTED: "introduction.accepted",
   INTRODUCTION_DISMISSED: "introduction.dismissed",
 
+  // --- What a bunch does to itself ------------------------------------------
+  PLAN_CREATED: "plan.created",
+  PLAN_VOTED: "plan.voted",
+  ICEBREAKER_ASKED: "icebreaker.asked",
+  /// Started and completed, with no event in between. There is deliberately no
+  /// "challenge progressed" — progress tracking is what turns an optional bit
+  /// of fun into a chore with a bar to fill (§12).
+  CHALLENGE_STARTED: "challenge.started",
+  CHALLENGE_COMPLETED: "challenge.completed",
+
   // --- Bunch health ---------------------------------------------------------
   /// Written by the scheduled job, not by anything a member does. Carries the
   /// bunch, never a member — chemistry is a property of a group, and §7 is
@@ -110,6 +120,8 @@ export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [
   ANALYTICS_EVENTS.INSTANT_BUNCH_STARTED,
   ANALYTICS_EVENTS.AVAILABILITY_SET,
   ANALYTICS_EVENTS.INTRODUCTION_ACCEPTED,
+  ANALYTICS_EVENTS.PLAN_CREATED,
+  ANALYTICS_EVENTS.PLAN_VOTED,
 ];
 
 /** The onboarding funnel, in order. Drives the drop-off chart. */
