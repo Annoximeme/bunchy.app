@@ -286,11 +286,9 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. Account deletion and data export (§31) — the one remaining promise in the
-   privacy story that the code does not yet keep.
-2. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
+1. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
    referrals.
-3. Email delivery for the notification preferences that already exist.
+2. Email delivery for the notification preferences that already exist.
 4. An integration suite that boots a database — the service layer is written
    for it (pure functions, injectable stores, and now a vitest setup that loads
    the environment), but it does not exist yet.
@@ -536,3 +534,59 @@ Navy all the way down (`#101826`), not neutral grey. Fills and their labels do
 not change between modes — a coral button with a navy label is the same object
 at midnight. Only text colours move, because only they depend on what is behind
 them.
+
+---
+
+## 17. Leaving
+
+`src/server/modules/account/`. Two things a product that asks for this much
+personal information owes the people who gave it: a copy, and a way out.
+
+### Export
+
+`GET /api/account/export` returns one JSON file, immediately, as a download.
+No background job, no "we'll email you a link within 30 days" — at member scale
+the whole account fits in a response, and the delay is what data export looks
+like when a product would rather you didn't bother.
+
+It is complete: profile, personality, privacy settings, interests, goals,
+availability, connections, bunches, every message written, every conversation,
+activities organized and joined, notifications and their preferences, reports
+filed, blocks, and match feedback. Nothing summarized, because an export that
+quietly drops the long tail is worse than none — it looks complete.
+
+Other people appear only by the name and username the member can already see in
+the app. No email, birth year, password hash or coordinate appears — including
+the member's own coordinates, which are never stored precisely anyway.
+
+### Deletion
+
+`DELETE /api/account`, gated on the current password (a session cookie is enough
+to read an account and should never be enough to destroy one) and on the word
+DELETE typed out. Immediate and irreversible: there is no thirty-day recovery
+window, because that is a retention tactic wearing a safety net's clothes.
+
+Most of the erasure is the database's — `User` cascades through `Profile` to
+everything hanging off it. The module exists for the cases where a plain cascade
+would take something from *other people*:
+
+| Case | Without care | What happens instead |
+|---|---|---|
+| Activities they organized | Cascade-deleted, silently cancelling other people's plans | Everyone going is notified first |
+| Sole ownership of a bunch | The bunch is left leaderless | Longest-standing member is promoted; an empty bunch is removed |
+| Reports they filed | Cascade-deleted, clearing the moderation queue | Anonymized and kept (`SetNull`) |
+| Bunch messages, created bunches | — | Already `SetNull`: the group's history keeps its shape, the author detaches |
+
+Verified against a real database rather than reasoned about: with a leaver who
+owned two bunches, organized a future activity someone had joined, and had filed
+a report — the wrong password was refused and the account survived the refusal;
+user and profile were gone; the bunch message survived with its author detached;
+the shared bunch survived with ownership handed to the remaining member; the solo
+bunch was removed; the report survived with the reporter anonymized and the
+target intact; and the participant was notified before the activity disappeared.
+
+**Known limitation:** deleting an account frees the email address, so a banned
+member can delete and re-register with it. Closing that needs a retained hash of
+banned addresses, which is a deliberate privacy trade — keeping a fingerprint of
+someone who asked to be forgotten — and wants a policy decision rather than a
+quiet implementation.

@@ -160,6 +160,7 @@ export async function socialHealth(): Promise<SocialHealth[]> {
     withAnyConnection,
     inAnyBunch,
     attendedPastOffline,
+    departed,
     medianRow,
   ] = await Promise.all([
     db.profile.count({ where: { onboardingStage: "COMPLETE" } }),
@@ -187,6 +188,9 @@ export async function socialHealth(): Promise<SocialHealth[]> {
           startsAt: { lt: new Date() },
         },
       },
+    }),
+    db.analyticsEvent.count({
+      where: { name: ANALYTICS_EVENTS.ACCOUNT_DELETED },
     }),
     db.$queryRaw<Array<{ median: number | null }>>`
       SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY c)::float AS median
@@ -230,6 +234,11 @@ export async function socialHealth(): Promise<SocialHealth[]> {
       label: "Likely offline meetings",
       value: String(attendedPastOffline),
       hint: "Sign-ups to in-person activities that have happened — an estimate until attendance is confirmed",
+    },
+    {
+      label: "Members who deleted their account",
+      value: String(departed),
+      hint: "Counted from departure events, which carry no profile — the number is all that survives, by design",
     },
   ];
 }

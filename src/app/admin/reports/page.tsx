@@ -88,7 +88,11 @@ export default async function AdminReportsPage({
                   </div>
 
                   <p className="mt-1 text-xs text-muted">
-                    Reported by {report.reporter.displayName}
+                    {/* Null once the reporter has deleted their account. The
+                        report deliberately survives them, so say so plainly
+                        rather than rendering a blank name. */}
+                    Reported by{" "}
+                    {report.reporter?.displayName ?? "a member who has since left"}
                     {report.reported && (
                       <>
                         {" · about "}
