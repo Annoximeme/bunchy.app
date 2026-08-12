@@ -40,7 +40,11 @@ services:
       context: .
       target: migrate
     environment:
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      # Built from the parts rather than asked for separately. Writing the
+      # password in two places meant it could disagree with itself, and the
+      # symptom of that is a healthy database plus a service that cannot reach
+      # it — which reads like a broken app rather than a typo.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
     depends_on:
       db:
         condition: service_healthy
@@ -56,7 +60,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
       APP_URL: ${APP_URL:?APP_URL is required}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
@@ -86,7 +90,7 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
       APP_URL: ${APP_URL:?APP_URL is required}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}

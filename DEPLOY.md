@@ -58,9 +58,13 @@ chmod 600 .env
 Fill in `.env`. Generate the two secrets rather than choosing them:
 
 ```sh
-openssl rand -base64 24   # POSTGRES_PASSWORD (also goes inside DATABASE_URL)
+openssl rand -hex 24      # POSTGRES_PASSWORD
 openssl rand -base64 48   # AUTH_SECRET
 ```
+
+The database password is hex rather than base64 because it goes inside a
+connection URL, where base64's `/`, `+` and `=` mean something else. You write
+it once — compose builds `DATABASE_URL` from it.
 
 `AUTH_SECRET` salts hashed identifiers including the banned-email fingerprints.
 Changing it later invalidates every session and every existing ban record, so
