@@ -239,12 +239,15 @@ Two suites, deliberately separate.
 
 | Command | What it runs | Needs a database |
 | --- | --- | --- |
-| `npm run verify` | typecheck, lint, 70 unit tests | no |
-| `npm run test:integration` | 24 tests against real PostgreSQL | yes |
-| `npm run verify:all` | both | yes |
+| `npm run verify` | typecheck, lint, 86 unit tests | no |
+| `npm run test:components` | 16 tests in jsdom | no |
+| `npm run test:integration` | 33 tests against real PostgreSQL | yes |
+| `npm run verify:all` | all three | yes |
 
-`npm test` stays fast and runnable with no infrastructure, because a suite
-people skip for needing a database is a suite that stops being run.
+Three configs rather than one. `npm test` stays a fraction of a second because
+the domain tests are pure functions and should not pay for a DOM, and the
+integration suite is separate because a suite people skip for needing a database
+is a suite that stops being run.
 
 **The integration suite exists for assertions a mock cannot make.** Cascade
 behaviour, `SetNull` on a foreign key, a transaction that must not half-commit —
@@ -305,10 +308,28 @@ than one, because the first layer is a glob and globs get edited:
   AI starters, direct message, bunch chat, block enforcement, report handling,
   and unauthenticated redirects.
 
-**Still untested:** the React components. The logic worth protecting lives in
-`src/server`, and the UI is verified by driving a real browser during
-development rather than by asserting on rendered markup — but that is a gap, not
-a principle, and a component suite is the next thing to add.
+### Component tests are for promises, not pixels
+
+`tests/components/` does not check that a button is coral — that is what the
+brand guide and a browser are for. It checks the claims the UI makes on the
+product's behalf, each of which is a §29 commitment that a refactor could
+silently drop:
+
+- Opening the notification screen marks **nothing** read. Mutation-tested by
+  reintroducing the `useEffect` that clears the list on mount and watching
+  exactly that assertion fail.
+- The settings screen draws the same defaults the sender applies, and a failed
+  save puts the switch back.
+- No persuasion anywhere near a switch: no "recommended", no "you'll miss out",
+  no "turn everything on".
+- The delete button stays disarmed until both gates are met, lower case does not
+  arm it, and the form does not bargain — no "are you sure", no offer of a pause
+  instead.
+- Unread state is announced to a screen reader, not conveyed by colour alone.
+
+**Still untested:** page-level composition and server components. Those are
+still checked by driving a real browser during development, which is a gap
+rather than a principle.
 
 ---
 
@@ -346,8 +367,8 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. A component test suite — the integration and unit suites cover the domain,
-   the UI is still only checked by hand.
+1. An end-to-end suite over whole pages — components and domain are covered,
+   page composition is still checked by hand.
 
 **Later:** local discovery, monetization, events marketplace, B2B communities,
 mobile apps, a learned ranker trained on the recommendation feedback the event
