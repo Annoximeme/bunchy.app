@@ -40,11 +40,16 @@ services:
       context: .
       target: migrate
     environment:
-      # Built from the parts rather than asked for separately. Writing the
-      # password in two places meant it could disagree with itself, and the
-      # symptom of that is a healthy database plus a service that cannot reach
-      # it — which reads like a broken app rather than a typo.
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
+      # The parts, not the URL. The container's entrypoint assembles
+      # DATABASE_URL and percent-encodes each part, so a password containing
+      # `/`, `@`, `#` or `?` connects instead of producing `P1013: invalid port
+      # number` — an error that names the port, which was never the problem.
+      #
+      # Compose cannot encode, which is why this moved out of the compose file
+      # rather than being written more carefully in it.
+      POSTGRES_USER: ${POSTGRES_USER:-bunchy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bunchy}
     depends_on:
       db:
         condition: service_healthy
@@ -60,7 +65,9 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
+      POSTGRES_USER: ${POSTGRES_USER:-bunchy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bunchy}
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
       APP_URL: ${APP_URL:?APP_URL is required}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
@@ -90,7 +97,9 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bunchy}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-bunchy}?schema=public
+      POSTGRES_USER: ${POSTGRES_USER:-bunchy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bunchy}
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
       APP_URL: ${APP_URL:?APP_URL is required}
       EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
