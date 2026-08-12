@@ -3,6 +3,7 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { db } from "@/server/db/client";
 import { AppNav } from "@/components/nav";
+import { isStaff } from "@/server/modules/admin/guard";
 
 /**
  * The signed-in shell.
@@ -46,6 +47,7 @@ export default async function AppLayout({
         avatarUrl={viewer.avatarUrl}
         unreadMessages={await countTrulyUnread(viewer.profileId, unreadMessages)}
         pendingRequests={pendingRequests}
+        staff={isStaff(viewer)}
       />
       <main id="main" className="pb-24 md:pb-10">
         {children}

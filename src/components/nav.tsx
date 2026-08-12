@@ -29,12 +29,15 @@ export function AppNav({
   username,
   unreadMessages,
   pendingRequests,
+  staff = false,
 }: {
   displayName: string;
   avatarUrl: string | null;
   username: string;
   unreadMessages: number;
   pendingRequests: number;
+  /** Renders the staff entry. The link is cosmetic — /admin guards itself. */
+  staff?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -93,6 +96,14 @@ export function AppNav({
         </ul>
 
         <div className="space-y-1 border-t border-line pt-4">
+          {staff && (
+            <Link
+              href="/admin"
+              className="mb-1 block rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-teal transition-colors hover:bg-surface-sunken"
+            >
+              Staff area
+            </Link>
+          )}
           <Link
             href="/profile"
             className={cn(

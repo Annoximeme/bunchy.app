@@ -2,7 +2,7 @@
   "name": "bunchy",
   "version": "0.1.0",
   "private": true,
-  "description": "Bunchy — find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
+  "description": "Bunchy \u2014 find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
   "engines": {
     "node": ">=22"
   },
@@ -20,7 +20,8 @@
     "db:reset": "prisma migrate reset --force",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "verify": "npm run typecheck && npm run lint && npm run test"
+    "verify": "npm run typecheck && npm run lint && npm run test",
+    "role": "node --env-file=.env node_modules/.bin/tsx scripts/grant-role.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

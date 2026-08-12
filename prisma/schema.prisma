@@ -33,8 +33,23 @@ datasource db {
 
 enum UserStatus {
   ACTIVE
+  /// Temporary, set by a moderator. `suspendedUntil` may be null for indefinite.
   SUSPENDED
+  /// Permanent, set by an admin. Distinct from SUSPENDED so the two are
+  /// separately auditable and separately reversible.
+  BANNED
+  /// The member deactivated themselves. Reversible by signing back in.
   DEACTIVATED
+}
+
+/// Staff privilege. Lives on `User` rather than `Profile` because it is
+/// authorization data, never something another member can see.
+enum UserRole {
+  MEMBER
+  /// Can work the report queue and act on content.
+  MODERATOR
+  /// Everything a moderator can do, plus users, roles and platform settings.
+  ADMIN
 }
 
 model User {
@@ -46,6 +61,9 @@ model User {
   /// Year only. Full dates of birth are more identifying than we need.
   birthYear       Int?
   status          UserStatus @default(ACTIVE)
+  role            UserRole   @default(MEMBER)
+  /// When a suspension lifts. Null on an indefinite suspension.
+  suspendedUntil  DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
@@ -53,8 +71,61 @@ model User {
   sessions           Session[]
   oauthAccounts      OAuthAccount[]
   verificationTokens VerificationToken[]
+  moderationActions  ModerationEvent[]   @relation("ModerationActor")
 
   @@index([status])
+  @@index([role])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Staff audit trail
+// ---------------------------------------------------------------------------
+
+enum ModerationAction {
+  USER_SUSPENDED
+  USER_UNSUSPENDED
+  USER_BANNED
+  USER_UNBANNED
+  USER_ROLE_CHANGED
+  REPORT_ACTIONED
+  REPORT_DISMISSED
+  REPORT_REVIEWING
+  BUNCH_ARCHIVED
+  BUNCH_RESTORED
+  ACTIVITY_CANCELLED
+  BUNCH_MESSAGE_REMOVED
+  INTEREST_APPROVED
+  INTEREST_REJECTED
+  INTEREST_UPDATED
+  INTEREST_MERGED
+}
+
+/// Every staff action, recorded before it is taken.
+///
+/// Moderation power without an audit trail is how a platform quietly becomes
+/// unaccountable, so nothing in the admin module mutates state without writing
+/// one of these first. The actor is denormalized alongside the foreign key so
+/// the record survives the staff account being deleted.
+model ModerationEvent {
+  id          String           @id @default(cuid())
+  action      ModerationAction
+  actorUserId String?
+  /// Who did it, captured at the time. Survives account deletion.
+  actorLabel  String
+  targetType  String
+  targetId    String
+  reason      String?
+  /// Free-form context: previous values, counts, merge targets.
+  metadata    Json?
+  createdAt   DateTime         @default(now())
+
+  actor User? @relation("ModerationActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorUserId])
+  @@index([targetType, targetId])
+  @@index([action])
 }
 
 model Session {
@@ -237,13 +308,27 @@ model PrivacySettings {
 // Interests, goals, availability
 // ---------------------------------------------------------------------------
 
+enum InterestStatus {
+  /// Part of the curated catalog, or reviewed and kept.
+  APPROVED
+  /// Member-created and not yet reviewed. Usable, but not suggested to others.
+  PENDING
+  /// Reviewed and rejected. Hidden from pickers and browsing.
+  REJECTED
+}
+
 model Interest {
   id       String  @id @default(cuid())
   slug     String  @unique
   label    String
   category String
+  /// Shown in the picker to explain what a tag actually covers.
+  description String?
+  /// Alternative spellings, so "boardgames" finds "Board games".
+  aliases  String[] @default([])
   /// Custom interests are member-created and start unverified.
   isCustom Boolean @default(false)
+  status   InterestStatus @default(APPROVED)
   /// Denormalized popularity counter, used to surface established tags first.
   usageCount Int   @default(0)
   createdAt DateTime @default(now())
@@ -253,6 +338,7 @@ model Interest {
 
   @@index([category])
   @@index([usageCount])
+  @@index([status])
 }
 
 enum InterestIntent {
