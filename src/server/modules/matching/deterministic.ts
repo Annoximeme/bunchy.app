@@ -29,17 +29,54 @@ import {
  * can also run side by side for evaluation.
  */
 
-/** Base importance of each signal. Tuned by hand; the obvious first thing to learn. */
+/**
+ * The weighting budget, from the product spec (§14):
+ *
+ *   interests 40% · social goals 20% · personality 15%
+ *   location 10%  · availability 10% · activity preferences 5%
+ *
+ * Two notes on how that maps onto the signals below.
+ *
+ * The 40% for interests is split between `shared_interests` (26) and
+ * `complementary_interests` (14) rather than spent entirely on overlap, because
+ * the same spec requires complementary matching — a photographer and someone
+ * who wants to learn photography must be able to match. Spending the whole
+ * budget on shared tags would make that impossible.
+ *
+ * "Activity preferences" maps to `history`: shared bunches, co-attended
+ * activities and how present someone actually is.
+ *
+ * These six sum to exactly 1.0. Age is deliberately *not* in the additive
+ * budget — see AGE_PENALTY below.
+ */
 const BASE_WEIGHTS: Record<SignalName, number> = {
-  shared_interests: 0.22,
+  shared_interests: 0.26,
   complementary_interests: 0.14,
-  social_goals: 0.15,
+  social_goals: 0.2,
   personality: 0.15,
-  availability: 0.12,
-  location: 0.13,
-  age: 0.05,
-  history: 0.04,
+  location: 0.1,
+  availability: 0.1,
+  history: 0.05,
+  // Applied multiplicatively instead, so the budget above stays exact.
+  age: 0,
 };
+
+/**
+ * Age as a modifier rather than a weighted signal.
+ *
+ * The spec's six dimensions account for the whole score, so adding age as a
+ * seventh additive term would quietly change every other weight. It still
+ * matters though — a 25-year gap is real information — so it scales the final
+ * score by at most 15%. Enough to break a tie, never enough to overrule a
+ * genuinely good match, and it never becomes the headline reason on a card.
+ */
+const MAX_AGE_PENALTY = 0.15;
+
+function agePenalty(signals: SignalResult[]): number {
+  const age = signals.find((s) => s.signal === "age");
+  if (!age) return 1;
+  return 1 - MAX_AGE_PENALTY * (1 - clamp(age.score));
+}
 
 /** Goals that mean "I want to actually go somewhere with someone". */
 const PLACE_BOUND_GOALS = new Set([
@@ -48,6 +85,7 @@ const PLACE_BOUND_GOALS = new Set([
   "FITNESS_PARTNERS",
   "STUDY_PARTNERS",
   "HOBBY_PARTNERS",
+  "ACTIVITY_PARTNERS",
 ]);
 
 /**
@@ -141,6 +179,8 @@ export class DeterministicScorer implements CompatibilityScorer {
     push(ageSignal(subject, candidate));
     push(historySignal(subject, candidate));
 
+    // Age carries weight 0, so it contributes only through `agePenalty` below
+    // and through the reason it produces. Everything else is a weighted mean.
     const totalWeight = collected.reduce((sum, s) => sum + s.weight, 0);
     const raw =
       totalWeight === 0
@@ -149,7 +189,8 @@ export class DeterministicScorer implements CompatibilityScorer {
 
     const damped =
       raw *
-      confidenceFactor(collected.length, Object.keys(BASE_WEIGHTS).length);
+      confidenceFactor(collected.length, Object.keys(BASE_WEIGHTS).length) *
+      agePenalty(collected);
 
     return {
       profileId: candidate.profileId,

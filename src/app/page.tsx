@@ -9,7 +9,7 @@ import { Avatar, Chip, CompatibilityBadge, LinkButton } from "@/components/ui";
  * The landing page.
  *
  * It has ten seconds to explain the product, so it shows the product: a real
- * person card, a real circle, a real activity. The examples below are
+ * person card, a real bunch, a real activity. The examples below are
  * illustrative and labelled as such — inventing fake member counts or
  * testimonials would be a lie told before anyone has even signed up.
  */
@@ -44,7 +44,7 @@ export default async function LandingPage() {
                 No feed. No followers. Just people.
               </Chip>
               <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-                Find your people.
+                {brand.tagline}
               </h1>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-soft">
                 {brand.subtitle}
@@ -52,7 +52,7 @@ export default async function LandingPage() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <LinkButton href="/signup" size="lg">
-                  Find my people
+                  Find my bunch
                 </LinkButton>
                 <LinkButton href="#how" variant="secondary" size="lg">
                   Explore {brand.name}
@@ -67,7 +67,7 @@ export default async function LandingPage() {
             {/* A real card, not a screenshot */}
             <div className="animate-rise space-y-4 [animation-delay:120ms]">
               <ExamplePersonCard />
-              <ExampleCircleCard />
+              <ExampleBunchCard />
               <ExampleActivityCard />
               <p className="text-center text-xs text-muted">
                 Illustrative examples of what {brand.name} shows you.
@@ -101,7 +101,7 @@ export default async function LandingPage() {
               />
               <Step
                 n="03"
-                title="Join a small circle"
+                title="Join a small bunch"
                 body="Five to twelve people with something real in common. Small enough that you're known, not an audience."
               />
             </div>
@@ -147,7 +147,7 @@ export default async function LandingPage() {
             </p>
             <div className="mt-8">
               <LinkButton href="/signup" size="lg">
-                Find my people
+                Find my bunch
               </LinkButton>
             </div>
           </div>
@@ -220,7 +220,7 @@ function ExamplePersonCard() {
   );
 }
 
-function ExampleCircleCard() {
+function ExampleBunchCard() {
   return (
     <div className="card-surface p-5">
       <div className="flex items-start justify-between gap-3">

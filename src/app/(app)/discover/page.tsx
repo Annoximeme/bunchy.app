@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { recommendPeople } from "@/server/modules/matching/engine";
-import { recommendCircles } from "@/server/modules/matching/circles";
+import { recommendBunches } from "@/server/modules/matching/bunches";
 import { recommendActivities } from "@/server/modules/matching/activities";
 import { PageHeader, PageShell } from "@/components/page-header";
-import { ActivityCard, CircleCard, PersonCard } from "@/components/cards";
+import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Discover" };
@@ -24,14 +24,14 @@ export const dynamic = "force-dynamic";
 export default async function DiscoverPage() {
   const viewer = await requireViewer();
 
-  const [people, circles, activities] = await Promise.all([
+  const [people, bunches, activities] = await Promise.all([
     recommendPeople(viewer.profileId, { limit: 8 }),
-    recommendCircles(viewer.profileId, 6),
+    recommendBunches(viewer.profileId, 6),
     recommendActivities(viewer.profileId, 6),
   ]);
 
   const nothingAtAll =
-    people.length === 0 && circles.length === 0 && activities.length === 0;
+    people.length === 0 && bunches.length === 0 && activities.length === 0;
 
   return (
     <PageShell>
@@ -55,9 +55,9 @@ export default async function DiscoverPage() {
         <EmptyState
           icon="🌱"
           title="It's quiet here — for now"
-          description="Bunchy needs a few more people nearby before it can make good introductions. Starting a circle is the fastest way to change that, and it gives anyone who joins next somewhere to land."
+          description="Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
           action={
-            <LinkButton href="/circles/new">Start a circle</LinkButton>
+            <LinkButton href="/bunches/new">Start a bunch</LinkButton>
           }
         />
       ) : (
@@ -91,20 +91,20 @@ export default async function DiscoverPage() {
             </section>
           )}
 
-          {circles.length > 0 && (
+          {bunches.length > 0 && (
             <section>
               <SectionHeading
-                title="Circles for you"
+                title="Bunches for you"
                 subtitle="Small groups with room for one more."
                 action={
-                  <LinkButton href="/circles" variant="ghost" size="sm">
+                  <LinkButton href="/bunches" variant="ghost" size="sm">
                     Browse all
                   </LinkButton>
                 }
               />
               <div className="grid gap-4 lg:grid-cols-2">
-                {circles.map((circle) => (
-                  <CircleCard key={circle.id} circle={circle} />
+                {bunches.map((bunch) => (
+                  <BunchCard key={bunch.id} bunch={bunch} />
                 ))}
               </div>
             </section>
@@ -134,7 +134,7 @@ export default async function DiscoverPage() {
                       cityLabel: activity.cityLabel,
                       participantCount: activity.participantCount,
                       maxParticipants: activity.maxParticipants,
-                      circle: activity.circle,
+                      bunch: activity.bunch,
                       highlights: activity.highlights,
                     }}
                   />
@@ -148,7 +148,7 @@ export default async function DiscoverPage() {
               That&rsquo;s everything worth showing you today.
             </p>
             <p className="mt-1.5 text-sm text-muted">
-              You&rsquo;ve found your people. Go talk to them.
+              You&rsquo;ve found your bunch. Go talk to them.
             </p>
           </section>
         </div>

@@ -52,7 +52,7 @@ export default async function ActivitiesPage() {
                     cityLabel: activity.cityLabel,
                     participantCount: activity.participantCount,
                     maxParticipants: activity.maxParticipants,
-                    circle: activity.circle,
+                    bunch: activity.bunch,
                     viewerStatus: activity.viewerStatus,
                   }}
                 />
@@ -82,7 +82,7 @@ export default async function ActivitiesPage() {
                       cityLabel: activity.cityLabel,
                       participantCount: activity.participantCount,
                       maxParticipants: activity.maxParticipants,
-                      circle: activity.circle,
+                      bunch: activity.bunch,
                       highlights: activity.highlights,
                     }}
                   />
@@ -114,7 +114,7 @@ export default async function ActivitiesPage() {
                     cityLabel: activity.cityLabel,
                     participantCount: activity.participantCount,
                     maxParticipants: activity.maxParticipants,
-                    circle: activity.circle,
+                    bunch: activity.bunch,
                     viewerStatus: activity.viewerStatus,
                   }}
                 />

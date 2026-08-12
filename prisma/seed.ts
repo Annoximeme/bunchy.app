@@ -386,7 +386,7 @@ const PEOPLE: PersonSeed[] = [
   },
 ];
 
-interface CircleSeed {
+interface BunchSeed {
   name: string;
   description: string;
   type: "INTEREST" | "LOCAL" | "ACTIVITY";
@@ -400,7 +400,7 @@ interface CircleSeed {
   messages: Array<[author: string, body: string]>;
 }
 
-const CIRCLES: CircleSeed[] = [
+const BUNCHES: BunchSeed[] = [
   {
     name: "Gaming & Tech",
     description:
@@ -486,7 +486,7 @@ interface ActivitySeed {
   country?: string;
   maxParticipants: number;
   organizer: string;
-  circle?: string;
+  bunch?: string;
   participants: string[];
 }
 
@@ -500,7 +500,7 @@ const ACTIVITIES: ActivitySeed[] = [
     mode: "ONLINE",
     maxParticipants: 6,
     organizer: "sarah",
-    circle: "Gaming & Tech",
+    bunch: "Gaming & Tech",
     participants: ["milan", "jonas"],
   },
   {
@@ -515,7 +515,7 @@ const ACTIVITIES: ActivitySeed[] = [
     country: "BE",
     maxParticipants: 12,
     organizer: "milan",
-    circle: "Antwerp Board Game Nights",
+    bunch: "Antwerp Board Game Nights",
     participants: ["yuki", "sarah", "tomas"],
   },
   {
@@ -530,7 +530,7 @@ const ACTIVITIES: ActivitySeed[] = [
     country: "BE",
     maxParticipants: 8,
     organizer: "tomas",
-    circle: "Weekend Explorers",
+    bunch: "Weekend Explorers",
     participants: ["elena"],
   },
   {
@@ -559,12 +559,12 @@ async function main() {
   await prisma.$transaction([
     prisma.messageReaction.deleteMany(),
     prisma.messageMention.deleteMany(),
-    prisma.circleMessage.deleteMany(),
+    prisma.bunchMessage.deleteMany(),
     prisma.activityParticipant.deleteMany(),
     prisma.activity.deleteMany(),
-    prisma.circleMembership.deleteMany(),
-    prisma.circleInterest.deleteMany(),
-    prisma.circle.deleteMany(),
+    prisma.bunchMembership.deleteMany(),
+    prisma.bunchInterest.deleteMany(),
+    prisma.bunch.deleteMany(),
     prisma.directMessage.deleteMany(),
     prisma.conversationParticipant.deleteMany(),
     prisma.conversation.deleteMany(),
@@ -685,17 +685,17 @@ async function main() {
   }
   console.info(`  ${PEOPLE.length} people`);
 
-  // --- Circles --------------------------------------------------------------
-  const circleId = new Map<string, string>();
+  // --- Bunches --------------------------------------------------------------
+  const bunchId = new Map<string, string>();
 
-  for (const seed of CIRCLES) {
+  for (const seed of BUNCHES) {
     const place =
       seed.city && seed.country ? findPlace(seed.city, seed.country) : undefined;
     const approx = place ? snapToGrid(place.lat, place.lng) : null;
     const owner = profileId.get(seed.owner);
     if (!owner) continue;
 
-    const circle = await prisma.circle.create({
+    const bunch = await prisma.bunch.create({
       data: {
         slug: seed.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
         name: seed.name,
@@ -731,16 +731,16 @@ async function main() {
       select: { id: true },
     });
 
-    circleId.set(seed.name, circle.id);
+    bunchId.set(seed.name, bunch.id);
 
     // Messages, spaced so the transcript reads like a real conversation.
     let offset = seed.messages.length + 1;
     for (const [author, body] of seed.messages) {
       const id = profileId.get(author);
       if (!id) continue;
-      await prisma.circleMessage.create({
+      await prisma.bunchMessage.create({
         data: {
-          circleId: circle.id,
+          bunchId: bunch.id,
           authorId: id,
           body,
           createdAt: new Date(Date.now() - offset * 3_600_000),
@@ -751,14 +751,14 @@ async function main() {
 
     const messageCount = seed.messages.length;
     const memberCount = seed.members.length + 1;
-    await prisma.circle.update({
-      where: { id: circle.id },
+    await prisma.bunch.update({
+      where: { id: bunch.id },
       data: {
         activityScore: Math.min(1, messageCount / Math.max(1, memberCount) / 10),
       },
     });
   }
-  console.info(`  ${CIRCLES.length} circles`);
+  console.info(`  ${BUNCHES.length} bunches`);
 
   // --- Activities -----------------------------------------------------------
   for (const seed of ACTIVITIES) {
@@ -784,7 +784,7 @@ async function main() {
         onlineUrl: seed.mode === "ONLINE" ? "https://discord.gg/example" : null,
         maxParticipants: seed.maxParticipants,
         organizerId: organizer,
-        circleId: seed.circle ? (circleId.get(seed.circle) ?? null) : null,
+        bunchId: seed.bunch ? (bunchId.get(seed.bunch) ?? null) : null,
         participants: {
           create: [
             { profileId: organizer, status: "JOINED" },

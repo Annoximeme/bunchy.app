@@ -3,7 +3,7 @@
 **Find your people.**
 
 Bunchy is an AI-assisted social discovery platform for making real friendships,
-joining small circles, and actually doing things together offline.
+joining small bunches, and actually doing things together offline.
 
 It is deliberately not a feed. There is no infinite scroll, no follower count,
 no popularity ranking, and no notification whose purpose is to pull you back in.
@@ -19,7 +19,7 @@ Requires Node 22+ and a PostgreSQL 16 database.
 npm install
 cp .env.example .env.local          # then set DATABASE_URL (and AUTH_SECRET for prod)
 npm run db:migrate                  # create the schema
-npm run db:seed                     # 12 people, 4 circles, 4 activities
+npm run db:seed                     # 12 people, 4 bunches, 4 activities
 npm run dev
 ```
 
@@ -61,14 +61,14 @@ Phase 1 of the roadmap is complete and working end to end.
   personality, goals, availability), resumable from any device because progress
   is a stage machine on the profile row rather than client state.
 - **Compatibility scoring** — a weighted multi-signal engine, unit tested.
-- **Discover** — ranked people, circles and activities, each with a plain-English
+- **Discover** — ranked people, bunches and activities, each with a plain-English
   reason. Finite by design.
 - **Connections** — mutual consent; a conversation cannot exist until both
   people have agreed.
-- **Circles** — creation, join requests, invites, roles, moderation, and live
+- **Bunches** — creation, join requests, invites, roles, moderation, and live
   group chat over SSE with replies, reactions and mentions.
 - **Activities** — create, join, waitlist with automatic promotion, cancel.
-- **Bunchy AI** — conversation starters, circle catch-up summaries and activity
+- **Bunchy AI** — conversation starters, bunch catch-up summaries and activity
   suggestions, behind a provider interface with a working local implementation.
 - **Trust & safety** — block, report, leave, remove, rate limiting, and privacy
   controls over discoverability, messaging, location and age.

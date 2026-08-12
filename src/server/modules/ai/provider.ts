@@ -11,7 +11,7 @@
  *
  * 2. It must degrade, not disappear. `LocalAssistant` is a real implementation,
  *    not a stub — with no API key configured the product still writes openers,
- *    still summarizes a busy circle, and still proposes activities.
+ *    still summarizes a busy bunch, and still proposes activities.
  */
 
 export interface StarterContext {
@@ -23,12 +23,12 @@ export interface StarterContext {
 }
 
 export interface ConversationSummaryInput {
-  circleName: string;
+  bunchName: string;
   messages: Array<{ author: string; body: string; createdAt: Date }>;
 }
 
 export interface ActivitySuggestionInput {
-  circleName: string;
+  bunchName: string;
   interests: string[];
   cityLabel: string | null;
   recentMessages: string[];
@@ -45,9 +45,9 @@ export interface Assistant {
   readonly id: string;
   /** Openers for a brand-new conversation, grounded in what the two share. */
   conversationStarters(context: StarterContext): Promise<string[]>;
-  /** A short digest of a circle someone has been away from. */
+  /** A short digest of a bunch someone has been away from. */
   summarizeConversation(input: ConversationSummaryInput): Promise<string>;
-  /** Something the circle could actually do, based on what they discuss. */
+  /** Something the bunch could actually do, based on what they discuss. */
   suggestActivity(
     input: ActivitySuggestionInput,
   ): Promise<ActivitySuggestion | null>;

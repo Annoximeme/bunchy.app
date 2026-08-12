@@ -36,7 +36,7 @@ const ACTIVITY_SELECT = {
   organizer: {
     select: { id: true, username: true, displayName: true, avatarUrl: true },
   },
-  circle: { select: { id: true, slug: true, name: true } },
+  bunch: { select: { id: true, slug: true, name: true } },
   participants: {
     where: { status: { in: ["JOINED", "WAITLISTED"] } },
     select: {
@@ -64,7 +64,7 @@ type ActivityRow = {
   createdAt: Date;
   organizerId: string;
   organizer: { id: string; username: string; displayName: string; avatarUrl: string | null };
-  circle: { id: string; slug: string; name: string } | null;
+  bunch: { id: string; slug: string; name: string } | null;
   participants: Array<{
     status: string;
     profile: { id: string; username: string; displayName: string; avatarUrl: string | null };
@@ -94,7 +94,7 @@ export function toActivityView(row: ActivityRow, viewerProfileId: string) {
     spotsLeft: Math.max(0, row.maxParticipants - joined.length),
     status: row.status,
     organizer: row.organizer,
-    circle: row.circle,
+    bunch: row.bunch,
     participants: joined.map((p) => p.profile),
     waitlistCount: waitlisted.length,
     viewerStatus: viewerEntry?.status ?? null,
@@ -110,15 +110,15 @@ export async function createActivity(
 ): Promise<{ id: string }> {
   await consume("activityCreate", organizerId);
 
-  if (input.circleId) {
-    const membership = await db.circleMembership.findUnique({
+  if (input.bunchId) {
+    const membership = await db.bunchMembership.findUnique({
       where: {
-        circleId_profileId: { circleId: input.circleId, profileId: organizerId },
+        bunchId_profileId: { bunchId: input.bunchId, profileId: organizerId },
       },
       select: { status: true },
     });
     if (membership?.status !== "ACTIVE") {
-      throw forbidden("You can only plan activities in circles you're in.");
+      throw forbidden("You can only plan activities in bunches you're in.");
     }
   }
 
@@ -140,49 +140,49 @@ export async function createActivity(
       onlineUrl: input.onlineUrl || null,
       maxParticipants: input.maxParticipants,
       organizerId,
-      circleId: input.circleId ?? null,
+      bunchId: input.bunchId ?? null,
       // The organizer is going, by definition.
       participants: { create: { profileId: organizerId, status: "JOINED" } },
     },
-    select: { id: true, title: true, circleId: true },
+    select: { id: true, title: true, bunchId: true },
   });
 
-  if (activity.circleId) {
-    await announceToCircle(activity.circleId, organizerId, activity.id, input.title);
+  if (activity.bunchId) {
+    await announceToBunch(activity.bunchId, organizerId, activity.id, input.title);
   }
 
   return { id: activity.id };
 }
 
 /**
- * Posts a system message in the circle and notifies the members. This is the
+ * Posts a system message in the bunch and notifies the members. This is the
  * one broadcast notification in the product, and it earns its place: a plan
  * that nobody hears about is not a plan.
  */
-async function announceToCircle(
-  circleId: string,
+async function announceToBunch(
+  bunchId: string,
   organizerId: string,
   activityId: string,
   title: string,
 ): Promise<void> {
-  const [circle, organizer, members] = await Promise.all([
-    db.circle.findUniqueOrThrow({
-      where: { id: circleId },
+  const [bunch, organizer, members] = await Promise.all([
+    db.bunch.findUniqueOrThrow({
+      where: { id: bunchId },
       select: { name: true },
     }),
     db.profile.findUniqueOrThrow({
       where: { id: organizerId },
       select: { displayName: true },
     }),
-    db.circleMembership.findMany({
-      where: { circleId, status: "ACTIVE", profileId: { not: organizerId } },
+    db.bunchMembership.findMany({
+      where: { bunchId, status: "ACTIVE", profileId: { not: organizerId } },
       select: { profileId: true },
     }),
   ]);
 
-  await db.circleMessage.create({
+  await db.bunchMessage.create({
     data: {
-      circleId,
+      bunchId,
       kind: "SYSTEM",
       body: `${organizer.displayName} planned "${title}".`,
     },
@@ -194,7 +194,7 @@ async function announceToCircle(
         profileId: m.profileId,
         actorProfileId: organizerId,
         type: "ACTIVITY_INVITE",
-        title: `${circle.name} is doing something: ${title}`,
+        title: `${bunch.name} is doing something: ${title}`,
         linkPath: `/activities/${activityId}`,
         groupKey: `activity:${activityId}`,
       }),
@@ -213,9 +213,9 @@ export async function joinActivity(
       status: true,
       maxParticipants: true,
       startsAt: true,
-      circleId: true,
+      bunchId: true,
       organizerId: true,
-      circle: { select: { visibility: true } },
+      bunch: { select: { visibility: true } },
     },
   });
   if (!activity) throw notFound("That activity no longer exists.");
@@ -224,11 +224,11 @@ export async function joinActivity(
     throw conflict("That activity has already started.");
   }
 
-  // Anything hosted in a private circle is members-only.
-  if (activity.circleId && activity.circle?.visibility === "PRIVATE") {
-    const membership = await db.circleMembership.findUnique({
+  // Anything hosted in a private bunch is members-only.
+  if (activity.bunchId && activity.bunch?.visibility === "PRIVATE") {
+    const membership = await db.bunchMembership.findUnique({
       where: {
-        circleId_profileId: { circleId: activity.circleId, profileId },
+        bunchId_profileId: { bunchId: activity.bunchId, profileId },
       },
       select: { status: true },
     });
@@ -420,7 +420,7 @@ export async function getActivity(
 
 export interface ListActivitiesOptions {
   scope?: "upcoming" | "mine" | "organizing";
-  circleId?: string;
+  bunchId?: string;
   limit?: number;
 }
 
@@ -428,7 +428,7 @@ export async function listActivities(
   viewerProfileId: string,
   options: ListActivitiesOptions = {},
 ): Promise<ActivityView[]> {
-  const { scope = "upcoming", circleId, limit = 30 } = options;
+  const { scope = "upcoming", bunchId, limit = 30 } = options;
   const now = new Date();
 
   const scopeFilter: Prisma.ActivityWhereInput =
@@ -449,14 +449,14 @@ export async function listActivities(
     where: {
       status: scope === "upcoming" ? "SCHEDULED" : undefined,
       startsAt: { gte: scope === "mine" ? new Date(0) : now },
-      ...(circleId ? { circleId } : {}),
+      ...(bunchId ? { bunchId } : {}),
       ...scopeFilter,
-      // Never surface something hosted in a circle the viewer cannot see.
+      // Never surface something hosted in a bunch the viewer cannot see.
       OR: [
-        { circleId: null },
-        { circle: { visibility: "PUBLIC", archivedAt: null } },
+        { bunchId: null },
+        { bunch: { visibility: "PUBLIC", archivedAt: null } },
         {
-          circle: {
+          bunch: {
             memberships: { some: { profileId: viewerProfileId, status: "ACTIVE" } },
           },
         },

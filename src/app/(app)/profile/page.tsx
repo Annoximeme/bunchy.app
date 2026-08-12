@@ -154,8 +154,8 @@ export default async function ProfilePage() {
                 <dd className="truncate">{viewer.email}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Circles</dt>
-                <dd>{profile.circleCount}</dd>
+                <dt className="text-muted">Bunches</dt>
+                <dd>{profile.bunchCount}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-muted">Joined</dt>
@@ -172,7 +172,7 @@ export default async function ProfilePage() {
               whoCanSendRequests: profile.privacy.whoCanSendRequests,
               discoverable: profile.privacy.discoverable,
               showApproxLocation: profile.privacy.showApproxLocation,
-              invitableToCircles: profile.privacy.invitableToCircles,
+              invitableToBunches: profile.privacy.invitableToBunches,
               showExactAge: profile.privacy.showExactAge,
             }}
           />

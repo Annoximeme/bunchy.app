@@ -9,13 +9,13 @@ export interface PrivacyValues {
   whoCanSendRequests: string;
   discoverable: boolean;
   showApproxLocation: boolean;
-  invitableToCircles: boolean;
+  invitableToBunches: boolean;
   showExactAge: boolean;
 }
 
 const AUDIENCES = [
   { value: "EVERYONE", label: "Anyone on Bunchy" },
-  { value: "CIRCLE_MEMBERS", label: "People in my circles" },
+  { value: "BUNCH_MEMBERS", label: "People in my bunches" },
   { value: "CONNECTIONS", label: "Friends of my connections" },
   { value: "NOBODY", label: "Nobody" },
 ] as const;
@@ -128,10 +128,10 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
             description="Off shows a range instead, like 25–34."
           />
           <Toggle
-            id="invitableToCircles"
-            checked={values.invitableToCircles}
-            onChange={(v) => set("invitableToCircles", v)}
-            label="Allow circle invites"
+            id="invitableToBunches"
+            checked={values.invitableToBunches}
+            onChange={(v) => set("invitableToBunches", v)}
+            label="Allow bunch invites"
             description="Off means only you can start the conversation about joining."
           />
         </div>

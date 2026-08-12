@@ -15,7 +15,7 @@ export const activityCreateSchema = z
     countryCode: z.string().trim().length(2).toUpperCase().optional(),
     onlineUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
     maxParticipants: z.number().int().min(2).max(50).default(8),
-    circleId: z.string().trim().min(1).max(40).optional(),
+    bunchId: z.string().trim().min(1).max(40).optional(),
   })
   .refine((v) => v.mode === "ONLINE" || Boolean(v.locationLabel), {
     message: "Where is it happening?",

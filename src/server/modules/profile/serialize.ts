@@ -4,7 +4,7 @@ import type { PersonalityVector } from "@/server/modules/matching/types";
  * The single sanctioned path from a profile row to something another member can
  * see.
  *
- * Every surface — Discover, circles, messages, the profile page — renders
+ * Every surface — Discover, bunches, messages, the profile page — renders
  * `PublicProfile`. Nothing accepts a raw Prisma row. That is what makes the PII
  * split in the schema actually hold: there is no field on this type that could
  * carry an email address or a precise coordinate, so no route can leak one by
@@ -43,7 +43,7 @@ export interface PublicProfile {
   availability: string[];
   /** Plain-language traits rather than raw axis numbers. */
   traits: string[];
-  circleCount: number;
+  bunchCount: number;
   connectionState: ConnectionState;
   joinedAt: string;
 }
@@ -60,6 +60,8 @@ export const GOAL_LABELS: Record<string, string> = {
   MENTORS: "Mentors",
   SIMILAR_INTERESTS: "People with similar interests",
   LOCAL_COMMUNITIES: "Local communities",
+  TRAVEL_COMPANIONS: "Travel companions",
+  ACTIVITY_PARTNERS: "Activity partners",
 };
 
 export const AVAILABILITY_LABELS: Record<string, string> = {
@@ -130,7 +132,7 @@ export interface SerializeInput {
   goals: Array<{ goal: string }>;
   availability: Array<{ window: string }>;
   personality: PersonalityVector | null;
-  _count?: { circleMemberships?: number };
+  _count?: { bunchMemberships?: number };
 }
 
 export function toPublicProfile(
@@ -170,7 +172,7 @@ export function toPublicProfile(
       (a) => AVAILABILITY_LABELS[a.window] ?? a.window,
     ),
     traits: describeTraits(row.personality),
-    circleCount: row._count?.circleMemberships ?? 0,
+    bunchCount: row._count?.bunchMemberships ?? 0,
     connectionState: options.connectionState,
     joinedAt: row.createdAt.toISOString(),
   };
@@ -209,5 +211,5 @@ export const PUBLIC_PROFILE_SELECT = {
       nightMorning: true,
     },
   },
-  _count: { select: { circleMemberships: { where: { status: "ACTIVE" } } } },
+  _count: { select: { bunchMemberships: { where: { status: "ACTIVE" } } } },
 } as const;

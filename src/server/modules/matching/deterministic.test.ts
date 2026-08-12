@@ -48,7 +48,7 @@ function profile(overrides: Partial<MatchProfile> = {}): MatchProfile {
     goals: overrides.goals ?? ["NEW_FRIENDS"],
     availability: overrides.availability ?? ["WEEKEND_AFTERNOON"],
     personality: overrides.personality ?? null,
-    circleIds: overrides.circleIds ?? [],
+    bunchIds: overrides.bunchIds ?? [],
     attendedActivityIds: overrides.attendedActivityIds ?? [],
     participationScore: overrides.participationScore ?? 0.5,
   };

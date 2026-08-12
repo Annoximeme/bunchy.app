@@ -20,9 +20,9 @@ const reportSchema = z.object({
   action: z.literal("report"),
   targetType: z.enum([
     "PROFILE",
-    "CIRCLE_MESSAGE",
+    "BUNCH_MESSAGE",
     "DIRECT_MESSAGE",
-    "CIRCLE",
+    "BUNCH",
     "ACTIVITY",
   ]),
   targetId: z.string().trim().min(1).max(40),

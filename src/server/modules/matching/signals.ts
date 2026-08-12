@@ -249,6 +249,10 @@ const COMPLEMENTARY_GOALS: Array<[string, string]> = [
   ["FITNESS_PARTNERS", "HOBBY_PARTNERS"],
   ["CREATIVE_COLLABORATORS", "BUSINESS_PARTNERS"],
   ["STUDY_PARTNERS", "SIMILAR_INTERESTS"],
+  ["TRAVEL_COMPANIONS", "ACTIVITY_PARTNERS"],
+  ["TRAVEL_COMPANIONS", "NEW_FRIENDS"],
+  ["ACTIVITY_PARTNERS", "HOBBY_PARTNERS"],
+  ["ACTIVITY_PARTNERS", "GOING_OUT"],
 ];
 
 const GOAL_LABELS: Record<string, string> = {
@@ -263,6 +267,8 @@ const GOAL_LABELS: Record<string, string> = {
   MENTORS: "mentors",
   SIMILAR_INTERESTS: "people with similar interests",
   LOCAL_COMMUNITIES: "local communities",
+  TRAVEL_COMPANIONS: "travel companions",
+  ACTIVITY_PARTNERS: "activity partners",
 };
 
 export function socialGoalsSignal(
@@ -562,9 +568,9 @@ export function historySignal(
   subject: MatchProfile,
   candidate: MatchProfile,
 ): SignalResult {
-  const subjectCircles = new Set(subject.circleIds);
-  const sharedCircles = candidate.circleIds.filter((id) =>
-    subjectCircles.has(id),
+  const subjectBunches = new Set(subject.bunchIds);
+  const sharedBunches = candidate.bunchIds.filter((id) =>
+    subjectBunches.has(id),
   ).length;
 
   const subjectActivities = new Set(subject.attendedActivityIds);
@@ -572,14 +578,14 @@ export function historySignal(
     subjectActivities.has(id),
   ).length;
 
-  const community = clamp(sharedCircles * 0.5 + sharedActivities * 0.6);
+  const community = clamp(sharedBunches * 0.5 + sharedActivities * 0.6);
   const score = clamp(0.6 * community + 0.4 * clamp(candidate.participationScore));
 
   const reason =
     sharedActivities > 0
       ? "You've been to the same activity before"
-      : sharedCircles > 0
-        ? `Already in ${sharedCircles === 1 ? "a circle" : `${sharedCircles} circles`} together`
+      : sharedBunches > 0
+        ? `Already in ${sharedBunches === 1 ? "a bunch" : `${sharedBunches} bunches`} together`
         : candidate.participationScore > 0.6
           ? "Active in the community"
           : "New around here";

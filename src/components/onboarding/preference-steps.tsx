@@ -182,6 +182,8 @@ const GOALS = [
   { value: "MENTORS", label: "Mentors", hint: "Someone a few steps ahead" },
   { value: "SIMILAR_INTERESTS", label: "People like me", hint: "Shared taste, shared world" },
   { value: "LOCAL_COMMUNITIES", label: "Local communities", hint: "Something near you" },
+  { value: "TRAVEL_COMPANIONS", label: "Travel companions", hint: "People to go places with" },
+  { value: "ACTIVITY_PARTNERS", label: "Activity partners", hint: "Someone for a specific thing" },
 ] as const;
 
 export function GoalsStep({ initial }: { initial: string[] }) {

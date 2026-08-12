@@ -12,9 +12,9 @@ had nothing to preserve.
 
 **Assumptions made and not escalated:**
 
-1. The brief alternates between two product names. The repository, the title and
-   the tagline all say **Bunchy**, so it ships as Bunchy. The name lives in
-   `src/lib/brand.ts` — renaming is a one-line change.
+1. The product is **Bunchy** and its core social unit is a **Bunch**. An earlier
+   brief called that unit a "Circle"; the vocabulary was realigned in a single
+   data-preserving migration (see §12). Brand strings live in `src/lib/brand.ts`.
 2. No LLM credentials exist in this environment, so AI ships as an interface
    plus a working deterministic implementation, with an Anthropic adapter behind
    the same interface.
@@ -61,8 +61,8 @@ src/
         ├── matching/        the compatibility engine
         ├── profile/         onboarding, privacy, the public serializer
         ├── connections/     mutual consent
-        ├── circles/         membership and moderation
-        ├── messaging/       circle chat + direct messages
+        ├── bunches/         membership and moderation
+        ├── messaging/       bunch chat + direct messages
         ├── activities/      plans, participation, waitlists
         ├── moderation/      blocks and reports
         ├── notifications/   in-app and email
@@ -95,25 +95,31 @@ interest-graph.ts   how interests relate to each other (data, not logic)
 deterministic.ts    composes signals into a score  ← the current scorer
 repository.ts       the only file here that knows Prisma exists
 engine.ts           load → filter → score → rank → persist
-circles.ts          circle recommendations
+bunches.ts          bunch recommendations
 activities.ts       activity recommendations
 index.ts            returns the active scorer  ← the swap point
 ```
 
 ### Signals
 
+Weights come from the product spec's stated budget — interests 40%, social
+goals 20%, personality 15%, location 10%, availability 10%, activity
+preferences 5% — with the interest share split between overlap and
+complementarity, because the same spec requires that a photographer and an
+aspiring photographer can match. The six sum to exactly 1.0.
+
 | Signal                    | Weight | What it measures                                       |
 | ------------------------- | ------ | ------------------------------------------------------ |
-| `shared_interests`        | 0.22   | Weighted overlap, scaled by interest *rarity*          |
-| `social_goals`            | 0.15   | Goal overlap plus a complementary-goal matrix          |
+| `shared_interests`        | 0.26   | Weighted overlap, scaled by interest *rarity*          |
+| `social_goals`            | 0.20   | Goal overlap plus a complementary-goal matrix          |
 | `personality`             | 0.15   | Seven axes, some rewarding similarity, some tolerant   |
 | `complementary_interests` | 0.14   | Adjacency + the practices/curious asymmetry            |
-| `location`                | 0.13   | Distance, **contextually weighted** (see below)        |
-| `availability`            | 0.12   | Overlapping free time                                  |
-| `age`                     | 0.05   | Tolerant band, never a hard filter                     |
-| `history`                 | 0.04   | Shared circles, co-attendance, how present they are    |
+| `location`                | 0.10   | Distance, **contextually weighted** (see below)        |
+| `availability`            | 0.10   | Overlapping free time                                  |
+| `history`                 | 0.05   | Shared bunches, co-attendance, how present they are    |
+| `age`                     | —      | A multiplier, not a weighted term (see below)          |
 
-Three properties are worth calling out:
+Four properties are worth calling out:
 
 - **Missing data is unknown, not incompatible.** A signal returns `null` when it
   has nothing to say, and the scorer renormalizes over whatever came back. Skipping
@@ -121,6 +127,10 @@ Three properties are worth calling out:
 - **Location weight moves with intent.** Two online-first gamers care far less
   about distance than two people who want a hiking partner, so the weight is
   modulated by both people's goals and their online/offline lean.
+- **Age is a modifier, not a term.** Adding it to the additive budget would
+  silently change every weight the spec fixed, so instead it scales the final
+  score by at most 15%. Enough to break a tie, never enough to overrule a good
+  match.
 - **Every score is explainable.** Each signal produces a sentence, and the card
   renders them. Highlight ranking is separate from score contribution — distance
   and age move the ranking a lot and persuade nobody, so they are ranked down as
@@ -161,7 +171,7 @@ to pick columns carefully. (Verified: no discovery payload contains `email`,
 persisting, so a future serializer bug cannot leak precision that was never
 stored. Members additionally control discoverability, who may message them, who
 may request a connection, whether their area shows, whether their exact age
-shows, and whether they can be invited to circles.
+shows, and whether they can be invited to bunches.
 
 ---
 
@@ -172,15 +182,15 @@ The brief's product principles are load-bearing constraints, not copy:
 - **No infinite scroll.** `/api/discover` has no `cursor` or `page` parameter.
   The engine returns a small ranked set and the page ends with "that's
   everything".
-- **No vanity metrics.** `Circle.activityScore` exists for ranking and for
-  spotting circles that have gone quiet; it is never rendered as a number or a
+- **No vanity metrics.** `Bunch.activityScore` exists for ranking and for
+  spotting bunches that have gone quiet; it is never rendered as a number or a
   rank. There is no follower count anywhere in the schema.
 - **Notifications are person-triggered.** `notify()` refuses to notify someone
   about their own action, collapses repeats, and defaults suggestion-type
   notifications to off. There is no code path for "we noticed you haven't been
   back" — adding one would mean adding it deliberately.
-- **Circle chat notifies the people a message concerns** (replied-to, mentioned),
-  not the whole circle. The one broadcast is a planned activity, which earns it.
+- **Bunch chat notifies the people a message concerns** (replied-to, mentioned),
+  not the whole bunch. The one broadcast is a planned activity, which earns it.
 - **Declining a connection is silent.** The requester is not told, because
   "X said no" is an invitation to try again from another angle.
 
@@ -188,7 +198,7 @@ The brief's product principles are load-bearing constraints, not copy:
 
 ## 7. Real-time
 
-Circle chat streams over SSE (`/api/circles/[id]/stream`). Each connection tails
+Bunch chat streams over SSE (`/api/bunches/[id]/stream`). Each connection tails
 the same cursor query the REST endpoint uses — there is no shared in-process bus,
 which means it is correct across as many instances as we run, at the cost of one
 small indexed query per connection per tick. That trade is obviously right at
@@ -200,7 +210,7 @@ indicator, because a chat that silently stops updating is worse than one that
 never claimed to be live.
 
 Voice and video will need a different transport entirely, so nothing here is
-built to accommodate them beyond `CircleMessageKind` being an enum.
+built to accommodate them beyond `BunchMessageKind` being an enum.
 
 ---
 
@@ -231,7 +241,7 @@ sign-in button that cannot complete a round trip.
   unknown, and rare interests outranking generic ones.
 - The full stack was exercised against a live database and a production build:
   sign-up, sign-in, onboarding, discover, connect, accept, conversation,
-  AI starters, direct message, circle chat, block enforcement, report handling,
+  AI starters, direct message, bunch chat, block enforcement, report handling,
   and unauthenticated redirects.
 
 **Deliberately not tested yet:** there is no integration test suite that boots a
@@ -265,9 +275,36 @@ Stated plainly rather than hidden:
 
 ## 11. Roadmap
 
-**Phase 2** — LLM-backed matching explanations and starters; notification
-digests; event discovery beyond circles; circle moderation UI; admin queue;
-integration test suite; timezone capture.
+**Next up, in priority order** (spec §68):
 
-**Phase 3** — Redis-backed presence and pub/sub; voice and video; reputation;
-mobile apps; a learned ranker trained on connection outcomes.
+1. **Admin dashboard** — user search, report queue, suspend/ban, bunch and
+   interest management. Nothing exists yet; the report queue is database-only.
+2. **Analytics spine** — an event model plus acquisition/activation/retention
+   tracking, so the north-star metric (meaningful connections per active user)
+   becomes measurable rather than aspirational.
+3. Notifications UI, account deletion, Bunch chemistry, AI Bunch formation,
+   founding-member badge, referrals, integration tests.
+
+**Later:** local discovery, monetization (Bunchy Plus), events marketplace,
+B2B communities, mobile apps, a learned ranker trained on connection outcomes.
+
+---
+
+## 12. The Circle → Bunch rename
+
+The product's core noun changed after the first implementation shipped. It was
+renamed across the schema, the domain modules, the routes, the URLs and the UI
+in one change, because every later feature references it and the cost only grows.
+
+Two things are worth recording:
+
+- **The migration renames rather than recreates.** Postgres does not rename a
+  table's constraints or indexes along with the table, so all 23 are renamed
+  explicitly — otherwise Prisma reports drift forever. Verified on a purpose-built
+  database: init schema → insert rows → apply rename → all rows and column values
+  intact.
+- **A follow-up migration exists for one missed column.** `invitableToCircles`
+  was renamed in the schema but not the first migration. Rather than edit an
+  applied migration — which breaks its checksum and forces a destructive reset
+  everywhere it already ran — the fix went into its own migration. Applied
+  history is immutable.

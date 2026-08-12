@@ -91,10 +91,12 @@ export const goalsSchema = z.object({
         "MENTORS",
         "SIMILAR_INTERESTS",
         "LOCAL_COMMUNITIES",
+        "TRAVEL_COMPANIONS",
+        "ACTIVITY_PARTNERS",
       ]),
     )
     .min(1, "Pick at least one so we know who to introduce you to.")
-    .max(11),
+    .max(13),
 });
 
 export const availabilitySchema = z.object({
@@ -115,16 +117,16 @@ export const availabilitySchema = z.object({
 });
 
 export const privacySchema = z.object({
-  whoCanMessage: z.enum(["EVERYONE", "CONNECTIONS", "CIRCLE_MEMBERS", "NOBODY"]),
+  whoCanMessage: z.enum(["EVERYONE", "CONNECTIONS", "BUNCH_MEMBERS", "NOBODY"]),
   whoCanSendRequests: z.enum([
     "EVERYONE",
     "CONNECTIONS",
-    "CIRCLE_MEMBERS",
+    "BUNCH_MEMBERS",
     "NOBODY",
   ]),
   discoverable: z.boolean(),
   showApproxLocation: z.boolean(),
-  invitableToCircles: z.boolean(),
+  invitableToBunches: z.boolean(),
   showExactAge: z.boolean(),
 });
 

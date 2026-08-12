@@ -41,9 +41,9 @@ const PROFILE_SELECT = {
       nightMorning: true,
     },
   },
-  circleMemberships: {
+  bunchMemberships: {
     where: { status: "ACTIVE" as const },
-    select: { circleId: true },
+    select: { bunchId: true },
   },
   activityEntries: {
     where: { status: "JOINED" as const },
@@ -69,7 +69,7 @@ type ProfileRow = {
   goals: Array<{ goal: MatchProfile["goals"][number] }>;
   availability: Array<{ window: MatchProfile["availability"][number] }>;
   personality: MatchProfile["personality"];
-  circleMemberships: Array<{ circleId: string }>;
+  bunchMemberships: Array<{ bunchId: string }>;
   activityEntries: Array<{ activityId: string }>;
 };
 
@@ -86,7 +86,7 @@ function participationScore(row: ProfileRow, now: Date): number {
 
   const engagement = Math.min(
     1,
-    row.circleMemberships.length * 0.25 + row.activityEntries.length * 0.3,
+    row.bunchMemberships.length * 0.25 + row.activityEntries.length * 0.3,
   );
 
   return 0.5 * recency + 0.5 * engagement;
@@ -115,7 +115,7 @@ function toMatchProfile(row: ProfileRow, now: Date): MatchProfile {
     goals: row.goals.map((g) => g.goal),
     availability: row.availability.map((a) => a.window),
     personality: row.personality,
-    circleIds: row.circleMemberships.map((m) => m.circleId),
+    bunchIds: row.bunchMemberships.map((m) => m.bunchId),
     attendedActivityIds: row.activityEntries.map((a) => a.activityId),
     participationScore: participationScore(row, now),
   };
@@ -139,7 +139,7 @@ const CANDIDATE_POOL = 400;
  * Candidate pre-selection.
  *
  * Scoring is cheap but not free, so we narrow before we rank: people who share
- * at least one interest, are in the same country, or already share a circle.
+ * at least one interest, are in the same country, or already share a bunch.
  * Everything excluded here is excluded on *policy* rather than score — blocks,
  * privacy choices, existing connections and explicit "not interested" feedback
  * are not low-ranking matches, they are matches that must never appear.
@@ -157,10 +157,10 @@ export async function loadCandidates(
     subject.location.countryCode
       ? { countryCode: subject.location.countryCode }
       : null,
-    subject.circleIds.length > 0
+    subject.bunchIds.length > 0
       ? {
-          circleMemberships: {
-            some: { circleId: { in: subject.circleIds }, status: "ACTIVE" as const },
+          bunchMemberships: {
+            some: { bunchId: { in: subject.bunchIds }, status: "ACTIVE" as const },
           },
         }
       : null,

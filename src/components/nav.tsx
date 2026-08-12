@@ -18,7 +18,7 @@ import { brand } from "@/lib/brand";
 
 const ITEMS = [
   { href: "/discover", label: "Discover", icon: CompassIcon },
-  { href: "/circles", label: "Circles", icon: CirclesIcon },
+  { href: "/bunches", label: "Bunches", icon: BunchesIcon },
   { href: "/activities", label: "Activities", icon: CalendarIcon },
   { href: "/messages", label: "Messages", icon: ChatIcon },
 ] as const;
@@ -244,7 +244,7 @@ function CompassIcon({ className }: { className?: string }) {
   );
 }
 
-function CirclesIcon({ className }: { className?: string }) {
+function BunchesIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
       <circle cx="9" cy="9" r="4.2" stroke="currentColor" strokeWidth="1.7" />
