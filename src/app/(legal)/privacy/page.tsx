@@ -23,6 +23,7 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy"
+      contact={LEGAL.privacyContact}
       summary={`${brand.name} is built to need very little about you, and to give back everything it has the moment you ask. This page says exactly what that means.`}
     >
       <Clause n={1} title="Who holds your data">

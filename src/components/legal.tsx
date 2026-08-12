@@ -15,10 +15,13 @@ import { BunchyLogo } from "@/components/logo";
 export function LegalPage({
   title,
   summary,
+  contact,
   children,
 }: {
   title: string;
   summary: string;
+  /** Where questions about *this* document go. Terms and privacy differ. */
+  contact: string;
   children: ReactNode;
 }) {
   return (
@@ -44,14 +47,10 @@ export function LegalPage({
         <p className="mt-4 text-lg leading-relaxed text-ink-soft">{summary}</p>
 
         <p className="mt-6 text-sm text-muted">
-          {legalDetailsComplete() ? (
-            <>In effect from {LEGAL.effectiveDate}.</>
-          ) : (
-            <>Draft — not yet in effect.</>
-          )}{" "}
+          {legalDetailsComplete() && <>In effect from {LEGAL.effectiveDate}. </>}
           Questions:{" "}
-          <a href={`mailto:${LEGAL.privacyContact}`} className="text-accent-ink hover:underline">
-            {LEGAL.privacyContact}
+          <a href={`mailto:${contact}`} className="text-accent-ink hover:underline">
+            {contact}
           </a>
           .
         </p>
@@ -101,7 +100,14 @@ export function Clause({
         </span>
         {title}
       </h2>
-      <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-ink-soft [&_a]:text-accent-ink [&_a:hover]:underline [&_strong]:font-semibold [&_strong]:text-ink">
+      {/*
+        A measure on the prose, not the container: the facts table wants the full
+        width, but body copy ran ~100 characters a line, which is a document
+        people bounce off — and this one claims to be written to be read.
+        62ch of the "0" glyph measures ~71 real characters, inside the 45-75
+        range rather than at its edge.
+      */}
+      <div className="mt-3 space-y-3 text-base leading-relaxed text-ink-soft [&>p]:max-w-[62ch] [&>ul]:max-w-[60ch] [&_a]:text-accent-ink [&_a:hover]:underline [&_strong]:font-semibold [&_strong]:text-ink">
         {children}
       </div>
     </section>
