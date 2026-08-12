@@ -18,7 +18,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 export interface BunchMessageView {
   id: string;
-  kind: "TEXT" | "SYSTEM";
+  kind: "TEXT" | "SYSTEM" | "PROMPT";
   body: string;
   createdAt: string;
   editedAt: string | null;
@@ -94,7 +94,11 @@ function toView(
 
   return {
     id: row.id,
-    kind: row.kind === "SYSTEM" ? "SYSTEM" : "TEXT",
+    // Narrowed explicitly rather than "anything that isn't SYSTEM is TEXT".
+    // That shortcut delivered PROMPT messages to the client as TEXT, so
+    // icebreaker questions rendered as though a member had typed them.
+    kind:
+      row.kind === "SYSTEM" ? "SYSTEM" : row.kind === "PROMPT" ? "PROMPT" : "TEXT",
     body: removed ? "This message was removed." : row.body,
     createdAt: row.createdAt.toISOString(),
     editedAt: row.editedAt?.toISOString() ?? null,

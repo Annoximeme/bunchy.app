@@ -24,7 +24,7 @@ import {
 
 export interface ChatMessage {
   id: string;
-  kind: "TEXT" | "SYSTEM";
+  kind: "TEXT" | "SYSTEM" | "PROMPT";
   body: string;
   createdAt: string;
   editedAt: string | null;
@@ -271,6 +271,19 @@ export function BunchChat({
                 <p className="py-1 text-center text-xs text-muted">
                   {message.body}
                 </p>
+              ) : message.kind === "PROMPT" ? (
+                /* An icebreaker or a challenge. Somebody pressed a button to
+                   ask it, so it is attributed — but nobody wrote the words,
+                   and rendering it as speech made Bunchy's questions look
+                   like things a member had typed. */
+                <div className="my-2 rounded-[var(--radius-control)] border border-purple/30 bg-purple-soft px-4 py-3">
+                  <p className="text-xs font-medium text-purple-ink">
+                    {message.author?.displayName
+                      ? `${message.author.displayName} asked the bunch`
+                      : "A question for the bunch"}
+                  </p>
+                  <p className="mt-1 text-purple-ink">{message.body}</p>
+                </div>
               ) : (
                 <MessageRow
                   message={message}
