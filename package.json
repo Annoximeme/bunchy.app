@@ -2,7 +2,7 @@
   "name": "bunchy",
   "version": "0.1.0",
   "private": true,
-  "description": "Bunchy \u2014 find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
+  "description": "Bunchy — find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
   "engines": {
     "node": ">=22"
   },
@@ -51,6 +51,7 @@
     "eslint": "^9.25.0",
     "eslint-config-next": "^16.3.0",
     "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
     "prisma": "^7.9.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.19.0",

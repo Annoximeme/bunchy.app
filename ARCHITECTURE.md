@@ -977,6 +977,22 @@ as `TODO_` values. Two things follow from that:
 2. While any remain, both pages render a visible draft banner and say they are
    not in force, rather than presenting an unfinished document as binding.
 
+### What the visual pass changed
+
+Checked in a real browser at 390 and 900 in both themes, after reinstalling
+playwright (an earlier `npm i` had pruned it, so the first version of these
+pages shipped verified only by rendered HTML).
+
+Three things it caught that the HTML could not:
+
+- **Body copy ran ~100 characters a line.** The `max-w-3xl` container is right
+  for headings and the facts table and far too wide for prose. A measure on the
+  paragraphs brings it to 71 — measured with a canvas rather than assumed,
+  because `62ch` is 62 widths of the `0` glyph and lands at ~71 real characters.
+- **The terms page sent questions to the privacy address.** The shared layout
+  hardcoded one contact; each document now names its own.
+- **The draft notice appeared twice**, once as a line and once as the banner.
+
 ### Two decisions worth recording
 
 **No cookie banner, because there is nothing to consent to.** One httpOnly

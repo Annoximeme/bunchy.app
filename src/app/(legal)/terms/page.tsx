@@ -20,6 +20,7 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Terms"
+      contact={LEGAL.supportContact}
       summary={`The agreement between you and ${brand.name}. Written to be read — if a clause here is unclear, that is our problem to fix, not yours to decipher.`}
     >
       <Clause n={1} title="The agreement">
