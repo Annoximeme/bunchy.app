@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/**
+ * Bunchy design tokens.
+ *
+ * Warm rather than clinical: a paper-white ground, ink-brown text and a
+ * terracotta accent, instead of the white/blue/grey that every social product
+ * defaults to. Generous radii and slow, small transitions do the rest — the
+ * product should feel like a well-made object, not a dashboard.
+ */
+
+@theme {
+  --color-canvas: #fdfbf8;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f6f1ea;
+  --color-ink: #1a1614;
+  --color-ink-soft: #574d46;
+  --color-muted: #857a71;
+  --color-line: #ebe3da;
+
+  --color-accent: #d9552f;
+  --color-accent-hover: #c2481f;
+  --color-accent-soft: #fdefe8;
+  --color-accent-ink: #8a3113;
+
+  --color-teal: #14706a;
+  --color-teal-soft: #e2f1ef;
+
+  --color-positive: #2c7a5a;
+  --color-positive-soft: #e4f3ec;
+  --color-danger: #b4342b;
+  --color-danger-soft: #fceceb;
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(26 22 20 / 0.04), 0 8px 24px -12px rgb(26 22 20 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(26 22 20 / 0.05), 0 18px 40px -20px rgb(26 22 20 / 0.24);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/**
+ * Dark palette.
+ *
+ * These are plain custom-property overrides on `:root`, not a nested `@theme`.
+ * `@theme` is a build-time construct — Tailwind hoists it out of any at-rule it
+ * is written inside, so nesting it in a media query silently applies the dark
+ * values unconditionally. Overriding the variables the generated utilities
+ * already reference is the mechanism that actually respects the preference.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #15120f;
+    --color-surface: #1e1a16;
+    --color-surface-sunken: #262019;
+    --color-ink: #f6f1ea;
+    --color-ink-soft: #ccc2b8;
+    --color-muted: #9c9188;
+    --color-line: #322b24;
+
+    --color-accent: #f0724a;
+    --color-accent-hover: #ff8760;
+    --color-accent-soft: #3a2017;
+    --color-accent-ink: #ffb79c;
+
+    --color-teal: #4fb8ad;
+    --color-teal-soft: #16302e;
+
+    --color-positive: #63c093;
+    --color-positive-soft: #172e25;
+    --color-danger: #f08076;
+    --color-danger-soft: #33191a;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
+  }
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Never trap keyboard users in an invisible focus state. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect people who have asked the OS for less movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility card-surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise 0.4s var(--ease-out-soft) both;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-control);
+}
+
+@utility skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-surface) 60%, transparent),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}

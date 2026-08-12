@@ -1,0 +1,128 @@
+import type { Metadata } from "next";
+import { requireViewer } from "@/server/auth/current-user";
+import { listActivities } from "@/server/modules/activities/service";
+import { recommendActivities } from "@/server/modules/matching/activities";
+import { PageHeader, PageShell } from "@/components/page-header";
+import { ActivityCard } from "@/components/cards";
+import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+
+export const metadata: Metadata = { title: "Activities" };
+export const dynamic = "force-dynamic";
+
+export default async function ActivitiesPage() {
+  const viewer = await requireViewer();
+
+  const [mine, suggested, upcoming] = await Promise.all([
+    listActivities(viewer.profileId, { scope: "mine", limit: 10 }),
+    recommendActivities(viewer.profileId, 6),
+    listActivities(viewer.profileId, { scope: "upcoming", limit: 20 }),
+  ]);
+
+  const mineIds = new Set(mine.map((a) => a.id));
+
+  return (
+    <PageShell>
+      <PageHeader
+        title="Activities"
+        subtitle="The point of all this. Somewhere to actually turn up."
+        action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+      />
+
+      <div className="space-y-12">
+        <section>
+          <SectionHeading title="You're going to" />
+          {mine.length === 0 ? (
+            <EmptyState
+              icon="📍"
+              title="Nothing in your calendar yet"
+              description="Join something below, or plan the thing you wish existed — most people are waiting for someone else to suggest it."
+              action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+            />
+          ) : (
+            <div className="space-y-3">
+              {mine.map((activity) => (
+                <ActivityCard
+                  key={activity.id}
+                  activity={{
+                    id: activity.id,
+                    title: activity.title,
+                    startsAt: activity.startsAt,
+                    mode: activity.mode,
+                    locationLabel: activity.locationLabel,
+                    cityLabel: activity.cityLabel,
+                    participantCount: activity.participantCount,
+                    maxParticipants: activity.maxParticipants,
+                    circle: activity.circle,
+                    viewerStatus: activity.viewerStatus,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {suggested.length > 0 && (
+          <section>
+            <SectionHeading
+              title="Worth a look"
+              subtitle="Near you, at a time you're usually free."
+            />
+            <div className="space-y-3">
+              {suggested
+                .filter((a) => !mineIds.has(a.id))
+                .map((activity) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={{
+                      id: activity.id,
+                      title: activity.title,
+                      startsAt: activity.startsAt.toISOString(),
+                      mode: activity.mode,
+                      locationLabel: activity.locationLabel,
+                      cityLabel: activity.cityLabel,
+                      participantCount: activity.participantCount,
+                      maxParticipants: activity.maxParticipants,
+                      circle: activity.circle,
+                      highlights: activity.highlights,
+                    }}
+                  />
+                ))}
+            </div>
+          </section>
+        )}
+
+        <section>
+          <SectionHeading title="Everything coming up" />
+          {upcoming.length === 0 ? (
+            <EmptyState
+              icon="🗓"
+              title="Nothing planned yet"
+              description="Be the first. One person suggesting a coffee is how most of this starts."
+              action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+            />
+          ) : (
+            <div className="space-y-3">
+              {upcoming.map((activity) => (
+                <ActivityCard
+                  key={activity.id}
+                  activity={{
+                    id: activity.id,
+                    title: activity.title,
+                    startsAt: activity.startsAt,
+                    mode: activity.mode,
+                    locationLabel: activity.locationLabel,
+                    cityLabel: activity.cityLabel,
+                    participantCount: activity.participantCount,
+                    maxParticipants: activity.maxParticipants,
+                    circle: activity.circle,
+                    viewerStatus: activity.viewerStatus,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </PageShell>
+  );
+}
