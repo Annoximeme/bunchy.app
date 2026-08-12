@@ -11,6 +11,7 @@ export interface PrivacyValues {
   showApproxLocation: boolean;
   invitableToBunches: boolean;
   showExactAge: boolean;
+  aiIntroductions: boolean;
   whoCanSeeAvailability: string;
 }
 
@@ -150,6 +151,13 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
             onChange={(v) => set("showExactAge", v)}
             label="Show my age"
             description="Off shows a range instead, like 25–34."
+          />
+          <Toggle
+            id="aiIntroductions"
+            checked={values.aiIntroductions}
+            onChange={(v) => set("aiIntroductions", v)}
+            label="Let Bunchy introduce you to people"
+            description="Off means we never suggest someone unprompted. Search and Discover still work."
           />
           <Toggle
             id="invitableToBunches"

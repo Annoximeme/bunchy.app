@@ -102,10 +102,10 @@ const EXAMPLES = [
   "I want to grab drinks this weekend",
 ];
 
-export function StartBunch() {
+export function StartBunch({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter();
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [availableNow, setAvailableNow] = useState(false);
   /**
    * Null means "whatever the request implied" — the usual case, where the

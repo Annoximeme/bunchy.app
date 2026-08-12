@@ -381,6 +381,7 @@ export async function getOwnProfile(profileId: string) {
           showApproxLocation: true,
           invitableToBunches: true,
           showExactAge: true,
+          aiIntroductions: true,
           whoCanSeeAvailability: true,
         },
       },

@@ -128,6 +128,7 @@ export const privacySchema = z.object({
   showApproxLocation: z.boolean(),
   invitableToBunches: z.boolean(),
   showExactAge: z.boolean(),
+  aiIntroductions: z.boolean(),
   whoCanSeeAvailability: z.enum([
     "EVERYONE",
     "CONNECTIONS",

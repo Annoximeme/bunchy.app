@@ -9,8 +9,12 @@ import {
   availabilityDisabled,
   myAvailability,
 } from "@/server/modules/availability/service";
+import { nextIntroduction } from "@/server/modules/discovery/introductions";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
+import { IntroductionCard } from "@/components/introduction-card";
 import { WhosUp } from "@/components/whos-up";
 import { Chip, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
@@ -40,6 +44,18 @@ export default async function DiscoverPage() {
       availabilityDisabled(viewer.profileId),
     ]);
 
+  // Computed here rather than behind an endpoint: an introduction reuses the
+  // recommendations this page already loaded, and a route that hands them out
+  // on request is a route somebody polls for a fresh one.
+  const introduction = await nextIntroduction(viewer.profileId);
+  if (introduction) {
+    track({
+      name: ANALYTICS_EVENTS.INTRODUCTION_OFFERED,
+      profileId: viewer.profileId,
+      properties: { score: introduction.score },
+    });
+  }
+
   const nothingAtAll =
     people.length === 0 && bunches.length === 0 && activities.length === 0;
 
@@ -58,6 +74,12 @@ export default async function DiscoverPage() {
           <Link href="/profile" className="font-medium text-accent-ink hover:underline">
             Resend the link
           </Link>
+        </div>
+      )}
+
+      {introduction && (
+        <div className="mb-8">
+          <IntroductionCard intro={introduction} />
         </div>
       )}
 

@@ -329,6 +329,12 @@ model PrivacySettings {
   invitableToBunches   Boolean       @default(true)
   /// When false the profile renders an age band ("25-34") instead of an age.
   showExactAge         Boolean       @default(true)
+  /// Whether Bunchy may offer introductions to compatible people (§5).
+  ///
+  /// Separate from `discoverable`: someone can be happy to be found in search
+  /// and still not want the product proposing people to them unprompted. The
+  /// two questions have genuinely different answers, so they get two switches.
+  aiIntroductions      Boolean       @default(true)
   /// Who may see a "Who's Up" status, when one is set.
   ///
   /// EVERYONE by default, which sounds like the wrong choice and is not. The
