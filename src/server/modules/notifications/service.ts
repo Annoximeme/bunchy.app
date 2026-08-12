@@ -1,6 +1,7 @@
 import { db } from "@/server/db/client";
 import { sendEmail } from "@/server/email";
 import { env } from "@/server/env";
+import { defaultPreference } from "@/lib/notifications";
 import type { NotificationType } from "@/generated/prisma/enums";
 
 /**
@@ -37,10 +38,12 @@ export async function notify(input: NotifyInput): Promise<void> {
     select: { inApp: true, email: true },
   });
 
-  // An absent row means the member has never touched this setting; fall back to
-  // in-app only, never email.
-  const inApp = preference?.inApp ?? true;
-  const wantsEmail = preference?.email ?? false;
+  // An absent row means the member has never touched this setting. The fallback
+  // is the same one the settings screen draws, so what they see is what they
+  // get — a suggestion type stays silent until it is switched on.
+  const fallback = defaultPreference(input.type);
+  const inApp = preference?.inApp ?? fallback.inApp;
+  const wantsEmail = preference?.email ?? fallback.email;
 
   if (inApp) {
     const existing = input.groupKey

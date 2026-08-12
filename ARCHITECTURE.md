@@ -268,10 +268,17 @@ Stated plainly rather than hidden:
    that matters.
 4. **Avatars are URLs, not uploads.** No object storage is provisioned.
 5. **Reports are not auto-actioned**, by choice — automatic enforcement on
-   unreviewed reports is a harassment vector. There is no admin moderation UI
-   yet; the queue is in the database.
+   unreviewed reports is a harassment vector. A human works the queue in the
+   staff dashboard (§13).
 6. **Scoring weights are hand-tuned.** They are the obvious first thing to learn
    from `MatchFeedback` once there is traffic.
+7. **Email notifications are a stored preference, not a delivery pipeline.** The
+   per-type `email` switch is honoured by nothing yet — there is no scheduled
+   sender. The in-app channel is fully wired; the email column is a promise the
+   transport adapter has not been asked to keep.
+8. **The notification list is a fixed recent window** of 50, with no pagination.
+   Deliberate at this size, and the wrong answer for a member who has been away
+   for a month.
 
 ---
 
@@ -279,11 +286,11 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. Notifications UI — the API and preferences exist, but there is no surface
-   for a member to read them.
-2. Account deletion and data export (§31).
-3. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
+1. Account deletion and data export (§31) — the one remaining promise in the
+   privacy story that the code does not yet keep.
+2. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
    referrals.
+3. Email delivery for the notification preferences that already exist.
 4. An integration suite that boots a database — the service layer is written
    for it (pure functions, injectable stores, and now a vitest setup that loads
    the environment), but it does not exist yet.
@@ -393,3 +400,70 @@ people than the one before it reads *gap*, not a conversion above 100%. Seeded
 history backfills only the two events derivable from timestamps we genuinely
 store (`account.created`, `onboarding.completed`); the intermediate onboarding
 moments were never recorded, and inventing them would make the chart fiction.
+
+---
+
+## 15. Notifications
+
+`src/app/(app)/notifications/`, `src/components/notification-list.tsx`,
+`src/components/notification-preferences.tsx`.
+
+The rows and the delivery rules already existed; what was missing was any way
+for a member to read them or change them. Four decisions are worth recording.
+
+**Opening the screen does not mark anything read.** Read state changes when the
+member follows a notification or presses *Mark all as read*, never as a side
+effect of the page loading. A list that clears itself on sight is convenient
+for the unread badge and useless to someone who opened it precisely to
+remember what they still had to answer.
+
+**Marking one read is scoped in the query, not in a guard.** `markRead` filters
+on `profileId`, so a notification id belonging to someone else silently matches
+nothing and returns `200`. Erroring would confirm that the id exists. Verified
+end to end with a probe row: its owner could mark it read, another signed-in
+member could not, and neither learned anything from the response.
+
+**Preferences save on the switch, not on a Save button.** Granular control that
+takes a second step is granular control nobody uses. A failed save puts the
+switch back, because a control that looks changed but was not persisted is a
+lie. There is no "turn everything on" nudge and no warning that quiet makes the
+product worse for you — that framing exists to talk people out of silence, and
+§29 rules it out.
+
+**Suggestions default off.** `NOTIFICATION_TYPE_INFO.person` marks the types
+that report something a human actually did; those default on. Recommendations
+default off in both channels and stay off until asked for.
+
+The type labels live in `src/lib/notifications.ts` rather than under
+`src/server/`, because the preferences UI is a client component and the module
+boundary is real, not decorative.
+
+### Two defects this surfaced
+
+**The default was written twice, and the two copies disagreed.** `notify()` fell
+back to `preference?.inApp ?? true` — in-app on for *every* type — while the
+settings screen drew an absent row as `info.person`. A member who never opened
+settings saw the suggestion switch off and received the suggestions anyway. The
+switch was not broken; it was reporting a state the system did not implement,
+which is the worst kind of control to ship.
+
+Both sides now read `defaultPreference()`, and the rule is asserted in
+`src/lib/notifications.test.ts` rather than left to a comment: nothing emails by
+default, in-app is on exactly when a person is waiting, and an unrecognised type
+fails closed. The column defaults were dropped from
+`NotificationPreference` too — the correct default depends on the type, which a
+column default cannot express, and without one Prisma makes omitting the value
+a compile error instead of a silent subscription.
+
+Verified against the database, not just in unit tests: with no preference row a
+recommendation was not delivered, a connection request was, and after opting in
+the recommendation was.
+
+**Every switch in the app rendered its knob outside the track.** Both switch
+implementations positioned the knob with `absolute top-0.5` and no `left`. A
+`<button>` centres its inline content, so the knob's static position was the
+middle of an empty line box and the `translate-x` pushed it clean off the right
+edge — in `ui.tsx` since the first commit, on every settings screen. Fixed in
+both, and verified by measuring every `[role="switch"]` in a real browser rather
+than by eye: 26 switches, 0 knobs outside their track, symmetric 2px insets in
+both states.

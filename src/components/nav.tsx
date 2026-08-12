@@ -29,6 +29,7 @@ export function AppNav({
   username,
   unreadMessages,
   pendingRequests,
+  unreadNotifications,
   staff = false,
 }: {
   displayName: string;
@@ -36,6 +37,7 @@ export function AppNav({
   username: string;
   unreadMessages: number;
   pendingRequests: number;
+  unreadNotifications: number;
   /** Renders the staff entry. The link is cosmetic — /admin guards itself. */
   staff?: boolean;
 }) {
@@ -91,6 +93,15 @@ export function AppNav({
               icon={PeopleIcon}
               active={isActive("/connections")}
               badge={pendingRequests}
+            />
+          </li>
+          <li>
+            <NavLink
+              href="/notifications"
+              label="Notifications"
+              icon={BellIcon}
+              active={isActive("/notifications")}
+              badge={unreadNotifications}
             />
           </li>
         </ul>
@@ -153,7 +164,7 @@ export function AppNav({
               label="You"
               icon={PersonIcon}
               active={isActive("/profile")}
-              badge={pendingRequests}
+              badge={pendingRequests + unreadNotifications}
             />
           </li>
         </ul>
@@ -305,6 +316,25 @@ function PeopleIcon({ className }: { className?: string }) {
       <circle cx="9" cy="8.5" r="3.2" stroke="currentColor" strokeWidth="1.7" />
       <path
         d="M3.8 19a5.2 5.2 0 0 1 10.4 0M16 6.2a3.2 3.2 0 0 1 0 6M17.5 14.2a5.2 5.2 0 0 1 2.7 4.8"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function BellIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M18 9a6 6 0 1 0-12 0c0 4-1.5 5.5-1.5 5.5h15S18 13 18 9Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.3 18a2 2 0 0 0 3.4 0"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
