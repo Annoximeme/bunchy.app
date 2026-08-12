@@ -107,6 +107,7 @@ export async function signIn(input: SignInInput, context: SessionContext = {}) {
       id: true,
       passwordHash: true,
       status: true,
+      suspendedUntil: true,
       profile: { select: { id: true, onboardingStage: true } },
     },
   });
@@ -123,8 +124,26 @@ export async function signIn(input: SignInInput, context: SessionContext = {}) {
   const ok = await verifyPassword(input.password, user.passwordHash);
   if (!ok) throw invalid;
 
+  if (user.status === "BANNED") {
+    throw unauthorized("This account has been closed.");
+  }
   if (user.status === "SUSPENDED") {
-    throw unauthorized("This account is suspended. Contact support.");
+    // A timed suspension that has run out lifts on the next sign-in rather than
+    // waiting for a scheduled job.
+    const expired =
+      user.suspendedUntil !== null &&
+      user.suspendedUntil.getTime() <= Date.now();
+    if (!expired) {
+      throw unauthorized(
+        user.suspendedUntil
+          ? `This account is suspended until ${user.suspendedUntil.toDateString()}.`
+          : "This account is suspended. Contact support.",
+      );
+    }
+    await db.user.update({
+      where: { id: user.id },
+      data: { status: "ACTIVE", suspendedUntil: null },
+    });
   }
   if (user.status === "DEACTIVATED") {
     await db.user.update({

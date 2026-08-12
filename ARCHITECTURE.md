@@ -67,7 +67,8 @@ src/
         ├── moderation/      blocks and reports
         ├── notifications/   in-app and email
         ├── geo/             distance, coordinate fuzzing, gazetteer
-        └── ai/              assistant interface + implementations
+        ├── ai/              assistant interface + implementations
+        └── admin/           staff policy, audit trail, moderation, metrics
 ```
 
 **The rule that holds it together:** nothing under `src/server/modules` may
@@ -277,12 +278,11 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. **Admin dashboard** — user search, report queue, suspend/ban, bunch and
-   interest management. Nothing exists yet; the report queue is database-only.
-2. **Analytics spine** — an event model plus acquisition/activation/retention
-   tracking, so the north-star metric (meaningful connections per active user)
-   becomes measurable rather than aspirational.
-3. Notifications UI, account deletion, Bunch chemistry, AI Bunch formation,
+1. **Analytics spine** — an event model plus acquisition/activation/retention
+   tracking. The admin dashboard already computes what current state allows and
+   labels the rest as approximate; the event spine is what makes true cohort
+   retention and funnel drop-off measurable.
+2. Notifications UI, account deletion, Bunch chemistry, AI Bunch formation,
    founding-member badge, referrals, integration tests.
 
 **Later:** local discovery, monetization (Bunchy Plus), events marketplace,
@@ -308,3 +308,47 @@ Two things are worth recording:
   applied migration — which breaks its checksum and forces a destructive reset
   everywhere it already ran — the fix went into its own migration. Applied
   history is immutable.
+
+---
+
+## 13. The staff surface
+
+`src/server/modules/admin/` plus `/admin` in the app. Four design decisions
+worth recording.
+
+**Authorization is a pure function.** The permission matrix lives in
+`policy.ts` with no database or request dependency, so the whole thing is
+covered by a table-driven test rather than by example. `guard.ts` only binds it
+to the current session. The matrix:
+
+| actor \ target | MEMBER | MODERATOR | ADMIN |
+| --------------- | ------ | --------- | ----- |
+| MEMBER          |   no   |    no     |  no   |
+| MODERATOR       |  yes   |    no     |  no   |
+| ADMIN           |  yes   |   yes     |  no   |
+
+Nobody may act on their own account at any rank — otherwise an admin can demote
+themselves into a state nobody can restore, and a suspended staff member can
+lift their own suspension.
+
+**Refusal looks like "not found".** A 403 confirms the admin area exists and
+that a path is real. Non-staff get exactly what they would get for a URL that
+does not exist, on both pages and API routes.
+
+**Nothing mutates without an audit entry**, written in the same transaction as
+the change, with the actor denormalized so the record survives the staff
+account being deleted. The reason field is mandatory in the only component that
+performs actions, so it cannot be skipped by adding a new page. There is no
+route that edits or deletes a moderation event.
+
+**Staff archive and cancel, never delete.** A removed bunch takes its members'
+history with it; a cancelled activity still has to tell the people who planned
+around it. Reversibility is also what makes a mistaken call recoverable.
+
+Reports are never auto-actioned — a coordinated group filing reports must not be
+able to mute anyone — and deciding a report deliberately does *not* also punish
+the reported member. That is a separate, separately audited action, so nobody
+can suspend an account as an invisible side effect of clearing a queue.
+
+The first admin can only be granted out of band (`npm run role -- <email> ADMIN`
+or the seed). A self-service path to admin is a privilege-escalation bug.

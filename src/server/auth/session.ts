@@ -63,7 +63,11 @@ export async function resolveSession(
       expiresAt: true,
       lastUsedAt: true,
       user: {
-        select: { status: true, profile: { select: { id: true } } },
+        select: {
+          status: true,
+          suspendedUntil: true,
+          profile: { select: { id: true } },
+        },
       },
     },
   });
@@ -75,7 +79,23 @@ export async function resolveSession(
     return null;
   }
 
-  if (session.user.status !== "ACTIVE") return null;
+  // A timed suspension lifts itself. Doing it here rather than in a scheduled
+  // job means the member is never locked out past their end date because a cron
+  // did not run.
+  if (
+    session.user.status === "SUSPENDED" &&
+    session.user.suspendedUntil !== null &&
+    session.user.suspendedUntil.getTime() <= Date.now()
+  ) {
+    await db.user
+      .update({
+        where: { id: session.userId },
+        data: { status: "ACTIVE", suspendedUntil: null },
+      })
+      .catch(() => {});
+  } else if (session.user.status !== "ACTIVE") {
+    return null;
+  }
 
   const sinceLastUse = Date.now() - session.lastUsedAt.getTime();
   if (sinceLastUse > SLIDING_REFRESH_THRESHOLD_MS) {

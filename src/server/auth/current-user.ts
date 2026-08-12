@@ -3,7 +3,7 @@ import { db } from "@/server/db/client";
 import { readSessionToken } from "@/server/auth/cookies";
 import { resolveSession } from "@/server/auth/session";
 import { unauthorized } from "@/server/errors";
-import type { OnboardingStage } from "@/generated/prisma/enums";
+import type { OnboardingStage, UserRole } from "@/generated/prisma/enums";
 
 export interface Viewer {
   sessionId: string;
@@ -15,6 +15,8 @@ export interface Viewer {
   displayName: string;
   avatarUrl: string | null;
   onboardingStage: OnboardingStage;
+  /** Staff privilege. Never rendered to other members. */
+  role: UserRole;
 }
 
 /**
@@ -34,6 +36,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
       id: true,
       email: true,
       emailVerifiedAt: true,
+      role: true,
       profile: {
         select: {
           id: true,
@@ -58,6 +61,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
     displayName: user.profile.displayName,
     avatarUrl: user.profile.avatarUrl,
     onboardingStage: user.profile.onboardingStage,
+    role: user.role,
   };
 });
 

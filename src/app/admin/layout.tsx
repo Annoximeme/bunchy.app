@@ -1,0 +1,45 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getViewer } from "@/server/auth/current-user";
+import { isAdmin, isStaff } from "@/server/modules/admin/guard";
+import { countReportsByStatus } from "@/server/modules/admin/reports";
+import { AdminNav } from "@/components/admin/nav";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * The staff shell.
+ *
+ * Non-staff get `notFound()` rather than a redirect or a 403 — the admin area
+ * should be indistinguishable from a URL that does not exist. Note that this
+ * layout is a convenience, not the security boundary: every page and every
+ * service below it re-checks, so a route added without a guard still fails
+ * closed.
+ */
+export default async function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const viewer = await getViewer();
+  if (!isStaff(viewer)) notFound();
+
+  const reportCounts = await countReportsByStatus();
+  const openReports = (reportCounts.OPEN ?? 0) + (reportCounts.REVIEWING ?? 0);
+
+  return (
+    <div className="min-h-dvh bg-surface-sunken">
+      {/* A permanent, unmistakable marker that these actions affect real people. */}
+      <div className="bg-ink px-5 py-1.5 text-center text-xs font-medium text-canvas">
+        Staff area · signed in as {viewer!.displayName} ({viewer!.role.toLowerCase()})
+        <Link href="/discover" className="ml-3 underline underline-offset-2">
+          Back to Bunchy
+        </Link>
+      </div>
+
+      <AdminNav openReports={openReports} canManageAccounts={isAdmin(viewer)} />
+
+      <main id="main" className="mx-auto w-full max-w-6xl px-5 py-8">
+        {children}
+      </main>
+    </div>
+  );
+}

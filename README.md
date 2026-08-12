@@ -32,6 +32,10 @@ Open <http://localhost:3000>. Sign in with any seeded account:
 | `elena@example.com`  | `bunchydemo1234` |
 | `tomas@example.com`  | `bunchydemo1234` |
 
+`sarah@example.com` is seeded as an **admin** and `priya@example.com` as a
+**moderator**, so `/admin` is explorable immediately. Everyone else is a plain
+member and gets a 404 there.
+
 Verification and password-reset emails are printed to the server log by the
 default `console` email transport, so those flows are fully usable locally.
 
@@ -46,6 +50,7 @@ default `console` email transport, so those flows are fully usable locally.
 | `npm run db:migrate`| Create/apply a migration                             |
 | `npm run db:seed`   | Reset and reseed development data                    |
 | `npm run db:studio` | Prisma Studio                                        |
+| `npm run role`      | Grant staff access: `npm run role -- <email> ADMIN`   |
 
 ---
 
@@ -72,6 +77,10 @@ Phase 1 of the roadmap is complete and working end to end.
   suggestions, behind a provider interface with a working local implementation.
 - **Trust & safety** — block, report, leave, remove, rate limiting, and privacy
   controls over discoverability, messaging, location and age.
+- **Staff dashboard** — report queue with the reported content inline, account
+  search with suspend/ban/role actions, bunch and activity moderation, interest
+  curation (including duplicate merging), platform metrics with the north-star
+  figure, and an append-only audit log of every staff action.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.

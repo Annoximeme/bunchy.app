@@ -685,6 +685,19 @@ async function main() {
   }
   console.info(`  ${PEOPLE.length} people`);
 
+  // Staff roles, so the dashboard is explorable straight after seeding. The
+  // first admin can only ever be granted out-of-band (here, or `npm run role`)
+  // — a self-service path to admin would be a privilege-escalation bug.
+  await prisma.user.update({
+    where: { email: "sarah@example.com" },
+    data: { role: "ADMIN" },
+  });
+  await prisma.user.update({
+    where: { email: "priya@example.com" },
+    data: { role: "MODERATOR" },
+  });
+  console.info("  sarah@example.com is ADMIN, priya@example.com is MODERATOR");
+
   // --- Bunches --------------------------------------------------------------
   const bunchId = new Map<string, string>();
 
