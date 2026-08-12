@@ -3,6 +3,7 @@ import { conflict, notFound } from "@/server/errors";
 import { INTEREST_BY_SLUG, slugifyInterest } from "@/lib/interests";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { snapToGrid } from "@/server/modules/geo/precision";
+import { timezoneForCountry } from "@/server/modules/geo/timezone";
 import { isBlockedBetween } from "@/server/modules/moderation/service";
 import {
   PUBLIC_PROFILE_SELECT,
@@ -72,6 +73,11 @@ export async function saveBasics(
   if (taken) throw conflict("That username is already taken.");
 
   const place = findPlace(input.cityLabel, input.countryCode);
+  // Derived rather than asked for. A timezone question in onboarding is a
+  // question most people answer wrongly, and the country already implies the
+  // answer everywhere it is unambiguous — elsewhere it stays null and falls
+  // back to UTC, which is honestly unknown rather than confidently wrong.
+  const timezone = timezoneForCountry(place?.countryCode ?? input.countryCode);
   // Coordinates are snapped before they are ever written — the database has no
   // opportunity to hold a precise location.
   const approx = place ? snapToGrid(place.lat, place.lng) : null;
@@ -92,6 +98,7 @@ export async function saveBasics(
         avatarUrl: input.avatarUrl || null,
         cityLabel: place?.cityLabel ?? input.cityLabel,
         regionLabel: place?.regionLabel ?? null,
+        ...(timezone ? { timezone } : {}),
         countryCode: place?.countryCode ?? input.countryCode,
         approxLat: approx?.approxLat ?? null,
         approxLng: approx?.approxLng ?? null,

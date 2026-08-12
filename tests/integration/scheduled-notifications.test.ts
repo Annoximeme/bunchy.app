@@ -68,6 +68,36 @@ describe("activity reminders", () => {
     expect(notice!.body).toContain("UTC");
   });
 
+  it("tells each person the time in their own zone", async () => {
+    const organizer = await member("organizer");
+    const brussels = await member("brussels");
+    const tokyo = await member("tokyo");
+    await db.profile.update({
+      where: { id: brussels },
+      data: { timezone: "Europe/Brussels" },
+    });
+    await db.profile.update({
+      where: { id: tokyo },
+      data: { timezone: "Asia/Tokyo" },
+    });
+    await activity({
+      startsAt: new Date("2026-08-13T05:00:00Z"),
+      going: [brussels, tokyo],
+      organizerId: organizer,
+    });
+
+    await sendActivityReminders(new Date("2026-08-12T09:00:00Z"));
+
+    const [forBrussels] = await listNotifications(brussels);
+    const [forTokyo] = await listNotifications(tokyo);
+
+    // 05:00 UTC is 07:00 in Brussels and 14:00 in Tokyo. The same reminder must
+    // not tell both of them the same hour.
+    expect(forBrussels!.body).toContain("07:00");
+    expect(forTokyo!.body).toContain("14:00");
+    expect(forBrussels!.body).not.toEqual(forTokyo!.body);
+  });
+
   it("says nothing about an activity further out than the lead time", async () => {
     const organizer = await member("organizer");
     const going = await member("going");

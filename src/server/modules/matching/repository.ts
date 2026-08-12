@@ -17,6 +17,7 @@ const PROFILE_SELECT = {
   cityLabel: true,
   approxLat: true,
   approxLng: true,
+  timezone: true,
   lastActiveAt: true,
   user: { select: { birthYear: true } },
   interests: {
@@ -59,6 +60,7 @@ type ProfileRow = {
   cityLabel: string | null;
   approxLat: number | null;
   approxLng: number | null;
+  timezone: string | null;
   lastActiveAt: Date;
   user: { birthYear: number | null };
   interests: Array<{
@@ -114,6 +116,7 @@ function toMatchProfile(row: ProfileRow, now: Date): MatchProfile {
     })),
     goals: row.goals.map((g) => g.goal),
     availability: row.availability.map((a) => a.window),
+    timezone: row.timezone,
     personality: row.personality,
     bunchIds: row.bunchMemberships.map((m) => m.bunchId),
     attendedActivityIds: row.activityEntries.map((a) => a.activityId),

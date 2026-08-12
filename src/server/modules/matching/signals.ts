@@ -6,6 +6,7 @@ import type {
   SignalResult,
 } from "@/server/modules/matching/types";
 import { interestAffinity } from "@/server/modules/matching/interest-graph";
+import { overlappingWindows, sharedHours } from "@/server/modules/geo/timezone";
 import { distanceKm } from "@/server/modules/geo/distance";
 
 /**
@@ -438,41 +439,72 @@ const AVAILABILITY_LABELS: Record<string, string> = {
  * Overlapping free time. Two people who are never free at the same moment will
  * never meet, no matter how well their interests line up.
  */
+/**
+ * How much free time two people genuinely share.
+ *
+ * Availability is stored as local labels, so this compares *hours*, not
+ * labels: two people both picking "weekday evening" in Antwerp and Tokyo have
+ * nothing in common, and comparing the labels used to score that as a perfect
+ * overlap. `sharedHours` converts each window into the member's zone and
+ * intersects in UTC.
+ *
+ * Same zone or unknown zones fall back to exactly the old behaviour, so the
+ * common case is unchanged — this only ever removes false overlap.
+ */
+const FULL_OVERLAP_HOURS = 25;
+
 export function availabilitySignal(
   subject: MatchProfile,
   candidate: MatchProfile,
+  now = new Date(),
 ): SignalResult | null {
   if (subject.availability.length === 0 || candidate.availability.length === 0) {
     return null;
   }
 
-  const candidateWindows = new Set<string>(candidate.availability);
-  const overlap = subject.availability.filter((w) => candidateWindows.has(w));
-
-  const base =
-    overlap.length /
-    Math.min(subject.availability.length, candidate.availability.length);
-
-  // Partial credit for being free on the same kind of day.
-  const dayType = (w: string) => (w.startsWith("WEEKEND") ? "weekend" : "weekday");
-  const subjectDays = new Set(subject.availability.map(dayType));
-  const sharedDayType = candidate.availability.some((w) =>
-    subjectDays.has(dayType(w)),
+  const hours = sharedHours(
+    { windows: subject.availability, timezone: subject.timezone },
+    { windows: candidate.availability, timezone: candidate.timezone },
+    now,
   );
 
-  const score = clamp(overlap.length > 0 ? base : sharedDayType ? 0.25 : 0);
-  const labels = overlap.map((w) => AVAILABILITY_LABELS[w] ?? w.toLowerCase());
+  // One window shared in the same zone (five evenings a week) is a full score;
+  // more than that is not "better than free".
+  const score = clamp(hours / FULL_OVERLAP_HOURS);
 
-  return {
-    signal: "availability",
-    score,
-    weight: 1,
-    evidence: labels,
-    reason:
-      labels.length > 0
-        ? `You're both free ${listPhrase(labels, 2)}`
-        : "Your free time doesn't overlap much",
-  };
+  // The reason is built from the windows that genuinely overlap, not the
+  // labels both people happened to tick. Across zones those are different
+  // sets: two people who both chose "weekday evening" in Antwerp and Tokyo
+  // share a label and no hours, while an Antwerp evening and a Tokyo late
+  // night share hours and no label.
+  const pairs = overlappingWindows(
+    { windows: subject.availability, timezone: subject.timezone },
+    { windows: candidate.availability, timezone: candidate.timezone },
+    now,
+  );
+
+  const label = (w: string) => AVAILABILITY_LABELS[w] ?? w.toLowerCase();
+  const sameName = pairs.filter((p) => p.subject === p.candidate);
+  const evidence = (sameName.length > 0 ? sameName : pairs).map((p) =>
+    label(p.subject),
+  );
+
+  let reason: string;
+  if (sameName.length > 0) {
+    reason = `You're both free ${listPhrase(sameName.map((p) => label(p.subject)), 2)}`;
+  } else if (pairs[0]) {
+    reason = `Your ${label(pairs[0].subject)} line up with their ${label(pairs[0].candidate)}`;
+  } else {
+    const differentZones =
+      subject.timezone !== null &&
+      candidate.timezone !== null &&
+      subject.timezone !== candidate.timezone;
+    reason = differentZones
+      ? "Your hours barely overlap across time zones"
+      : "Your free time doesn't overlap much";
+  }
+
+  return { signal: "availability", score, weight: 1, evidence, reason };
 }
 
 // --- Location ---------------------------------------------------------------

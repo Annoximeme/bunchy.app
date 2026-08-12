@@ -337,9 +337,12 @@ rather than a principle.
 
 Stated plainly rather than hidden:
 
-1. **No timezone on profiles.** Availability windows are interpreted in UTC. That
-   is close enough for the launch market and wrong for a member in Tokyo — see
-   `windowForDate`. Capturing a timezone during onboarding is the fix.
+1. **Timezones are derived, not asked for.** `Profile.timezone` is filled from
+   the country during onboarding, which is unambiguous for most of Europe and
+   Japan and null for the United States, Australia and Russia — a null falls
+   back to UTC, which is honestly unknown rather than confidently wrong. A
+   member who moves keeps the zone of the country they entered. DST is read at
+   scoring time, not projected forward.
 2. **Candidate pre-selection caps at 400 profiles** ordered by recent activity.
    Fine at this size; a great match outside that window would be missed at scale.
    The fix is a coarse pre-filter in the database (or a vector index) before
@@ -846,3 +849,53 @@ carry no timezone yet, which is a mild inaccuracy everywhere else in the product
 and, in a reminder for a real-world meetup, is someone turning up at the wrong
 time. The zone is now stated explicitly, and the notification links to the
 activity where the browser formats it locally.
+
+
+---
+
+## 21. Time zones
+
+`src/server/modules/geo/timezone.ts` — pure, 14 unit tests.
+
+Availability is stored symbolically (`WEEKDAY_EVENING`), which is the right way
+to ask the question: nobody fills in a calendar grid to sign up. But "weekday
+evening" is a **local** idea, and the matcher was comparing the labels directly.
+
+The seed has always contained a member in Tokyo. Sarah in Antwerp and Kenji in
+Tokyo both selecting `WEEKDAY_EVENING` scored a *perfect* availability
+overlap — 16:00–21:00 UTC against 09:00–14:00 UTC, not one hour in common. The
+product was confidently wrong about the one thing a member can check
+immediately.
+
+**Windows are now converted before they are compared.** Each becomes a local
+hour range, shifts into UTC by the member's offset, and overlap is measured
+there — split across midnight where the shift wraps, and weekday and weekend
+kept apart.
+
+### The reason had to move too
+
+Fixing the score exposed a second, subtler lie. With real hours, Sarah and Kenji
+*do* overlap — his `LATE_NIGHT` in Tokyo is 14:00–21:00 UTC, which covers her
+Brussels evening. But the explanation still read *"You're both free weekday
+evenings"*, because it was built from the labels both had ticked. Across zones
+that phrase was false in both directions: same label, no hours; different
+labels, real hours.
+
+`overlappingWindows` returns the pairs that actually share time, and the
+sentence follows them:
+
+| Pair | Before | Now |
+| --- | --- | --- |
+| Sarah × Kenji | "You're both free weekday evenings" | "Your weekday evenings line up with their late nights" |
+| Sarah × Milan | "You're both free weekday evenings" | unchanged — same zone, same windows |
+
+The second sentence is not just accurate, it is more useful: it tells a member
+*why* a match on the other side of the world is plausible.
+
+### Where the zone is used
+
+- **Availability scoring**, as above.
+- **Activity reminders**, formatted per recipient. The same reminder tells a
+  member in Brussels 07:00 and a member in Tokyo 14:00, with the zone named. An
+  unlabelled hour in a reminder for a real-world meetup is someone turning up at
+  the wrong time.
