@@ -112,6 +112,12 @@ Phase 1 of the roadmap is complete and working end to end.
   detached, people whose plans are affected are told first, and reports outlive
   the person who filed them.
 
+- **Privacy policy & terms** — at `/privacy` and `/terms`, written from the
+  schema rather than a template, with a test that fails if the copy drifts from
+  the code. Both are engineer-written drafts pending legal review; the company
+  details live in `src/lib/legal.ts` and the pages show a draft banner until
+  they are filled in.
+
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.
 
