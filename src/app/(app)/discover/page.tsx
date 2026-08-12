@@ -4,8 +4,14 @@ import { requireViewer } from "@/server/auth/current-user";
 import { recommendPeople } from "@/server/modules/matching/engine";
 import { recommendBunches } from "@/server/modules/matching/bunches";
 import { recommendActivities } from "@/server/modules/matching/activities";
+import {
+  availabilityClusters,
+  availabilityDisabled,
+  myAvailability,
+} from "@/server/modules/availability/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
+import { WhosUp } from "@/components/whos-up";
 import { Chip, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Discover" };
@@ -24,11 +30,15 @@ export const dynamic = "force-dynamic";
 export default async function DiscoverPage() {
   const viewer = await requireViewer();
 
-  const [people, bunches, activities] = await Promise.all([
-    recommendPeople(viewer.profileId, { limit: 8 }),
-    recommendBunches(viewer.profileId, 6),
-    recommendActivities(viewer.profileId, 6),
-  ]);
+  const [people, bunches, activities, status, clusters, whosUpOff] =
+    await Promise.all([
+      recommendPeople(viewer.profileId, { limit: 8 }),
+      recommendBunches(viewer.profileId, 6),
+      recommendActivities(viewer.profileId, 6),
+      myAvailability(viewer.profileId),
+      availabilityClusters(viewer.profileId),
+      availabilityDisabled(viewer.profileId),
+    ]);
 
   const nothingAtAll =
     people.length === 0 && bunches.length === 0 && activities.length === 0;
@@ -51,14 +61,24 @@ export default async function DiscoverPage() {
         </div>
       )}
 
+      <div className="mb-8">
+        <WhosUp
+          status={
+            status
+              ? { ...status, expiresAt: status.expiresAt.toISOString() }
+              : null
+          }
+          clusters={clusters}
+          disabled={whosUpOff}
+        />
+      </div>
+
       {nothingAtAll ? (
         <EmptyState
           icon="🌱"
           title="It's quiet here — for now"
           description="Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
-          action={
-            <LinkButton href="/bunches/new">Start a bunch</LinkButton>
-          }
+          action={<LinkButton href="/start">Start a bunch</LinkButton>}
         />
       ) : (
         <div className="space-y-12">

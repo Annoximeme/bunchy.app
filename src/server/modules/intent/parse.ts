@@ -338,6 +338,10 @@ function takeWhen(
     label: string,
     spanDays = 1,
   ): Timing => {
+    // A range covering the whole day means no time of day was named; its
+    // midnight start is an artefact of needing somewhere to begin.
+    const precision: "day" | "part" =
+      hours[0] === 0 && hours[1] === 24 ? "day" : "part";
     const startDay = {
       year: today.year,
       month: today.month,
@@ -358,7 +362,7 @@ function takeWhen(
 
     const weekend = spansWeekend(today.weekday, daysAhead, spanDays);
     return {
-      when: { from: clamped, to, label },
+      when: { from: clamped, to, label, precision },
       windows: windowsFor(hours, weekend),
     };
   };

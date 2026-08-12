@@ -23,6 +23,16 @@ export interface IntentWhen {
   to: Date;
   /** What the member actually wrote: "tonight", "Saturday", "this weekend". */
   label: string;
+  /**
+   * Whether a time of day was actually named.
+   *
+   * "tonight" and "Friday evening" are `part` — there is a real hour in there.
+   * "Saturday" and "this weekend" are `day`, and their `from` is local midnight
+   * purely because a range has to start somewhere. Callers that need a *moment*
+   * rather than a window must not treat the two the same: scheduling "hiking
+   * Saturday" for 00:00 is inventing a commitment nobody made.
+   */
+  precision: "day" | "part";
 }
 
 export interface SocialIntent {
