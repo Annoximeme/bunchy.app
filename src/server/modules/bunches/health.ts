@@ -3,12 +3,6 @@ import {
   bunchChemistry,
   type BunchChemistry,
 } from "@/server/modules/bunches/chemistry";
-import {
-  buildScoringContext,
-  loadMatchProfile,
-} from "@/server/modules/matching/repository";
-import type { MatchProfile } from "@/server/modules/matching/types";
-import { scorer } from "@/server/modules/matching";
 
 /**
  * Loading what `bunchChemistry` needs, and nothing else.
@@ -49,7 +43,18 @@ export async function bunchHealth(bunchId: string): Promise<BunchChemistry> {
 
   return bunchChemistry({
     members: memberships,
-    pairs: await pairwiseCompatibility(memberships.map((m) => m.profileId)),
+    // No pairwise compatibility. Every observation a member sees is
+    // behavioural — who is talking, what is planned, how many people are in
+    // it — and none of them read that signal, so computing it meant loading
+    // twelve match profiles and running sixty-six scorings to produce a number
+    // the page discarded: 78ms of overhead on a page whose own content took
+    // 4ms. `bunchChemistry` renormalizes over the signals that ran, so this is
+    // a valid behavioural reading rather than a depressed score.
+    //
+    // When something genuinely needs the number — a staff health view, a
+    // ranking — scoring the pairs is the same loop `formation-pool.ts` already
+    // runs, and belongs with that caller rather than sitting here unused.
+    pairs: [],
     messages,
     activities: activities.map((a) => ({
       startsAt: a.startsAt,
@@ -60,36 +65,3 @@ export async function bunchHealth(bunchId: string): Promise<BunchChemistry> {
   });
 }
 
-/**
- * Mean pairwise compatibility across the group.
- *
- * Scoring every pair is O(n²) in the size of a bunch, which is fine precisely
- * because a bunch is capped in the low tens — the same query on an unbounded
- * group would be a mistake. Above `MAX_PAIRWISE_MEMBERS` the signal is dropped
- * rather than approximated, because a wrong number is worse than none.
- */
-const MAX_PAIRWISE_MEMBERS = 16;
-
-async function pairwiseCompatibility(
-  profileIds: string[],
-): Promise<Array<{ score: number }>> {
-  if (profileIds.length < 2 || profileIds.length > MAX_PAIRWISE_MEMBERS) return [];
-
-  const loaded = await Promise.all(profileIds.map((id) => loadMatchProfile(id)));
-  const profiles = loaded.filter((p): p is MatchProfile => p !== null);
-  if (profiles.length < 2) return [];
-
-  const context = await buildScoringContext();
-  const active = scorer();
-  const pairs: Array<{ score: number }> = [];
-
-  for (let i = 0; i < profiles.length; i++) {
-    const subject = profiles[i]!;
-    const others = profiles.slice(i + 1);
-    if (others.length === 0) break;
-    const matches = await active.scorePeople(subject, others, context);
-    for (const match of matches) pairs.push({ score: match.score / 100 });
-  }
-
-  return pairs;
-}

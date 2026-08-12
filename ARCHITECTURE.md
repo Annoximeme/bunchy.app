@@ -899,3 +899,40 @@ The second sentence is not just accurate, it is more useful: it tells a member
   member in Brussels 07:00 and a member in Tokyo 14:00, with the zone named. An
   unlabelled hour in a reminder for a real-world meetup is someone turning up at
   the wrong time.
+
+
+---
+
+## 22. Measuring instead of guessing
+
+`npm run measure` — query counts and wall time for the hot service calls,
+against real data.
+
+It exists because guessing was wrong. `bunchHealth` was added to the bunch
+detail page in §18 and looked cheap; measured, it cost **15 queries and 78ms on
+every render** at a twelve-member bunch, against 4ms for the page's actual
+content. It was loading twelve full match profiles and running sixty-six
+pairwise scorings — to produce a number the page then discarded, because every
+observation a member sees is behavioural and none of them read the compatibility
+signal.
+
+| Call | Before | After |
+| --- | --- | --- |
+| `bunchHealth`, 4 members | 15 queries, 22ms | 4 queries, 3ms |
+| `bunchHealth`, 12 members | 15 queries, 78ms | 4 queries, 2ms |
+
+Flat in the size of the bunch now, rather than quadratic.
+
+The pairwise loader was deleted rather than hidden behind a flag. Nothing needed
+the number, and an option with no caller is the same dead surface as a settings
+toggle nothing sends — when a staff health view or a ranking does need it, that
+loop is the one `formation-pool.ts` already runs and belongs with the caller.
+
+**Query count is the number that matters**, not the milliseconds. A call whose
+count grows with the size of a bunch or the member base is the one that falls
+over at scale, and that is invisible in a wall-clock figure taken against a
+seeded database of thirteen people.
+
+Still on the list, and now measurable: `recommendPeople` costs 33 queries for
+one Discover section. That is not an N+1 — it is candidate loading, rarity and
+persistence — but it is the next thing worth reducing.
