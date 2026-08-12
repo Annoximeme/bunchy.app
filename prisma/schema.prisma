@@ -99,6 +99,10 @@ enum ModerationAction {
   INTEREST_REJECTED
   INTEREST_UPDATED
   INTEREST_MERGED
+  /// A staff member created a bunch from a formation proposal and invited
+  /// its members. Invitations, not memberships — but a dozen people getting a
+  /// notification because of one click belongs in the audit trail.
+  BUNCH_PROPOSED
 }
 
 /// Every staff action, recorded before it is taken.

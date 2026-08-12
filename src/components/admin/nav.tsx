@@ -17,6 +17,7 @@ const ITEMS: NavItem[] = [
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/users", label: "People" },
   { href: "/admin/bunches", label: "Bunches" },
+  { href: "/admin/formation", label: "Formation" },
   { href: "/admin/activities", label: "Activities" },
   { href: "/admin/interests", label: "Interests" },
   { href: "/admin/audit", label: "Audit log" },

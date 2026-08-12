@@ -286,8 +286,7 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
-   referrals.
+1. Founding-member badge (§37) and referrals (§38).
 2. Email delivery for the notification preferences that already exist.
 4. An integration suite that boots a database — the service layer is written
    for it (pure functions, injectable stores, and now a vitest setup that loads
@@ -590,3 +589,68 @@ member can delete and re-register with it. Closing that needs a retained hash of
 banned addresses, which is a deliberate privacy trade — keeping a fingerprint of
 someone who asked to be forgotten — and wants a policy decision rather than a
 quiet implementation.
+
+---
+
+## 18. Bunch chemistry and formation
+
+`src/server/modules/bunches/chemistry.ts`, `formation.ts` — both pure, both
+unit tested, both with a thin loader alongside that is the only part touching
+Prisma. Same split as the matching engine, for the same reason.
+
+### Chemistry (§24)
+
+Compatibility asks whether people would get on. Chemistry asks whether the group
+*is working*. Six signals: mean pairwise compatibility, **voice** (what share of
+members have said anything), **balance** (entropy of who is talking, measured
+across members so silent ones count against it), liveliness, turn-up, and size
+fit across the 5–12 band.
+
+Three properties are the whole design:
+
+- **Silence is absent evidence, not failure.** A bunch four days old returns
+  `null` with confidence `none` and reads "too new to tell" — never 0%. Signals
+  that cannot speak are dropped and the rest renormalize.
+- **Breadth beats volume.** The heaviest behavioural weight is on how many
+  people are in the conversation, and liveliness saturates. There is a test
+  asserting that ten times the messages from the same two people buys ≤3 points:
+  a product that scored volume would be asking groups to perform for a number.
+- **Members never see the score.** They see `observations` — "3 members haven't
+  said anything this month", "nothing has been planned yet". Specific, factual,
+  actionable. The number ranks recommendations and warns staff; grading
+  someone's friendships would be a different product.
+
+### Formation (§18/§28)
+
+The matcher answers "who should this person meet". Formation answers "which
+group of five to twelve would work", which is not the same question: one popular
+member everyone scores well against, who have nothing in common with each other,
+is an excellent list and a terrible bunch. So candidates are admitted on their
+**weakest link** with the existing group, not their mean, and there is a test
+that feeds in exactly that star topology and asserts nothing is proposed.
+
+It seeds on the member with the **fewest** strong options. A greedy pass that
+starts with the best-connected person strands exactly the people the feature
+exists for. An earlier version abandoned the whole pass when that seed could not
+reach minimum size — a unit test caught it stranding five placeable people
+because of one who wasn't — so unplaceable seeds are now set aside and reported
+in `unplaced` rather than hidden.
+
+**Nothing is created automatically.** `/admin/formation` shows proposals with
+their cohesion, weakest pair, per-member fit and a rationale in sentences a
+human can check. Creating one makes a bunch where every member is `INVITED` and
+none is `ACTIVE` — the first to accept becomes owner. Auto-enrolling strangers
+into a group chat reads as clever in a spec and as a violation in an inbox. The
+action is written to the moderation audit trail under `BUNCH_PROPOSED`, because
+one click that notifies a dozen people should never be invisible afterwards.
+
+Verified end to end against the database: an 11-person pool produced one
+7-member proposal at 84% cohesion with a 66% weakest pair, seeded on the
+least-connected member and pulling him in rather than stranding him; creating it
+made 0 active and 7 invited memberships, sent 7 invitations and wrote 1 audit
+entry; the first acceptor became OWNER and the second MEMBER.
+
+That run also caught a bug worth recording: the group spanned Antwerp and Tokyo
+and the suggested name came out as *"Gaming in Tokyo"*, because the city was
+taken from an arbitrary set element. A city is now only named when every member
+shares it — a wrong name is worse than a generic one.
