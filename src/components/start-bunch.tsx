@@ -72,7 +72,6 @@ interface Preview {
     groupSize: number | null;
     unrecognised: string[];
     notes: string[];
-    assisted: boolean;
   };
   search: {
     people: FoundPerson[];
@@ -383,7 +382,6 @@ function Reading({
           {intent.place && <Chip tone="teal">near {intent.place.cityLabel}</Chip>}
           {intent.mode && <Chip>{intent.mode === "ONLINE" ? "Online" : "In person"}</Chip>}
           {intent.groupSize && <Chip>{intent.groupSize} people</Chip>}
-          {intent.assisted && <Chip tone="ai">Bunchy helped read this</Chip>}
         </div>
       ) : (
         <p className="mt-2 text-sm text-muted">

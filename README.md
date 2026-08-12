@@ -160,10 +160,15 @@ All environment variables are validated at boot — see `src/server/env.ts`.
 | ------------------- | --------------- | ------------------------------------------------ |
 | `DATABASE_URL`      | yes             | PostgreSQL connection string                     |
 | `AUTH_SECRET`       | in production   | 32+ chars; used to salt hashed identifiers        |
-| `AI_PROVIDER`       | no              | `local` (default) or `anthropic`                  |
-| `ANTHROPIC_API_KEY` | if `anthropic`  |                                                   |
 | `EMAIL_PROVIDER`    | no              | `console` (default) or `smtp`                     |
 | `APP_URL`           | no              | Used in emailed links                             |
 
 `.env` holds safe local defaults and is committed. Secrets belong in
 `.env.local`, which is git-ignored.
+
+There are no AI variables, and that is deliberate. Bunchy's assistant is
+deterministic and runs in-process, so running the product costs a database and
+a mail provider and nothing else — no metered API is reachable from any code
+path. If you later want richer generated text, the `Assistant` interface is the
+one place to implement it; prefer a self-hosted model, since a hosted one puts
+a per-request bill behind features members use constantly.

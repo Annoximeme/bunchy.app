@@ -1,5 +1,4 @@
 import { db } from "@/server/db/client";
-import { assistant } from "@/server/modules/ai/index";
 import { geocoder } from "@/server/modules/geo/gazetteer";
 import { snapToGrid } from "@/server/modules/geo/precision";
 import { parseIntent } from "@/server/modules/intent/parse";
@@ -12,15 +11,17 @@ import type {
 /**
  * The parser, wired to the world.
  *
- * Three things happen here that cannot happen in a pure function: the interest
- * catalogue is loaded, a named place is geocoded, and — only when the grammar
- * came up empty — an assistant is asked for a second reading.
+ * Two things happen here that cannot happen in a pure function: the interest
+ * catalogue is loaded, and a named place is geocoded. Both read local data — a
+ * database table and a built-in gazetteer — so resolving a request costs a
+ * couple of indexed queries and nothing else. There is no metered call on this
+ * path, or on any path.
  *
- * That last condition is the whole cost model. An LLM call per keystroke would
- * be slow and expensive for a question the grammar answers correctly most of the
- * time, so the model is a fallback for the sentences that defeated it rather
- * than the first thing tried. In practice that is "I want to do something fun
- * with people who get it", not "hiking Saturday".
+ * An earlier version asked a hosted model for a second reading when the grammar
+ * came up empty. That is gone: it billed per request for a question the grammar
+ * answers correctly nearly all the time, and the failure mode it was meant to
+ * cover — a sentence with no recognisable interest in it — is now handled by
+ * saying so and offering the interest picker, which is both free and clearer.
  */
 
 export interface ResolvedIntent extends SocialIntent {
@@ -34,18 +35,11 @@ export interface ResolvedIntent extends SocialIntent {
     approxLat: number;
     approxLng: number;
   } | null;
-  /** True when an assistant contributed. Surfaced so the reading can be doubted. */
-  assisted: boolean;
 }
 
 export interface ResolveOptions {
   now?: Date;
   timezone?: string | null;
-  /**
-   * Whether an assistant may be consulted when the grammar finds nothing.
-   * Off for background jobs, and off when the member has AI help switched off.
-   */
-  allowAssistant?: boolean;
 }
 
 export async function resolveIntent(
@@ -58,67 +52,12 @@ export async function resolveIntent(
     timezone: options.timezone,
   });
 
-  let assisted = false;
-  if (
-    options.allowAssistant !== false &&
-    intent.interestSlugs.length === 0 &&
-    intent.goals.length === 0
-  ) {
-    assisted = await askAssistant(text, intent, catalogue);
-  }
-
   const [interests, place] = await Promise.all([
     lookupInterests(intent.interestSlugs, catalogue),
     resolvePlace(intent.placeHint),
   ]);
 
-  return { ...intent, interests, place, assisted };
-}
-
-/**
- * Lets an assistant have a go, and folds in only what survives validation.
- *
- * Mutates `intent` because the caller wants one object, not a merge dance — but
- * note what it can and cannot touch: interests (validated against the
- * catalogue) and the topic (a string, shown to the member, used to name a
- * bunch). Time, place, mode and group size stay with the grammar.
- */
-async function askAssistant(
-  text: string,
-  intent: SocialIntent,
-  catalogue: IntentCatalogue,
-): Promise<boolean> {
-  let reading;
-  try {
-    reading = await assistant().readIntent({
-      text,
-      catalogue: catalogue.interests.map((i) => ({ slug: i.slug, label: i.label })),
-    });
-  } catch (error) {
-    // A provider outage must not break the product's primary action.
-    console.error("intent: assistant reading failed", error);
-    return false;
-  }
-  if (!reading) return false;
-
-  const bySlug = new Map(catalogue.interests.map((i) => [i.slug, i] as const));
-  const accepted = reading.interestSlugs.filter((slug) => bySlug.has(slug));
-  if (accepted.length === 0 && !reading.topic) return false;
-
-  intent.interestSlugs.push(...accepted);
-  if (!intent.topic && reading.topic) intent.topic = reading.topic;
-
-  // Said out loud, because a reading the member cannot see is a reading they
-  // cannot correct.
-  intent.notes.push(
-    accepted.length > 0
-      ? `Bunchy read this as ${accepted.map((s) => bySlug.get(s)!.label).join(", ")}.`
-      : "Bunchy had a guess at what this is about.",
-  );
-  // Anything the assistant explained is no longer an unexplained leftover.
-  intent.unrecognised = [];
-
-  return true;
+  return { ...intent, interests, place };
 }
 
 // --- The catalogue ----------------------------------------------------------

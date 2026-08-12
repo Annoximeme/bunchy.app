@@ -223,7 +223,7 @@ disabled feature pretending to work:
 
 | Interface   | Local implementation                            | Swap by                          |
 | ----------- | ----------------------------------------------- | -------------------------------- |
-| `Assistant` | Template-driven; instant, free, never surprising | `AI_PROVIDER=anthropic`          |
+| `Assistant` | Template-driven; instant, free, never surprising | Implement + register in `assistant()` |
 | `Geocoder`  | Built-in gazetteer of ~85 cities                 | Implement + register in `geocoder()` |
 | `EmailTransport` | Writes the message to the server log       | Implement + register in `transport()` |
 | `RateLimitStore` | Database-backed, correct across instances  | Implement + change `defaultStore` |

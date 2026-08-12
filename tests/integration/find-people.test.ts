@@ -106,7 +106,6 @@ describe("finding someone", () => {
 
     const result = await findPeople(seeker.profileId, "play Warhammer tonight", {
       now: NOW,
-      allowAssistant: false,
     });
 
     expect(result.applied.interests).toEqual(["Warhammer"]);
@@ -119,7 +118,7 @@ describe("finding someone", () => {
     await member("player", { interests: ["board-games"] });
 
     const [found] = (
-      await findPeople(seeker.profileId, "board games", { now: NOW, allowAssistant: false })
+      await findPeople(seeker.profileId, "board games", { now: NOW })
     ).people;
 
     expect(found!.highlights.length).toBeGreaterThan(0);
@@ -147,7 +146,6 @@ describe("finding someone", () => {
     // right person on it.
     const result = await findPeople(seeker.profileId, "play Warhammer tonight", {
       now: NOW,
-      allowAssistant: false,
     });
 
     expect(result.people.map((p) => p.displayName)).toEqual(["friend"]);
@@ -161,7 +159,6 @@ describe("finding someone", () => {
 
     const result = await findPeople(seeker.profileId, "go hiking", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(result.people[0]!.connected).toBe(false);
   });
@@ -182,7 +179,6 @@ describe("finding someone", () => {
     // opened a back door around it.
     const result = await findPeople(seeker.profileId, "go hiking", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(result.people).toEqual([]);
   });
@@ -194,7 +190,6 @@ describe("finding someone", () => {
 
     const result = await findPeople(seeker.profileId, "go hiking", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(result.people).toEqual([]);
   });
@@ -210,7 +205,6 @@ describe("finding someone", () => {
 
     const result = await findPeople(seeker.profileId, "go hiking", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(result.people).toEqual([]);
   });
@@ -222,7 +216,6 @@ describe("finding someone", () => {
 
     const result = await findPeople(seeker.profileId, "go hiking near Antwerp", {
       now: NOW,
-      allowAssistant: false,
     });
 
     const people = JSON.stringify(result.people);
@@ -239,7 +232,6 @@ describe("finding someone", () => {
 
     const visible = await findPeople(seeker.profileId, "gaming", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(visible.people[0]!.availability?.label).toBe("Up for gaming");
 
@@ -250,7 +242,6 @@ describe("finding someone", () => {
 
     const hidden = await findPeople(seeker.profileId, "gaming", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(hidden.people[0]!.availability).toBeNull();
   });
@@ -265,7 +256,6 @@ describe("finding someone", () => {
     const result = await findPeople(seeker.profileId, "gaming", {
       now: NOW,
       availableNow: true,
-      allowAssistant: false,
     });
 
     const names = result.people.map((p) => p.displayName);
@@ -287,7 +277,6 @@ describe("when nobody matches", () => {
 
     const result = await findPeople(seeker.profileId, "go hiking tonight", {
       now: NOW,
-      allowAssistant: false,
     });
 
     expect(result.people).toEqual([]);
@@ -304,7 +293,6 @@ describe("when nobody matches", () => {
 
     const result = await findPeople(seeker.profileId, "play Warhammer", {
       now: NOW,
-      allowAssistant: false,
     });
 
     expect(result.people).toEqual([]);
@@ -322,7 +310,6 @@ describe("when nobody matches", () => {
     // that leads to another empty screen is worse than no button.
     const result = await findPeople(seeker.profileId, "play Warhammer tonight", {
       now: NOW,
-      allowAssistant: false,
     });
 
     expect(result.people).toEqual([]);
@@ -335,7 +322,6 @@ describe("when nobody matches", () => {
 
     const result = await findPeople(seeker.profileId, "find someone for anything at all", {
       now: NOW,
-      allowAssistant: false,
     });
     expect(result.people).toEqual([]);
   });
