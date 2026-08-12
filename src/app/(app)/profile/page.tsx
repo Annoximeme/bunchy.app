@@ -3,8 +3,10 @@ import Link from "next/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { getOwnProfile } from "@/server/modules/profile/service";
 import { listBlocked } from "@/server/modules/moderation/service";
+import { getPreferences } from "@/server/modules/notifications/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { PrivacySettings } from "@/components/privacy-settings";
+import { NotificationPreferences } from "@/components/notification-preferences";
 import { BlockButton } from "@/components/moderation-actions";
 import { ResendVerification } from "@/components/resend-verification";
 import { Avatar, Card, Chip, LinkButton } from "@/components/ui";
@@ -14,9 +16,10 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   const viewer = await requireViewer();
-  const [profile, blocked] = await Promise.all([
+  const [profile, blocked, notificationPreferences] = await Promise.all([
     getOwnProfile(viewer.profileId),
     listBlocked(viewer.profileId),
+    getPreferences(viewer.profileId),
   ]);
 
   return (
@@ -177,6 +180,8 @@ export default async function ProfilePage() {
             }}
           />
         )}
+
+        <NotificationPreferences initial={notificationPreferences} />
 
         {blocked.length > 0 && (
           <Card>

@@ -857,11 +857,17 @@ model Notification {
   @@index([profileId, groupKey])
 }
 
+// Deliberately no column defaults. The default for an untouched setting lives
+// in `defaultPreference()` and depends on the type, which the database cannot
+// express — a blanket `@default(true)` here once meant a member could be
+// opted into suggestions the settings screen showed as off. Without a column
+// default Prisma requires both values on insert, so the omission is a compile
+// error rather than a silent subscription.
 model NotificationPreference {
   profileId String
   type      NotificationType
-  inApp     Boolean          @default(true)
-  email     Boolean          @default(false)
+  inApp     Boolean
+  email     Boolean
 
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 

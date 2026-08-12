@@ -4,6 +4,7 @@ import { onboardingPath } from "@/server/modules/profile/service";
 import { db } from "@/server/db/client";
 import { AppNav } from "@/components/nav";
 import { isStaff } from "@/server/modules/admin/guard";
+import { unreadCount } from "@/server/modules/notifications/service";
 
 /**
  * The signed-in shell.
@@ -22,7 +23,7 @@ export default async function AppLayout({
     redirect(onboardingPath(viewer.onboardingStage));
   }
 
-  const [unreadMessages, pendingRequests] = await Promise.all([
+  const [unreadMessages, pendingRequests, unreadNotifications] = await Promise.all([
     db.conversation.count({
       where: {
         participants: { some: { profileId: viewer.profileId } },
@@ -37,6 +38,7 @@ export default async function AppLayout({
     db.connection.count({
       where: { addresseeId: viewer.profileId, status: "PENDING" },
     }),
+    unreadCount(viewer.profileId),
   ]);
 
   return (
@@ -47,6 +49,7 @@ export default async function AppLayout({
         avatarUrl={viewer.avatarUrl}
         unreadMessages={await countTrulyUnread(viewer.profileId, unreadMessages)}
         pendingRequests={pendingRequests}
+        unreadNotifications={unreadNotifications}
         staff={isStaff(viewer)}
       />
       <main id="main" className="pb-24 md:pb-10">

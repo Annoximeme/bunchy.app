@@ -84,6 +84,10 @@ Phase 1 of the roadmap is complete and working end to end.
 - **Analytics** — a typed event spine wired into every lifecycle moment, with
   weekly cohort retention, onboarding funnel drop-off and network health. No
   page-view or session-duration events exist, by design.
+- **Notifications** — an inbox that only reports things a person did, grouped by
+  day, plus per-type in-app and email switches that save the moment they move.
+  Opening the screen does not mark anything read, and suggestions are off until
+  you ask for them.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.
