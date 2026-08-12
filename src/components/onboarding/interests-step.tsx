@@ -139,7 +139,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
           <button
             type="button"
             onClick={addCustom}
-            className="mt-2 text-sm font-medium text-accent hover:underline"
+            className="mt-2 text-sm font-medium text-accent-ink hover:underline"
           >
             Add &ldquo;{query.trim()}&rdquo; as an interest
           </button>

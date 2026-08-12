@@ -56,7 +56,7 @@ export default async function ActivityPage({
       <div className="grid gap-6 lg:grid-cols-[1fr_18rem]">
         <div>
           <header>
-            <p className="text-sm font-medium text-accent">
+            <p className="text-sm font-medium text-accent-ink">
               {activityWhen(activity.startsAt)}
             </p>
             <h1 className="mt-1.5 text-3xl font-semibold tracking-tight">
@@ -97,7 +97,7 @@ export default async function ActivityPage({
                 href={activity.onlineUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="mt-1 block break-all text-sm text-accent hover:underline"
+                className="mt-1 block break-all text-sm text-accent-ink hover:underline"
               >
                 {activity.onlineUrl}
               </a>

@@ -24,9 +24,15 @@ const BUTTON_BASE =
   "disabled:cursor-not-allowed disabled:opacity-55 " +
   "active:scale-[0.98] whitespace-nowrap";
 
+/**
+ * The primary button carries a deep navy label on coral, not a white one.
+ * White on #FF5C6C measures 3.00:1 — below AA for a button label — while navy
+ * on the same coral is 5.42:1. Keeping the signature colour exactly as
+ * specified and moving the label is the trade that costs the brand nothing.
+ */
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   primary:
-    "bg-accent text-white hover:bg-accent-hover shadow-[0_1px_2px_rgb(0_0_0/0.08)] hover:shadow-[0_6px_18px_-6px_var(--color-accent)]",
+    "bg-accent text-[var(--color-on-accent)] hover:bg-accent-hover shadow-[0_1px_2px_rgb(23_32_51/0.08)] hover:shadow-[0_6px_18px_-6px_var(--color-accent)]",
   secondary:
     "bg-surface text-ink border border-line hover:border-ink-soft hover:bg-surface-sunken",
   ghost: "text-ink-soft hover:text-ink hover:bg-surface-sunken",
@@ -126,14 +132,26 @@ export function Chip({
   className,
 }: {
   children: ReactNode;
-  tone?: "neutral" | "accent" | "teal" | "positive";
+  tone?: "neutral" | "accent" | "teal" | "positive" | "ai";
   className?: string;
 }) {
+  /**
+   * Each tone is a meaning, not a colour choice at the call site: `ai` marks
+   * something the system inferred, `positive`/`teal` a state that went well.
+   * Picking a chip colour because it looks nice next to the one above it is how
+   * a palette stops meaning anything.
+   *
+   * Yellow has no chip because it has no chip-shaped job yet — it marks
+   * activities as the date on an activity card. When something genuinely needs
+   * a yellow chip it is `bg-yellow-soft text-yellow-ink`; adding the tone
+   * before there is a caller would just be unused API.
+   */
   const tones = {
     neutral: "bg-surface-sunken text-ink-soft",
     accent: "bg-accent-soft text-accent-ink",
     teal: "bg-teal-soft text-teal",
     positive: "bg-positive-soft text-positive",
+    ai: "bg-purple-soft text-purple-ink",
   } as const;
 
   return (

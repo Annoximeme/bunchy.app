@@ -6,6 +6,7 @@ import { useState } from "react";
 import { api } from "@/lib/api";
 import { Avatar, cn } from "@/components/ui";
 import { brand } from "@/lib/brand";
+import { BunchyLogo } from "@/components/logo";
 
 /**
  * Primary navigation.
@@ -69,9 +70,8 @@ export function AppNav({
         aria-label="Main"
         className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-line bg-surface px-4 py-6 md:flex"
       >
-        <Link href="/discover" className="mb-8 px-2 text-xl font-semibold tracking-tight">
-          {brand.name}
-          <span className="text-accent">.</span>
+        <Link href="/discover" className="mb-8 px-2" aria-label={brand.name}>
+          <BunchyLogo height={20} color="var(--color-ink)" />
         </Link>
 
         <ul className="flex-1 space-y-1">
@@ -225,7 +225,7 @@ function MobileLink({
       aria-current={active ? "page" : undefined}
       className={cn(
         "relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-        active ? "text-accent" : "text-muted",
+        active ? "text-accent-ink" : "text-muted",
       )}
     >
       <span className="relative">
@@ -243,7 +243,7 @@ function MobileLink({
 
 function Badge({ count }: { count: number }) {
   return (
-    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white">
+    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold leading-none text-[var(--color-on-accent)]">
       {count > 9 ? "9+" : count}
       <span className="sr-only"> unread</span>
     </span>

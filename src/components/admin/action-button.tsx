@@ -101,7 +101,7 @@ export function AdminAction({
         onClick={() => setOpen(true)}
         className={cn(
           "text-xs font-medium underline-offset-2 transition-colors hover:underline",
-          danger ? "text-danger" : "text-accent",
+          danger ? "text-danger" : "text-accent-ink",
         )}
       >
         {label}

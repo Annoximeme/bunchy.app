@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
+import { BunchyLogo } from "@/components/logo";
 import { Avatar, Chip, CompatibilityBadge, LinkButton } from "@/components/ui";
 
 /**
@@ -21,10 +22,7 @@ export default async function LandingPage() {
   return (
     <div className="min-h-dvh">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
-        <span className="text-xl font-semibold tracking-tight">
-          {brand.name}
-          <span className="text-accent">.</span>
-        </span>
+        <BunchyLogo height={22} color="var(--color-ink)" />
         <nav className="flex items-center gap-2">
           <LinkButton href="/login" variant="ghost" size="sm">
             Sign in
@@ -176,7 +174,7 @@ export default async function LandingPage() {
 function Step({ n, title, body }: { n: string; title: string; body: string }) {
   return (
     <div className="card-surface p-6">
-      <span className="text-xs font-semibold tracking-widest text-accent">{n}</span>
+      <span className="text-xs font-semibold tracking-widest text-accent-ink">{n}</span>
       <h3 className="mt-3 text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
     </div>
@@ -232,7 +230,7 @@ function ExampleBunchCard() {
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
         {["Gaming", "Technology", "AI", "PC building"].map((t) => (
-          <Chip key={t} tone="teal">
+          <Chip key={t} tone="neutral">
             {t}
           </Chip>
         ))}

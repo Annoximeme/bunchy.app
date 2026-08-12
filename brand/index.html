@@ -1,0 +1,989 @@
+<title>Bunchy Brand System</title>
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     Tokens. Light is the complete set on bare :root; dark redefines
+     only the values, in both the media query and the explicit stamp.
+     No component style lives inside a theme block.
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --canvas:        #FFF9F3;
+    --surface:       #FFFFFF;
+    --sunken:        #F9F0E6;
+    --ink:           #172033;
+    --ink-soft:      #3D4759;
+    --muted:         #6B7280;
+    --line:          #EFE6DA;
+    --line-strong:   #E2D5C5;
+
+    --coral:         #FF5C6C;
+    --coral-soft:    #FFE9EB;
+    --coral-ink:     #CE2F45;
+    --on-coral:      #172033;
+
+    --purple:        #7657FF;
+    --purple-soft:   #EFEAFF;
+    --purple-ink:    #6A47F5;
+    --on-purple:     #FFFFFF;
+
+    --yellow:        #FFC857;
+    --yellow-soft:   #FFF3DC;
+    --yellow-ink:    #8A5E00;
+    --on-yellow:     #172033;
+
+    --mint:          #55D6BE;
+    --mint-soft:     #E3F8F3;
+    --mint-ink:      #0E7A69;
+    --on-mint:       #172033;
+
+    --danger:        #B3261E;
+    --danger-soft:   #FDECEA;
+
+    --pass:          #0E7A69;
+    --fail:          #B3261E;
+
+    --shadow-card: 0 1px 2px rgb(23 32 51 / .04), 0 8px 24px -12px rgb(23 32 51 / .14);
+    --shadow-lift: 0 2px 4px rgb(23 32 51 / .06), 0 18px 40px -20px rgb(23 32 51 / .26);
+
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    --r-card: 20px;
+    --r-ctrl: 12px;
+    --measure: 68ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --canvas:      #101826;
+      --surface:     #182231;
+      --sunken:      #1F2A3B;
+      --ink:         #F5F7FA;
+      --ink-soft:    #C3CAD6;
+      --muted:       #8C97A8;
+      --line:        #29344A;
+      --line-strong: #38455F;
+
+      --coral-soft:  #3A1D22;
+      --coral-ink:   #FF8391;
+      --purple-soft: #241C4A;
+      --purple-ink:  #9B85FF;
+      --yellow-soft: #33270F;
+      --yellow-ink:  #FFC857;
+      --mint-soft:   #10302B;
+      --mint-ink:    #55D6BE;
+      --danger:      #FF8A7D;
+      --danger-soft: #3A1C19;
+      --pass:        #55D6BE;
+      --fail:        #FF8A7D;
+
+      --shadow-card: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -12px rgb(0 0 0 / .6);
+      --shadow-lift: 0 2px 4px rgb(0 0 0 / .35), 0 18px 40px -20px rgb(0 0 0 / .75);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --canvas:      #101826;
+    --surface:     #182231;
+    --sunken:      #1F2A3B;
+    --ink:         #F5F7FA;
+    --ink-soft:    #C3CAD6;
+    --muted:       #8C97A8;
+    --line:        #29344A;
+    --line-strong: #38455F;
+
+    --coral-soft:  #3A1D22;
+    --coral-ink:   #FF8391;
+    --purple-soft: #241C4A;
+    --purple-ink:  #9B85FF;
+    --yellow-soft: #33270F;
+    --yellow-ink:  #FFC857;
+    --mint-soft:   #10302B;
+    --mint-ink:    #55D6BE;
+    --danger:      #FF8A7D;
+    --danger-soft: #3A1C19;
+    --pass:        #55D6BE;
+    --fail:        #FF8A7D;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px -12px rgb(0 0 0 / .6);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / .35), 0 18px 40px -20px rgb(0 0 0 / .75);
+  }
+
+  /* ── base ─────────────────────────────────────────────────── */
+  * { box-sizing: border-box; }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  h1, h2, h3, h4 { text-wrap: balance; letter-spacing: -.025em; line-height: 1.1; margin: 0; font-weight: 700; }
+  h2 { font-size: clamp(28px, 3.4vw, 40px); }
+  h3 { font-size: 21px; letter-spacing: -.02em; }
+  h4 { font-size: 15px; letter-spacing: -.01em; }
+  p  { margin: 0; max-width: var(--measure); }
+  a  { color: var(--coral-ink); }
+  :focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; border-radius: 5px; }
+
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .lede { font-size: 18px; color: var(--ink-soft); line-height: 1.65; }
+  .note { font-size: 14px; color: var(--muted); }
+  code, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ── section rhythm ───────────────────────────────────────── */
+  section { padding: 76px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: 0; }
+  .head { display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+  .head-row { display: flex; align-items: center; gap: 14px; }
+
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .stack-lg { display: flex; flex-direction: column; gap: 36px; }
+  .grid { display: grid; gap: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-card); box-shadow: var(--shadow-card); padding: 22px;
+  }
+
+  /* ── hero ─────────────────────────────────────────────────── */
+  .hero { padding: 84px 0 70px; }
+  .hero-mark { display: block; }
+  .hero-title { font-size: clamp(44px, 7vw, 82px); letter-spacing: -.04em; line-height: .96; margin: 30px 0 0; }
+  .hero-tag { font-size: clamp(20px, 2.4vw, 26px); color: var(--coral-ink); font-weight: 600; letter-spacing: -.02em; margin-top: 14px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .pill {
+    font-size: 12.5px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+    background: var(--sunken); color: var(--ink-soft); border: 1px solid var(--line);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rise { animation: rise .6s cubic-bezier(.22,1,.36,1) both; }
+    .rise:nth-child(2) { animation-delay: .06s; }
+    .rise:nth-child(3) { animation-delay: .12s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  }
+
+  /* Section marker: the cluster with one shape lit, so the motif encodes
+     which section you are in rather than decorating the heading. */
+  .marker { flex: none; }
+
+  /* ── colour ───────────────────────────────────────────────── */
+  .swatches { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .sw { border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+  .sw-chip { height: 104px; display: flex; align-items: flex-end; padding: 12px; }
+  .sw-role { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .sw-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 3px; }
+  .sw-name { font-weight: 700; font-size: 15px; }
+  .sw-hex { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .sw-use { font-size: 13px; color: var(--ink-soft); margin-top: 5px; line-height: 1.5; }
+
+  .ratiobar { display: flex; height: 46px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+  .ratiobar > span { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+
+  /* ── tables ───────────────────────────────────────────────── */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .verdict { font-weight: 700; font-size: 12px; letter-spacing: .04em; }
+  .v-pass { color: var(--pass); }
+  .v-fail { color: var(--fail); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+
+  /* ── product components, built from the tokens ────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 999px; font-weight: 500; font-size: 14px; padding: 10px 20px;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+    transition: all .2s cubic-bezier(.22,1,.36,1);
+  }
+  .btn-primary   { background: var(--coral); color: var(--on-coral); }
+  .btn-primary:hover { background: #F5455A; }
+  .btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
+  .btn-ghost     { background: transparent; color: var(--ink-soft); }
+  .btn-ghost:hover { background: var(--sunken); }
+  .btn-danger    { background: var(--danger-soft); color: var(--danger); }
+
+  .chip {
+    display: inline-flex; align-items: center; border-radius: 999px;
+    padding: 5px 11px; font-size: 12.5px; font-weight: 500;
+    background: var(--sunken); color: var(--ink-soft);
+  }
+  .chip-ai       { background: var(--purple-soft); color: var(--purple-ink); }
+  .chip-mint     { background: var(--mint-soft);   color: var(--mint-ink); }
+  .chip-coral    { background: var(--coral-soft);  color: var(--coral-ink); }
+  .chip-yellow   { background: var(--yellow-soft); color: var(--yellow-ink); }
+
+  .demo { background: var(--canvas); border: 1px solid var(--line); border-radius: var(--r-card); padding: 22px; }
+  .demo-dark { background: #101826; border-color: #29344A; color: #F5F7FA; }
+
+  .ui-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow-card); padding: 18px; }
+  .ui-dark { background: #182231; border-color: #29344A; }
+
+  .avatar {
+    width: 44px; height: 44px; border-radius: 999px; background: var(--sunken);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: var(--ink-soft); flex: none; font-size: 15px;
+  }
+  .match { background: var(--coral-soft); color: var(--coral-ink); border-radius: 999px; padding: 4px 10px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+
+  .navdemo { display: flex; flex-direction: column; gap: 3px; }
+  .navitem { display: flex; align-items: center; gap: 11px; padding: 9px 13px; border-radius: var(--r-ctrl); font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+  .navitem.active { background: var(--coral-soft); color: var(--coral-ink); }
+  .navbadge { margin-left: auto; background: var(--coral); color: var(--on-coral); border-radius: 999px; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; padding: 0 6px; }
+
+  .donts { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .rule { border-left: 3px solid var(--line-strong); padding: 4px 0 4px 16px; }
+  .rule.no { border-left-color: var(--danger); }
+  .rule.yes { border-left-color: var(--mint); }
+  .rule h4 { margin-bottom: 5px; }
+  .rule p { font-size: 14px; color: var(--ink-soft); }
+
+  pre {
+    background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 20px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px;
+    line-height: 1.7; margin: 0; color: var(--ink);
+  }
+
+  .clearspace { position: relative; display: inline-block; padding: 26px; background: var(--sunken); border-radius: 14px; }
+  .clearspace::before {
+    content: ""; position: absolute; inset: 26px; border: 1px dashed var(--coral); border-radius: 3px;
+  }
+
+  .sizerow { display: flex; align-items: flex-end; gap: 26px; flex-wrap: wrap; }
+  .sizecell { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .sizecell span { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 9px; display: flex; }
+  .tile-dark { background: #101826; border-color: #29344A; }
+  .tile-coral { background: var(--coral); border-color: transparent; }
+
+  footer { padding: 56px 0 72px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+</style>
+
+<!-- Logo geometry, defined once and reused everywhere on the page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 48 48">
+    <rect x="4.8"  y="6.2"  width="21.4" height="21.4" rx="7.2" transform="rotate(-7 15.5 16.9)"  fill="var(--m1, #FF5C6C)"/>
+    <rect x="29"   y="10.4" width="14.2" height="14.2" rx="4.8" transform="rotate(13 36.1 17.5)"  fill="var(--m2, #7657FF)"/>
+    <rect x="7.6"  y="30.6" width="14.6" height="14.6" rx="4.9" transform="rotate(8 14.9 37.9)"   fill="var(--m3, #55D6BE)"/>
+    <rect x="26.4" y="28.4" width="16.2" height="16.2" rx="5.5" transform="rotate(-10 34.5 36.5)" fill="var(--m4, #FFC857)"/>
+  </symbol>
+  <symbol id="wordmark" viewBox="-6 -12 496 152">
+    <g fill="none" stroke="var(--wc, currentColor)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 0 V100"/><path d="M10 0 H30 A25 25 0 0 1 30 50 H10"/><path d="M10 50 H36 A25 25 0 0 1 36 100 H10"/>
+      <path d="M96 28 V76 A24 24 0 0 0 144 76 V28"/><path d="M144 76 V100"/>
+      <path d="M178 100 V28"/><path d="M178 52 A24 24 0 0 1 226 52 V100"/>
+      <path d="M309 44 A26 26 0 1 0 309 84"/>
+      <path d="M344 0 V100"/><path d="M344 52 A24 24 0 0 1 392 52 V100"/>
+      <path d="M420 28 L444 82"/><path d="M468 28 L436 112 A14 14 0 0 1 414 116"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="wrap">
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <header class="hero">
+    <div class="rise hero-mark"><svg width="88" height="88" aria-label="Bunchy"><use href="#mark"/></svg></div>
+    <h1 class="rise hero-title">Bunchy<br>Brand System</h1>
+    <p class="rise hero-tag">Find your bunch.</p>
+    <div class="hero-meta">
+      <span class="pill">Identity</span>
+      <span class="pill">Colour &amp; contrast</span>
+      <span class="pill">Components</span>
+      <span class="pill">Production tokens</span>
+    </div>
+    <p class="lede" style="margin-top:32px">
+      Everything here is built from the live tokens, not pictured. The swatches, the
+      buttons, the cards and the logo on this page are the same values and the same
+      geometry that ship in the product — so what you read is what a browser renders.
+    </p>
+  </header>
+
+  <!-- ═══════════════ THE IDEA ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark"/></svg>
+        <span class="eyebrow">01 — The idea</span>
+      </div>
+      <h2>You don't need more followers. You need a bunch.</h2>
+      <p class="lede">
+        Bunchy is not a feed, a dating app, or a place to accumulate an audience. It
+        introduces you to a small number of compatible people and gets out of the way.
+        The identity has to carry that: warm and social enough to feel like somewhere
+        you'd want to be, disciplined enough to be trusted with who you are.
+      </p>
+    </div>
+
+    <div class="grid donts">
+      <div class="rule yes">
+        <h4>Belonging, shown structurally</h4>
+        <p>Four shapes, four sizes, four angles, one cluster. Individuality is the size difference; belonging is the even gap.</p>
+      </div>
+      <div class="rule yes">
+        <h4>Warm, never clinical</h4>
+        <p>Cream instead of white, navy instead of black. The ground does the friendliness so the accents don't have to shout.</p>
+      </div>
+      <div class="rule no">
+        <h4>Not the obvious vocabulary</h4>
+        <p>No network nodes, no speech bubbles, no hearts, no handshakes, no silhouettes. Those say "social product", not <em>this</em> social product.</p>
+      </div>
+      <div class="rule no">
+        <h4>Not a generic AI startup</h4>
+        <p>No sparkles, no gradient mesh, no corporate blue. Intelligence is signalled by one colour with one job, not by decoration.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ LOGO ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--coral);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
+        <span class="eyebrow">02 — The symbol</span>
+      </div>
+      <h2>Four shapes, one bunch</h2>
+      <p class="lede">
+        The mark is four rounded squircles clustered together. The largest is coral,
+        which is what makes the signature colour legible even at favicon size. Each
+        shape sits at its own angle so the cluster never reads as a grid of app tiles.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="row" style="gap:40px; align-items:flex-start">
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Primary lockup</span>
+          <div class="demo" style="display:flex; align-items:center; gap:20px; padding:32px 36px">
+            <svg width="58" height="58"><use href="#mark"/></svg>
+            <svg height="40" style="width:130px; color:var(--ink)"><use href="#wordmark"/></svg>
+          </div>
+        </div>
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Knockout</span>
+          <div class="demo demo-dark" style="display:flex; align-items:center; gap:20px; padding:32px 36px">
+            <svg width="58" height="58"><use href="#mark"/></svg>
+            <svg height="40" style="width:130px; color:#fff"><use href="#wordmark"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Clearspace — the height of the smallest shape, on all four sides</span>
+        <div class="row">
+          <div class="clearspace">
+            <div style="display:flex; align-items:center; gap:16px">
+              <svg width="46" height="46"><use href="#mark"/></svg>
+              <svg height="32" style="width:104px; color:var(--ink)"><use href="#wordmark"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Scale — rendered at true size</span>
+        <div class="sizerow">
+          <div class="sizecell"><div class="tile"><svg width="16" height="16"><use href="#mark"/></svg></div><span>16</span></div>
+          <div class="sizecell"><div class="tile"><svg width="20" height="20"><use href="#mark"/></svg></div><span>20</span></div>
+          <div class="sizecell"><div class="tile"><svg width="32" height="32"><use href="#mark"/></svg></div><span>32</span></div>
+          <div class="sizecell"><div class="tile"><svg width="48" height="48"><use href="#mark"/></svg></div><span>48</span></div>
+          <div class="sizecell"><div class="tile"><svg width="80" height="80"><use href="#mark"/></svg></div><span>80</span></div>
+          <div class="sizecell"><div class="tile tile-dark"><svg width="32" height="32"><use href="#mark"/></svg></div><span>dark</span></div>
+          <div class="sizecell"><div class="tile tile-coral"><svg width="32" height="32"><use href="#mark" style="--m1:#fff;--m2:#fff;--m3:#fff;--m4:#fff"/></svg></div><span>1-colour</span></div>
+          <div class="sizecell"><div class="tile"><svg width="32" height="32"><use href="#mark" style="--m1:var(--ink);--m2:var(--ink);--m3:var(--ink);--m4:var(--ink)"/></svg></div><span>mono</span></div>
+        </div>
+        <p class="note">
+          The gaps are what survive the shrink. At 16px the four shapes still read as
+          four — that is the whole reason they never touch.
+        </p>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Social avatar &amp; app icon</span>
+        <div class="row" style="gap:22px">
+          <div style="width:76px;height:76px;border-radius:999px;background:var(--coral);display:flex;align-items:center;justify-content:center">
+            <svg width="46" height="46"><use href="#mark" style="--m1:#fff;--m2:#fff;--m3:#fff;--m4:#fff"/></svg>
+          </div>
+          <div style="width:76px;height:76px;border-radius:999px;background:var(--canvas);border:1px solid var(--line);display:flex;align-items:center;justify-content:center">
+            <svg width="46" height="46"><use href="#mark"/></svg>
+          </div>
+          <div style="width:76px;height:76px;border-radius:18px;background:var(--canvas);border:1px solid var(--line);display:flex;align-items:center;justify-content:center">
+            <svg width="52" height="52"><use href="#mark"/></svg>
+          </div>
+          <div style="width:76px;height:76px;border-radius:18px;background:#101826;border:1px solid #29344A;display:flex;align-items:center;justify-content:center">
+            <svg width="52" height="52"><use href="#mark"/></svg>
+          </div>
+        </div>
+        <p class="note">
+          Circular avatar: full-colour on cream, or knockout on coral where the platform
+          crops hard and the mark needs to survive a thumbnail.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ WORDMARK ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--purple);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
+        <span class="eyebrow">03 — The wordmark</span>
+      </div>
+      <h2>Drawn, not set</h2>
+      <p class="lede">
+        The wordmark is vector paths, not live text in a licensed font. It renders
+        identically on every machine, needs no font to load, and cannot be silently
+        substituted. Monoline strokes with round caps: cap height 100, x-height from 28,
+        descender to 116, stroke 20.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="demo" style="padding:44px 36px">
+        <svg height="76" style="width:248px; color:var(--ink); display:block"><use href="#wordmark"/></svg>
+      </div>
+
+      <div class="row" style="gap:34px">
+        <div class="stack" style="gap:10px">
+          <span class="eyebrow">Ink</span>
+          <svg height="34" style="width:111px; color:var(--ink)"><use href="#wordmark"/></svg>
+        </div>
+        <div class="stack" style="gap:10px">
+          <span class="eyebrow">Coral</span>
+          <svg height="34" style="width:111px; color:var(--coral)"><use href="#wordmark"/></svg>
+        </div>
+        <div class="stack" style="gap:10px">
+          <span class="eyebrow">Knockout</span>
+          <div style="background:#101826; border:1px solid #29344A; padding:12px 16px; border-radius:12px">
+            <svg height="34" style="width:111px; color:#fff; display:block"><use href="#wordmark"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <p class="note">
+        The coral wordmark above is the one place coral appears as a letterform.
+        Logotypes are explicitly exempt from WCAG contrast requirements — but the
+        exemption stops at the logo, so coral never sets a headline, a link or a
+        label anywhere else.
+      </p>
+
+      <div class="grid donts">
+        <div class="rule yes">
+          <h4>The hooked <em>y</em> is the signature</h4>
+          <p>It is the one letter that could not have come from a stock face. It never gets straightened, and it never gets a second flourish elsewhere in the word.</p>
+        </div>
+        <div class="rule yes">
+          <h4>Spacing is optical, not metric</h4>
+          <p>The round <em>c</em> sits tighter to its neighbours than the flat-sided letters, and the diagonal of the <em>y</em> tighter still. Even gaps would look uneven.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Supporting typeface, for everything that isn't the logo</h4>
+        <p class="note" style="margin-top:8px">
+          The product sets UI and marketing copy in a rounded geometric sans. Licence one
+          of <strong>Nunito</strong>, <strong>Figtree</strong> or <strong>Poppins</strong> —
+          all carry the roundness of the wordmark without competing with it. Until one is
+          licensed and self-hosted, the product ships a tuned system stack: headings at 700
+          with <code>-0.025em</code> tracking, body at 400/1.6. Do not link a font from a
+          CDN; self-host it, or the fallback will quietly replace the brand.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ COLOUR ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--line-strong);--m3:var(--mint);--m4:var(--line-strong)"/></svg>
+        <span class="eyebrow">04 — Colour</span>
+      </div>
+      <h2>One loud voice, three specialists</h2>
+      <p class="lede">
+        Coral is the only colour allowed to be loud, and it is the one people will
+        remember. Purple, yellow and mint each hold exactly one meaning, which is what
+        stops the palette from becoming decoration.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="grid swatches">
+        <div class="sw">
+          <div class="sw-chip" style="background:#FF5C6C"><span class="sw-role" style="color:#172033">Signature</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Coral</span><span class="sw-hex">#FF5C6C</span>
+            <span class="sw-use">Primary buttons, active states, brand moments, the largest shape in the mark.</span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#7657FF"><span class="sw-role" style="color:#fff">Intelligence</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Electric Purple</span><span class="sw-hex">#7657FF</span>
+            <span class="sw-use">Anything the system inferred: match reasons, recommendations, Bunchy AI, premium.</span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#FFC857"><span class="sw-role" style="color:#172033">Activity</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Sunny Yellow</span><span class="sw-hex">#FFC857</span>
+            <span class="sw-use">Activities and events — the "when" on an activity card is yellow every time.</span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#55D6BE"><span class="sw-role" style="color:#172033">Connection</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Fresh Mint</span><span class="sw-hex">#55D6BE</span>
+            <span class="sw-use">Success, connected, you're in, going. Never used as decoration.</span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#FFF9F3; border-bottom:1px solid var(--line)"><span class="sw-role" style="color:#6B7280">Ground</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Soft Cream</span><span class="sw-hex">#FFF9F3</span>
+            <span class="sw-use">The application background. Never pure white — the warmth is the brand.</span>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#172033"><span class="sw-role" style="color:#FFF9F3">Text</span></div>
+          <div class="sw-body">
+            <span class="sw-name">Deep Navy</span><span class="sw-hex">#172033</span>
+            <span class="sw-use">All primary text, and the label on every coral and yellow fill. Never pure black.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:12px">
+        <span class="eyebrow">Distribution — 60 / 25 / 10 / 5</span>
+        <div class="ratiobar">
+          <span style="flex:60; background:#FFF9F3; color:#6B7280">60% cream &amp; white</span>
+          <span style="flex:25; background:#172033; color:#FFF9F3">25% navy</span>
+          <span style="flex:10; background:#FF5C6C; color:#172033">10%</span>
+          <span style="flex:1.7; background:#7657FF"></span>
+          <span style="flex:1.7; background:#FFC857"></span>
+          <span style="flex:1.6; background:#55D6BE"></span>
+        </div>
+        <p class="note">
+          If a screen looks like it has more coral than this, the coral has stopped being
+          a signal. Interest tags, metadata and repeated chips stay neutral for exactly
+          this reason.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CONTRAST ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--yellow)"/></svg>
+        <span class="eyebrow">05 — Contrast</span>
+      </div>
+      <h2>The rule that shapes the whole system</h2>
+      <p class="lede">
+        Every ratio below is measured, not estimated. One result decides more of this
+        design than any other: <strong>white text on coral is 3.00:1</strong>, which fails
+        WCAG AA for a button label. So Bunchy's primary button carries a deep navy label
+        instead — 5.42:1, the signature colour completely unchanged.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="row" style="gap:26px">
+        <div class="stack" style="gap:10px">
+          <span class="eyebrow" style="color:var(--fail)">✕ Fails — 3.00:1</span>
+          <span class="btn" style="background:#FF5C6C;color:#fff;cursor:default">Find my bunch</span>
+        </div>
+        <div class="stack" style="gap:10px">
+          <span class="eyebrow" style="color:var(--pass)">✓ Ships — 5.42:1</span>
+          <button class="btn btn-primary" type="button">Find my bunch</button>
+        </div>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Combination</th><th>Ratio</th><th>Verdict</th><th>Where it is used</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="dot" style="background:#172033"></span>Navy on cream</td><td class="num">15.57:1</td><td class="verdict v-pass">AA / AAA</td><td>All body text</td></tr>
+            <tr><td><span class="dot" style="background:#172033"></span>Navy on yellow</td><td class="num">10.58:1</td><td class="verdict v-pass">AA / AAA</td><td>Labels on yellow fills</td></tr>
+            <tr><td><span class="dot" style="background:#172033"></span>Navy on mint</td><td class="num">9.10:1</td><td class="verdict v-pass">AA / AAA</td><td>Labels on mint fills</td></tr>
+            <tr><td><span class="dot" style="background:#172033"></span>Navy on coral</td><td class="num">5.42:1</td><td class="verdict v-pass">AA</td><td>Primary button label, unread badge</td></tr>
+            <tr><td><span class="dot" style="background:#6B7280"></span>Slate on cream</td><td class="num">4.63:1</td><td class="verdict v-pass">AA</td><td>Secondary text</td></tr>
+            <tr><td><span class="dot" style="background:#FFFFFF;border:1px solid var(--line)"></span>White on purple</td><td class="num">4.59:1</td><td class="verdict v-pass">AA</td><td>Labels on purple fills</td></tr>
+            <tr><td><span class="dot" style="background:#7657FF"></span>Purple on cream</td><td class="num">4.39:1</td><td class="verdict v-fail">Large only</td><td>Never as body text — use purple ink</td></tr>
+            <tr><td><span class="dot" style="background:#FFFFFF;border:1px solid var(--line)"></span>White on coral</td><td class="num">3.00:1</td><td class="verdict v-fail">Fails</td><td>Not used anywhere</td></tr>
+            <tr><td><span class="dot" style="background:#FF5C6C"></span>Coral on cream</td><td class="num">2.87:1</td><td class="verdict v-fail">Fails</td><td>Not used as text — use coral ink</td></tr>
+            <tr><td><span class="dot" style="background:#55D6BE"></span>Mint on cream</td><td class="num">1.71:1</td><td class="verdict v-fail">Fails</td><td>Fills only, never text</td></tr>
+            <tr><td><span class="dot" style="background:#FFC857"></span>Yellow on cream</td><td class="num">1.47:1</td><td class="verdict v-fail">Fails</td><td>Fills only, never text</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <h3>Every accent carries a text-safe twin</h3>
+        <p class="note">
+          The bright value is the <em>fill</em>. The darkened value — the "ink" — is the
+          same hue pushed until it is legible as text on cream. Reach for the ink whenever
+          the colour becomes a letterform.
+        </p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Fill</th><th>Text-safe ink</th><th>Ratio on cream</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td class="num"><span class="dot" style="background:#FF5C6C"></span>#FF5C6C</td><td class="num">#CE2F45</td><td class="num">4.88:1</td><td><span class="chip chip-coral">Invited</span></td></tr>
+              <tr><td class="num"><span class="dot" style="background:#7657FF"></span>#7657FF</td><td class="num">#6A47F5</td><td class="num">5.24:1</td><td><span class="chip chip-ai">Matched for you</span></td></tr>
+              <tr><td class="num"><span class="dot" style="background:#55D6BE"></span>#55D6BE</td><td class="num">#0E7A69</td><td class="num">5.02:1</td><td><span class="chip chip-mint">You're in</span></td></tr>
+              <tr><td class="num"><span class="dot" style="background:#FFC857"></span>#FFC857</td><td class="num">#8A5E00</td><td class="num">5.46:1</td><td><span class="chip chip-yellow">Saturday, 14:00</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--danger)">
+        <h4>Danger cannot also be red</h4>
+        <p class="note" style="margin-top:8px">
+          When the primary action is coral, a bright red destructive button is a trap.
+          Danger is <code>#B3261E</code> — deeper and browner, clearly not the brand — and
+          destructive actions are rendered as tinted, not filled, so they never compete
+          with the primary button for the eye.
+        </p>
+        <div class="row" style="margin-top:16px">
+          <button class="btn btn-primary" type="button">Save changes</button>
+          <button class="btn btn-danger" type="button">Delete account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ COMPONENTS ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--coral);--m2:var(--purple);--m3:var(--mint);--m4:var(--yellow)"/></svg>
+        <span class="eyebrow">06 — Components</span>
+      </div>
+      <h2>Tactile, not corporate</h2>
+      <p class="lede">
+        Full-round buttons, 20px card radius, borders that whisper and shadows that lift
+        rather than drop. Everything below is live markup driven by the tokens.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Buttons</span>
+        <div class="row">
+          <button class="btn btn-primary" type="button">Connect</button>
+          <button class="btn btn-secondary" type="button">View profile</button>
+          <button class="btn btn-ghost" type="button">Not for me</button>
+          <button class="btn btn-danger" type="button">Leave bunch</button>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Chips — each tone is a meaning, never a mood</span>
+        <div class="row">
+          <span class="chip">Board games</span>
+          <span class="chip chip-ai">Matched for you</span>
+          <span class="chip chip-mint">You're in</span>
+          <span class="chip chip-coral">Invited</span>
+          <span class="chip chip-yellow">Saturday, 14:00</span>
+        </div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Person card — the AI reasoning is purple</span>
+          <div class="ui-card">
+            <div style="display:flex; gap:14px; align-items:flex-start">
+              <div class="avatar">T</div>
+              <div style="flex:1; min-width:0">
+                <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start">
+                  <div>
+                    <div style="font-weight:700; letter-spacing:-.01em">Tomas</div>
+                    <div style="font-size:13.5px; color:var(--muted)">31 · Antwerp region</div>
+                  </div>
+                  <span class="match">92% match</span>
+                </div>
+                <div class="row" style="gap:6px; margin-top:11px">
+                  <span class="chip">Hiking</span><span class="chip">Board games</span>
+                </div>
+              </div>
+            </div>
+            <ul style="list-style:none; padding:14px 0 0; margin:14px 0 0; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:6px; font-size:13.5px; color:var(--ink-soft)">
+              <li><span style="color:var(--purple-ink); font-weight:700">·</span> You both like hiking and board games</li>
+              <li><span style="color:var(--purple-ink); font-weight:700">·</span> Hiking and nature go well together</li>
+              <li><span style="color:var(--purple-ink); font-weight:700">·</span> You could get them into photography</li>
+            </ul>
+            <div class="row" style="margin-top:16px; gap:8px">
+              <button class="btn btn-primary" style="padding:8px 16px; font-size:13.5px" type="button">Connect</button>
+              <button class="btn btn-ghost" style="padding:8px 14px; font-size:13.5px" type="button">Not for me</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Activity card — the "when" is yellow, always</span>
+          <div class="ui-card">
+            <div style="display:flex; justify-content:space-between; gap:14px">
+              <div>
+                <div style="font-size:13.5px; font-weight:600; color:var(--yellow-ink)">Saturday, 14:00</div>
+                <div style="font-weight:700; margin-top:3px; letter-spacing:-.01em">Antwerp Board Game Meetup</div>
+                <div style="font-size:13.5px; color:var(--muted); margin-top:2px">Café Kulminator · Gaming &amp; Tech</div>
+              </div>
+              <div style="text-align:right; flex:none">
+                <div style="font-size:13.5px; font-weight:600">12 going</div>
+                <div style="font-size:12px; color:var(--muted)">4 left</div>
+                <span class="chip chip-mint" style="margin-top:8px">Going</span>
+              </div>
+            </div>
+          </div>
+
+          <span class="eyebrow" style="margin-top:12px">Bunchy AI — purple marks the machine</span>
+          <div class="ui-card">
+            <div style="display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px">
+              <span style="width:9px;height:9px;border-radius:999px;background:var(--purple);flex:none"></span>
+              Bunchy AI
+            </div>
+            <p style="font-size:13.5px; color:var(--muted); margin-top:6px">
+              Ask for a catch-up, or an idea for something to do.
+            </p>
+            <div class="row" style="gap:8px; margin-top:12px">
+              <button class="btn btn-secondary" style="padding:8px 14px; font-size:13.5px" type="button">Catch me up</button>
+              <button class="btn btn-secondary" style="padding:8px 14px; font-size:13.5px" type="button">Suggest something</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Navigation</span>
+          <div class="ui-card navdemo">
+            <div style="display:flex; align-items:center; gap:10px; padding:4px 13px 14px">
+              <svg width="26" height="26"><use href="#mark"/></svg>
+              <svg height="17" style="width:56px; color:var(--ink)"><use href="#wordmark"/></svg>
+            </div>
+            <div class="navitem active">Discover</div>
+            <div class="navitem">Bunches</div>
+            <div class="navitem">Activities</div>
+            <div class="navitem">Messages <span class="navbadge">2</span></div>
+            <div class="navitem">Notifications</div>
+          </div>
+        </div>
+
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow">Notification &amp; empty state</span>
+          <div class="ui-card" style="display:flex; gap:12px; align-items:flex-start">
+            <span style="width:8px;height:8px;border-radius:999px;background:var(--coral);margin-top:6px;flex:none"></span>
+            <div>
+              <div style="font-weight:600; font-size:14px">Jonas would like to connect</div>
+              <div style="font-size:13.5px; color:var(--muted)">Take a look at their profile and decide if you'd like to talk.</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:5px">1m ago</div>
+            </div>
+          </div>
+          <div class="ui-card" style="text-align:center; padding:32px 22px">
+            <div style="display:flex; justify-content:center; margin-bottom:14px">
+              <svg width="38" height="38" style="opacity:.5"><use href="#mark"/></svg>
+            </div>
+            <div style="font-weight:700; letter-spacing:-.01em">Nothing waiting</div>
+            <p style="font-size:13.5px; color:var(--muted); margin:6px auto 0; max-width:34ch">
+              We'll tell you when someone wants to connect. Nothing else.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <span class="eyebrow">Dark mode — the brand dimmed, not a different product</span>
+        <div class="demo demo-dark">
+          <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px">
+            <svg width="30" height="30"><use href="#mark"/></svg>
+            <svg height="19" style="width:62px; color:#fff"><use href="#wordmark"/></svg>
+          </div>
+          <div class="ui-card ui-dark">
+            <div style="display:flex; gap:14px; align-items:flex-start">
+              <div class="avatar" style="background:#1F2A3B; color:#C3CAD6">P</div>
+              <div style="flex:1">
+                <div style="display:flex; justify-content:space-between; gap:10px">
+                  <div>
+                    <div style="font-weight:700; color:#F5F7FA">Priya</div>
+                    <div style="font-size:13.5px; color:#8C97A8">36 · Antwerp region</div>
+                  </div>
+                  <span style="background:#3A1D22; color:#FF8391; border-radius:999px; padding:4px 10px; font-size:12.5px; font-weight:700">69% match</span>
+                </div>
+                <div class="row" style="gap:6px; margin-top:11px">
+                  <span class="chip" style="background:#1F2A3B; color:#C3CAD6">Programming</span>
+                  <span class="chip" style="background:#241C4A; color:#9B85FF">Matched for you</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:16px; gap:8px">
+              <button class="btn btn-primary" style="padding:8px 16px; font-size:13.5px" type="button">Connect</button>
+            </div>
+          </div>
+        </div>
+        <p class="note">
+          Fills and their labels do not change between modes — a coral button with a navy
+          label is the same object at midnight. Only text colours move, because only they
+          depend on what's behind them.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MISUSE ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--danger);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
+        <span class="eyebrow">07 — Misuse</span>
+      </div>
+      <h2>How this breaks</h2>
+    </div>
+
+    <div class="grid donts">
+      <div class="rule no"><h4>Don't put white text on coral</h4><p>3.00:1. The single most likely mistake, because it is what every other consumer app does.</p></div>
+      <div class="rule no"><h4>Don't let the shapes touch or overlap</h4><p>The gaps are the idea. Merged shapes read as one blob and the mark loses its meaning.</p></div>
+      <div class="rule no"><h4>Don't recolour the cluster arbitrarily</h4><p>Coral is always the largest shape. Full colour, single colour, or knockout — nothing else.</p></div>
+      <div class="rule no"><h4>Don't rotate or rearrange the mark</h4><p>The angles are already built in. Rotating the whole cluster makes it look like a mistake.</p></div>
+      <div class="rule no"><h4>Don't use mint or yellow as text</h4><p>1.71:1 and 1.47:1 on cream. They are fills. Their inks are what you write with.</p></div>
+      <div class="rule no"><h4>Don't tint the page background</h4><p>Cream is the ground everywhere. Coloured page backgrounds break the 60/25/10/5 balance instantly.</p></div>
+      <div class="rule no"><h4>Don't add gradients to the mark</h4><p>Flat colour only. A gradient makes it a crypto logo, and it will not survive a 16px favicon.</p></div>
+      <div class="rule no"><h4>Don't spend coral on decoration</h4><p>If everything is coral, nothing is the primary action. Repeated metadata stays neutral.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ HANDOFF ═══════════════ -->
+  <section>
+    <div class="head">
+      <div class="head-row">
+        <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--mint);--m2:var(--mint);--m3:var(--mint);--m4:var(--mint)"/></svg>
+        <span class="eyebrow">08 — Handoff</span>
+      </div>
+      <h2>Production tokens</h2>
+      <p class="lede">
+        Copy-paste ready. These are the exact values shipping in the Bunchy codebase — the
+        naming convention is <code>--color-x</code> for the fill, <code>--color-x-ink</code>
+        for the text-safe twin, and <code>--color-on-x</code> for the label that sits on
+        the fill.
+      </p>
+    </div>
+
+    <div class="stack-lg">
+      <pre>:root {
+  /* Ground &amp; text */
+  --color-canvas:         #FFF9F3;   /* app background — never pure white */
+  --color-surface:        #FFFFFF;
+  --color-surface-sunken: #F9F0E6;
+  --color-ink:            #172033;   /* all primary text — never pure black */
+  --color-ink-soft:       #3D4759;
+  --color-muted:          #6B7280;
+  --color-line:           #EFE6DA;
+
+  /* Coral — brand, primary action, active state */
+  --color-accent:         #FF5C6C;
+  --color-accent-hover:   #F5455A;
+  --color-accent-soft:    #FFE9EB;
+  --color-accent-ink:     #CE2F45;   /* coral AS TEXT (4.88:1) */
+  --color-on-accent:      #172033;   /* label on coral  (5.42:1) */
+
+  /* Purple — AI, recommendations, premium */
+  --color-purple:         #7657FF;
+  --color-purple-soft:    #EFEAFF;
+  --color-purple-ink:     #6A47F5;   /* 5.24:1 */
+  --color-on-purple:      #FFFFFF;   /* 4.59:1 */
+
+  /* Yellow — activities, events, discovery */
+  --color-yellow:         #FFC857;
+  --color-yellow-soft:    #FFF3DC;
+  --color-yellow-ink:     #8A5E00;   /* 5.46:1 */
+  --color-on-yellow:      #172033;   /* 10.58:1 */
+
+  /* Mint — success, connected, going */
+  --color-mint:           #55D6BE;
+  --color-mint-soft:      #E3F8F3;
+  --color-mint-ink:       #0E7A69;   /* 5.02:1 */
+  --color-on-mint:        #172033;   /* 9.10:1 */
+
+  /* Destructive — deliberately not coral */
+  --color-danger:         #B3261E;
+  --color-danger-soft:    #FDECEA;
+
+  /* Shape &amp; motion */
+  --radius-card:    1.25rem;   /* 20px */
+  --radius-control: 0.75rem;   /* 12px */
+  --radius-button:  999px;
+  --shadow-card: 0 1px 2px rgb(23 32 51 / .04), 0 8px 24px -12px rgb(23 32 51 / .14);
+  --shadow-lift: 0 2px 4px rgb(23 32 51 / .06), 0 18px 40px -20px rgb(23 32 51 / .26);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}</pre>
+
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        <div class="card">
+          <h4>Type scale</h4>
+          <div class="tablewrap" style="border:0; margin-top:10px">
+            <table style="min-width:0">
+              <tbody>
+                <tr><td class="num">48–82</td><td>Display / hero · 700 · −.04em</td></tr>
+                <tr><td class="num">28–40</td><td>Section heading · 700 · −.025em</td></tr>
+                <tr><td class="num">21</td><td>Card heading · 700 · −.02em</td></tr>
+                <tr><td class="num">16</td><td>Body · 400 · 1.6</td></tr>
+                <tr><td class="num">14</td><td>UI / secondary · 400–500</td></tr>
+                <tr><td class="num">11</td><td>Eyebrow · 700 · .14em · caps</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Spacing &amp; shape</h4>
+          <div class="tablewrap" style="border:0; margin-top:10px">
+            <table style="min-width:0">
+              <tbody>
+                <tr><td class="num">4px</td><td>Base unit; all spacing is a multiple</td></tr>
+                <tr><td class="num">20px</td><td>Card radius</td></tr>
+                <tr><td class="num">12px</td><td>Input &amp; control radius</td></tr>
+                <tr><td class="num">999px</td><td>Buttons, chips, badges, avatars</td></tr>
+                <tr><td class="num">22px</td><td>Card padding, desktop</td></tr>
+                <tr><td class="num">200ms</td><td>Standard transition</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Asset checklist</h4>
+        <p class="note" style="margin-top:8px">
+          <code>icon.svg</code> (scalable favicon, transparent) ·
+          <code>apple-icon.png</code> (180×180, cream ground) ·
+          circular avatar knockout on coral for social ·
+          horizontal lockup for headers ·
+          stacked lockup for square placements ·
+          single-colour and knockout variants of both.
+          Ship the wordmark as outlined paths, never as live text.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
+      <svg width="26" height="26"><use href="#mark"/></svg>
+      <svg height="17" style="width:56px; color:var(--ink)"><use href="#wordmark"/></svg>
+    </div>
+    Bunchy — Find your bunch. Colour values, geometry and contrast ratios on this page
+    are the ones in the shipping codebase; ratios are computed to WCAG 2.1 relative
+    luminance.
+  </footer>
+</div>

@@ -6,7 +6,7 @@ import { recommendBunches } from "@/server/modules/matching/bunches";
 import { recommendActivities } from "@/server/modules/matching/activities";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
-import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+import { Chip, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Discover" };
 
@@ -45,7 +45,7 @@ export default async function DiscoverPage() {
           <span className="text-ink-soft">
             Confirm your email so you don&rsquo;t lose access to your account.
           </span>{" "}
-          <Link href="/profile" className="font-medium text-accent hover:underline">
+          <Link href="/profile" className="font-medium text-accent-ink hover:underline">
             Resend the link
           </Link>
         </div>
@@ -67,6 +67,7 @@ export default async function DiscoverPage() {
               <SectionHeading
                 title="People you might connect with"
                 subtitle="Ranked on interests, goals, availability and how you like to spend time."
+                action={<Chip tone="ai">Matched for you</Chip>}
               />
               <div className="grid gap-4 lg:grid-cols-2">
                 {people.map((person) => (

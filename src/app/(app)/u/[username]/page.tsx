@@ -98,7 +98,7 @@ export default async function PublicProfilePage({
             </p>
             <div className="mt-3 flex flex-wrap gap-1.5">
               {curious.map((interest) => (
-                <Chip key={interest.slug} tone="teal">
+                <Chip key={interest.slug} tone="neutral">
                   {interest.label}
                 </Chip>
               ))}

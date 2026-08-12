@@ -88,6 +88,9 @@ Phase 1 of the roadmap is complete and working end to end.
   day, plus per-type in-app and email switches that save the moment they move.
   Opening the screen does not mark anything read, and suggestions are off until
   you ask for them.
+- **Visual identity** — coral/purple/yellow/mint on soft cream with deep navy
+  text, a four-shape logo and a drawn wordmark, every accent paired with a
+  text-safe ink at a measured contrast ratio. The guide is `brand/index.html`.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.

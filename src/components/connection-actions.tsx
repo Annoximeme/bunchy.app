@@ -99,7 +99,7 @@ export function ConnectButton({
     return (
       <p className="text-sm text-ink-soft">
         They asked to connect — answer it on your{" "}
-        <a href="/connections" className="font-medium text-accent hover:underline">
+        <a href="/connections" className="font-medium text-accent-ink hover:underline">
           connections page
         </a>
         .

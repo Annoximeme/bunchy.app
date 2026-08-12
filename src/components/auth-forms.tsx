@@ -93,7 +93,7 @@ export function SignUpForm() {
 
       <p className="mt-5 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-accent hover:underline">
+        <Link href="/login" className="font-medium text-accent-ink hover:underline">
           Sign in
         </Link>
       </p>
@@ -152,14 +152,14 @@ export function SignInForm() {
         <p>
           <Link
             href="/forgot-password"
-            className="font-medium text-accent hover:underline"
+            className="font-medium text-accent-ink hover:underline"
           >
             Forgot your password?
           </Link>
         </p>
         <p>
           New here?{" "}
-          <Link href="/signup" className="font-medium text-accent hover:underline">
+          <Link href="/signup" className="font-medium text-accent-ink hover:underline">
             Create an account
           </Link>
         </p>
@@ -188,7 +188,7 @@ export function ForgotPasswordForm() {
           in an hour.
         </p>
         <p className="mt-5 text-sm text-muted">
-          <Link href="/login" className="font-medium text-accent hover:underline">
+          <Link href="/login" className="font-medium text-accent-ink hover:underline">
             Back to sign in
           </Link>
         </p>
@@ -214,7 +214,7 @@ export function ForgotPasswordForm() {
       </form>
 
       <p className="mt-5 text-center text-sm text-muted">
-        <Link href="/login" className="font-medium text-accent hover:underline">
+        <Link href="/login" className="font-medium text-accent-ink hover:underline">
           Back to sign in
         </Link>
       </p>
@@ -245,7 +245,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         <p className="mt-5 text-sm">
           <Link
             href="/forgot-password"
-            className="font-medium text-accent hover:underline"
+            className="font-medium text-accent-ink hover:underline"
           >
             Request a new link
           </Link>
@@ -329,7 +329,7 @@ export function VerifyEmailPanel({ token }: { token: string }) {
         <h1 className="text-2xl font-semibold tracking-tight">Email confirmed</h1>
         <p className="mt-2 text-sm text-ink-soft">You&rsquo;re all set.</p>
         <div className="mt-5">
-          <Link href="/discover" className="font-medium text-accent hover:underline">
+          <Link href="/discover" className="font-medium text-accent-ink hover:underline">
             Go to Discover
           </Link>
         </div>

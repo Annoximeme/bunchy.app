@@ -3,33 +3,76 @@
 /**
  * Bunchy design tokens.
  *
- * Warm rather than clinical: a paper-white ground, ink-brown text and a
- * terracotta accent, instead of the white/blue/grey that every social product
- * defaults to. Generous radii and slow, small transitions do the rest — the
- * product should feel like a well-made object, not a dashboard.
+ * Soft cream ground, deep navy text, coral signature. Never pure white as the
+ * page, never pure black as the text — both are what makes the interface read
+ * as warm rather than clinical.
+ *
+ * Four accents, each with one job, so colour means something instead of
+ * decorating: coral is the brand and the primary action, purple is anything the
+ * machine inferred, yellow is activities and discovery, mint is success and
+ * connection.
+ *
+ * Each accent carries three tokens, and the distinction is the whole reason
+ * this system is accessible:
+ *
+ *   --color-x       the fill. Bright, saturated, on-brand.
+ *   --color-x-ink   the same hue darkened until it is legible AS TEXT on cream.
+ *   --color-on-x    the label colour to use ON the fill.
+ *
+ * Coral is the case that proves the point. White on #FF5C6C is 3.00:1, which
+ * fails AA for body text, so primary buttons carry a deep navy label (5.42:1)
+ * rather than the white one every other consumer app reaches for. Coral as text
+ * on cream is 2.87:1 and is never used; --color-accent-ink (#CE2F45, 4.88:1)
+ * is. Ratios are measured, not estimated, and are listed in the brand guide.
  */
 
 @theme {
-  --color-canvas: #fdfbf8;
+  --color-canvas: #fff9f3;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f6f1ea;
-  --color-ink: #1a1614;
-  --color-ink-soft: #574d46;
-  --color-muted: #857a71;
-  --color-line: #ebe3da;
+  --color-surface-sunken: #f9f0e6;
+  --color-ink: #172033;
+  --color-ink-soft: #3d4759;
+  --color-muted: #6b7280;
+  --color-line: #efe6da;
 
-  --color-accent: #d9552f;
-  --color-accent-hover: #c2481f;
-  --color-accent-soft: #fdefe8;
-  --color-accent-ink: #8a3113;
+  /* Coral — the signature. Brand, primary action, active state. */
+  --color-accent: #ff5c6c;
+  --color-accent-hover: #f5455a;
+  --color-accent-soft: #ffe9eb;
+  --color-accent-ink: #ce2f45;
+  --color-on-accent: #172033;
 
-  --color-teal: #14706a;
-  --color-teal-soft: #e2f1ef;
+  /* Purple — intelligence. AI, recommendations, premium. */
+  --color-purple: #7657ff;
+  --color-purple-soft: #efeaff;
+  --color-purple-ink: #6a47f5;
+  --color-on-purple: #ffffff;
 
-  --color-positive: #2c7a5a;
-  --color-positive-soft: #e4f3ec;
-  --color-danger: #b4342b;
-  --color-danger-soft: #fceceb;
+  /* Yellow — activities, discovery, moments worth noticing. */
+  --color-yellow: #ffc857;
+  --color-yellow-soft: #fff3dc;
+  --color-yellow-ink: #8a5e00;
+  --color-on-yellow: #172033;
+
+  /* Mint — success, connection, community health. */
+  --color-mint: #55d6be;
+  --color-mint-soft: #e3f8f3;
+  --color-mint-ink: #0e7a69;
+  --color-on-mint: #172033;
+
+  /* `teal` predates the palette and is kept as an alias so the components that
+     already speak it keep working; it resolves to mint. */
+  --color-teal: #0e7a69;
+  --color-teal-soft: #e3f8f3;
+
+  --color-positive: #0e7a69;
+  --color-positive-soft: #e3f8f3;
+
+  /* Danger is deliberately a deeper, browner red than coral. A destructive
+     action must never be mistakable for the primary one when the primary one
+     is also red. */
+  --color-danger: #b3261e;
+  --color-danger-soft: #fdecea;
 
   --radius-card: 1.25rem;
   --radius-control: 0.75rem;
@@ -38,8 +81,8 @@
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
     "Helvetica Neue", Arial, sans-serif;
 
-  --shadow-card: 0 1px 2px rgb(26 22 20 / 0.04), 0 8px 24px -12px rgb(26 22 20 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(26 22 20 / 0.05), 0 18px 40px -20px rgb(26 22 20 / 0.24);
+  --shadow-card: 0 1px 2px rgb(23 32 51 / 0.04), 0 8px 24px -12px rgb(23 32 51 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(23 32 51 / 0.06), 0 18px 40px -20px rgb(23 32 51 / 0.26);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -55,26 +98,47 @@
  */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-canvas: #15120f;
-    --color-surface: #1e1a16;
-    --color-surface-sunken: #262019;
-    --color-ink: #f6f1ea;
-    --color-ink-soft: #ccc2b8;
-    --color-muted: #9c9188;
-    --color-line: #322b24;
+    /* Navy all the way down rather than neutral grey — the dark mode is the
+       brand's own colour dimmed, not a different product at night. */
+    --color-canvas: #101826;
+    --color-surface: #182231;
+    --color-surface-sunken: #1f2a3b;
+    --color-ink: #f5f7fa;
+    --color-ink-soft: #c3cad6;
+    --color-muted: #8c97a8;
+    --color-line: #29344a;
 
-    --color-accent: #f0724a;
-    --color-accent-hover: #ff8760;
-    --color-accent-soft: #3a2017;
-    --color-accent-ink: #ffb79c;
+    /* The fills and their labels are unchanged: a coral button with a navy
+       label is the same object in both modes. Only the *text* colours move,
+       because those are the ones whose contrast depends on the background. */
+    --color-accent: #ff5c6c;
+    --color-accent-hover: #ff7180;
+    --color-accent-soft: #3a1d22;
+    --color-accent-ink: #ff8391;
+    --color-on-accent: #172033;
 
-    --color-teal: #4fb8ad;
-    --color-teal-soft: #16302e;
+    --color-purple: #7657ff;
+    --color-purple-soft: #241c4a;
+    --color-purple-ink: #9b85ff;
+    --color-on-purple: #ffffff;
 
-    --color-positive: #63c093;
-    --color-positive-soft: #172e25;
-    --color-danger: #f08076;
-    --color-danger-soft: #33191a;
+    --color-yellow: #ffc857;
+    --color-yellow-soft: #33270f;
+    --color-yellow-ink: #ffc857;
+    --color-on-yellow: #172033;
+
+    --color-mint: #55d6be;
+    --color-mint-soft: #10302b;
+    --color-mint-ink: #55d6be;
+    --color-on-mint: #172033;
+
+    --color-teal: #55d6be;
+    --color-teal-soft: #10302b;
+
+    --color-positive: #55d6be;
+    --color-positive-soft: #10302b;
+    --color-danger: #ff8a7d;
+    --color-danger-soft: #3a1c19;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);

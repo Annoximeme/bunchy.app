@@ -92,7 +92,7 @@ export default async function BunchPage({
         {bunch.interests.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-1.5">
             {bunch.interests.map((interest) => (
-              <Chip key={interest} tone="teal">
+              <Chip key={interest} tone="neutral">
                 {interest}
               </Chip>
             ))}
