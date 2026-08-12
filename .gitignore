@@ -17,7 +17,17 @@ next-env.d.ts
 # testing
 /coverage
 
-# env — .env holds local defaults and IS committed; secrets go in .env.local
+# env — never committed, in any environment.
+#
+# `.env` used to be tracked with local-development defaults, which was fine
+# until the production deploy told you to write your real secrets into that
+# same path: `git pull` would then refuse to run, or worse, somebody would
+# commit a database password to a public repository. One filename cannot be
+# both "safe defaults everyone shares" and "the secrets on this machine".
+#
+# Local development: cp .env.example .env
+# Production:       cp .env.production.example .env
+.env
 .env.local
 .env*.local
 

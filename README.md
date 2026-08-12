@@ -17,7 +17,7 @@ Requires Node 22+ and a PostgreSQL 16 database.
 
 ```bash
 npm install
-cp .env.example .env.local          # then set DATABASE_URL (and AUTH_SECRET for prod)
+cp .env.example .env                # then set DATABASE_URL if yours differs
 npm run db:migrate                  # create the schema
 npm run db:seed                     # 12 people, 4 bunches, 4 activities
 npm run dev
@@ -163,8 +163,8 @@ All environment variables are validated at boot — see `src/server/env.ts`.
 | `EMAIL_PROVIDER`    | no              | `console` (default) or `smtp`                     |
 | `APP_URL`           | no              | Used in emailed links                             |
 
-`.env` holds safe local defaults and is committed. Secrets belong in
-`.env.local`, which is git-ignored.
+`.env` is git-ignored in every environment. For local development, copy the
+template: `cp .env.example .env`. For a server, see `DEPLOY.md`.
 
 There are no AI variables, and that is deliberate. Bunchy's assistant is
 deterministic and runs in-process, so running the product costs a database and
