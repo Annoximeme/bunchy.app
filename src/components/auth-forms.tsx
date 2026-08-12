@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input } from "@/components/ui";
@@ -37,6 +37,10 @@ function useSubmit<T>(action: (event: FormEvent<HTMLFormElement>) => Promise<T>)
 
 export function SignUpForm() {
   const router = useRouter();
+  // From a personal invite link (/signup?ref=CODE). Read here rather than kept
+  // in a cookie: an invite should not follow someone around the internet.
+  const referralCode = useSearchParams().get("ref") ?? undefined;
+
   const { pending, error, onSubmit } = useSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const result = await api<{ next: string }>("/api/auth/signup", {
@@ -44,6 +48,7 @@ export function SignUpForm() {
       json: {
         email: String(data.get("email") ?? ""),
         password: String(data.get("password") ?? ""),
+        ...(referralCode ? { referralCode } : {}),
       },
     });
     router.push(result.next);
@@ -54,7 +59,9 @@ export function SignUpForm() {
     <div className="card-surface p-7">
       <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
       <p className="mt-1.5 text-sm text-muted">
-        Two fields now. The interesting questions come next.
+        {referralCode
+          ? "Someone invited you. Two fields now — the interesting questions come next."
+          : "Two fields now. The interesting questions come next."}
       </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4">

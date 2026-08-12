@@ -62,6 +62,12 @@ export default async function PublicProfilePage({
                 {profile.locationLabel && ` · ${profile.locationLabel}`}
               </p>
               {profile.bio && <p className="mt-3 text-ink-soft">{profile.bio}</p>}
+              {profile.foundingMember && (
+                <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-yellow-soft px-2.5 py-1 text-xs font-medium text-yellow-ink">
+                  <span aria-hidden>★</span>
+                  Here since the beginning
+                </span>
+              )}
 
               <div className="mt-5">
                 <ConnectButton

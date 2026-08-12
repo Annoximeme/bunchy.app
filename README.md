@@ -99,6 +99,9 @@ Phase 1 of the roadmap is complete and working end to end.
   aren't in a bunch, admitting people on their weakest link so a group never
   forms around one popular person. Staff review it; everyone proposed gets an
   invitation they can decline.
+- **Founding members & referrals** — a badge for finishing onboarding early
+  (never an ordinal, confers nothing) and a personal invite link with no reward
+  ladder, no leaderboard, no contact import and no reminder emails.
 - **Leaving** — download everything we hold as one JSON file, straight away, and
   delete the account for real: immediate, password-confirmed, no thirty-day
   "recovery window". Bunch conversations keep their shape with the author

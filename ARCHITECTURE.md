@@ -286,8 +286,7 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. Founding-member badge (§37) and referrals (§38).
-2. Email delivery for the notification preferences that already exist.
+1. Email delivery for the notification preferences that already exist.
 4. An integration suite that boots a database — the service layer is written
    for it (pure functions, injectable stores, and now a vitest setup that loads
    the environment), but it does not exist yet.
@@ -654,3 +653,63 @@ That run also caught a bug worth recording: the group spanned Antwerp and Tokyo
 and the suggested name came out as *"Gaming in Tokyo"*, because the city was
 taken from an arbitrary set element. A city is now only named when every member
 shares it — a wrong name is worse than a generic one.
+
+---
+
+## 19. Founding members and referrals
+
+Both features are, on the shelf, exactly the kind of thing this product argues
+against — status badges and referral programmes are how social apps manufacture
+hierarchy and growth. So both are built with the incentive removed.
+
+### Founding members (§37)
+
+`src/server/modules/profile/founding.ts`. A boolean, awarded once, when
+onboarding **completes** while the finished member base is under 1000.
+
+- **Never an ordinal.** "Here since the beginning" is a fact about a person;
+  "founding member #47" is a leaderboard, and §29 rules out numbers that rank
+  one member above another. Nothing in the codebase can say who was twelfth.
+- **Earned by finishing, not signing up.** A half-filled profile is a row, not a
+  founding member, so abandoned signups don't consume places.
+- **It confers nothing.** No effect on matching, ranking, discovery order or
+  permissions. A badge that bought advantages would turn the early cohort into a
+  class, which is the opposite of what a product about belonging should build.
+
+The award is idempotent (`where: { foundingMember: false }`) and deliberately
+racy — two people finishing in the same instant could both slip in. Accepted:
+the failure mode is 1001 founding members, and the alternative is serializing
+every onboarding completion behind a lock to protect a badge.
+
+A backfill migration marks everyone who had already completed onboarding when
+the feature shipped. Without it the badge would have gone only to members who
+arrived *after* the earliest ones — exactly backwards.
+
+### Referrals (§38)
+
+`src/server/modules/profile/referrals.ts`. A personal link, and nothing else.
+
+- **No rewards ladder.** Nothing unlocks at three invites, or ten. The moment a
+  referral pays out, the incentive is to send the link to strangers.
+- **No leaderboard and no names.** A member sees a count, not who joined —
+  a list would disclose that a specific person has an account here.
+- **No contact import, no reminder emails.** Bunchy never asks for an address
+  book and never tells anyone "your friend is still waiting".
+- **Counted on completion**, so an abandoned signup is not a referral.
+
+Codes are minted on first request rather than at signup — most people never open
+the invite screen, and a column that stays null until someone wants a link beats
+pre-generating a code for everyone. The alphabet excludes `O/0`, `I/1/l` and `U`
+because these get read aloud and typed from memory.
+
+Two refusals in `resolveReferrer` matter more than the happy path: an
+unrecognised code returns null instead of throwing, because losing attribution
+is a rounding error and blocking a signup over a mistyped link is not; and a
+suspended or banned member's link stops working, or a ban is trivially routed
+around by inviting fresh accounts. Both are unit tested.
+
+Verified against the database: a lowercased code still attributed; a nonsense
+code let the signup through unattributed; the count stayed 0 until the invitee
+completed onboarding; the badge awarded once and refused the second time;
+refused entirely while onboarding was incomplete; and deleting the inviter left
+the invitee intact with the attribution detached rather than cascading.

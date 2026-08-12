@@ -215,11 +215,29 @@ model Profile {
 
   onboardingStage OnboardingStage @default(BASICS)
   onboardedAt     DateTime?
+
+  /// Awarded once, at the moment onboarding completes, while the member base is
+  /// still under `FOUNDING_MEMBER_LIMIT`. Stored rather than derived so it can
+  /// never be recalculated away, and deliberately a boolean rather than an
+  /// ordinal: "here since the beginning" is a fact, "founding member #47" is a
+  /// leaderboard, and §29 rules out numbers that rank one member above another.
+  foundingMember  Boolean @default(false)
+
+  /// Stable, shareable, and not the username — usernames can change and a
+  /// printed invite link should not rot when they do.
+  referralCode String? @unique
+  /// Who invited them, if anyone. Set once at signup and never editable.
+  referredById String?
   lastActiveAt    DateTime        @default(now())
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// SetNull, not Cascade: someone deleting their account must not delete the
+  /// people they invited.
+  referredBy Profile?  @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referred   Profile[] @relation("Referrals")
 
   personality  PersonalityProfile?
   privacy      PrivacySettings?
@@ -256,6 +274,7 @@ model Profile {
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
   @@index([lastActiveAt])
+  @@index([referredById])
   @@index([onboardingStage])
 }
 
