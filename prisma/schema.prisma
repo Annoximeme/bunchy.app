@@ -748,7 +748,11 @@ enum ReportStatus {
 
 model Report {
   id         String           @id @default(cuid())
-  reporterId String
+  /// Nullable so a report outlives its reporter. If someone reports harassment
+  /// and then deletes their account, cascading the report away would quietly
+  /// clear the queue and let the reported member escape review. The report is
+  /// anonymized instead — the safety record survives, the person does not.
+  reporterId String?
   targetType ReportTargetType
   targetId   String
   /// Denormalized for profile reports so moderators can act without a join.
@@ -760,7 +764,7 @@ model Report {
   reviewedAt DateTime?
   reviewNote String?
 
-  reporter        Profile  @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reporter        Profile? @relation("Reporter", fields: [reporterId], references: [id], onDelete: SetNull)
   reportedProfile Profile? @relation("ReportedProfile", fields: [reportedProfileId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])

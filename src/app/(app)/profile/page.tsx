@@ -7,6 +7,7 @@ import { getPreferences } from "@/server/modules/notifications/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { PrivacySettings } from "@/components/privacy-settings";
 import { NotificationPreferences } from "@/components/notification-preferences";
+import { AccountData } from "@/components/account-data";
 import { BlockButton } from "@/components/moderation-actions";
 import { ResendVerification } from "@/components/resend-verification";
 import { Avatar, Card, Chip, LinkButton } from "@/components/ui";
@@ -212,6 +213,8 @@ export default async function ProfilePage() {
             </ul>
           </Card>
         )}
+
+        <AccountData />
       </div>
     </PageShell>
   );

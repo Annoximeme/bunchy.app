@@ -91,6 +91,11 @@ Phase 1 of the roadmap is complete and working end to end.
 - **Visual identity** — coral/purple/yellow/mint on soft cream with deep navy
   text, a four-shape logo and a drawn wordmark, every accent paired with a
   text-safe ink at a measured contrast ratio. The guide is `brand/index.html`.
+- **Leaving** — download everything we hold as one JSON file, straight away, and
+  delete the account for real: immediate, password-confirmed, no thirty-day
+  "recovery window". Bunch conversations keep their shape with the author
+  detached, people whose plans are affected are told first, and reports outlive
+  the person who filed them.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for how it fits together, the
 decisions behind it, and what is deliberately deferred.

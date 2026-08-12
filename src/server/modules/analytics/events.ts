@@ -18,6 +18,10 @@ export const ANALYTICS_EVENTS = {
   // --- Acquisition ---------------------------------------------------------
   ACCOUNT_CREATED: "account.created",
   EMAIL_VERIFIED: "account.email_verified",
+  /// Carries no profile reference — the profile is being erased in the same
+  /// breath, and an event that outlived it pointing at a person would defeat
+  /// the deletion. It counts departures and nothing else.
+  ACCOUNT_DELETED: "account.deleted",
 
   // --- Activation: the onboarding funnel -----------------------------------
   ONBOARDING_BASICS: "onboarding.basics_completed",
