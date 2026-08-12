@@ -586,6 +586,7 @@ async function main() {
     prisma.oAuthAccount.deleteMany(),
     prisma.user.deleteMany(),
     prisma.interest.deleteMany(),
+    prisma.analyticsEvent.deleteMany(),
     prisma.rateLimitCounter.deleteMany(),
   ]);
 
@@ -697,6 +698,33 @@ async function main() {
     data: { role: "MODERATOR" },
   });
   console.info("  sarah@example.com is ADMIN, priya@example.com is MODERATOR");
+
+  // Backfill the two events we can derive from timestamps we genuinely store.
+  // Intermediate onboarding steps are *not* backfilled: we never recorded when
+  // they happened, and inventing those moments would turn the funnel chart into
+  // fiction. The dashboard says so where it matters.
+  const profilesForEvents = await prisma.profile.findMany({
+    select: { id: true, createdAt: true, onboardedAt: true },
+  });
+  await prisma.analyticsEvent.createMany({
+    data: profilesForEvents.flatMap((profile) => [
+      {
+        name: "account.created",
+        profileId: profile.id,
+        occurredAt: profile.createdAt,
+      },
+      ...(profile.onboardedAt
+        ? [
+            {
+              name: "onboarding.completed",
+              profileId: profile.id,
+              occurredAt: profile.onboardedAt,
+            },
+          ]
+        : []),
+    ]),
+  });
+  console.info(`  backfilled events for ${profilesForEvents.length} profiles`);
 
   // --- Bunches --------------------------------------------------------------
   const bunchId = new Map<string, string>();

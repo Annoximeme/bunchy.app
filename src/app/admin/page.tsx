@@ -105,8 +105,12 @@ export default async function AdminOverviewPage() {
 
       <p className="mt-6 text-xs text-muted">
         Figures marked <em>approximate</em> are derived from current state rather
-        than recorded events — true cohort retention and acquisition attribution
-        need the analytics event spine, which is the next module.
+        than recorded events. True cohort retention, onboarding drop-off and
+        network health live on{" "}
+        <Link href="/admin/analytics" className="text-accent hover:underline">
+          Analytics
+        </Link>
+        , which is computed from the event log.
       </p>
     </>
   );

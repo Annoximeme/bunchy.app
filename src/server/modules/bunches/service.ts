@@ -12,6 +12,8 @@ import type {
   BunchUpdateInput,
 } from "@/server/modules/bunches/schemas";
 import type { BunchRole } from "@/generated/prisma/enums";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Bunches: creation, membership and moderation.
@@ -107,6 +109,12 @@ export async function createBunch(
     select: { id: true, slug: true },
   });
 
+  track({
+    name: ANALYTICS_EVENTS.BUNCH_CREATED,
+    profileId,
+    properties: { bunchId: bunch.id, type: input.type, visibility: input.visibility },
+  });
+
   return bunch;
 }
 
@@ -187,6 +195,11 @@ export async function requestToJoin(
   });
 
   await markRecommendationActed(profileId, "BUNCH", bunchId);
+  track({
+    name: ANALYTICS_EVENTS.BUNCH_JOIN_REQUESTED,
+    profileId,
+    properties: { bunchId },
+  });
 
   const moderators = await db.bunchMembership.findMany({
     where: { bunchId, status: "ACTIVE", role: { in: ["OWNER", "MODERATOR"] } },
@@ -252,6 +265,12 @@ export async function approveJoinRequest(
       },
     }),
   ]);
+
+  track({
+    name: ANALYTICS_EVENTS.BUNCH_JOINED,
+    profileId: targetProfileId,
+    properties: { bunchId, via: "approved" },
+  });
 
   await notify({
     profileId: targetProfileId,
@@ -357,6 +376,12 @@ export async function acceptInvite(
       },
     }),
   ]);
+
+  track({
+    name: ANALYTICS_EVENTS.BUNCH_JOINED,
+    profileId,
+    properties: { bunchId, via: "invite" },
+  });
 }
 
 export async function leaveBunch(
@@ -416,6 +441,8 @@ export async function leaveBunch(
       },
     }),
   ]);
+
+  track({ name: ANALYTICS_EVENTS.BUNCH_LEFT, profileId, properties: { bunchId } });
 }
 
 export async function removeMember(

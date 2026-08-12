@@ -68,7 +68,8 @@ src/
         ├── notifications/   in-app and email
         ├── geo/             distance, coordinate fuzzing, gazetteer
         ├── ai/              assistant interface + implementations
-        └── admin/           staff policy, audit trail, moderation, metrics
+        ├── admin/           staff policy, audit trail, moderation, metrics
+        └── analytics/       event taxonomy, sink, cohort + funnel queries
 ```
 
 **The rule that holds it together:** nothing under `src/server/modules` may
@@ -278,15 +279,18 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. **Analytics spine** — an event model plus acquisition/activation/retention
-   tracking. The admin dashboard already computes what current state allows and
-   labels the rest as approximate; the event spine is what makes true cohort
-   retention and funnel drop-off measurable.
-2. Notifications UI, account deletion, Bunch chemistry, AI Bunch formation,
-   founding-member badge, referrals, integration tests.
+1. Notifications UI — the API and preferences exist, but there is no surface
+   for a member to read them.
+2. Account deletion and data export (§31).
+3. Bunch chemistry (§24), AI Bunch formation (§28), founding-member badge,
+   referrals.
+4. An integration suite that boots a database — the service layer is written
+   for it (pure functions, injectable stores, and now a vitest setup that loads
+   the environment), but it does not exist yet.
 
-**Later:** local discovery, monetization (Bunchy Plus), events marketplace,
-B2B communities, mobile apps, a learned ranker trained on connection outcomes.
+**Later:** local discovery, monetization, events marketplace, B2B communities,
+mobile apps, a learned ranker trained on the recommendation feedback the event
+spine now collects.
 
 ---
 
@@ -352,3 +356,40 @@ can suspend an account as an invisible side effect of clearing a queue.
 
 The first admin can only be granted out of band (`npm run role -- <email> ADMIN`
 or the seed). A self-service path to admin is a privilege-escalation bug.
+
+---
+
+## 14. Analytics
+
+`src/server/modules/analytics/`. The operational tables record what is
+*currently true*; this records *what happened and when*, which is the only way
+to answer a cohort question.
+
+**The taxonomy is closed and typed.** Analytics rots the moment two call sites
+disagree about whether the event is `connection.sent` or `connection_sent`, and
+by then the history is unrecoverable. Adding an event means adding it to
+`events.ts`.
+
+**There are no attention events.** No page views, no session duration, no
+scroll depth. Spec §29 forbids optimizing for time on site, and the surest way
+not to drift into it is to have no way to measure it — there is a test that
+fails if someone adds one.
+
+**Recording never breaks what it records.** `track()` is fire-and-forget, cannot
+throw, and logs failures instead of propagating them. The worst outcome of a bug
+in that file is a gap in a chart, never a member unable to send a message. The
+sink is an interface, so a queue or warehouse replaces direct inserts without
+touching a call site.
+
+**No PII, and deleted with the member.** Events carry a profile reference and
+structured properties, never an email, a name or a coordinate. The profile
+relation cascades, so erasing an account erases its history — which does shift
+historical aggregates slightly, and is the right trade for a product that
+promises real data control.
+
+**The dashboard refuses to imply precision it does not have.** A cohort younger
+than the retention window reads *too soon*, not 0%. A funnel step with more
+people than the one before it reads *gap*, not a conversion above 100%. Seeded
+history backfills only the two events derivable from timestamps we genuinely
+store (`account.created`, `onboarding.completed`); the intermediate onboarding
+moments were never recorded, and inventing them would make the chart fiction.

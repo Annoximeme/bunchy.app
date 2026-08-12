@@ -5,6 +5,8 @@ import { assertNotBlocked } from "@/server/modules/moderation/service";
 import { notify } from "@/server/modules/notifications/service";
 import { markRecommendationActed } from "@/server/modules/matching/engine";
 import type { AudienceScope } from "@/generated/prisma/enums";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Connections — mutual consent, always.
@@ -155,6 +157,7 @@ export async function sendRequest(
   });
 
   await markRecommendationActed(requesterId, "PERSON", addresseeId);
+  track({ name: ANALYTICS_EVENTS.CONNECTION_SENT, profileId: requesterId });
   await notifyOfRequest(requesterId, target, connection.id);
 
   return connection;
@@ -215,6 +218,7 @@ export async function respondToRequest(
       where: { id: connectionId },
       data: { status: "DECLINED", respondedAt: new Date() },
     });
+    track({ name: ANALYTICS_EVENTS.CONNECTION_DECLINED, profileId });
     return;
   }
 
@@ -236,6 +240,8 @@ export async function respondToRequest(
       },
     });
   });
+
+  track({ name: ANALYTICS_EVENTS.CONNECTION_ACCEPTED, profileId });
 
   await notify({
     profileId: connection.requesterId,

@@ -247,6 +247,7 @@ model Profile {
   recommendations         Recommendation[]      @relation("RecommendationOwner")
   matchFeedbackGiven      MatchFeedback[]       @relation("FeedbackAuthor")
   matchFeedbackReceived   MatchFeedback[]       @relation("FeedbackSubject")
+  analyticsEvents         AnalyticsEvent[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -766,6 +767,46 @@ model Report {
   @@index([targetType, targetId])
   @@index([reporterId])
   @@index([reportedProfileId])
+}
+
+// ---------------------------------------------------------------------------
+// Analytics
+// ---------------------------------------------------------------------------
+
+/// A product event.
+///
+/// The operational tables record the *current state* of the world; this records
+/// what happened and when, which is the only way to answer cohort questions
+/// ("of the people who joined in week 3, how many came back on day 7?").
+///
+/// Two constraints shape the design:
+///
+/// 1. **No PII.** An event carries a profile reference and structured
+///    properties, never an email, a name or a coordinate. Anything identifying
+///    is looked up through the profile at query time, so exporting this table
+///    cannot leak a member.
+/// 2. **Deleted with the member.** The profile relation cascades, so erasing an
+///    account erases its event history too. That does mean historical aggregates
+///    shift slightly when someone leaves — the right trade for a product that
+///    promises real data control.
+model AnalyticsEvent {
+  id   String @id @default(cuid())
+  /// Dotted name from the taxonomy in src/server/modules/analytics/events.ts.
+  name String
+  /// Null before a profile exists (a signup is attributed on the next event).
+  profileId String?
+  /// Structured context. Never free text a member typed.
+  properties Json?
+  /// Acquisition attribution, captured once at signup.
+  source     String?
+  campaign   String?
+  occurredAt DateTime @default(now())
+
+  profile Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([name, occurredAt])
+  @@index([profileId, occurredAt])
+  @@index([occurredAt])
 }
 
 /// Fixed-window rate limit counters. The store is behind an interface

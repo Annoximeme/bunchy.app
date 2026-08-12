@@ -5,6 +5,8 @@ import { consume } from "@/server/ratelimit";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { notify } from "@/server/modules/notifications/service";
 import { markRecommendationActed } from "@/server/modules/matching/engine";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import type {
   ActivityCreateInput,
   ActivityUpdateInput,
@@ -147,6 +149,16 @@ export async function createActivity(
     select: { id: true, title: true, bunchId: true },
   });
 
+  track({
+    name: ANALYTICS_EVENTS.ACTIVITY_CREATED,
+    profileId: organizerId,
+    properties: {
+      activityId: activity.id,
+      mode: input.mode,
+      inBunch: Boolean(activity.bunchId),
+    },
+  });
+
   if (activity.bunchId) {
     await announceToBunch(activity.bunchId, organizerId, activity.id, input.title);
   }
@@ -256,6 +268,11 @@ export async function joinActivity(
   });
 
   await markRecommendationActed(profileId, "ACTIVITY", activityId);
+  track({
+    name: ANALYTICS_EVENTS.ACTIVITY_JOINED,
+    profileId,
+    properties: { activityId, status },
+  });
 
   return { status };
 }
@@ -282,6 +299,8 @@ export async function leaveActivity(
     where: { activityId_profileId: { activityId, profileId } },
     data: { status: "LEFT" },
   });
+
+  track({ name: ANALYTICS_EVENTS.ACTIVITY_LEFT, profileId, properties: { activityId } });
 
   if (entry.status === "JOINED") await promoteFromWaitlist(activityId, activity.title);
 }

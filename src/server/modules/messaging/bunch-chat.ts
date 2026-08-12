@@ -3,6 +3,8 @@ import { forbidden, notFound } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
 import { notify } from "@/server/modules/notifications/service";
 import type { BunchMessageInput } from "@/server/modules/bunches/schemas";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
  * Bunch chat.
@@ -192,6 +194,12 @@ export async function postMessage(
       },
     },
     select: MESSAGE_SELECT,
+  });
+
+  track({
+    name: ANALYTICS_EVENTS.BUNCH_MESSAGE_SENT,
+    profileId: authorId,
+    properties: { bunchId, isReply: Boolean(input.parentId) },
   });
 
   await bumpActivityScore(bunchId);
