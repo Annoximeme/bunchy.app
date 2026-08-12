@@ -62,9 +62,15 @@ openssl rand -hex 24      # POSTGRES_PASSWORD
 openssl rand -base64 48   # AUTH_SECRET
 ```
 
-The database password is hex rather than base64 because it goes inside a
-connection URL, where base64's `/`, `+` and `=` mean something else. You write
-it once — compose builds `DATABASE_URL` from it.
+You write the database password once; each container assembles `DATABASE_URL`
+from it and percent-encodes it, so any password is safe to use. Hex is
+suggested only because it is unambiguous to read back off a screen.
+
+That encoding exists because of a real failure. A base64 password contained a
+`/`, which ends the authority section of a URL, so Postgres came up healthy and
+`prisma migrate deploy` reported `P1013: invalid port number in database URL` —
+an error naming the port, which was fine, rather than the password, which was
+not.
 
 `AUTH_SECRET` salts hashed identifiers including the banned-email fingerprints.
 Changing it later invalidates every session and every existing ban record, so
@@ -156,6 +162,20 @@ validated at boot and the error names the missing variable.
 
 **Migrations failed.** `docker compose logs migrate`. The app deliberately does
 not start, so the site stays on the previous container until it is fixed.
+
+**Password authentication failed after changing `POSTGRES_PASSWORD`.** Expected.
+Postgres sets that password when it initialises an empty data directory and
+ignores it forever after, so editing `.env` changes what the app *sends* and
+not what the database *expects*. Change it in the database as well:
+
+```sh
+docker compose exec db psql -U bunchy -d bunchy -c "ALTER ROLE bunchy WITH PASSWORD 'the-new-one';"
+docker compose up -d
+```
+
+On a machine where no migration has ever succeeded there is nothing in that
+volume yet, so `docker compose down -v` is the faster route. Once the site has
+run even once, `-v` deletes the database — the flag has no undo and no warning.
 
 **If TLS does not come up.** `docker compose logs caddy`. Almost always one of:
 DNS not yet resolving to this server; port 80 blocked by the host firewall

@@ -60,8 +60,11 @@ ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json prisma.config.ts ./
 COPY prisma ./prisma
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 USER node
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["npx", "prisma", "migrate", "deploy"]
 
 # --- runner -----------------------------------------------------------------
@@ -85,11 +88,14 @@ RUN addgroup -g 1001 -S bunchy && adduser -u 1001 -S bunchy -G bunchy
 # build outright rather than being skipped, which is how this was found.
 COPY --from=build --chown=bunchy:bunchy /app/.next/standalone ./
 COPY --from=build --chown=bunchy:bunchy /app/.next/static ./.next/static
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 USER bunchy
 EXPOSE 3000
 
 # Never root, never the build's node_modules, never the Prisma CLI.
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["node", "server.js"]
 
 # --- jobs -------------------------------------------------------------------
@@ -107,7 +113,10 @@ COPY package.json tsconfig.json prisma.config.ts ./
 COPY prisma ./prisma
 COPY scripts ./scripts
 COPY src ./src
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 USER node
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # Hourly. Every job inside is idempotent, so a missed or doubled run is safe.
 CMD ["sh", "-c", "while true; do node --enable-source-maps node_modules/.bin/tsx scripts/run-jobs.ts || echo '[jobs] run failed'; sleep 3600; done"]
