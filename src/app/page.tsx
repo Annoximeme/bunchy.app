@@ -164,6 +164,12 @@ export default async function LandingPage() {
             <Link href="/signup" className="transition-colors hover:text-ink">
               Join
             </Link>
+            <Link href="/privacy" className="transition-colors hover:text-ink">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-ink">
+              Terms
+            </Link>
           </div>
         </div>
       </footer>

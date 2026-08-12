@@ -936,3 +936,55 @@ seeded database of thirteen people.
 Still on the list, and now measurable: `recommendPeople` costs 33 queries for
 one Discover section. That is not an N+1 — it is candidate loading, rarity and
 persistence — but it is the next thing worth reducing.
+
+
+---
+
+## 23. Privacy policy and terms
+
+`/privacy`, `/terms` — drafts, and marked as drafts in the page itself.
+
+**⚠️ Neither has been reviewed by a lawyer.** They were written by an engineer
+from the schema and the services. The liability, governing-law and
+international-transfer clauses are the ones most in need of a practitioner's
+eye before launch.
+
+### Written from the code, not from a template
+
+The value in writing these here rather than adapting a boilerplate is that
+every factual claim can be checked against the thing it describes. The data
+categories come from `prisma/schema.prisma`; the location precision from
+`geo/precision.ts`; the 30-day session window from `auth/session.ts`; the 16+
+minimum from `profile/schemas.ts`; the "no page views, no session duration"
+claim from the analytics taxonomy; and the rights described — an immediate
+export, an immediate irreversible deletion — are ones that are actually built
+rather than promised.
+
+`tests/legal.test.ts` pins the load-bearing ones, so the copy fails the suite if
+the code moves underneath it. That includes checking the analytics *values*
+rather than the file, because the module's own doc comment names `page.viewed`
+and `session.duration` as the events deliberately absent — a naive grep matched
+the comment and passed for the wrong reason.
+
+### Placeholders that cannot ship quietly
+
+Everything a lawyer and a founder must supply — entity, address, registration,
+jurisdiction, supervisory authority, effective date — lives in `src/lib/legal.ts`
+as `TODO_` values. Two things follow from that:
+
+1. A test asserts exactly which fields are still unfilled, so filling them in is
+   a deliberate act with a failing test to prompt it.
+2. While any remain, both pages render a visible draft banner and say they are
+   not in force, rather than presenting an unfinished document as binding.
+
+### Two decisions worth recording
+
+**No cookie banner, because there is nothing to consent to.** One httpOnly
+session cookie and no trackers of any kind. Adding a banner would imply choices
+that do not exist.
+
+**The policy commits us to things the code already does.** "We will name a
+processor here before it goes live", "nothing you write is sent to an external
+AI provider today, and we will say so before that changes" — these are
+promises the current architecture makes easy to keep and would make obvious to
+break, which is the only kind worth writing down.

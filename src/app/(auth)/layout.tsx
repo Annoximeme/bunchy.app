@@ -18,6 +18,17 @@ export default function AuthLayout({
       >
         <div className="w-full max-w-md animate-rise">{children}</div>
       </main>
+      <footer className="mx-auto w-full max-w-6xl px-5 pb-8 text-center text-xs text-muted">
+        By joining you agree to our{" "}
+        <Link href="/terms" className="text-accent-ink hover:underline">
+          terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="text-accent-ink hover:underline">
+          privacy policy
+        </Link>
+        .
+      </footer>
     </div>
   );
 }
