@@ -124,6 +124,25 @@ describe("bunch chat", () => {
     ).rejects.toThrow();
   });
 
+  it("refuses someone whose membership row exists but is not active", async () => {
+    const { insider, bunch } = await bunchWithMember();
+
+    for (const status of ["REMOVED", "LEFT", "REQUESTED", "INVITED"] as const) {
+      await db.bunchMembership.update({
+        where: { bunchId_profileId: { bunchId: bunch.id, profileId: insider.profileId } },
+        data: { status },
+      });
+
+      // The row still exists, so a guard that merely looked one up would pass.
+      // This is also what closes the live chat stream: it re-runs this check on
+      // every poll, and a removed member's connection ends on the next tick.
+      await expect(
+        listMessages(bunch.id, insider.profileId),
+        `status ${status} must not grant access`,
+      ).rejects.toThrow();
+    }
+  });
+
   it("shows a non-member the public description and no member list", async () => {
     const { outsider, bunch } = await bunchWithMember();
 
