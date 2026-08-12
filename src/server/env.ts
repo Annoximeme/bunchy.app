@@ -18,6 +18,10 @@ const schema = z.object({
   ANTHROPIC_MODEL: z.string().default("claude-sonnet-5"),
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   EMAIL_FROM: z.string().default("Bunchy <hello@bunchy.app>"),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASSWORD: z.string().optional(),
   APP_URL: z.string().default("http://localhost:3000"),
 });
 
@@ -51,6 +55,19 @@ function load() {
     if (env.AI_PROVIDER === "anthropic" && !env.ANTHROPIC_API_KEY) {
       throw new Error(
         'AI_PROVIDER is "anthropic" but ANTHROPIC_API_KEY is not set.',
+      );
+    }
+    // Refused at boot rather than at the moment someone is locked out of their
+    // account and the reset mail has nowhere to go.
+    if (env.EMAIL_PROVIDER === "smtp" && !env.SMTP_HOST) {
+      throw new Error(
+        'EMAIL_PROVIDER is "smtp" but SMTP_HOST is not set.',
+      );
+    }
+    if (env.EMAIL_PROVIDER === "console") {
+      console.warn(
+        "[email] EMAIL_PROVIDER is \"console\" in production: verification " +
+          "and password-reset mail will be written to the log and never sent.",
       );
     }
   }
