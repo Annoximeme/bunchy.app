@@ -1042,3 +1042,33 @@ identical, because the tempting "improvement" here is a clearer error.
 
 Documented in the privacy policy as the one place where deleting an account does
 not remove everything, along with the reasoning and an invitation to object.
+
+
+---
+
+## 25. An access-control pass
+
+All 41 API routes probed by hand against a running build: unauthenticated, then
+as a signed-in member who should not have access.
+
+**Unauthenticated:** every route answered 401 or 405. No response body carried
+an email address, password hash, coordinate, birth year or session hash.
+
+**As a plain member**, one real hole. `/api/admin/users/[userId]` answered
+**422 with the validation schema** where every other admin route answers 404 —
+because it parsed the body before resolving a guard. The per-branch guards were
+right (suspending is a moderator action, changing a role is admin-only, and one
+shared `requireStaff()` would hand moderators self-promotion), but the parse ran
+first, so a member could confirm the route existed and learn its shape. That is
+exactly the reconnaissance the 404-not-403 rule exists to deny. There is now a
+coarse staff gate before the parse, and the per-branch guards are unchanged.
+
+Everything else held: a foreign bunch's messages 403, a foreign notification a
+silent no-op, and a discoverable bunch showing a non-member its description and
+interests with an empty member list, no messages and no join requests.
+
+The findings are locked in as `tests/integration/access-control.test.ts` at the
+service layer, where the guards actually live: direct messages readable by the
+two people in them and nobody else, bunch chat closed to non-members for both
+reading and posting, and an export that contains the requester's own account and
+never the other party's email.
