@@ -46,6 +46,11 @@ export interface PublicProfile {
   bunchCount: number;
   connectionState: ConnectionState;
   joinedAt: string;
+  /**
+   * Here since the beginning (§37). A fact, not a rank — there is no ordinal
+   * anywhere in the codebase, and it confers nothing beyond the badge.
+   */
+  foundingMember: boolean;
 }
 
 export const GOAL_LABELS: Record<string, string> = {
@@ -122,6 +127,7 @@ export interface SerializeInput {
   regionLabel: string | null;
   countryCode: string | null;
   createdAt: Date;
+  foundingMember: boolean;
   user: { birthYear: number | null };
   privacy: { showApproxLocation: boolean; showExactAge: boolean } | null;
   interests: Array<{
@@ -175,6 +181,7 @@ export function toPublicProfile(
     bunchCount: row._count?.bunchMemberships ?? 0,
     connectionState: options.connectionState,
     joinedAt: row.createdAt.toISOString(),
+    foundingMember: row.foundingMember,
   };
 }
 
@@ -189,6 +196,7 @@ export const PUBLIC_PROFILE_SELECT = {
   regionLabel: true,
   countryCode: true,
   createdAt: true,
+  foundingMember: true,
   user: { select: { birthYear: true } },
   privacy: { select: { showApproxLocation: true, showExactAge: true } },
   interests: {

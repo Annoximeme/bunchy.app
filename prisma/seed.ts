@@ -629,6 +629,8 @@ async function main() {
             approxLat: approx?.approxLat ?? null,
             approxLng: approx?.approxLng ?? null,
             onboardingStage: "COMPLETE",
+            // The seeded cohort is, by definition, here from the beginning.
+            foundingMember: true,
             onboardedAt: new Date(),
             // Everyone is "recently active" so participation scoring behaves.
             lastActiveAt: new Date(Date.now() - Math.random() * 3 * 86_400_000),

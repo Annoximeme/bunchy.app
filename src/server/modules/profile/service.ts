@@ -22,6 +22,7 @@ import type {
 import type { OnboardingStage } from "@/generated/prisma/enums";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
+import { awardFoundingMember } from "@/server/modules/profile/founding";
 
 /**
  * Profile and onboarding.
@@ -267,6 +268,9 @@ export async function saveAvailability(
       data: { onboardingStage: "COMPLETE", onboardedAt: new Date() },
     }),
   ]);
+
+  // Earned by finishing, not by signing up — see `awardFoundingMember`.
+  await awardFoundingMember(profileId);
 
   track({ name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED, profileId });
 }

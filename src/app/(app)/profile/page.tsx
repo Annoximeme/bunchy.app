@@ -8,6 +8,7 @@ import { PageHeader, PageShell } from "@/components/page-header";
 import { PrivacySettings } from "@/components/privacy-settings";
 import { NotificationPreferences } from "@/components/notification-preferences";
 import { AccountData } from "@/components/account-data";
+import { ReferralCard } from "@/components/referral-card";
 import { BlockButton } from "@/components/moderation-actions";
 import { ResendVerification } from "@/components/resend-verification";
 import { Avatar, Card, Chip, LinkButton } from "@/components/ui";
@@ -52,6 +53,13 @@ export default async function ProfilePage() {
               {profile.bio && (
                 <p className="mt-3 text-ink-soft">{profile.bio}</p>
               )}
+              {profile.foundingMember && (
+                <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-yellow-soft px-2.5 py-1 text-xs font-medium text-yellow-ink">
+                  <span aria-hidden>★</span>
+                  Here since the beginning
+                </span>
+              )}
+
             </div>
           </div>
 
@@ -213,6 +221,8 @@ export default async function ProfilePage() {
             </ul>
           </Card>
         )}
+
+        <ReferralCard />
 
         <AccountData />
       </div>

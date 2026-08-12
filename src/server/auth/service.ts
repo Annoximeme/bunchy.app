@@ -11,6 +11,7 @@ import {
 import { sendEmail } from "@/server/email";
 import { env } from "@/server/env";
 import { NOTIFICATION_DEFAULTS } from "@/server/modules/notifications/defaults";
+import { resolveReferrer } from "@/server/modules/profile/referrals";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
@@ -46,6 +47,8 @@ async function generateUsername(email: string): Promise<string> {
 }
 
 export interface SignUpInput {
+  /** Invite code from a personal link. Ignored if it doesn't resolve. */
+  referralCode?: string;
   email: string;
   password: string;
 }
@@ -63,6 +66,9 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
 
   const passwordHash = await hashPassword(input.password);
   const username = await generateUsername(email);
+  // Unresolvable codes are dropped, never rejected — losing the attribution is
+  // a rounding error, blocking a signup over a mistyped link is not.
+  const referredById = await resolveReferrer(input.referralCode);
 
   const user = await db.user.create({
     data: {
@@ -72,6 +78,7 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
         create: {
           username,
           displayName: username,
+          referredById,
           privacy: { create: {} },
           notificationPreferences: {
             create: NOTIFICATION_DEFAULTS.map((d) => ({
