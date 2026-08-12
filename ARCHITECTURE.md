@@ -332,10 +332,10 @@ Stated plainly rather than hidden:
    staff dashboard (§13).
 6. **Scoring weights are hand-tuned.** They are the obvious first thing to learn
    from `MatchFeedback` once there is traffic.
-7. **Email notifications are a stored preference, not a delivery pipeline.** The
-   per-type `email` switch is honoured by nothing yet — there is no scheduled
-   sender. The in-app channel is fully wired; the email column is a promise the
-   transport adapter has not been asked to keep.
+7. **Email is wired but has no real transport.** `notify()` sends through the
+   `EmailTransport` interface whenever the member's `email` switch is on; the
+   only implementation prints to the server log. Delivery needs a provider
+   adapter and credentials, not code changes.
 8. **The notification list is a fixed recent window** of 50, with no pagination.
    Deliberate at this size, and the wrong answer for a member who has been away
    for a month.
@@ -346,8 +346,7 @@ Stated plainly rather than hidden:
 
 **Next up, in priority order** (spec §68):
 
-1. Email delivery for the notification preferences that already exist.
-2. A component test suite — the integration and unit suites cover the domain,
+1. A component test suite — the integration and unit suites cover the domain,
    the UI is still only checked by hand.
 
 **Later:** local discovery, monetization, events marketplace, B2B communities,
@@ -772,3 +771,57 @@ code let the signup through unattributed; the count stayed 0 until the invitee
 completed onboarding; the badge awarded once and refused the second time;
 refused entirely while onboarding was incomplete; and deleting the inviter left
 the invitee intact with the attribution detached rather than cascading.
+
+
+---
+
+## 20. Scheduled work
+
+`src/server/modules/notifications/scheduled.ts`, run by `npm run jobs`.
+
+### A gap found by counting
+
+Every notification in this product is a reaction to a person doing something —
+with two exceptions, and both had shipped as settings toggles with nothing
+behind them. Grepping for a producer of each of the eleven declared types
+returned **zero** for `ACTIVITY_REMINDER` and `BUNCH_RECOMMENDATION`. A member
+could read "a reminder shortly before an activity you joined", switch it on, and
+wait forever.
+
+A toggle for something that cannot happen is worse than a missing feature: it is
+a claim. `tests/notification-producers.test.ts` now fails if any type in
+`NOTIFICATION_TYPE_INFO` has no `notify()` call producing it — mutation-tested
+by pointing the reminder sender at a different type and watching it fail.
+
+### The jobs
+
+**Activity reminders** go out 24 hours ahead, only for activities still
+`SCHEDULED`, only to people who said they were coming. A reminder about a
+cancelled plan is worse than silence.
+
+**Bunch recommendations** are the only notification here nobody asked for, so
+they are the most constrained: off by default, sent only to members who
+explicitly switched them on (an absent preference row is a no — this one does
+*not* fall back to `defaultPreference`), at most one a fortnight, and only above
+a score of 70. A weak suggestion sent on a schedule is engagement bait with a
+friendly name.
+
+**Both are idempotent** by group key, so an overlapping run sends nothing extra.
+Verified: running the reminder job twice in a row produced 3 notifications and
+then 0.
+
+### Why a script, not a timer
+
+`npm run jobs` is a plain process for a cron, a platform scheduler or a
+Kubernetes CronJob. Not a `setInterval` inside the web server: work that must
+happen once should not be attached to a process that runs in N replicas. It
+exits non-zero on failure, or the scheduler reports success and nobody finds out
+reminders stopped.
+
+### One thing the real-data run caught
+
+The reminder body read *"Starting Thursday 06:30"* — UTC, unlabelled. Profiles
+carry no timezone yet, which is a mild inaccuracy everywhere else in the product
+and, in a reminder for a real-world meetup, is someone turning up at the wrong
+time. The zone is now stated explicitly, and the notification links to the
+activity where the browser formats it locally.
