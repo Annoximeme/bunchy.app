@@ -188,6 +188,18 @@ describe("time, in the member's own zone", () => {
     );
   });
 
+  it("says whether a time of day was actually named", () => {
+    // The distinction that stops "hiking Saturday" being scheduled for 00:00.
+    expect(parse("hiking Saturday").when!.precision).toBe("day");
+    expect(parse("drinks this weekend").when!.precision).toBe("day");
+    expect(parse("hiking tomorrow").when!.precision).toBe("day");
+
+    expect(parse("play warhammer tonight").when!.precision).toBe("part");
+    expect(parse("board games Friday night").when!.precision).toBe("part");
+    expect(parse("a run tomorrow morning").when!.precision).toBe("part");
+    expect(parse("gaming late tonight").when!.precision).toBe("part");
+  });
+
   it("falls back to UTC for a member with no zone", () => {
     // Not a guess dressed as a fact: with no zone we say so by using UTC, the
     // same fallback `sharedHours` makes.

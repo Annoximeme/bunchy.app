@@ -15,6 +15,11 @@ import { BunchyLogo } from "@/components/logo";
  * on desktop a left rail. Note what is missing: there is no notification
  * bell with a permanent red dot, and no counter that exists to be cleared —
  * unread badges appear only when a real person is actually waiting.
+ *
+ * "Start a bunch" sits outside that list, as an action rather than a place
+ * (§15). On mobile it is the centre of the bar, which is the easiest point on
+ * a phone to reach with a thumb and the right place for the one thing this
+ * product most wants people to do.
  */
 
 const ITEMS = [
@@ -23,6 +28,10 @@ const ITEMS = [
   { href: "/activities", label: "Activities", icon: CalendarIcon },
   { href: "/messages", label: "Messages", icon: ChatIcon },
 ] as const;
+
+/** Split either side of the compose button on mobile. */
+const MOBILE_LEFT = ITEMS.slice(0, 2);
+const MOBILE_RIGHT = ITEMS.slice(2);
 
 export function AppNav({
   displayName,
@@ -70,8 +79,16 @@ export function AppNav({
         aria-label="Main"
         className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-line bg-surface px-4 py-6 md:flex"
       >
-        <Link href="/discover" className="mb-8 px-2" aria-label={brand.name}>
+        <Link href="/discover" className="mb-6 px-2" aria-label={brand.name}>
           <BunchyLogo height={20} color="var(--color-ink)" />
+        </Link>
+
+        <Link
+          href="/start"
+          className="mb-5 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-4 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] shadow-[0_1px_2px_rgb(23_32_51/0.08)] transition-shadow hover:shadow-[0_6px_18px_-6px_var(--color-accent)]"
+        >
+          <PlusIcon className="size-4" />
+          Start a bunch
         </Link>
 
         <ul className="flex-1 space-y-1">
@@ -147,7 +164,31 @@ export function AppNav({
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <ul className="flex items-stretch justify-around">
-          {ITEMS.map((item) => (
+          {MOBILE_LEFT.map((item) => (
+            <li key={item.href} className="flex-1">
+              <MobileLink
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={isActive(item.href)}
+                badge={badgeFor(item.href)}
+              />
+            </li>
+          ))}
+
+          {/* The centre of the bar: the easiest point on a phone to reach. */}
+          <li className="flex shrink-0 items-center px-1">
+            <Link
+              href="/start"
+              aria-label="Start a bunch"
+              aria-current={isActive("/start") ? "page" : undefined}
+              className="flex size-12 items-center justify-center rounded-full bg-accent text-[var(--color-on-accent)] shadow-[0_4px_14px_-4px_var(--color-accent)]"
+            >
+              <PlusIcon className="size-6" />
+            </Link>
+          </li>
+
+          {MOBILE_RIGHT.map((item) => (
             <li key={item.href} className="flex-1">
               <MobileLink
                 href={item.href}
@@ -337,6 +378,19 @@ function BellIcon({ className }: { className?: string }) {
         d="M10.3 18a2 2 0 0 0 3.4 0"
         stroke="currentColor"
         strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 5v14M5 12h14"
+        stroke="currentColor"
+        strokeWidth="2.2"
         strokeLinecap="round"
       />
     </svg>

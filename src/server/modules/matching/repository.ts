@@ -169,6 +169,17 @@ export interface CandidateFilter {
   /** Kilometres from `origin`, which defaults to the subject's own point. */
   withinKm?: number;
   origin?: { lat: number; lng: number } | null;
+  /**
+   * Keep people the subject is already connected to.
+   *
+   * Discover leaves them out, and should: it exists to make introductions, and
+   * introducing you to someone you already know is not one. But "who should I
+   * invite to play Warhammer tonight" is a different question with the opposite
+   * answer — your friends are the first people you would ask. Excluding them
+   * there produced an empty screen on a platform that had exactly the right
+   * person on it.
+   */
+  includeConnections?: boolean;
   limit?: number;
 }
 
@@ -194,24 +205,27 @@ export async function loadCandidates(
     // Blocks in either direction remove the profile entirely.
     blocksMade: { none: { blockedId: subject.profileId } },
     blocksReceived: { none: { blockerId: subject.profileId } },
-    // Already connected, or a request is pending either way.
-    sentConnections: {
-      none: {
-        addresseeId: subject.profileId,
-        status: { in: ["PENDING", "ACCEPTED"] },
-      },
-    },
-    receivedConnections: {
-      none: {
-        requesterId: subject.profileId,
-        status: { in: ["PENDING", "ACCEPTED"] },
-      },
-    },
     // "Not interested" is a permanent instruction, not a ranking hint.
     matchFeedbackReceived: {
       none: { profileId: subject.profileId, signal: "NOT_INTERESTED" },
     },
   };
+
+  if (!filter.includeConnections) {
+    // Already connected, or a request is pending either way.
+    where.sentConnections = {
+      none: {
+        addresseeId: subject.profileId,
+        status: { in: ["PENDING", "ACCEPTED"] },
+      },
+    };
+    where.receivedConnections = {
+      none: {
+        requesterId: subject.profileId,
+        status: { in: ["PENDING", "ACCEPTED"] },
+      },
+    };
+  }
 
   applyCriteria(where, subject, filter, now);
 
