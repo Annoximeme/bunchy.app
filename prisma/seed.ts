@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { INTEREST_SEEDS } from "../src/lib/interests";
+import { INTEREST_ALIASES, INTEREST_SEEDS } from "../src/lib/interests";
 import { hashPassword } from "../src/server/auth/password";
 import { findPlace } from "../src/server/modules/geo/gazetteer";
 import { snapToGrid } from "../src/server/modules/geo/precision";
@@ -596,6 +596,10 @@ async function main() {
       slug: i.slug,
       label: i.label,
       category: i.category,
+      // What people actually type. Natural-language search reads these from
+      // the database, which is also what makes the admin alias editor useful:
+      // adding "footy" there immediately makes it find Football.
+      aliases: [...(INTEREST_ALIASES[i.slug] ?? [])],
     })),
   });
   const interests = await prisma.interest.findMany({

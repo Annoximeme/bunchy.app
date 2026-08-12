@@ -249,6 +249,8 @@ model Profile {
   interests    UserInterest[]
   goals        ProfileSocialGoal[]
   availability ProfileAvailability[]
+  /// The live "I'm free right now" status, if they have set one. At most one.
+  availabilityStatus AvailabilityStatus?
 
   sentConnections     Connection[] @relation("ConnectionRequester")
   receivedConnections Connection[] @relation("ConnectionAddressee")
@@ -327,6 +329,19 @@ model PrivacySettings {
   invitableToBunches   Boolean       @default(true)
   /// When false the profile renders an age band ("25-34") instead of an age.
   showExactAge         Boolean       @default(true)
+  /// Who may see a "Who's Up" status, when one is set.
+  ///
+  /// EVERYONE by default, which sounds like the wrong choice and is not. The
+  /// audience is already bounded by `discoverable` above — "everyone" here means
+  /// the same people who can find this member in Discover today, not the public
+  /// internet. Defaulting to CONNECTIONS would instead make the feature
+  /// pointless: the candidate query for Find Someone excludes people you are
+  /// already connected to, so a connections-only status would be visible to
+  /// precisely nobody who could act on it, while still looking like it worked.
+  ///
+  /// The opt-in is the act of setting a status, which is explicit and expires.
+  /// NOBODY switches the feature off outright (§4).
+  whoCanSeeAvailability AudienceScope @default(EVERYONE)
 
   updatedAt DateTime @updatedAt
 
@@ -984,4 +999,53 @@ model MatchFeedback {
 
   @@unique([profileId, targetId])
   @@index([targetId])
+}
+
+// ---------------------------------------------------------------------------
+// Who's Up
+// ---------------------------------------------------------------------------
+
+enum AvailabilityKind {
+  FREE_NOW
+  FREE_TONIGHT
+  FREE_THIS_WEEKEND
+  LOOKING_FOR_SOMETHING
+  LOOKING_FOR_PEOPLE
+  UP_FOR_GAMING
+  UP_FOR_ACTIVITIES
+  OPEN_TO_MEETING
+}
+
+/// A member saying "I'm free, come find me" — for a while.
+///
+/// Keyed on the profile rather than given its own id, so there is exactly one
+/// live status per person and setting a new one replaces the old. That is not a
+/// storage optimisation: a table of every status anyone ever set would be a
+/// history of when each member was at a loose end, which is precisely the
+/// permanent availability record §4 rules out. There is nothing to purge
+/// because nothing accumulates.
+///
+/// `expiresAt` is required and enforced at the service layer. A status without
+/// one is a beacon, and this feature is not a beacon.
+model AvailabilityStatus {
+  profileId String           @id
+  kind      AvailabilityKind
+  /// The member's own words, e.g. "up for a board game night". Optional,
+  /// length-capped, and reportable like any other member-written text.
+  note      String?
+  /// What the status is about, so "available for gaming" can be filtered on.
+  /// A plain id array rather than a join table: these rows are ephemeral, and
+  /// an id left dangling by an interest merge disappears when the status does.
+  interestIds String[] @default([])
+  /// Null when they did not say. Never inferred.
+  mode      ActivityMode?
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@index([kind, expiresAt])
 }

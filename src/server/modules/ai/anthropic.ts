@@ -3,6 +3,8 @@ import type {
   ActivitySuggestionInput,
   Assistant,
   ConversationSummaryInput,
+  IntentReading,
+  IntentReadingInput,
   StarterContext,
 } from "@/server/modules/ai/provider";
 import { LocalAssistant } from "@/server/modules/ai/local";
@@ -179,6 +181,62 @@ export class AnthropicAssistant implements Assistant {
       };
     } catch {
       return this.fallback.suggestActivity(input);
+    }
+  }
+
+  /**
+   * A second reading of a sentence the grammar could not place.
+   *
+   * The catalogue goes into the prompt and the reply is intersected with it on
+   * the way out, so the worst a confused or adversarial completion can do is
+   * return nothing. Note what is not asked for: no time, no place, no group
+   * size. Those already have a tested grammar, and handing them to a model
+   * would trade a deterministic answer for a plausible one.
+   */
+  async readIntent(input: IntentReadingInput): Promise<IntentReading | null> {
+    if (input.catalogue.length === 0) return null;
+
+    const text = await this.complete(
+      [
+        "You map a short request onto a fixed list of interest tags for Bunchy, a platform for meeting compatible people.",
+        "You may only use slugs from the list given. If nothing fits, return an empty list — do not invent a tag.",
+        'Reply with JSON only: {"interestSlugs": string[], "topic": string|null}.',
+        "`topic` is a short name for the thing itself, taken from the user's own words, or null.",
+      ].join(" "),
+      [
+        `Request: ${input.text.slice(0, 300)}`,
+        "",
+        "Allowed tags (slug = label):",
+        input.catalogue.map((i) => `${i.slug} = ${i.label}`).join("\n"),
+      ].join("\n"),
+      300,
+    );
+    if (!text) return null;
+
+    try {
+      const json = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
+      const parsed = JSON.parse(json) as {
+        interestSlugs?: unknown;
+        topic?: unknown;
+      };
+
+      // The gate. Anything the catalogue does not contain never leaves here.
+      const allowed = new Set(input.catalogue.map((i) => i.slug));
+      const slugs = Array.isArray(parsed.interestSlugs)
+        ? parsed.interestSlugs
+            .filter((s): s is string => typeof s === "string")
+            .filter((s) => allowed.has(s))
+            .slice(0, 6)
+        : [];
+
+      const topic =
+        typeof parsed.topic === "string" && parsed.topic.trim().length > 0
+          ? parsed.topic.trim().slice(0, 60)
+          : null;
+
+      return slugs.length === 0 && topic === null ? null : { interestSlugs: slugs, topic };
+    } catch {
+      return null;
     }
   }
 }

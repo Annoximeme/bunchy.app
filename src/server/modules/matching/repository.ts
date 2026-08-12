@@ -1,4 +1,10 @@
 import { db } from "@/server/db/client";
+import type { Prisma } from "@/generated/prisma/client";
+import type {
+  AvailabilityWindow,
+  SocialGoal,
+} from "@/generated/prisma/enums";
+import { distanceKm } from "@/server/modules/geo/distance";
 import type { MatchProfile, ScoringContext } from "@/server/modules/matching/types";
 
 /**
@@ -139,6 +145,34 @@ export async function loadMatchProfile(
 const CANDIDATE_POOL = 400;
 
 /**
+ * Narrowing criteria for a *searched* pool rather than a recommended one.
+ *
+ * Discover asks "who should this person meet"; Find Someone and Instant Bunch
+ * ask "who matches this description". The difference is that a search's terms
+ * are requirements, not hints — so everything here becomes an AND in the query,
+ * and the loose "shares any interest OR same country OR shares a bunch"
+ * affinity net is dropped when criteria are supplied.
+ *
+ * All of it is pushed into SQL apart from the final distance check, which needs
+ * a real haversine. That one gets a bounding box in the query and an exact pass
+ * in memory, so the database still does the elimination (§21).
+ */
+export interface CandidateFilter {
+  /** Must hold at least one of these interests. */
+  interestIds?: string[];
+  /** Must be free in at least one of these windows. */
+  windows?: AvailabilityWindow[];
+  /** Must be looking for at least one of these. */
+  goals?: SocialGoal[];
+  /** Must have a live Who's Up status. Visibility is enforced by the caller. */
+  availableNow?: boolean;
+  /** Kilometres from `origin`, which defaults to the subject's own point. */
+  withinKm?: number;
+  origin?: { lat: number; lng: number } | null;
+  limit?: number;
+}
+
+/**
  * Candidate pre-selection.
  *
  * Scoring is cheap but not free, so we narrow before we rank: people who share
@@ -150,12 +184,95 @@ const CANDIDATE_POOL = 400;
 export async function loadCandidates(
   subject: MatchProfile,
   now = new Date(),
+  filter: CandidateFilter = {},
 ): Promise<MatchProfile[]> {
-  const interestIds = subject.interests.map((i) => i.interestId);
+  const where: Prisma.ProfileWhereInput = {
+    id: { not: subject.profileId },
+    onboardingStage: "COMPLETE",
+    user: { status: "ACTIVE" },
+    privacy: { discoverable: true },
+    // Blocks in either direction remove the profile entirely.
+    blocksMade: { none: { blockedId: subject.profileId } },
+    blocksReceived: { none: { blockerId: subject.profileId } },
+    // Already connected, or a request is pending either way.
+    sentConnections: {
+      none: {
+        addresseeId: subject.profileId,
+        status: { in: ["PENDING", "ACCEPTED"] },
+      },
+    },
+    receivedConnections: {
+      none: {
+        requesterId: subject.profileId,
+        status: { in: ["PENDING", "ACCEPTED"] },
+      },
+    },
+    // "Not interested" is a permanent instruction, not a ranking hint.
+    matchFeedbackReceived: {
+      none: { profileId: subject.profileId, signal: "NOT_INTERESTED" },
+    },
+  };
 
-  const affinityFilters = [
-    interestIds.length > 0
-      ? { interests: { some: { interestId: { in: interestIds } } } }
+  applyCriteria(where, subject, filter, now);
+
+  const rows = await db.profile.findMany({
+    where,
+    select: PROFILE_SELECT,
+    orderBy: { lastActiveAt: "desc" },
+    take: Math.min(filter.limit ?? CANDIDATE_POOL, CANDIDATE_POOL),
+  });
+
+  const profiles = (rows as ProfileRow[]).map((row) => toMatchProfile(row, now));
+  return filter.withinKm ? withinRadius(profiles, subject, filter) : profiles;
+}
+
+/** Mutates `where` with either the search criteria or the affinity net. */
+function applyCriteria(
+  where: Prisma.ProfileWhereInput,
+  subject: MatchProfile,
+  filter: CandidateFilter,
+  now: Date,
+): void {
+  const criteria: Prisma.ProfileWhereInput[] = [];
+
+  if (filter.interestIds?.length) {
+    criteria.push({ interests: { some: { interestId: { in: filter.interestIds } } } });
+  }
+  if (filter.windows?.length) {
+    criteria.push({ availability: { some: { window: { in: filter.windows } } } });
+  }
+  if (filter.goals?.length) {
+    criteria.push({ goals: { some: { goal: { in: filter.goals } } } });
+  }
+  if (filter.availableNow) {
+    // `expiresAt` in the future is what "live" means — expired rows are left
+    // in place rather than swept, so every read must exclude them itself.
+    criteria.push({ availabilityStatus: { is: { expiresAt: { gt: now } } } });
+  }
+
+  const box = boundingBox(filter, subject);
+  if (box) {
+    criteria.push({
+      approxLat: { gte: box.minLat, lte: box.maxLat },
+      approxLng: { gte: box.minLng, lte: box.maxLng },
+    });
+  }
+
+  if (criteria.length > 0) {
+    where.AND = criteria;
+    return;
+  }
+
+  // No criteria: fall back to the recommendation net, which is deliberately
+  // loose because Discover would rather rank a weak match low than not know
+  // about it at all.
+  const affinity = [
+    subject.interests.length > 0
+      ? {
+          interests: {
+            some: { interestId: { in: subject.interests.map((i) => i.interestId) } },
+          },
+        }
       : null,
     subject.location.countryCode
       ? { countryCode: subject.location.countryCode }
@@ -169,40 +286,56 @@ export async function loadCandidates(
       : null,
   ].filter((f): f is NonNullable<typeof f> => f !== null);
 
-  const rows = await db.profile.findMany({
-    where: {
-      id: { not: subject.profileId },
-      onboardingStage: "COMPLETE",
-      user: { status: "ACTIVE" },
-      privacy: { discoverable: true },
-      // Blocks in either direction remove the profile entirely.
-      blocksMade: { none: { blockedId: subject.profileId } },
-      blocksReceived: { none: { blockerId: subject.profileId } },
-      // Already connected, or a request is pending either way.
-      sentConnections: {
-        none: {
-          addresseeId: subject.profileId,
-          status: { in: ["PENDING", "ACCEPTED"] },
-        },
-      },
-      receivedConnections: {
-        none: {
-          requesterId: subject.profileId,
-          status: { in: ["PENDING", "ACCEPTED"] },
-        },
-      },
-      // "Not interested" is a permanent instruction, not a ranking hint.
-      matchFeedbackReceived: {
-        none: { profileId: subject.profileId, signal: "NOT_INTERESTED" },
-      },
-      ...(affinityFilters.length > 0 ? { OR: affinityFilters } : {}),
-    },
-    select: PROFILE_SELECT,
-    orderBy: { lastActiveAt: "desc" },
-    take: CANDIDATE_POOL,
-  });
+  if (affinity.length > 0) where.OR = affinity;
+}
 
-  return (rows as ProfileRow[]).map((row) => toMatchProfile(row, now));
+/**
+ * A latitude/longitude box that certainly contains the radius.
+ *
+ * Deliberately generous — it exists to let Postgres throw away most of the
+ * table on an indexed comparison, not to be the answer. `withinRadius` does the
+ * real measurement on what survives.
+ */
+function boundingBox(filter: CandidateFilter, subject: MatchProfile) {
+  const origin =
+    filter.origin ??
+    (subject.location.approxLat !== null && subject.location.approxLng !== null
+      ? { lat: subject.location.approxLat, lng: subject.location.approxLng }
+      : null);
+  if (!filter.withinKm || !origin) return null;
+
+  const latDelta = filter.withinKm / 111.32;
+  // Longitude degrees shrink towards the poles. Guard the cosine so a search
+  // near a pole widens the box rather than dividing by zero.
+  const cos = Math.max(0.01, Math.cos((origin.lat * Math.PI) / 180));
+  const lngDelta = filter.withinKm / (111.32 * cos);
+
+  return {
+    minLat: origin.lat - latDelta,
+    maxLat: origin.lat + latDelta,
+    minLng: origin.lng - lngDelta,
+    maxLng: origin.lng + lngDelta,
+    origin,
+  };
+}
+
+/** The exact radius check, on the rows the bounding box let through. */
+function withinRadius(
+  profiles: MatchProfile[],
+  subject: MatchProfile,
+  filter: CandidateFilter,
+): MatchProfile[] {
+  const box = boundingBox(filter, subject);
+  if (!box || !filter.withinKm) return profiles;
+
+  return profiles.filter((profile) => {
+    const { approxLat, approxLng } = profile.location;
+    // Someone who has not shared a location cannot be shown to be near you.
+    if (approxLat === null || approxLng === null) return false;
+    return (
+      distanceKm(box.origin, { lat: approxLat, lng: approxLng }) <= filter.withinKm!
+    );
+  });
 }
 
 /**

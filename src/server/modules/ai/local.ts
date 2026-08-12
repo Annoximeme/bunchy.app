@@ -3,9 +3,10 @@ import type {
   ActivitySuggestionInput,
   Assistant,
   ConversationSummaryInput,
+  IntentReading,
   StarterContext,
 } from "@/server/modules/ai/provider";
-import { slugifyInterest } from "@/lib/interests";
+import { ONLINE_FIRST_INTERESTS, slugifyInterest } from "@/lib/interests";
 
 /**
  * The default assistant: no network, no API key, no cost.
@@ -96,6 +97,18 @@ const FALLBACKS = [
 export class LocalAssistant implements Assistant {
   readonly id = "local@1";
 
+  /**
+   * Nothing to add, always.
+   *
+   * The deterministic grammar in `intent/parse.ts` has already read the
+   * sentence; this class has no second way of looking at it. Returning null
+   * rather than a worse guess is the honest answer, and it keeps the caller's
+   * "did the AI help?" branch meaningful instead of always-true.
+   */
+  async readIntent(): Promise<IntentReading | null> {
+    return null;
+  }
+
   async conversationStarters(context: StarterContext): Promise<string[]> {
     const starters: string[] = [];
 
@@ -156,7 +169,7 @@ export class LocalAssistant implements Assistant {
     if (!topic) return null;
 
     const slug = slugifyInterest(topic);
-    const online = ONLINE_FIRST.has(slug);
+    const online = ONLINE_FIRST_INTERESTS.has(slug);
 
     return {
       title: online ? `${topic} night` : `${topic} meetup`,
@@ -170,21 +183,6 @@ export class LocalAssistant implements Assistant {
     };
   }
 }
-
-const ONLINE_FIRST = new Set([
-  "gaming",
-  "strategy-games",
-  "rpgs",
-  "shooters",
-  "co-op-games",
-  "esports",
-  "programming",
-  "ai",
-  "technology",
-  "open-source",
-  "self-hosting",
-  "cybersecurity",
-]);
 
 /** Cheap keyword extraction — the most repeated meaningful words. */
 const STOP_WORDS = new Set([

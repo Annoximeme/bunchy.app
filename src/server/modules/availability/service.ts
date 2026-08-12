@@ -1,0 +1,380 @@
+import { db } from "@/server/db/client";
+import type { AvailabilityKind, AudienceScope } from "@/generated/prisma/enums";
+import { forbidden, notFound, validationFailed } from "@/server/errors";
+import { track } from "@/server/modules/analytics/track";
+import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
+import { locationLabel } from "@/server/modules/geo/precision";
+
+/**
+ * Who's Up — "I'm free, come find me", for a few hours.
+ *
+ * Three rules hold this feature to the shape §4 asks for, and each is enforced
+ * here rather than left to the UI:
+ *
+ * 1. **It expires, always.** `expiresAt` is computed from the kind, never
+ *    accepted from the client, and every read filters on it. There is no code
+ *    path that writes a status without an expiry.
+ * 2. **It is one row.** The table is keyed on the profile, so setting a status
+ *    replaces the previous one. Nothing accumulates, which means there is no
+ *    history of when this person was at a loose end — the permanent
+ *    availability record the brief rules out cannot be built from this table
+ *    because the table does not keep one.
+ * 3. **Counts and names are different questions.** An aggregate ("8 people near
+ *    Antwerp") is visible broadly and suppressed below a threshold; a *name* is
+ *    visible only to the audience the member chose.
+ *
+ * Location never gets more precise than the city label the profile already
+ * shows in Discover. There is no live position here to leak.
+ */
+
+/** How long each kind of status stays live, in hours. */
+const LIFETIME_HOURS: Record<AvailabilityKind, number> = {
+  FREE_NOW: 3,
+  FREE_TONIGHT: 8,
+  FREE_THIS_WEEKEND: 48,
+  LOOKING_FOR_SOMETHING: 12,
+  LOOKING_FOR_PEOPLE: 24,
+  UP_FOR_GAMING: 6,
+  UP_FOR_ACTIVITIES: 24,
+  OPEN_TO_MEETING: 24,
+};
+
+/**
+ * Below this many people, a cluster is not a crowd — it is one or two
+ * identifiable members plus a location. "1 person in Turnhout is up for gaming"
+ * combined with a Discover search names them, so counts under this are not
+ * published at all.
+ */
+export const MIN_CLUSTER = 3;
+
+const MAX_NOTE = 140;
+
+export interface SetStatusInput {
+  kind: AvailabilityKind;
+  note?: string | null;
+  interestIds?: string[];
+  mode?: "ONLINE" | "OFFLINE" | null;
+}
+
+export interface AvailabilityStatusView {
+  kind: AvailabilityKind;
+  label: string;
+  note: string | null;
+  interests: Array<{ id: string; label: string }>;
+  mode: "ONLINE" | "OFFLINE" | null;
+  expiresAt: Date;
+}
+
+export const AVAILABILITY_LABELS: Record<AvailabilityKind, string> = {
+  FREE_NOW: "Free now",
+  FREE_TONIGHT: "Free tonight",
+  FREE_THIS_WEEKEND: "Free this weekend",
+  LOOKING_FOR_SOMETHING: "Looking for something to do",
+  LOOKING_FOR_PEOPLE: "Looking for people",
+  UP_FOR_GAMING: "Up for gaming",
+  UP_FOR_ACTIVITIES: "Up for activities",
+  OPEN_TO_MEETING: "Open to meeting someone new",
+};
+
+/**
+ * Sets or replaces the member's status.
+ *
+ * The expiry is ours, not theirs. A client that could name its own would
+ * eventually name one a year out, and the guarantee that this data is
+ * short-lived is the reason the feature is defensible at all.
+ */
+export async function setAvailability(
+  profileId: string,
+  input: SetStatusInput,
+  now = new Date(),
+): Promise<AvailabilityStatusView> {
+  const note = input.note?.trim() ?? null;
+  if (note && note.length > MAX_NOTE) {
+    throw validationFailed(`Keep it under ${MAX_NOTE} characters.`);
+  }
+
+  const interestIds = await validInterestIds(input.interestIds ?? []);
+  const expiresAt = new Date(
+    now.getTime() + LIFETIME_HOURS[input.kind] * 3_600_000,
+  );
+
+  const row = await db.availabilityStatus.upsert({
+    where: { profileId },
+    create: {
+      profileId,
+      kind: input.kind,
+      note: note || null,
+      interestIds,
+      mode: input.mode ?? null,
+      expiresAt,
+    },
+    update: {
+      kind: input.kind,
+      note: note || null,
+      interestIds,
+      mode: input.mode ?? null,
+      expiresAt,
+    },
+    select: { kind: true, note: true, interestIds: true, mode: true, expiresAt: true },
+  });
+
+  track({
+    name: ANALYTICS_EVENTS.AVAILABILITY_SET,
+    profileId,
+    // The kind, not the note: the note is the member's own words about their
+    // evening and has no business in an analytics table.
+    properties: { kind: row.kind, hasNote: note !== null, interests: interestIds.length },
+  });
+
+  return decorate(row, await interestLabels(interestIds));
+}
+
+/** Ends the status now. Idempotent — clearing an absent status is not an error. */
+export async function clearAvailability(profileId: string): Promise<void> {
+  await db.availabilityStatus.deleteMany({ where: { profileId } });
+  track({
+    name: ANALYTICS_EVENTS.AVAILABILITY_CLEARED,
+    profileId,
+    properties: {},
+  });
+}
+
+/** The member's own live status, if any. */
+export async function myAvailability(
+  profileId: string,
+  now = new Date(),
+): Promise<AvailabilityStatusView | null> {
+  const row = await db.availabilityStatus.findFirst({
+    where: { profileId, expiresAt: { gt: now } },
+    select: { kind: true, note: true, interestIds: true, mode: true, expiresAt: true },
+  });
+  if (!row) return null;
+  return decorate(row, await interestLabels(row.interestIds));
+}
+
+// --- Visibility -------------------------------------------------------------
+
+/**
+ * Whose statuses this viewer is allowed to see by name.
+ *
+ * Returns a Prisma condition rather than a list of ids, so the check lands in
+ * the same query as everything else instead of being applied after the fact —
+ * a filter that runs in application code is a filter somebody eventually
+ * forgets to call.
+ *
+ * The scopes mean what they already mean elsewhere in the product (see
+ * `satisfiesAudience` in the connections service), which is worth stating
+ * because one of them is not what it looks like: CONNECTIONS is *friend of a
+ * friend*, not "people I am connected to". Implementing it as direct
+ * connections here would have given one enum value two meanings depending on
+ * which screen you set it from. Direct connections are folded in as well —
+ * somebody whose request you accepted seeing that you are free is the least
+ * surprising thing this feature can do.
+ */
+export function visibleStatusCondition(viewerProfileId: string) {
+  const connectedToViewer = {
+    OR: [
+      { sentConnections: { some: { addresseeId: viewerProfileId, status: "ACCEPTED" as const } } },
+      { receivedConnections: { some: { requesterId: viewerProfileId, status: "ACCEPTED" as const } } },
+    ],
+  };
+
+  return {
+    profile: {
+      OR: [
+        { privacy: { is: { whoCanSeeAvailability: "EVERYONE" as AudienceScope } } },
+        {
+          privacy: { is: { whoCanSeeAvailability: "CONNECTIONS" as AudienceScope } },
+          OR: [
+            // Connected to the viewer directly…
+            ...connectedToViewer.OR,
+            // …or connected to somebody who is.
+            {
+              sentConnections: {
+                some: { status: "ACCEPTED" as const, addressee: connectedToViewer },
+              },
+            },
+            {
+              receivedConnections: {
+                some: { status: "ACCEPTED" as const, requester: connectedToViewer },
+              },
+            },
+          ],
+        },
+        {
+          privacy: { is: { whoCanSeeAvailability: "BUNCH_MEMBERS" as AudienceScope } },
+          bunchMemberships: {
+            some: {
+              status: "ACTIVE" as const,
+              bunch: {
+                memberships: {
+                  some: { profileId: viewerProfileId, status: "ACTIVE" as const },
+                },
+              },
+            },
+          },
+        },
+        // A member with no privacy row at all has never been offered the
+        // choice, so they are treated as the default the column carries.
+        { privacy: { is: null } },
+      ],
+    },
+  };
+}
+
+// --- Aggregates -------------------------------------------------------------
+
+export interface AvailabilityCluster {
+  /** A city label, never coordinates. */
+  where: string;
+  kind: AvailabilityKind;
+  label: string;
+  count: number;
+}
+
+/**
+ * "8 people near Antwerp are up for something tonight."
+ *
+ * Counts only, no names, and nothing below `MIN_CLUSTER` — a count of one is a
+ * person, not a statistic. Members who chose NOBODY are excluded entirely
+ * rather than counted anonymously: they asked not to be part of this.
+ */
+export async function availabilityClusters(
+  viewerProfileId: string,
+  options: { countryCode?: string | null; now?: Date } = {},
+): Promise<AvailabilityCluster[]> {
+  const now = options.now ?? new Date();
+
+  const rows = await db.availabilityStatus.findMany({
+    where: {
+      expiresAt: { gt: now },
+      profileId: { not: viewerProfileId },
+      profile: {
+        privacy: {
+          is: {
+            discoverable: true,
+            whoCanSeeAvailability: { not: "NOBODY" },
+          },
+        },
+        blocksMade: { none: { blockedId: viewerProfileId } },
+        blocksReceived: { none: { blockerId: viewerProfileId } },
+        ...(options.countryCode ? { countryCode: options.countryCode } : {}),
+      },
+    },
+    select: {
+      kind: true,
+      profile: {
+        select: { cityLabel: true, regionLabel: true, countryCode: true },
+      },
+    },
+  });
+
+  const counts = new Map<string, AvailabilityCluster>();
+  for (const row of rows) {
+    const where = locationLabel(row.profile);
+    const key = `${where}::${row.kind}`;
+    const existing = counts.get(key);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      counts.set(key, {
+        where,
+        kind: row.kind,
+        label: AVAILABILITY_LABELS[row.kind],
+        count: 1,
+      });
+    }
+  }
+
+  return [...counts.values()]
+    .filter((cluster) => cluster.count >= MIN_CLUSTER)
+    .sort((a, b) => b.count - a.count);
+}
+
+// --- Internals --------------------------------------------------------------
+
+/** Drops ids that are not real interests, rather than storing them. */
+async function validInterestIds(ids: string[]): Promise<string[]> {
+  const unique = [...new Set(ids)].slice(0, 8);
+  if (unique.length === 0) return [];
+
+  const rows = await db.interest.findMany({
+    where: { id: { in: unique } },
+    select: { id: true },
+  });
+  return rows.map((r) => r.id);
+}
+
+async function interestLabels(ids: string[]): Promise<Map<string, string>> {
+  if (ids.length === 0) return new Map();
+  const rows = await db.interest.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, label: true },
+  });
+  return new Map(rows.map((r) => [r.id, r.label] as const));
+}
+
+function decorate(
+  row: {
+    kind: AvailabilityKind;
+    note: string | null;
+    interestIds: string[];
+    mode: "ONLINE" | "OFFLINE" | null;
+    expiresAt: Date;
+  },
+  labels: Map<string, string>,
+): AvailabilityStatusView {
+  return {
+    kind: row.kind,
+    label: AVAILABILITY_LABELS[row.kind],
+    note: row.note,
+    interests: row.interestIds.flatMap((id) => {
+      const label = labels.get(id);
+      return label ? [{ id, label }] : [];
+    }),
+    mode: row.mode,
+    expiresAt: row.expiresAt,
+  };
+}
+
+/**
+ * Deletes statuses that ran out.
+ *
+ * Not required for correctness — every read filters on `expiresAt` — but a
+ * member who set a status on Friday should not find the row still sitting in an
+ * export or a database dump on Monday. Data that has served its purpose is
+ * deleted rather than merely ignored.
+ */
+export async function purgeExpiredAvailability(now = new Date()): Promise<number> {
+  const { count } = await db.availabilityStatus.deleteMany({
+    where: { expiresAt: { lte: now } },
+  });
+  return count;
+}
+
+/** Guards a caller that must own the status it is touching. */
+export async function requireOwnStatus(profileId: string): Promise<void> {
+  const exists = await db.availabilityStatus.findUnique({
+    where: { profileId },
+    select: { profileId: true },
+  });
+  if (!exists) throw notFound("You don't have a status set.");
+}
+
+/** Whether this member has switched Who's Up off entirely. */
+export async function availabilityDisabled(profileId: string): Promise<boolean> {
+  const privacy = await db.privacySettings.findUnique({
+    where: { profileId },
+    select: { whoCanSeeAvailability: true },
+  });
+  return privacy?.whoCanSeeAvailability === "NOBODY";
+}
+
+/** Throws when the member has the feature off. Keeps routes from writing dead rows. */
+export async function assertAvailabilityEnabled(profileId: string): Promise<void> {
+  if (await availabilityDisabled(profileId)) {
+    throw forbidden(
+      "Who's Up is switched off for your account. Turn it back on in privacy settings.",
+    );
+  }
+}

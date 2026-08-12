@@ -1,4 +1,5 @@
 import { runScheduledNotifications } from "@/server/modules/notifications/scheduled";
+import { purgeExpiredAvailability } from "@/server/modules/availability/service";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -14,10 +15,15 @@ import { runScheduledNotifications } from "@/server/modules/notifications/schedu
 async function main() {
   const started = Date.now();
   const result = await runScheduledNotifications();
+  // Reads already filter on `expiresAt`, so this is about deletion rather than
+  // correctness: a spent availability status should not still be sitting in a
+  // backup next week.
+  const purged = await purgeExpiredAvailability();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
-      `bunch recommendations: ${result.bunchRecommendations} ` +
+      `bunch recommendations: ${result.bunchRecommendations}, ` +
+      `expired statuses purged: ${purged} ` +
       `(${Date.now() - started}ms)`,
   );
 }
