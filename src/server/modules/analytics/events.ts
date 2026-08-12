@@ -57,6 +57,15 @@ export const ANALYTICS_EVENTS = {
   /// product has to watch, and it is invisible if only successes are recorded.
   PERSON_SEARCH_EMPTY: "discovery.person_search_empty",
 
+  // --- Introductions --------------------------------------------------------
+  /// Offered, then acted on. The ratio between them is the only measure of
+  /// whether the product's unprompted suggestions are wanted, and the dismissed
+  /// count is the one that matters — an introduction people keep waving away is
+  /// a feature to fix or remove, not to tune.
+  INTRODUCTION_OFFERED: "introduction.offered",
+  INTRODUCTION_ACCEPTED: "introduction.accepted",
+  INTRODUCTION_DISMISSED: "introduction.dismissed",
+
   // --- Who's Up -------------------------------------------------------------
   /// Note there is no "availability viewed" event to pair with these. Looking
   /// at who is around is not an action, and an event for it would be
@@ -94,6 +103,7 @@ export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [
   // Describing what you want to do is a real act, not a page view.
   ANALYTICS_EVENTS.INSTANT_BUNCH_STARTED,
   ANALYTICS_EVENTS.AVAILABILITY_SET,
+  ANALYTICS_EVENTS.INTRODUCTION_ACCEPTED,
 ];
 
 /** The onboarding funnel, in order. Drives the drop-off chart. */

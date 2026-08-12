@@ -15,8 +15,13 @@ export const metadata: Metadata = { title: "Start a bunch" };
  * have to fill in a name, a description, a category and a member limit before
  * finding out whether anyone else wants to do it.
  */
-export default async function StartPage() {
+export default async function StartPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireViewer();
+  const { q } = await searchParams;
 
   return (
     <PageShell>
@@ -25,7 +30,7 @@ export default async function StartPage() {
           title="Start a bunch"
           subtitle="Say what you'd like to do. We'll find people who might be up for it."
         />
-        <StartBunch />
+        <StartBunch initialQuery={q?.slice(0, 280) ?? ""} />
 
         <p className="mt-8 text-sm text-muted">
           Know exactly what you want to build?{" "}

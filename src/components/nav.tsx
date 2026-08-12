@@ -105,6 +105,15 @@ export function AppNav({
           ))}
           <li>
             <NavLink
+              href="/assistant"
+              label="Bunchy AI"
+              icon={SparkIcon}
+              active={isActive("/assistant")}
+              badge={0}
+            />
+          </li>
+          <li>
+            <NavLink
               href="/connections"
               label="Connections"
               icon={PeopleIcon}
@@ -380,6 +389,20 @@ function BellIcon({ className }: { className?: string }) {
         strokeWidth="1.7"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function SparkIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 4.5 13.6 9l4.4 1.6-4.4 1.6L12 16.5l-1.6-4.3L6 10.6 10.4 9 12 4.5Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path d="M18 16.5 18.7 18.4 20.5 19 18.7 19.6 18 21.5 17.3 19.6 15.5 19 17.3 18.4 18 16.5Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
     </svg>
   );
 }
