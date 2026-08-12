@@ -12,10 +12,14 @@ import {
 /**
  * Account actions.
  *
- * Every branch resolves its own guard rather than one shared check at the top:
- * suspending is a moderator action, changing a role is admin-only, and mixing
- * them behind a single `requireStaff()` would silently hand moderators the
- * ability to promote themselves.
+ * Every branch resolves its own guard: suspending is a moderator action,
+ * changing a role is admin-only, and collapsing them into one `requireStaff()`
+ * would silently hand moderators the ability to promote themselves.
+ *
+ * There is still a staff gate *before* the body is parsed, though. Without it
+ * a member who is not staff got a 422 describing the schema, where every other
+ * admin route answers 404 — which is precisely the reconnaissance the
+ * 404-not-403 rule exists to deny. Authorization first, then validation.
  */
 
 const reason = z
@@ -45,6 +49,9 @@ export async function PATCH(
   context: { params: Promise<{ userId: string }> },
 ) {
   return handle(async () => {
+    // Coarse gate first: nobody outside staff learns this route exists.
+    await requireStaff();
+
     const { userId } = await context.params;
     const input = await parseJson(request, schema);
 
