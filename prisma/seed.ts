@@ -12,6 +12,16 @@ for (const file of [".env", ".env.local"]) {
 }
 
 /**
+ * Old enough for chemistry to have something to say.
+ *
+ * Behavioural signals need a week of history before they mean anything, so a
+ * seed where every bunch was created this second demonstrates only the "too new
+ * to tell" branch — which is correct behaviour and a useless demo. Six weeks
+ * back puts the seeded groups in the state most real ones will be in.
+ */
+const BUNCHES_FORMED_AT = new Date(Date.now() - 42 * 86_400_000);
+
+/**
  * Development seed.
  *
  * The people here are not filler. They are shaped so that the matching engine
@@ -763,13 +773,19 @@ async function main() {
             return id ? [{ interestId: id }] : [];
           }),
         },
+        createdAt: BUNCHES_FORMED_AT,
         memberships: {
           create: [
-            { profileId: owner, role: "OWNER", status: "ACTIVE" },
+            { profileId: owner, role: "OWNER", status: "ACTIVE", joinedAt: BUNCHES_FORMED_AT },
             ...seed.members.flatMap((username) => {
               const id = profileId.get(username);
               return id
-                ? [{ profileId: id, role: "MEMBER" as const, status: "ACTIVE" as const }]
+                ? [{
+                    profileId: id,
+                    role: "MEMBER" as const,
+                    status: "ACTIVE" as const,
+                    joinedAt: BUNCHES_FORMED_AT,
+                  }]
                 : [];
             }),
           ],

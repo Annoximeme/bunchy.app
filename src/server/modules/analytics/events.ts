@@ -66,6 +66,12 @@ export const ANALYTICS_EVENTS = {
   INTRODUCTION_ACCEPTED: "introduction.accepted",
   INTRODUCTION_DISMISSED: "introduction.dismissed",
 
+  // --- Bunch health ---------------------------------------------------------
+  /// Written by the scheduled job, not by anything a member does. Carries the
+  /// bunch, never a member — chemistry is a property of a group, and §7 is
+  /// explicit that individuals are never ranked by it.
+  CHEMISTRY_UPDATED: "bunch.chemistry_updated",
+
   // --- Who's Up -------------------------------------------------------------
   /// Note there is no "availability viewed" event to pair with these. Looking
   /// at who is around is not an action, and an event for it would be

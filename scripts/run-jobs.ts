@@ -1,5 +1,6 @@
 import { runScheduledNotifications } from "@/server/modules/notifications/scheduled";
 import { purgeExpiredAvailability } from "@/server/modules/availability/service";
+import { recomputeAllChemistry } from "@/server/modules/bunches/health";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -19,11 +20,15 @@ async function main() {
   // correctness: a spent availability status should not still be sitting in a
   // backup next week.
   const purged = await purgeExpiredAvailability();
+  // Precomputed here rather than per render: a full reading scores every pair
+  // in the bunch, which is 78ms of work against 4ms for the page itself.
+  const chemistry = await recomputeAllChemistry();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
       `bunch recommendations: ${result.bunchRecommendations}, ` +
-      `expired statuses purged: ${purged} ` +
+      `expired statuses purged: ${purged}, ` +
+      `bunches scored: ${chemistry.scored} ` +
       `(${Date.now() - started}ms)`,
   );
 }
