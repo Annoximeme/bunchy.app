@@ -1,7 +1,19 @@
-import { env } from "@/server/env";
-import { LocalAssistant } from "@/server/modules/ai/local";
-import { createAnthropicAssistant } from "@/server/modules/ai/anthropic";
+import { BunchyAssistant } from "@/server/modules/ai/assistant";
 import type { Assistant } from "@/server/modules/ai/provider";
+
+/**
+ * The assistant, resolved.
+ *
+ * There is one implementation and it is free — see `provider.ts` for why that
+ * is a design decision rather than a placeholder. This file used to pick
+ * between a local and a hosted provider based on `AI_PROVIDER`; the hosted one
+ * is gone, along with the environment variables that could have switched it on
+ * by accident.
+ *
+ * It stays a function rather than an exported instance so tests can substitute
+ * one, and so adding a *free* self-hosted model later is a change here and
+ * nowhere else.
+ */
 
 let cached: Assistant | undefined;
 let override: Assistant | undefined;
@@ -12,20 +24,9 @@ export function setAssistant(next: Assistant | undefined) {
   cached = undefined;
 }
 
-/**
- * Resolves the configured assistant, falling back to the local implementation
- * whenever the hosted one cannot be constructed. Selection happens once per
- * process, not per call.
- */
 export function assistant(): Assistant {
   if (override) return override;
-  if (cached) return cached;
-
-  cached =
-    env().AI_PROVIDER === "anthropic"
-      ? (createAnthropicAssistant() ?? new LocalAssistant())
-      : new LocalAssistant();
-
+  cached ??= new BunchyAssistant();
   return cached;
 }
 

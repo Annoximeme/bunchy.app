@@ -3,18 +3,19 @@ import type {
   ActivitySuggestionInput,
   Assistant,
   ConversationSummaryInput,
-  IntentReading,
   StarterContext,
 } from "@/server/modules/ai/provider";
 import { ONLINE_FIRST_INTERESTS, slugifyInterest } from "@/lib/interests";
 
 /**
- * The default assistant: no network, no API key, no cost.
+ * Bunchy's assistant: no network, no API key, no bill.
  *
- * It is template-driven rather than generative, which makes it worse at prose
- * and better at three things that matter more for an MVP — it is instant, it is
- * free, and it can never say anything unpredictable to a member. Every output is
- * grounded in data the two people actually entered.
+ * Template-driven rather than generative, which makes it worse at prose and
+ * better at the three things this product actually needs — it is instant, it
+ * costs nothing to run at any scale, and it can never say anything
+ * unpredictable to a member. Every output is grounded in data the two people
+ * actually entered, so "never fabricate" is a property of the code rather than
+ * an instruction someone hopes a model follows.
  */
 
 /** Openers keyed by interest. Specific beats clever: these are things people answer. */
@@ -94,20 +95,8 @@ const FALLBACKS = [
   "What's something you'd like to do more of this year?",
 ];
 
-export class LocalAssistant implements Assistant {
-  readonly id = "local@1";
-
-  /**
-   * Nothing to add, always.
-   *
-   * The deterministic grammar in `intent/parse.ts` has already read the
-   * sentence; this class has no second way of looking at it. Returning null
-   * rather than a worse guess is the honest answer, and it keeps the caller's
-   * "did the AI help?" branch meaningful instead of always-true.
-   */
-  async readIntent(): Promise<IntentReading | null> {
-    return null;
-  }
+export class BunchyAssistant implements Assistant {
+  readonly id = "bunchy@1";
 
   async conversationStarters(context: StarterContext): Promise<string[]> {
     const starters: string[] = [];

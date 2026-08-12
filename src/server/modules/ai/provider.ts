@@ -1,17 +1,32 @@
 /**
  * Bunchy AI — the assistant contract.
  *
- * Two rules constrain everything behind this interface:
+ * **Nothing behind this interface costs money.** The one implementation is
+ * `BunchyAssistant`, which is deterministic: templates, lexicons and the
+ * member's own data, with no network call and no metered API anywhere in the
+ * product. That is a deliberate constraint, not a stage on the way to a paid
+ * model, and three good properties fall out of it:
  *
- * 1. The assistant is *assistive*. Every capability here produces something a
- *    member asked for at the moment they asked for it. There is deliberately no
- *    method for generating a reason to come back, no engagement scoring, and no
- *    "what would keep this person online" signal. Adding one would mean adding
- *    it to this interface, in public, on purpose.
+ * 1. **It cannot invent.** §23 asks that the assistant never fabricate a
+ *    person, a compatibility score or a fact. A generator has to be watched for
+ *    that; a template grounded in real rows cannot do it in the first place.
+ * 2. **It cannot fail.** No key, no quota, no rate limit, no outage. Every
+ *    feature that leans on it works offline and on the free tier of anything.
+ * 3. **It cannot surprise anyone.** No completion is going to say something
+ *    unpredictable to a member, which for a product about meeting strangers is
+ *    worth more than better prose.
  *
- * 2. It must degrade, not disappear. `LocalAssistant` is a real implementation,
- *    not a stub — with no API key configured the product still writes openers,
- *    still summarizes a busy bunch, and still proposes activities.
+ * The interface stays an interface so a *free* local model — Ollama, llama.cpp,
+ * anything self-hosted — can be dropped in later by implementing these four
+ * methods and changing one line in `index.ts`. That door is open. What is not
+ * here, and is not coming back without a decision, is a hosted provider that
+ * bills per token.
+ *
+ * One rule constrains the surface itself: everything here produces something a
+ * member asked for at the moment they asked for it. There is deliberately no
+ * method for generating a reason to come back, no engagement scoring, and no
+ * "what would keep this person online" signal. Adding one would mean adding it
+ * to this interface, in public, on purpose.
  */
 
 export interface StarterContext {
@@ -41,28 +56,6 @@ export interface ActivitySuggestion {
   rationale: string;
 }
 
-/**
- * A request the deterministic parser could not make sense of, plus the only
- * vocabulary an assistant is allowed to answer in.
- *
- * The catalogue is passed *in* rather than described in a prompt, and the reply
- * is filtered against it before anyone sees it. An assistant that invents
- * "cottagecore-adjacent birdwatching" returns a slug matching nothing and is
- * dropped — so §23's "never fabricate" is enforced by the caller rather than
- * requested in a system prompt.
- */
-export interface IntentReadingInput {
-  text: string;
-  catalogue: ReadonlyArray<{ slug: string; label: string }>;
-}
-
-export interface IntentReading {
-  /** Slugs chosen from the catalogue. Anything else is discarded. */
-  interestSlugs: string[];
-  /** A short name for the thing, taken from the member's own words. */
-  topic: string | null;
-}
-
 export interface Assistant {
   readonly id: string;
   /** Openers for a brand-new conversation, grounded in what the two share. */
@@ -73,12 +66,4 @@ export interface Assistant {
   suggestActivity(
     input: ActivitySuggestionInput,
   ): Promise<ActivitySuggestion | null>;
-  /**
-   * A second opinion on a request the grammar could not place.
-   *
-   * Returns `null` for "nothing to add", which is what the local assistant
-   * always says — it *is* the deterministic parser, so asking it to re-read the
-   * sentence would just return the same answer more slowly.
-   */
-  readIntent(input: IntentReadingInput): Promise<IntentReading | null>;
 }

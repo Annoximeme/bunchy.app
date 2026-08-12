@@ -83,7 +83,6 @@ export interface FindPeopleOptions {
   availableNow?: boolean;
   /** Overrides the radius the intent implied. Null means "anywhere". */
   withinKm?: number | null;
-  allowAssistant?: boolean;
 }
 
 export async function findPeople(
@@ -95,11 +94,7 @@ export async function findPeople(
   const subject = await loadMatchProfile(profileId, now);
   if (!subject) throw new Error("Profile not found");
 
-  const intent = await resolveIntent(query, {
-    now,
-    timezone: subject.timezone,
-    allowAssistant: options.allowAssistant,
-  });
+  const intent = await resolveIntent(query, { now, timezone: subject.timezone });
 
   track({
     name: ANALYTICS_EVENTS.PERSON_SEARCH_STARTED,
@@ -110,7 +105,6 @@ export async function findPeople(
       interests: intent.interestSlugs.length,
       hasTime: intent.when !== null,
       hasPlace: intent.place !== null,
-      assisted: intent.assisted,
     },
   });
 

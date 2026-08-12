@@ -13,9 +13,9 @@ const schema = z.object({
     .default("development"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   AUTH_SECRET: z.string().optional(),
-  AI_PROVIDER: z.enum(["local", "anthropic"]).default("local"),
-  ANTHROPIC_API_KEY: z.string().optional(),
-  ANTHROPIC_MODEL: z.string().default("claude-sonnet-5"),
+  // No AI keys, by design. Bunchy's assistant is deterministic and runs
+  // in-process, so there is no variable here that could put the product on a
+  // metered API — see `modules/ai/provider.ts`.
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   EMAIL_FROM: z.string().default("Bunchy <hello@bunchy.app>"),
   SMTP_HOST: z.string().optional(),
@@ -50,11 +50,6 @@ function load() {
     if (!env.AUTH_SECRET || env.AUTH_SECRET.length < 32) {
       throw new Error(
         "AUTH_SECRET must be set to at least 32 characters in production.",
-      );
-    }
-    if (env.AI_PROVIDER === "anthropic" && !env.ANTHROPIC_API_KEY) {
-      throw new Error(
-        'AI_PROVIDER is "anthropic" but ANTHROPIC_API_KEY is not set.',
       );
     }
     // Refused at boot rather than at the moment someone is locked out of their
