@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { Client } from "pg";
 import { existsSync } from "node:fs";
 import { afterAll, beforeAll, beforeEach } from "vitest";
 
@@ -42,11 +43,22 @@ if (TEST_DATABASE_URL === source) {
 }
 process.env.DATABASE_URL = TEST_DATABASE_URL;
 
-function psql(database: string, sql: string) {
+/**
+ * Runs one statement against a sibling database, using the `pg` client the app
+ * already depends on rather than shelling out to `psql`. A CI runner is not
+ * guaranteed to have the Postgres client tools installed, and an undeclared
+ * dependency on a binary is the kind of thing that works locally and fails on
+ * the first push.
+ */
+async function statement(database: string, sql: string) {
   const url = TEST_DATABASE_URL.replace(/\/bunchy_test(\?|$)/, `/${database}$1`);
-  execFileSync("psql", [url, "-v", "ON_ERROR_STOP=1", "-q", "-c", sql], {
-    stdio: ["ignore", "ignore", "pipe"],
-  });
+  const client = new Client({ connectionString: url });
+  await client.connect();
+  try {
+    await client.query(sql);
+  } finally {
+    await client.end();
+  }
 }
 
 let tables: string[] = [];
@@ -54,7 +66,7 @@ let tables: string[] = [];
 beforeAll(async () => {
   // `postgres` is the one database guaranteed to exist to connect through.
   try {
-    psql("postgres", `CREATE DATABASE bunchy_test`);
+    await statement("postgres", `CREATE DATABASE bunchy_test`);
   } catch {
     // Already there — the normal case after the first run.
   }

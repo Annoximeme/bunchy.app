@@ -1,13 +1,14 @@
 import { env } from "@/server/env";
+import { SmtpEmailTransport } from "@/server/email/smtp";
 
 /**
  * Outbound email behind an adapter.
  *
- * No transactional mail provider is provisioned yet, so the default writes the
- * message — including the verification/reset link — to the server log. That
- * makes the whole email-verification and password-reset flow genuinely usable
- * in development instead of being a dead end. Wiring a real provider means
- * implementing `EmailTransport` and registering it in `transport()`.
+ * Two implementations. The default writes the message — including the
+ * verification/reset link — to the server log, which makes the whole
+ * verification and password-reset flow genuinely usable in development instead
+ * of being a dead end. Setting `EMAIL_PROVIDER=smtp` switches to real delivery;
+ * see `smtp.ts` for why SMTP rather than a provider SDK.
  */
 
 export interface EmailMessage {
@@ -38,16 +39,6 @@ class ConsoleEmailTransport implements EmailTransport {
   }
 }
 
-class UnconfiguredSmtpTransport implements EmailTransport {
-  async send(): Promise<void> {
-    // Fails loudly rather than silently dropping account-recovery mail.
-    throw new Error(
-      'EMAIL_PROVIDER is "smtp" but no SMTP transport is registered. ' +
-        "Implement EmailTransport in src/server/email and register it in transport().",
-    );
-  }
-}
-
 let override: EmailTransport | undefined;
 
 /** Test seam. */
@@ -58,7 +49,7 @@ export function setEmailTransport(next: EmailTransport | undefined) {
 export function transport(): EmailTransport {
   if (override) return override;
   return env().EMAIL_PROVIDER === "smtp"
-    ? new UnconfiguredSmtpTransport()
+    ? new SmtpEmailTransport()
     : new ConsoleEmailTransport();
 }
 

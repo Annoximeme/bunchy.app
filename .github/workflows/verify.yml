@@ -1,0 +1,80 @@
+name: Verify
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# A second push to the same branch makes the first run irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Split so a lint error reports in under a minute rather than waiting behind
+  # a database. The two jobs run in parallel.
+  static:
+    name: Types, lint, unit and component tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The Prisma client is generated code and is not committed, so nothing
+      # typechecks until it exists.
+      - run: npx prisma generate
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run test:components
+
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: bunchy
+          POSTGRES_PASSWORD: bunchy
+          POSTGRES_DB: bunchy_dev
+        ports: ["5432:5432"]
+        # Without this the steps start before Postgres accepts connections.
+        options: >-
+          --health-cmd "pg_isready -U bunchy"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # The suite derives bunchy_test from this and creates it itself; it
+      # refuses to run against anything not named bunchy_test.
+      DATABASE_URL: postgresql://bunchy:bunchy@localhost:5432/bunchy_dev?schema=public
+      AUTH_SECRET: ci-only-secret-not-used-anywhere-real-0000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run test:integration
+
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://unused:unused@localhost:5432/unused
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Catches what the test suites cannot: a client component importing from
+      # src/server, a bad route export, a Tailwind class that does not resolve.
+      - run: npm run build

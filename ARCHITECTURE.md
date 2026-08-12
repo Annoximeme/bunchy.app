@@ -356,10 +356,10 @@ Stated plainly rather than hidden:
    staff dashboard (§13).
 6. **Scoring weights are hand-tuned.** They are the obvious first thing to learn
    from `MatchFeedback` once there is traffic.
-7. **Email is wired but has no real transport.** `notify()` sends through the
-   `EmailTransport` interface whenever the member's `email` switch is on; the
-   only implementation prints to the server log. Delivery needs a provider
-   adapter and credentials, not code changes.
+7. **Email needs credentials, not code.** `EMAIL_PROVIDER=smtp` now delivers
+   over SMTP; it needs a provider account and four environment variables.
+   Left as `console` in production the server logs a warning at boot, because
+   silently logging password-reset links is the worst of both options.
 8. **The notification list is a fixed recent window** of 50, with no pagination.
    Deliberate at this size, and the wrong answer for a member who has been away
    for a month.
@@ -1096,3 +1096,66 @@ That guarantee rests on something subtle enough to regress: a removed member
 still has a `BunchMembership` row, so a guard that merely looked one up would
 let them through. There is now a test asserting `REMOVED`, `LEFT`, `REQUESTED`
 and `INVITED` are all refused.
+
+
+---
+
+## 26. Continuous integration
+
+`.github/workflows/verify.yml`. Three jobs in parallel.
+
+**static** — typecheck, lint, unit and component tests. No database, so a lint
+error reports in under a minute instead of waiting behind Postgres.
+
+**integration** — a `postgres:16` service container with a health check, because
+without one the steps start before it accepts connections. The suite derives
+`bunchy_test` from `DATABASE_URL` and creates it itself, and refuses to run
+against anything not named that (§9).
+
+**build** — the production build catches what no test suite does: a client
+component importing from `src/server`, a bad route export, a Tailwind class that
+does not resolve.
+
+Every job runs `prisma generate` first: the client is generated code and is not
+committed, so nothing typechecks until it exists.
+
+Setting this up removed an undeclared dependency. The integration setup shelled
+out to `psql` to create the test database — fine locally, and exactly the kind
+of assumption that works on one machine and fails on the first push. It now uses
+the `pg` client the app already depends on, promoted from a transitive
+dependency to a declared one.
+
+---
+
+## 27. Sending real email
+
+`src/server/email/smtp.ts`.
+
+**SMTP rather than a provider SDK.** Every transactional provider worth using
+speaks it, so changing provider is four environment variables rather than a
+dependency swap and a rewrite — which matters when one person is running this.
+
+What this carries is password-reset and verification links: the mail that
+decides whether someone locked out of their account gets back in. Three
+consequences:
+
+- **One pooled connection.** A TLS handshake per message is slow and gets an IP
+  rate-limited.
+- **Retries, classified.** A 4xx is "try again later" and is retried three times
+  with backoff; a 5xx is a refusal that retrying only delays. A failure with no
+  response code at all — timeout, dropped socket, DNS — is retried, because we
+  never got a usable answer.
+- **The reset link never reaches the log.** `sendEmail`'s callers deliberately
+  swallow errors so a failed notification cannot break the action that caused
+  it, which makes this the last layer where a problem is visible — and a
+  single-use credential written to a log file outlives the email it was sent in.
+  There is a test asserting the subject appears and the token does not.
+
+Writing the tests found a real flaw: the transporter was resolved *inside* the
+retry loop, so a missing `SMTP_HOST` carried no response code, was classified
+transient, and got retried three times with backoff before reporting a problem
+no amount of waiting fixes. It is resolved once, before the loop.
+
+`env.ts` refuses `EMAIL_PROVIDER=smtp` without a host at boot, and warns when
+production is left on `console` — silently logging reset links is the worst of
+both options.
