@@ -54,6 +54,8 @@ export interface MatchProfile {
   interests: MatchInterest[];
   goals: SocialGoal[];
   availability: AvailabilityWindow[];
+  /** IANA zone. Null falls back to UTC — see `sharedHours`. */
+  timezone: string | null;
   personality: PersonalityVector | null;
 
   /** Community context — bunches in common are strong evidence of fit. */

@@ -63,7 +63,7 @@ export async function sendActivityReminders(now = new Date()): Promise<number> {
       mode: true,
       participants: {
         where: { status: "JOINED" },
-        select: { profileId: true },
+        select: { profileId: true, profile: { select: { timezone: true } } },
       },
     },
   });
@@ -88,7 +88,9 @@ export async function sendActivityReminders(now = new Date()): Promise<number> {
         profileId: participant.profileId,
         type: "ACTIVITY_REMINDER",
         title: `${activity.title} is tomorrow`,
-        body: `Starting ${formatWhen(activity.startsAt)}, ${where}.`,
+        // Each recipient gets the time in their own zone. The same reminder
+        // reads differently for a member in Tokyo, which is the point.
+        body: `Starting ${formatWhen(activity.startsAt, participant.profile.timezone)}, ${where}.`,
         linkPath: `/activities/${activity.id}`,
         groupKey,
       });
@@ -150,20 +152,20 @@ export async function sendBunchRecommendations(now = new Date()): Promise<number
 }
 
 /**
- * Times are rendered in UTC and *labelled* UTC.
+ * The time, in the recipient's own zone, and labelled with it.
  *
- * Profiles carry no timezone yet (see the known limitations), so the server
- * cannot render a member's local hour. Everywhere else that is a mild
- * inaccuracy; in a reminder for a real-world meetup it is someone turning up at
- * the wrong time, so the zone is stated rather than implied. The notification
- * links to the activity, where the browser formats it locally.
+ * A member with no zone on file falls back to UTC — stated explicitly, because
+ * an unlabelled hour in a reminder for a real-world meetup is someone turning
+ * up at the wrong time.
  */
-function formatWhen(date: Date): string {
+function formatWhen(date: Date, timezone: string | null): string {
+  const zone = timezone ?? "UTC";
   const formatted = date.toLocaleString("en-GB", {
     weekday: "long",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "UTC",
+    timeZone: zone,
+    timeZoneName: "short",
   });
-  return `${formatted} UTC`;
+  return formatted;
 }

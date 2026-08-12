@@ -21,6 +21,7 @@ function person(id: string, interests: string[] = [], city = "Antwerp"): MatchPr
     })),
     goals: [],
     availability: [],
+    timezone: null,
     personality: null,
     bunchIds: [],
     attendedActivityIds: [],

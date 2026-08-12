@@ -212,6 +212,11 @@ model Profile {
   cityLabel   String?
   approxLat   Float?
   approxLng   Float?
+  /// IANA zone, e.g. "Europe/Brussels". Null means we don't know and fall back
+  /// to UTC — availability windows are local ideas, and comparing the labels
+  /// directly told a member in Antwerp they were free at the same time as a
+  /// member in Tokyo.
+  timezone    String?
 
   onboardingStage OnboardingStage @default(BASICS)
   onboardedAt     DateTime?

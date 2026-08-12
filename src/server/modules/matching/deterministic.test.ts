@@ -33,6 +33,7 @@ function interest(
 
 function profile(overrides: Partial<MatchProfile> = {}): MatchProfile {
   return {
+    timezone: "timezone" in overrides ? (overrides.timezone ?? null) : null,
     profileId: overrides.profileId ?? "p-test",
     displayName: overrides.displayName ?? "Test",
     // `??` would swallow an explicit null, which several tests rely on.
@@ -320,6 +321,7 @@ describe("DeterministicScorer", () => {
       interests: [interest("hiking", { strength: 3 })],
       goals: [],
       availability: [],
+    timezone: null,
       personality: null,
     });
 
