@@ -1,0 +1,23 @@
+# Everything the build does not need. Keeping this tight matters more than
+# usual here: the build context is sent to the daemon in full, and node_modules
+# alone is several hundred megabytes of files the image rebuilds anyway.
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*.local
+screenshots
+coverage
+*.log
+.DS_Store
+
+# Generated at build time by `prisma generate`. Copying a host-generated client
+# in would risk shipping one built against a different schema than the image.
+src/generated
+
+# Tests and tooling: none of it runs in the image, and shipping the integration
+# suite would put a database-truncating script into production.
+tests
+vitest.*.mts
+eslint.config.*

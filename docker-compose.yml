@@ -1,0 +1,141 @@
+# Bunchy — the whole stack.
+#
+#   docker compose up -d --build
+#
+# Four services. Postgres holds the data, `migrate` runs once and exits, `app`
+# serves, `caddy` terminates TLS. `jobs` is the fifth and runs the hourly work.
+#
+# Nothing here publishes a port except Caddy. Postgres in particular is on the
+# internal network only — a VPS with 5432 open to the internet is found by a
+# scanner within hours, and the usual "it's behind a firewall" assumption is
+# how it ends up not being.
+
+name: bunchy
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bunchy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bunchy}
+      # Deterministic collation, so index ordering cannot drift between a
+      # restore and the machine it was taken from.
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # `migrate` waits on this, so it has to mean "accepting queries" rather
+      # than "process started".
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bunchy} -d ${POSTGRES_DB:-bunchy}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks: [backend]
+
+  migrate:
+    build:
+      context: .
+      target: migrate
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+    depends_on:
+      db:
+        condition: service_healthy
+    # One shot. `app` waits for this to exit 0, so a failed migration stops the
+    # deploy instead of starting a server against a schema it does not match.
+    restart: "no"
+    networks: [backend]
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
+      APP_URL: ${APP_URL:?APP_URL is required}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
+      EMAIL_FROM: ${EMAIL_FROM:-Bunchy <hello@bunchy.app>}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    # Both: `backend` to reach Postgres, `egress` to reach the SMTP provider.
+    # Publishing no ports is what keeps it unreachable from outside — being on
+    # a bridge network does not expose it.
+    networks: [backend, egress]
+
+  jobs:
+    build:
+      context: .
+      target: jobs
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
+      APP_URL: ${APP_URL:?APP_URL is required}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-console}
+      EMAIL_FROM: ${EMAIL_FROM:-Bunchy <hello@bunchy.app>}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    # Same as `app`: the jobs process sends activity reminders by email.
+    networks: [backend, egress]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      # HTTP/3. Harmless if the host firewall drops it.
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN is required}
+      TLS_EMAIL: ${TLS_EMAIL:?TLS_EMAIL is required}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates and the ACME account key. Losing this volume means
+      # re-issuing on next start, which Let's Encrypt rate-limits — it is the
+      # one volume people forget to back up.
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    networks: [egress]
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  # No route off the host at all. Postgres lives here and only here, so a
+  # compromised dependency in the web process cannot use the database container
+  # as a way out, and nothing on the internet can reach 5432 whatever the host
+  # firewall is doing.
+  backend:
+    internal: true
+  # Ordinary bridge: outbound works, and Caddy reaches the app across it.
+  # Nothing here is reachable from outside except through Caddy's published
+  # ports, because no other service publishes any.
+  egress:
