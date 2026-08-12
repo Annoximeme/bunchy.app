@@ -186,6 +186,7 @@ export default async function ProfilePage() {
               showApproxLocation: profile.privacy.showApproxLocation,
               invitableToBunches: profile.privacy.invitableToBunches,
               showExactAge: profile.privacy.showExactAge,
+              whoCanSeeAvailability: profile.privacy.whoCanSeeAvailability,
             }}
           />
         )}

@@ -46,6 +46,25 @@ export const ANALYTICS_EVENTS = {
   ACTIVITY_JOINED: "activity.joined",
   ACTIVITY_LEFT: "activity.left",
 
+  // --- Starting something ---------------------------------------------------
+  /// Someone described what they wanted to do. Paired with the created event
+  /// below, this is the only honest measure of whether Instant Bunch works:
+  /// how many descriptions turned into a group.
+  INSTANT_BUNCH_STARTED: "bunch.instant_started",
+  INSTANT_BUNCH_CREATED: "bunch.instant_created",
+  PERSON_SEARCH_STARTED: "discovery.person_search_started",
+  /// Deliberately counted. A search that finds nobody is the failure mode this
+  /// product has to watch, and it is invisible if only successes are recorded.
+  PERSON_SEARCH_EMPTY: "discovery.person_search_empty",
+
+  // --- Who's Up -------------------------------------------------------------
+  /// Note there is no "availability viewed" event to pair with these. Looking
+  /// at who is around is not an action, and an event for it would be
+  /// attention-tracking wearing a feature name — see the taxonomy test, and
+  /// the privacy policy's "No page views", which is a promise this file keeps.
+  AVAILABILITY_SET: "availability.set",
+  AVAILABILITY_CLEARED: "availability.cleared",
+
   // --- Safety --------------------------------------------------------------
   MEMBER_BLOCKED: "safety.member_blocked",
   REPORT_FILED: "safety.report_filed",
@@ -72,6 +91,9 @@ export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [
   ANALYTICS_EVENTS.ACTIVITY_CREATED,
   ANALYTICS_EVENTS.ACTIVITY_JOINED,
   ANALYTICS_EVENTS.RECOMMENDATION_DISMISSED,
+  // Describing what you want to do is a real act, not a page view.
+  ANALYTICS_EVENTS.INSTANT_BUNCH_STARTED,
+  ANALYTICS_EVENTS.AVAILABILITY_SET,
 ];
 
 /** The onboarding funnel, in order. Drives the drop-off chart. */

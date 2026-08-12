@@ -291,6 +291,14 @@ export async function savePrivacy(
     create: { profileId, ...input },
     update: input,
   });
+
+  // Switching Who's Up off deletes the live status rather than merely hiding
+  // it. Every read already excludes NOBODY, so this changes nothing anyone can
+  // see — which is the point: "off" should mean the row is gone, not that four
+  // queries agree to ignore it.
+  if (input.whoCanSeeAvailability === "NOBODY") {
+    await db.availabilityStatus.deleteMany({ where: { profileId } });
+  }
 }
 
 // --- Reads ------------------------------------------------------------------
@@ -373,6 +381,7 @@ export async function getOwnProfile(profileId: string) {
           showApproxLocation: true,
           invitableToBunches: true,
           showExactAge: true,
+          whoCanSeeAvailability: true,
         },
       },
     },

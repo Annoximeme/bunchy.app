@@ -128,6 +128,12 @@ export const privacySchema = z.object({
   showApproxLocation: z.boolean(),
   invitableToBunches: z.boolean(),
   showExactAge: z.boolean(),
+  whoCanSeeAvailability: z.enum([
+    "EVERYONE",
+    "CONNECTIONS",
+    "BUNCH_MEMBERS",
+    "NOBODY",
+  ]),
 });
 
 export type BasicsInput = z.infer<typeof basicsSchema>;

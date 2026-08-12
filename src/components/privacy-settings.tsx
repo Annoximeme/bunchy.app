@@ -11,6 +11,7 @@ export interface PrivacyValues {
   showApproxLocation: boolean;
   invitableToBunches: boolean;
   showExactAge: boolean;
+  whoCanSeeAvailability: string;
 }
 
 const AUDIENCES = [
@@ -102,6 +103,29 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
           </Select>
           <p className="mt-1.5 text-sm text-muted">
             Connections can always message you — that&rsquo;s what accepting means.
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="whoCanSeeAvailability" className="block text-sm font-medium">
+            Who can see when you&rsquo;re free
+          </label>
+          <Select
+            id="whoCanSeeAvailability"
+            value={values.whoCanSeeAvailability}
+            onChange={(e) => set("whoCanSeeAvailability", e.target.value)}
+            className="mt-1.5"
+          >
+            {AUDIENCES.map((a) => (
+              <option key={a.value} value={a.value}>
+                {a.label}
+              </option>
+            ))}
+          </Select>
+          <p className="mt-1.5 text-sm text-muted">
+            Only applies when you set a Who&rsquo;s Up status, and those expire on
+            their own. Choosing <strong>Nobody</strong> switches the feature off
+            and deletes any status you have set.
           </p>
         </div>
 
