@@ -843,6 +843,32 @@ model AnalyticsEvent {
 
 /// Fixed-window rate limit counters. The store is behind an interface
 /// (src/server/ratelimit) so this can move to Redis without touching callers.
+/// Addresses that may not create a new account.
+///
+/// Deleting an account frees its email address, so without this a banned
+/// member deletes and re-registers in one click and every block, report and
+/// moderation decision about them is void. That harms the people they were
+/// banned for harassing more than retaining one hash harms them.
+///
+/// Three deliberate constraints keep it proportionate:
+///
+/// 1. **No foreign key to `User`.** That is the entire point — a cascade would
+///    take the row with the account, which is exactly the evasion path.
+/// 2. **Only a keyed hash, never the address.** HMAC-SHA256 under `AUTH_SECRET`,
+///    so a copy of this table alone cannot tell anyone whether a given person
+///    was banned, and nothing here can be read back into an email.
+/// 3. **Only bans.** Suspensions and voluntary deletions never write here, and
+///    lifting a ban removes the row.
+model BannedEmail {
+  /// HMAC-SHA256 of the normalized address. Never the address itself.
+  emailHash String   @id
+  bannedAt  DateTime @default(now())
+  /// Why, for a moderator reviewing an appeal. Never identifies the person.
+  reason    String?
+
+  @@index([bannedAt])
+}
+
 model RateLimitCounter {
   key         String
   windowStart DateTime

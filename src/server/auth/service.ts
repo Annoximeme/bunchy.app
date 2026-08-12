@@ -11,6 +11,7 @@ import {
 import { sendEmail } from "@/server/email";
 import { env } from "@/server/env";
 import { NOTIFICATION_DEFAULTS } from "@/server/modules/notifications/defaults";
+import { isEmailBanned } from "@/server/modules/moderation/banned-emails";
 import { resolveReferrer } from "@/server/modules/profile/referrals";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
@@ -56,11 +57,16 @@ export interface SignUpInput {
 export async function signUp(input: SignUpInput, context: SessionContext = {}) {
   const email = normalizeEmail(input.email);
 
-  const existing = await db.user.findUnique({
-    where: { email },
-    select: { id: true },
-  });
-  if (existing) {
+  const [existing, banned] = await Promise.all([
+    db.user.findUnique({ where: { email }, select: { id: true } }),
+    isEmailBanned(email),
+  ]);
+
+  // Deliberately the same message for both. A distinct "this address is
+  // banned" would be an oracle: anyone could type an address at signup and
+  // learn whether that person had been banned. Someone who is actually banned
+  // already knows, and can write to support.
+  if (existing || banned) {
     throw conflict("An account with that email already exists.");
   }
 

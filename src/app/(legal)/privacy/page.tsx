@@ -28,12 +28,18 @@ export default function PrivacyPage() {
     >
       <Clause n={1} title="Who holds your data">
         <p>
-          {brand.name} is operated by <strong>{LEGAL.entity}</strong>,{" "}
-          {LEGAL.address}
-          {LEGAL.registration ? ` (${LEGAL.registration})` : ""}. We are the
-          data controller for everything described here. Write to{" "}
+          {brand.name} is built and run by <strong>{LEGAL.operator}</strong>,{" "}
+          {LEGAL.operatorDescription}, based in {LEGAL.jurisdiction}
+          {LEGAL.registration ? ` (${LEGAL.registration})` : ""}. That means the
+          data controller here is a person rather than an organisation, and{" "}
+          <strong>&ldquo;we&rdquo; on this page is one developer</strong>.
+        </p>
+        <p>
+          Write to{" "}
           <a href={`mailto:${LEGAL.privacyContact}`}>{LEGAL.privacyContact}</a>{" "}
-          about anything on this page and a person will answer.
+          about anything on this page and that person will answer. A postal
+          address is available on request — it is a home address, so it is not
+          published here.
         </p>
       </Clause>
 
@@ -83,6 +89,10 @@ export default function PrivacyPage() {
             [
               "Product events",
               "That an account was created, a connection was sent, a bunch was joined — see section 5.",
+            ],
+            [
+              "Banned addresses",
+              "If an account is banned, a one-way keyed fingerprint of its email address — never the address itself. See section 9.",
             ],
           ]}
         />
@@ -238,8 +248,28 @@ export default function PrivacyPage() {
               "Things you wrote in a bunch",
               "Stay in that bunch with your name detached, so the group's conversation still makes sense to the people still in it.",
             ],
+            [
+              "A banned address",
+              "Kept until the ban is lifted. Only for bans — a suspension or a member simply leaving never creates one.",
+            ],
           ]}
         />
+        <p>
+          That last one deserves saying plainly, because it is the one place
+          where deleting your account does not remove everything. Deleting an
+          account frees its email address, so without it a banned member deletes
+          and signs straight back up, and every block and report about them
+          stops meaning anything. What we keep is a <strong>keyed one-way
+          fingerprint</strong> of the address — not the address, and not
+          something anyone holding a copy of that table could turn back into
+          one. It is linked to no account, no name and no profile. If a ban is
+          lifted, it is deleted.
+        </p>
+        <p>
+          We think the people a ban protects have a stronger interest in not
+          meeting that person again than the banned person has in the erasure of
+          one opaque hash. If you disagree in your case, write to us and say so.
+        </p>
       </Clause>
 
       <Clause n={10} title="Your rights, and where to press them">
@@ -281,7 +311,7 @@ export default function PrivacyPage() {
       <Clause n={12} title="Where your data is">
         <p>
           {brand.name} is operated from {LEGAL.jurisdiction} and your data is
-          stored there. Where a provider processes data outside that region, we
+          stored in the European Union. Where a provider processes data outside that region, we
           rely on the safeguards the law requires — standard contractual clauses
           or an adequacy decision — and we will name any such transfer here.
         </p>

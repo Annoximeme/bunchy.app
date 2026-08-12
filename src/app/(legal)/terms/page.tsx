@@ -25,8 +25,9 @@ export default function TermsPage() {
     >
       <Clause n={1} title="The agreement">
         <p>
-          These terms are between you and <strong>{LEGAL.entity}</strong>,{" "}
-          {LEGAL.address}. Using {brand.name} means accepting them. If you do
+          These terms are between you and <strong>{LEGAL.operator}</strong>,{" "}
+          {LEGAL.operatorDescription}, based in {LEGAL.jurisdiction}. Using{" "}
+          {brand.name} means accepting them. If you do
           not, do not use the service — and if you already have an account, you
           can delete it in one step from your{" "}
           <Link href="/profile">profile</Link>.

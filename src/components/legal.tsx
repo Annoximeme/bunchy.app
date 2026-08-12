@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { brand } from "@/lib/brand";
-import { LEGAL, legalDetailsComplete } from "@/lib/legal";
+import { legalReviewComplete } from "@/lib/legal";
 import { BunchyLogo } from "@/components/logo";
 
 /**
@@ -47,7 +47,6 @@ export function LegalPage({
         <p className="mt-4 text-lg leading-relaxed text-ink-soft">{summary}</p>
 
         <p className="mt-6 text-sm text-muted">
-          {legalDetailsComplete() && <>In effect from {LEGAL.effectiveDate}. </>}
           Questions:{" "}
           <a href={`mailto:${contact}`} className="text-accent-ink hover:underline">
             {contact}
@@ -55,19 +54,19 @@ export function LegalPage({
           .
         </p>
 
-        {!legalDetailsComplete() && (
+        {!legalReviewComplete() && (
           /*
-           * Shown until `LEGAL` is filled in. A half-finished policy that looks
-           * finished is worse than one that says so: a visitor can see this is
-           * not yet the binding document, and the placeholders below are
-           * obviously placeholders rather than a rendering fault.
+           * A page that reads as finished implies a review that has not
+           * happened. The notice is deliberately narrow — the contents are
+           * accurate, it is the legal wording that is unchecked — because
+           * overstating the caveat would make people discount the parts that
+           * are true.
            */
           <div className="mt-8 rounded-[var(--radius-card)] border border-yellow bg-yellow-soft p-4 text-sm text-yellow-ink">
-            <strong className="font-semibold">This is a working draft.</strong>{" "}
-            It describes what {brand.name} actually does today and is accurate on
-            that, but the company details are not yet filled in and it has not
-            been reviewed by a lawyer. It is not in force. Nothing here is legal
-            advice.
+            <strong className="font-semibold">Not yet reviewed by a lawyer.</strong>{" "}
+            Everything here accurately describes what {brand.name} does — it was
+            written from the code — but the legal wording has not been checked by
+            a qualified practitioner yet.
           </div>
         )}
 

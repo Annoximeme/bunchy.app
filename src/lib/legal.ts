@@ -1,42 +1,49 @@
 /**
- * The facts in the legal pages that a lawyer and a founder must fill in.
+ * Who operates Bunchy, for the policy pages.
  *
- * Everything else in `/privacy` and `/terms` describes what the code actually
- * does and was written from the schema — the data categories, the retention
- * windows, the location precision, the rights that are already implemented.
- * That part is accurate today and should be kept accurate as the code changes.
+ * Bunchy is run by one person, not a company. That is unusual enough in a
+ * privacy policy that it is worth being explicit about rather than dressing up
+ * as an organisation — under the GDPR a sole trader is still a controller, and
+ * naming a real human is more honest than inventing a legal entity.
  *
- * These values are the part software cannot know. They are collected here
- * rather than scattered through the copy so that filling them in is one edit,
- * and so that a placeholder cannot quietly survive into production: `npm run
- * verify` fails while any of them is still unset.
- *
- * ⚠️  Both documents are drafts prepared by an engineer, not legal advice. They
- * need review by a qualified practitioner in the operating jurisdiction before
- * launch — particularly the liability, governing-law and international-transfer
- * sections.
+ * **No postal address is published.** The GDPR requires the controller's
+ * identity and *contact details*; an email address that reaches a person
+ * satisfies that, and a solo developer's registered address is their home. The
+ * pages say a postal address is available on request instead, which meets the
+ * obligation without publishing where someone lives. A lawyer should confirm
+ * this for the operating jurisdiction — it is the kind of call worth checking.
  */
 
 export const LEGAL = {
-  /** Registered company name. */
-  entity: "TODO_LEGAL_ENTITY",
-  /** Registered address, one line. */
-  address: "TODO_REGISTERED_ADDRESS",
-  /** Company registration number, if the jurisdiction issues one. */
-  registration: "TODO_COMPANY_NUMBER",
-  /** Where the company is established — sets the supervisory authority. */
-  jurisdiction: "TODO_JURISDICTION",
-  /** The data protection supervisory authority members can complain to. */
-  supervisoryAuthority: "TODO_SUPERVISORY_AUTHORITY",
+  /** The controller. A natural person operating as a sole trader. */
+  operator: "Gianni Goossens",
+  /** How the operator is described in the first line of each document. */
+  operatorDescription:
+    "an independent developer working as a sole trader, not a company",
+  /**
+   * Company registration number. Empty because there is no company. If Bunchy
+   * is later registered with the KBO/BCE, put the number here and it appears
+   * automatically.
+   */
+  registration: "",
+  jurisdiction: "Belgium",
+  supervisoryAuthority:
+    "the Belgian Data Protection Authority (Gegevensbeschermingsautoriteit / Autorité de protection des données), Drukpersstraat 35, 1000 Brussels",
 
   privacyContact: "privacy@bunchy.app",
   supportContact: "hello@bunchy.app",
 
-  /** ISO date these documents take effect. */
-  effectiveDate: "TODO_EFFECTIVE_DATE",
+  /**
+   * Whether a qualified practitioner has reviewed these documents.
+   *
+   * Separate from whether the details are filled in, because they are separate
+   * facts and conflating them would let a complete-looking page imply a review
+   * that has not happened. While this is false the pages carry a notice.
+   */
+  lawyerReviewed: false,
 } as const;
 
-/** Whether every placeholder has been replaced. Asserted in the test suite. */
-export function legalDetailsComplete(): boolean {
-  return !Object.values(LEGAL).some((value) => value.startsWith("TODO_"));
+/** True once a practitioner has reviewed the documents. Drives the notice. */
+export function legalReviewComplete(): boolean {
+  return LEGAL.lawyerReviewed;
 }
