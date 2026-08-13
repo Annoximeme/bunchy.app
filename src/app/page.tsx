@@ -122,8 +122,8 @@ export default async function LandingPage() {
         </section>
 
         {/* The problem, said plainly */}
-        <section className="border-y border-line bg-surface/60 py-20">
-          <div className="mx-auto max-w-6xl px-5">
+        <section className="band-warm py-20">
+          <div className="reveal mx-auto max-w-6xl px-5">
             <h2 className="max-w-3xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
               You don&rsquo;t need more followers. You need four people who
               answer the group chat.
@@ -150,7 +150,7 @@ export default async function LandingPage() {
 
         {/* How it works */}
         <section id="how" className="py-20">
-          <div className="mx-auto max-w-6xl px-5">
+          <div className="reveal mx-auto max-w-6xl px-5">
             <p className="text-sm font-semibold tracking-widest text-accent-ink">
               HOW IT WORKS
             </p>
@@ -187,8 +187,8 @@ export default async function LandingPage() {
         </section>
 
         {/* Both modes, said outright */}
-        <section className="border-y border-line bg-surface/60 py-20">
-          <div className="mx-auto max-w-6xl px-5">
+        <section className="band-cool py-20">
+          <div className="reveal mx-auto max-w-6xl px-5">
             <p className="text-sm font-semibold tracking-widest text-purple-ink">
               TWO WAYS TO MEET
             </p>
@@ -240,7 +240,20 @@ export default async function LandingPage() {
         </section>
 
         {/* Principles — the one inverted band on the page */}
-        <section className="bg-ink py-20 text-canvas">
+        <section className="relative overflow-hidden bg-ink py-20 text-canvas">
+          {/*
+            Two coloured glows inside the dark band. Without them it is a black
+            rectangle dropped into a warm page; with them it belongs to the same
+            palette as everything above it, just after dark.
+          */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(40rem 22rem at 10% 0%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 65%), radial-gradient(36rem 20rem at 90% 100%, color-mix(in oklab, var(--color-purple) 20%, transparent), transparent 65%)",
+            }}
+          />
           {/*
             Dark, because this section is the argument rather than a feature
             list, and five cream sections in a row let the eye slide past the
@@ -249,7 +262,7 @@ export default async function LandingPage() {
             inversion of its surroundings in both themes rather than becoming a
             navy block on a navy page.
           */}
-          <div className="mx-auto max-w-6xl px-5">
+          <div className="reveal relative mx-auto max-w-6xl px-5">
             <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
               What you won&rsquo;t find here.
             </h2>
@@ -276,7 +289,7 @@ export default async function LandingPage() {
 
         {/* The questions people actually have before joining */}
         <section className="py-20">
-          <div className="mx-auto max-w-3xl px-5">
+          <div className="reveal mx-auto max-w-3xl px-5">
             <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
               Before you sign up.
             </h2>
