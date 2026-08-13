@@ -12,10 +12,14 @@ export const metadata: Metadata = {
 /**
  * The safety centre.
  *
- * Bunchy's entire purpose is to move people from a screen to a table in a bar,
- * which means it takes on a risk that a product people only ever type into does
- * not. Reports and blocks already existed; what did not was any advice at the
- * moment it matters, or a single page to send someone to.
+ * Half of Bunchy happens online, where the worst case is blocking someone. The
+ * other half puts a member in a room with a stranger, which is a risk a product
+ * people only ever type into does not carry. Reports and blocks already existed;
+ * what did not was any advice at the moment it matters, or a single page to send
+ * someone to.
+ *
+ * The page covers the in-person half and says so, rather than implying that
+ * meeting online is a lesser way to use this.
  *
  * Written as plain advice rather than a liability shield. A page whose real
  * purpose is to say "you agreed to this" is one nobody reads twice, and the
@@ -26,7 +30,7 @@ export default function SafetyPage() {
     <LegalPage
       title="Meeting safely"
       contact={LEGAL.supportContact}
-      summary={`${brand.name} is built to get you off the screen and into a room with people. That is worth doing carefully. This is what we recommend, what we do on our side, and what to do when something is wrong.`}
+      summary={`Plenty of ${brand.name} happens online, where the worst case is blocking someone. This page is about the other half — meeting in person, which is worth doing carefully. Here is what we recommend, what we do on our side, and what to do when something is wrong.`}
     >
       <Clause n={1} title="First meets go in public">
         <p>

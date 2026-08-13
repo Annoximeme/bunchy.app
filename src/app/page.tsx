@@ -67,8 +67,9 @@ export default async function LandingPage() {
               </h1>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-soft">
                 You left school, the group chat went quiet, and everyone got
-                busy. {brand.name} finds the handful of people near you worth
-                spending a Tuesday evening with — then helps you actually go.
+                busy. {brand.name} finds the few people worth your evenings —
+                a raid on Thursday, a coffee on Saturday, whichever you have the
+                energy for — and makes the first move less awkward.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
@@ -134,7 +135,7 @@ export default async function LandingPage() {
               <Ache
                 tone="mint"
                 title="One-on-one is a lot of pressure"
-                body="Coffee with a stranger is an interview. A bunch of six doing something is a night out, and it is far easier to be yourself in one."
+                body="Coffee with a stranger is an interview. Six people doing something together is not — and “something” can be a voice channel on a Tuesday just as easily as a bar on a Friday."
               />
             </div>
           </div>
@@ -169,9 +170,62 @@ export default async function LandingPage() {
               <Step
                 n="03"
                 title="Join a small bunch"
-                body="Five to twelve people with something real in common. Small enough that you're known, not an audience."
+                body="Five to twelve people with something real in common. Some meet in a bar, some only ever in a game or a call — both are the point, and you pick which you are up for."
               />
             </div>
+          </div>
+        </section>
+
+        {/* Both modes, said outright */}
+        <section className="border-y border-line bg-surface/60 py-20">
+          <div className="mx-auto max-w-6xl px-5">
+            <p className="text-sm font-semibold tracking-widest text-purple-ink">
+              TWO WAYS TO MEET
+            </p>
+            <h2 className="mt-3 max-w-3xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              A voice channel counts. So does a coffee.
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg text-ink-soft">
+              Plenty of real friendships start in a game, a call or a shared
+              project and stay there quite happily. {brand.name} treats that as
+              meeting people, not as practice for meeting people.
+            </p>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
+              <div className="card-surface relative overflow-hidden p-6">
+                <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-purple" />
+                <h3 className="mt-2 text-lg font-semibold tracking-tight">
+                  Online
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Co-op nights, watch-alongs, study sessions, a bunch that lives
+                  in its own chat. Distance stops mattering, so matching leans on
+                  what you are into and when you are free. The meeting link is
+                  only ever shown to people who joined.
+                </p>
+              </div>
+
+              <div className="card-surface relative overflow-hidden p-6">
+                <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-accent" />
+                <h3 className="mt-2 text-lg font-semibold tracking-tight">
+                  In person
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  Board games, climbing, a walk, a bar. Matching adds distance to
+                  the picture, activities carry a venue and a time, and there is
+                  a{" "}
+                  <Link href="/safety" className="text-accent-ink hover:underline">
+                    safety guide
+                  </Link>{" "}
+                  for the part where you meet a stranger.
+                </p>
+              </div>
+            </div>
+
+            <p className="mt-6 text-sm text-muted">
+              Nobody has to pick one. Your profile says how you like to spend
+              time, and suggestions follow it.
+            </p>
           </div>
         </section>
 
@@ -368,10 +422,19 @@ function ExampleActivityCard() {
   return (
     <div className="card-surface flex items-center justify-between gap-4 p-5">
       <div>
-        <p className="font-semibold tracking-tight">Antwerp Board Game Meetup</p>
-        <p className="text-sm text-muted">Saturday · 4 spots left</p>
+        <p className="font-semibold tracking-tight">Co-op night — Deep Rock</p>
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-muted">
+          {/* Online is shown as a mode, not an apology. One of the three
+              example cards is online on purpose: these cards are the part of
+              the page people actually read, and a page of bars and cafés tells
+              someone who wants a voice channel that this is not for them. */}
+          <span className="rounded-full bg-purple-soft px-2 py-0.5 text-xs font-medium text-purple-ink">
+            Online
+          </span>
+          Thursday 20:00 · 2 spots left
+        </p>
       </div>
-      <Chip tone="positive">12 going</Chip>
+      <Chip tone="positive">6 going</Chip>
     </div>
   );
 }
