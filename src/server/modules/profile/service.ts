@@ -3,7 +3,7 @@ import { conflict, notFound } from "@/server/errors";
 import { INTEREST_BY_SLUG, slugifyInterest } from "@/lib/interests";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { snapToGrid } from "@/server/modules/geo/precision";
-import { timezoneForCountry } from "@/server/modules/geo/timezone";
+import { isValidTimezone, timezoneForCountry } from "@/server/modules/geo/timezone";
 import { isBlockedBetween } from "@/server/modules/moderation/service";
 import {
   PUBLIC_PROFILE_SELECT,
@@ -73,11 +73,20 @@ export async function saveBasics(
   if (taken) throw conflict("That username is already taken.");
 
   const place = findPlace(input.cityLabel, input.countryCode);
-  // Derived rather than asked for. A timezone question in onboarding is a
-  // question most people answer wrongly, and the country already implies the
-  // answer everywhere it is unambiguous — elsewhere it stays null and falls
-  // back to UTC, which is honestly unknown rather than confidently wrong.
-  const timezone = timezoneForCountry(place?.countryCode ?? input.countryCode);
+  // Detected, then derived, then unknown.
+  //
+  // Still not asked for — a timezone question is one most people answer wrongly.
+  // But the browser already knows, and taking its answer fixes the countries
+  // where a country code cannot imply a zone: the US, Australia and Russia
+  // derived to null and fell back to UTC, which quietly made "weekday evening"
+  // mean 18:00 UTC for someone in California.
+  //
+  // The client value is checked against the runtime's own zone list before it is
+  // trusted, and a rejected one falls through to the country as though it had
+  // never been sent.
+  const timezone =
+    (input.timezone && isValidTimezone(input.timezone) ? input.timezone : null) ??
+    timezoneForCountry(place?.countryCode ?? input.countryCode);
   // Coordinates are snapped before they are ever written — the database has no
   // opportunity to hold a precise location.
   const approx = place ? snapToGrid(place.lat, place.lng) : null;

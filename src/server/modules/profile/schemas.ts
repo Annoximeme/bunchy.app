@@ -40,6 +40,22 @@ export const basicsSchema = z.object({
   cityLabel: z.string().trim().min(1).max(80),
   countryCode: z.string().trim().length(2).toUpperCase(),
   avatarUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
+  /**
+   * The browser's IANA zone, read from `Intl` and sent without being shown.
+   *
+   * Not a question — asking is what the original design ruled out, and rightly:
+   * most people cannot name their zone and a dropdown of 400 of them is a wall
+   * to climb before signing up. Detecting it costs the member nothing and fixes
+   * the countries where deriving from a country code is impossible, which are
+   * exactly the large ones: the US, Australia and Russia derived to null and
+   * fell back to UTC, so "weekday evening" meant 18:00 UTC for someone in
+   * California.
+   *
+   * Validated server-side against the runtime's own zone list, because it
+   * arrives from a client and "Europe/Brussels" and "'; drop table" are the
+   * same shape of string.
+   */
+  timezone: z.string().trim().max(64).optional(),
 });
 
 export const interestSelectionSchema = z.object({

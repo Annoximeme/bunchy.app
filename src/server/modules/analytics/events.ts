@@ -45,6 +45,13 @@ export const ANALYTICS_EVENTS = {
   ACTIVITY_CREATED: "activity.created",
   ACTIVITY_JOINED: "activity.joined",
   ACTIVITY_LEFT: "activity.left",
+  /**
+   * The only events about what happened rather than what was clicked.
+   * `ACTIVITY_MET_SOMEONE` is the closest thing this product has to a north
+   * star: everything else measures intent.
+   */
+  ACTIVITY_OUTCOME_ANSWERED: "activity.outcome_answered",
+  ACTIVITY_MET_SOMEONE: "activity.met_someone",
 
   // --- Starting something ---------------------------------------------------
   /// Someone described what they wanted to do. Paired with the created event
