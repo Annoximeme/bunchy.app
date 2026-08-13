@@ -11,64 +11,105 @@ export const dynamic = "force-dynamic";
 /**
  * The brand kit.
  *
- * Everything downloadable here is generated from the same geometry the site
- * renders, so a logo change ships to this page in the same deploy rather than
- * leaving somebody advertising with last year's mark. The rules are short on
- * purpose: a brand guide nobody finishes reading protects nothing.
+ * Everything downloadable is generated from the geometry the site renders with,
+ * so a logo change ships here in the same deploy rather than leaving somebody
+ * advertising with last year's mark.
+ *
+ * Note on layout: `Panel` puts padding on its header and none on its children —
+ * every other admin page either passes `className="p-5"` or fills it with a
+ * DataTable that brings its own. An earlier version of this page did neither,
+ * which is why it rendered flush against the panel edges.
  */
 export default async function AdminBrandPage() {
   await requireStaff();
+
+  const uploads = BRAND_ASSETS.filter((a) => a.format === "png");
+  const vectors = BRAND_ASSETS.filter((a) => a.format === "svg");
 
   return (
     <>
       <AdminHeader
         title="Brand"
-        subtitle={`Logos, colours and the few rules that matter. Everything here is generated from the code that draws ${brand.name}, so it cannot drift out of date.`}
+        subtitle="Logos, colours and the few rules that matter. Generated from the code that draws Bunchy, so none of it can go stale."
       />
 
       <div className="space-y-6">
-        <Panel title="The logo">
-          <div className="flex flex-wrap items-center gap-10">
-            <div className="rounded-[var(--radius-control)] bg-canvas px-6 py-5">
-              <BunchyLogo height={30} />
+        <Panel title="The logo" note="light, dark and the mark alone">
+          <div className="grid gap-4 p-5 sm:grid-cols-3">
+            <div className="flex items-center justify-center rounded-[var(--radius-control)] border border-line bg-canvas px-4 py-8">
+              <BunchyLogo height={28} />
             </div>
-            <div className="rounded-[var(--radius-control)] bg-ink px-6 py-5">
-              <BunchyLogo height={30} color="#FFFFFF" monochrome="#FFFFFF" />
+            <div className="flex items-center justify-center rounded-[var(--radius-control)] bg-ink px-4 py-8">
+              <BunchyLogo height={28} color="#FFFFFF" monochrome="#FFFFFF" />
             </div>
-            <div className="rounded-[var(--radius-control)] bg-canvas px-6 py-5">
-              <BunchyMark size={40} />
+            <div className="flex items-center justify-center rounded-[var(--radius-control)] border border-line bg-canvas px-4 py-8">
+              <BunchyMark size={44} />
             </div>
           </div>
+        </Panel>
 
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {BRAND_ASSETS.map((asset) => (
-              <li
-                key={asset.slug}
-                className="flex items-start justify-between gap-4 rounded-[var(--radius-control)] border border-line p-3.5"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">{asset.label}</p>
-                  <p className="mt-0.5 text-xs text-muted">{asset.use}</p>
-                </div>
-                <a
-                  href={`/api/admin/brand/${asset.slug}`}
-                  className="shrink-0 rounded-[var(--radius-control)] border border-line px-3 py-1.5 text-xs font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+        <Panel
+          title="Ready to upload"
+          note="PNG — what social platforms actually accept"
+        >
+          <div className="p-5">
+            <p className="mb-4 text-sm text-muted">
+              Facebook, Instagram, LinkedIn and X all reject an SVG upload, so
+              these are the files to reach for when you are setting up an account
+              or running an ad.
+            </p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {uploads.map((asset) => (
+                <li
+                  key={asset.slug}
+                  className="flex items-start justify-between gap-4 rounded-[var(--radius-control)] border border-line p-3.5"
                 >
-                  SVG
-                </a>
-              </li>
-            ))}
-          </ul>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{asset.label}</p>
+                    <p className="mt-0.5 text-xs text-muted">{asset.use}</p>
+                    <p className="mt-1.5 font-mono text-[11px] text-muted">
+                      {asset.width}×{asset.height}
+                      {asset.background ? "" : " · transparent"}
+                    </p>
+                  </div>
+                  <a
+                    href={`/api/admin/brand/${asset.slug}`}
+                    className="shrink-0 rounded-[var(--radius-control)] bg-accent px-3 py-1.5 text-xs font-semibold text-[var(--color-on-accent)] transition-colors hover:bg-accent-hover"
+                  >
+                    PNG
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Panel>
 
-          <p className="mt-4 text-xs text-muted">
-            SVG only, deliberately: it is what a printer, a poster and a favicon
-            all want, and shipping a 512px PNG guarantees somebody scales it up
-            for a banner.
-          </p>
+        <Panel title="Vectors" note="print, and rebuilding an asset">
+          <div className="p-5">
+            <ul className="grid gap-2.5 sm:grid-cols-2">
+              {vectors.map((asset) => (
+                <li
+                  key={asset.slug}
+                  className="flex items-center justify-between gap-4 rounded-[var(--radius-control)] border border-line px-3.5 py-2.5"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{asset.label}</p>
+                    <p className="truncate text-xs text-muted">{asset.use}</p>
+                  </div>
+                  <a
+                    href={`/api/admin/brand/${asset.slug}`}
+                    className="shrink-0 rounded-[var(--radius-control)] border border-line px-3 py-1.5 text-xs font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+                  >
+                    SVG
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Panel>
 
         <Panel title="Colours">
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
             {BRAND_PALETTE.map((colour) => (
               <li
                 key={colour.hex}
@@ -80,100 +121,93 @@ export default async function AdminBrandPage() {
                   style={{ background: colour.hex }}
                 />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium">
-                    {colour.name}{" "}
-                    <span className="font-mono text-xs text-muted">
-                      {colour.hex}
-                    </span>
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted">{colour.role}</p>
+                  <p className="text-sm font-medium">{colour.name}</p>
+                  <p className="font-mono text-xs text-muted">{colour.hex}</p>
+                  <p className="mt-1 text-xs text-muted">{colour.role}</p>
                 </div>
               </li>
             ))}
           </ul>
         </Panel>
 
-        <Panel title="Using it">
-          <div className="space-y-4 text-sm text-ink-soft">
-            <div>
-              <p className="font-medium text-ink">Give it room.</p>
-              <p className="mt-1">
-                Clear space on every side is the height of the mark&rsquo;s
-                largest shape. Nothing sits inside that — not a tagline, not a
-                partner logo, not the edge of the page.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-ink">Never redraw it.</p>
-              <p className="mt-1">
-                Do not restretch, recolour, outline, add a shadow, rotate, or set
-                the name in a different typeface. The wordmark is drawn as
-                strokes precisely so it cannot be re-set wrong on a machine
-                missing a font.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-ink">Knockout on dark only.</p>
-              <p className="mt-1">
-                The white lockup is for photographs and dark panels. On a light
-                background use full colour, or ink where colour cannot be
-                trusted.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-ink">Small means the mark.</p>
-              <p className="mt-1">
-                Below about 20px of height the wordmark stops being legible. Use
-                the mark alone — it was drawn to still read as{" "}
-                <em>several shapes</em> at favicon size.
-              </p>
-            </div>
-          </div>
-        </Panel>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Panel title="Using it">
+            <dl className="divide-y divide-line">
+              {[
+                [
+                  "Give it room",
+                  "Clear space on every side is the height of the mark's largest shape. Nothing sits inside that — not a tagline, not a partner logo, not the edge of the page.",
+                ],
+                [
+                  "Never redraw it",
+                  "No restretching, recolouring, outlining, shadows or rotation, and never set the name in another typeface. The wordmark is drawn as strokes so it cannot be re-set wrong.",
+                ],
+                [
+                  "Knockout on dark only",
+                  "White artwork is for photographs and dark panels. On light use full colour, or ink where colour cannot be trusted.",
+                ],
+                [
+                  "Small means the mark",
+                  "Below about 20px of height the wordmark stops being legible. Use the mark alone — it was drawn to still read as several shapes at favicon size.",
+                ],
+              ].map(([title, body]) => (
+                <div key={title} className="px-5 py-3.5">
+                  <dt className="text-sm font-medium">{title}</dt>
+                  <dd className="mt-1 text-xs leading-relaxed text-muted">
+                    {body}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Panel>
 
-        <Panel title="Advertising Bunchy">
-          <div className="space-y-4 text-sm text-ink-soft">
-            <p>
-              The social preview every shared link already carries is at{" "}
-              <a
-                href="/opengraph-image"
-                className="text-accent-ink hover:underline"
-              >
-                /opengraph-image
-              </a>{" "}
-              — 1200×630, the size Meta, LinkedIn, Slack and iMessage all want.
-              Right-click to save it for anywhere that needs a ready-made card.
-            </p>
-            <div>
-              <p className="font-medium text-ink">The lines that are approved.</p>
-              <p className="mt-1">
-                Tagline: <strong>{brand.tagline}</strong> · Positioning:{" "}
-                <strong>{brand.positioning}</strong>
-              </p>
-              <p className="mt-1">
-                Alternates, for when a headline needs a different rhythm:{" "}
-                {brand.altTaglines.join(" · ")}
-              </p>
-              <p className="mt-1">
-                These live in <code>src/lib/brand.ts</code>. Inventing a new one
-                in a campaign is how a product ends up with five taglines and no
-                slogan.
-              </p>
+          <Panel title="Advertising Bunchy">
+            <div className="space-y-4 p-5 text-sm text-ink-soft">
+              <div>
+                <p className="font-medium text-ink">Ready-made social card</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  The image every shared link already previews with is at{" "}
+                  <a
+                    href="/opengraph-image"
+                    className="text-accent-ink hover:underline"
+                  >
+                    /opengraph-image
+                  </a>{" "}
+                  — 1200×630, the size Meta, LinkedIn, Slack and iMessage all
+                  want.
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-ink">Approved lines</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  Tagline: <strong>{brand.tagline}</strong>
+                  <br />
+                  Positioning: <strong>{brand.positioning}</strong>
+                  <br />
+                  Alternates: {brand.altTaglines.join(" · ")}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  They live in <code>src/lib/brand.ts</code>. Inventing a new one
+                  per campaign is how a product ends up with five taglines and no
+                  slogan.
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-ink">What not to claim</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  No member counts, no testimonials from accounts that are not
+                  real, and nothing implying we verify identities — we cannot,
+                  and{" "}
+                  <a href="/safety" className="text-accent-ink hover:underline">
+                    /safety
+                  </a>{" "}
+                  says so in writing. An advert that contradicts the safety page
+                  is worse than no advert.
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-ink">What not to claim.</p>
-              <p className="mt-1">
-                No member counts, no testimonials from accounts that are not
-                real, and nothing implying we verify identities — we cannot, and{" "}
-                <a href="/safety" className="text-accent-ink hover:underline">
-                  /safety
-                </a>{" "}
-                says so in writing. An advert that contradicts the safety page is
-                worse than no advert.
-              </p>
-            </div>
-          </div>
-        </Panel>
+          </Panel>
+        </div>
       </div>
     </>
   );
