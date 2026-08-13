@@ -157,7 +157,10 @@ export function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+        // `whitespace-nowrap`: a chip is a label, not a paragraph. "6 going"
+        // wrapping to two lines inside a pill at phone width reads as a broken
+        // layout rather than as a tight column.
+        "inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium",
         tones[tone],
         className,
       )}
