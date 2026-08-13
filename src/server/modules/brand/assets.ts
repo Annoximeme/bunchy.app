@@ -109,72 +109,172 @@ export function lockupSvg(treatment: Treatment): string {
   ].join("\n");
 }
 
+export type Format = "svg" | "png";
+
 export interface BrandAsset {
   /** Filename, and the id in the download URL. */
   slug: string;
   label: string;
   /** What this one is for, in a sentence. */
   use: string;
-  treatment: Treatment;
-  build: () => string;
+  format: Format;
+  /** PNG only. SVG carries its own intrinsic size. */
+  width?: number;
+  height?: number;
+  /** PNG only. Undefined means a transparent background. */
+  background?: string;
+  /** The artwork, always. PNGs are this rasterised. */
+  svg: () => string;
 }
 
+/** Canvas, from globals.css. The warm background the brand is drawn on. */
+const CANVAS = "#FFF9F3";
+
+/**
+ * Aspect ratios, taken from the viewBoxes above so a PNG can never be squashed.
+ * The lockup is mark + gap + wordmark; the wordmark carries its own padding.
+ */
+const LOCKUP_RATIO = (145 + 42 + (496 * 100) / 152) / 145;
+const WORDMARK_RATIO = 496 / 152;
+
+function png(
+  slug: string,
+  label: string,
+  use: string,
+  svg: () => string,
+  width: number,
+  ratio: number,
+  background?: string,
+): BrandAsset {
+  return {
+    slug,
+    label,
+    use,
+    format: "png",
+    width,
+    height: Math.round(width / ratio),
+    background,
+    svg,
+  };
+}
+
+/**
+ * PNG first, SVG second.
+ *
+ * This list used to be SVG only, on the theory that a vector is what a printer
+ * and a favicon both want. That was true and useless: Facebook, Instagram,
+ * LinkedIn and X all refuse an SVG upload outright, and advertising Bunchy is
+ * the main reason anybody opens this page. The vectors are still here for print
+ * and for anyone rebuilding an asset, but they are no longer the only option.
+ */
 export const BRAND_ASSETS: readonly BrandAsset[] = [
+  // --- Ready to upload ------------------------------------------------------
+  png(
+    "bunchy-profile-1024.png",
+    "Profile picture",
+    "Square, on brand canvas. The one to upload as an avatar on any social account.",
+    () => markSvg("colour"),
+    1024,
+    1,
+    CANVAS,
+  ),
+  png(
+    "bunchy-profile-dark-1024.png",
+    "Profile picture, dark",
+    "The same, knocked out on ink — for platforms with a dark shell.",
+    () => markSvg("white"),
+    1024,
+    1,
+    "#172033",
+  ),
+  png(
+    "bunchy-cover-1600.png",
+    "Wide lockup",
+    "Cover images, banners, slide corners, anywhere with room for the name.",
+    () => lockupSvg("colour"),
+    1600,
+    LOCKUP_RATIO,
+    CANVAS,
+  ),
+  png(
+    "bunchy-lockup-transparent-1600.png",
+    "Wide lockup, transparent",
+    "The same with no background, to drop onto a photograph or a coloured panel.",
+    () => lockupSvg("colour"),
+    1600,
+    LOCKUP_RATIO,
+    undefined,
+  ),
+  png(
+    "bunchy-lockup-white-1600.png",
+    "Wide lockup, knockout",
+    "White artwork, transparent background. For dark or busy imagery.",
+    () => lockupSvg("white"),
+    1600,
+    LOCKUP_RATIO,
+    undefined,
+  ),
+  png(
+    "bunchy-mark-1024.png",
+    "Mark only, transparent",
+    "The cluster with no background, for compositing.",
+    () => markSvg("colour"),
+    1024,
+    1,
+    undefined,
+  ),
+  png(
+    "bunchy-wordmark-1600.png",
+    "Wordmark",
+    "The name alone, when the mark already appears on the same surface.",
+    () => wordmarkSvg("ink"),
+    1600,
+    WORDMARK_RATIO,
+    undefined,
+  ),
+
+  // --- Vectors, for print and rebuilds --------------------------------------
   {
     slug: "bunchy-lockup-colour.svg",
     label: "Lockup, full colour",
-    use: "The default. Anywhere there is room for the name next to the mark.",
-    treatment: "colour",
-    build: () => lockupSvg("colour"),
+    use: "Print and anywhere that scales without limit.",
+    format: "svg",
+    svg: () => lockupSvg("colour"),
   },
   {
     slug: "bunchy-lockup-ink.svg",
     label: "Lockup, one colour",
-    use: "Print, faxes, embroidery, anywhere colour cannot be trusted.",
-    treatment: "ink",
-    build: () => lockupSvg("ink"),
+    use: "Single-colour printing, embroidery, engraving.",
+    format: "svg",
+    svg: () => lockupSvg("ink"),
   },
   {
     slug: "bunchy-lockup-white.svg",
     label: "Lockup, knockout",
-    use: "On a photograph or a dark panel. Never on a light one.",
-    treatment: "white",
-    build: () => lockupSvg("white"),
+    use: "Vector, for dark backgrounds.",
+    format: "svg",
+    svg: () => lockupSvg("white"),
   },
   {
     slug: "bunchy-mark-colour.svg",
     label: "Mark, full colour",
-    use: "Avatars, app icons, favicons — anywhere square and small.",
-    treatment: "colour",
-    build: () => markSvg("colour"),
+    use: "Favicons, app icons, anything square.",
+    format: "svg",
+    svg: () => markSvg("colour"),
   },
   {
     slug: "bunchy-mark-ink.svg",
     label: "Mark, one colour",
-    use: "Stamps, watermarks, single-colour print.",
-    treatment: "ink",
-    build: () => markSvg("ink"),
-  },
-  {
-    slug: "bunchy-mark-white.svg",
-    label: "Mark, knockout",
-    use: "On dark or busy backgrounds.",
-    treatment: "white",
-    build: () => markSvg("white"),
+    use: "Stamps and watermarks.",
+    format: "svg",
+    svg: () => markSvg("ink"),
   },
   {
     slug: "bunchy-wordmark-ink.svg",
     label: "Wordmark",
-    use: "When the mark already appears elsewhere on the same surface.",
-    treatment: "ink",
-    build: () => wordmarkSvg("ink"),
-  },
-  {
-    slug: "bunchy-wordmark-white.svg",
-    label: "Wordmark, knockout",
-    use: "The same, on dark.",
-    treatment: "white",
-    build: () => wordmarkSvg("white"),
+    use: "Vector, for print.",
+    format: "svg",
+    svg: () => wordmarkSvg("ink"),
   },
 ];
 
