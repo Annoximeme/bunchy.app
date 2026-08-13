@@ -1,8 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import { brand } from "@/lib/brand";
+import { env } from "@/server/env";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  /**
+   * Without this, Next resolves og:image against http://localhost:3000 and
+   * every shared link previews with an image no crawler can fetch — which is
+   * indistinguishable from having no image at all, and was.
+   *
+   * `next build` evaluates this, so APP_URL is passed into the build as an
+   * argument (see the Dockerfile). The fallback is the development origin
+   * rather than the production domain: a preview pointing at localhost is
+   * obviously broken, while one silently pointing at bunchy.app from a staging
+   * build is not.
+   */
+  metadataBase: new URL(env().APP_URL),
   title: {
     default: `${brand.name} — ${brand.tagline}`,
     template: `%s · ${brand.name}`,
