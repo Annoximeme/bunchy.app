@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
@@ -159,16 +160,19 @@ export default async function LandingPage() {
             <div className="mt-12 grid gap-6 md:grid-cols-3">
               <Step
                 n="01"
+                tone="accent"
                 title="Tell us who you are"
                 body="A short conversation, not a form. Interests, what you're looking for, and when you're actually free."
               />
               <Step
                 n="02"
+                tone="purple"
                 title="Meet a few good matches"
                 body="Compatibility looks at goals, availability, distance and style — not just tags you both ticked."
               />
               <Step
                 n="03"
+                tone="mint"
                 title="Join a small bunch"
                 body="Five to twelve people with something real in common. Some meet in a bar, some only ever in a game or a call — both are the point, and you pick which you are up for."
               />
@@ -253,6 +257,45 @@ export default async function LandingPage() {
                 body="We store a coarse area, never an address — precise enough to find people nearby, useless for finding you."
               />
             </div>
+          </div>
+        </section>
+
+        {/* The questions people actually have before joining */}
+        <section className="py-20">
+          <div className="mx-auto max-w-3xl px-5">
+            <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              Before you sign up.
+            </h2>
+            <dl className="mt-10 divide-y divide-line border-y border-line">
+              <Question q="Is this a dating app?">
+                No, and it is not one with the labels changed either. There is no
+                swiping, no romantic intent field, and nothing that ranks people
+                by attractiveness. It is for friends — the thing that gets much
+                harder to find after school and that almost nothing is built for.
+              </Question>
+              <Question q="Is it actually free?">
+                Yes. No trial, no card, no paid tier holding the useful half
+                hostage. The assistant runs in-process rather than on a metered
+                API, which is what makes that sustainable rather than a promise
+                we quietly withdraw later.
+              </Question>
+              <Question q="Who can see my profile?">
+                Signed-in members only — never search engines, never the open
+                internet. Your location is stored as an approximate area, never
+                an address, and you choose whether your exact age shows.
+              </Question>
+              <Question q="What if nobody near me has joined yet?">
+                Then Discover tells you so, plainly, with the number of people
+                nearby rather than an empty page pretending otherwise. Online
+                bunches work at any distance from day one, and inviting one
+                person changes your local picture more than anything else you
+                can do here.
+              </Question>
+              <Question q="What if I want to leave?">
+                Two clicks, from your profile. Your account and everything on it
+                goes; you can export it first if you want a copy.
+              </Question>
+            </dl>
           </div>
         </section>
 
@@ -350,21 +393,74 @@ function Ache({
   );
 }
 
-function Step({ n, title, body }: { n: string; title: string; body: string }) {
+function Step({
+  n,
+  tone,
+  title,
+  body,
+}: {
+  n: string;
+  tone: "accent" | "purple" | "mint";
+  title: string;
+  body: string;
+}) {
+  /*
+    The numeral carries the colour rather than the card edge. Three steps in a
+    row want a sense of order more than they want three coloured borders, and a
+    filled numeral reads as a sequence at a glance.
+  */
+  const badge = {
+    accent: "bg-accent-soft text-accent-ink",
+    purple: "bg-purple-soft text-purple-ink",
+    mint: "bg-mint-soft text-mint-ink",
+  }[tone];
+
   return (
-    <div className="card-surface p-6">
-      <span className="text-xs font-semibold tracking-widest text-accent-ink">{n}</span>
-      <h3 className="mt-3 text-lg font-semibold tracking-tight">{title}</h3>
+    <div className="card-surface p-6 transition-shadow duration-200 hover:shadow-[0_10px_30px_-16px_rgb(23_32_51/0.35)]">
+      <span
+        className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-semibold ${badge}`}
+      >
+        {n}
+      </span>
+      <h3 className="mt-4 text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
     </div>
   );
 }
 
+function Question({ q, children }: { q: string; children: ReactNode }) {
+  /*
+    Objections, answered before they become reasons not to sign up. "Is this a
+    dating app" is the first thing most people will assume about a product that
+    matches strangers by compatibility, and leaving it unsaid costs more than
+    any amount of polish elsewhere buys.
+  */
+  return (
+    <div className="py-5">
+      <dt className="font-semibold tracking-tight">{q}</dt>
+      <dd className="mt-1.5 leading-relaxed text-ink-soft">{children}</dd>
+    </div>
+  );
+}
+
 function Principle({ title, body }: { title: string; body: string }) {
+  /*
+    Each of these is a "no", so each carries a struck-through mark. It is the
+    one section on the page whose content is entirely absences, and a column of
+    plain paragraphs made four deliberate decisions look like filler.
+  */
   return (
     <div>
-      <h3 className="font-semibold tracking-tight">{title}</h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-muted">{body}</p>
+      <div className="flex items-center gap-2">
+        <span
+          aria-hidden
+          className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-surface-sunken text-[11px] font-bold text-muted"
+        >
+          ✕
+        </span>
+        <h3 className="font-semibold tracking-tight">{title}</h3>
+      </div>
+      <p className="mt-1.5 pl-7 text-sm leading-relaxed text-muted">{body}</p>
     </div>
   );
 }
