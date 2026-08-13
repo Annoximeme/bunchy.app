@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getProfileByUsername } from "@/server/modules/profile/service";
@@ -28,9 +29,13 @@ export default async function PublicProfilePage({
   const viewer = await requireViewer();
   const { username } = await params;
 
-  if (username.toLowerCase() === viewer.username.toLowerCase()) {
-    redirect("/profile");
-  }
+  /*
+    Viewing your own public profile used to redirect to /profile, which made the
+    "View as others see it" button on that page appear to do nothing: it linked
+    here and was bounced straight back to where it was clicked. The page renders
+    for yourself now, minus the actions that make no sense pointed at yourself.
+  */
+  const isSelf = username.toLowerCase() === viewer.username.toLowerCase();
 
   let profile;
   try {
@@ -40,7 +45,9 @@ export default async function PublicProfilePage({
     throw error;
   }
 
-  const blocked = await isBlockedBetween(viewer.profileId, profile.id);
+  const blocked = isSelf
+    ? false
+    : await isBlockedBetween(viewer.profileId, profile.id);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
   const curious = profile.interests.filter((i) => i.intent === "CURIOUS");
@@ -48,6 +55,20 @@ export default async function PublicProfilePage({
   return (
     <PageShell>
       <div className="mx-auto max-w-3xl space-y-6">
+        {isSelf && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3">
+            <p className="text-sm text-ink-soft">
+              This is your profile as another member sees it.
+            </p>
+            <Link
+              href="/profile"
+              className="text-sm font-medium text-accent-ink hover:underline"
+            >
+              Back to editing
+            </Link>
+          </div>
+        )}
+
         <Card>
           <div className="flex flex-wrap items-start gap-5">
             <Avatar name={profile.displayName} src={profile.avatarUrl} size="xl" />
@@ -65,14 +86,17 @@ export default async function PublicProfilePage({
               {(profile.staff || profile.title || profile.foundingMember) && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {/*
-                    Ink, accent, yellow — deliberately not purple, which is the
-                    `ai` chip tone and means "the system inferred this". These
-                    three are the opposite: the things Bunchy itself asserts
-                    about a person.
+                    The Staff badge is the one element in the app that carries a
+                    gradient. That is the point: everywhere else a colour is a
+                    meaning (purple = inferred by the system, yellow = time), and
+                    a badge built from two brand colours at once belongs to no
+                    category — which is what makes it read as issued rather than
+                    as a label anyone could pick. It is also the only badge worth
+                    counterfeiting, so it should be the hardest to mistake.
                   */}
                   {profile.staff && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-[var(--color-canvas)]">
-                      <span aria-hidden>◆</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[linear-gradient(102deg,var(--color-accent),var(--color-purple))] px-3 py-1 text-xs font-semibold tracking-wide text-white shadow-[0_2px_10px_-3px_var(--color-purple)] ring-1 ring-white/25">
+                      <span aria-hidden className="text-[0.7rem] leading-none">◆</span>
                       Staff
                     </span>
                   )}
@@ -91,12 +115,14 @@ export default async function PublicProfilePage({
                 </div>
               )}
 
-              <div className="mt-5">
-                <ConnectButton
-                  profileId={profile.id}
-                  state={profile.connectionState}
-                />
-              </div>
+              {!isSelf && (
+                <div className="mt-5">
+                  <ConnectButton
+                    profileId={profile.id}
+                    state={profile.connectionState}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </Card>
@@ -171,17 +197,19 @@ export default async function PublicProfilePage({
           </Card>
         )}
 
-        <Card>
-          <h2 className="text-sm font-semibold">Not going well?</h2>
-          <div className="mt-3 flex flex-wrap items-center gap-4">
-            <BlockButton
-              profileId={profile.id}
-              displayName={profile.displayName}
-              isBlocked={blocked}
-            />
-            <ReportButton targetType="PROFILE" targetId={profile.id} />
-          </div>
-        </Card>
+        {!isSelf && (
+          <Card>
+            <h2 className="text-sm font-semibold">Not going well?</h2>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              <BlockButton
+                profileId={profile.id}
+                displayName={profile.displayName}
+                isBlocked={blocked}
+              />
+              <ReportButton targetType="PROFILE" targetId={profile.id} />
+            </div>
+          </Card>
+        )}
       </div>
     </PageShell>
   );

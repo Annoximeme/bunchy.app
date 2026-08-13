@@ -8,6 +8,7 @@ import { PageHeader, PageShell } from "@/components/page-header";
 import { PrivacySettings } from "@/components/privacy-settings";
 import { NotificationPreferences } from "@/components/notification-preferences";
 import { AccountData } from "@/components/account-data";
+import { AvatarUpload } from "@/components/avatar-upload";
 import { ReferralCard } from "@/components/referral-card";
 import { BlockButton } from "@/components/moderation-actions";
 import { ResendVerification } from "@/components/resend-verification";
@@ -39,7 +40,10 @@ export default async function ProfilePage() {
       <div className="space-y-6">
         <Card>
           <div className="flex flex-wrap items-start gap-5">
-            <Avatar name={profile.displayName} src={profile.avatarUrl} size="xl" />
+            <AvatarUpload
+              displayName={profile.displayName}
+              avatarUrl={profile.avatarUrl}
+            />
             <div className="min-w-0 flex-1">
               <h2 className="text-2xl font-semibold tracking-tight">
                 {profile.displayName}
@@ -56,8 +60,8 @@ export default async function ProfilePage() {
               {(profile.staff || profile.title || profile.foundingMember) && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {profile.staff && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-[var(--color-canvas)]">
-                      <span aria-hidden>◆</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[linear-gradient(102deg,var(--color-accent),var(--color-purple))] px-3 py-1 text-xs font-semibold tracking-wide text-white shadow-[0_2px_10px_-3px_var(--color-purple)] ring-1 ring-white/25">
+                      <span aria-hidden className="text-[0.7rem] leading-none">◆</span>
                       Staff
                     </span>
                   )}

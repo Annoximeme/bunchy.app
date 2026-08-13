@@ -89,6 +89,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
+    volumes:
+      # Uploaded avatars. The one piece of member data that is not in Postgres,
+      # so it is the one other thing worth backing up.
+      - uploads:/app/uploads
     # Both: `backend` to reach Postgres, `egress` to reach the SMTP provider.
     # Publishing no ports is what keeps it unreachable from outside — being on
     # a bridge network does not expose it.
@@ -146,6 +150,7 @@ services:
 
 volumes:
   db-data:
+  uploads:
   caddy-data:
   caddy-config:
 
