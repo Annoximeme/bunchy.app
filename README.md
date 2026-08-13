@@ -3,7 +3,8 @@
 **Find your people.**
 
 Bunchy is an AI-assisted social discovery platform for making real friendships,
-joining small bunches, and actually doing things together offline.
+joining small bunches, and actually doing things together — online, in
+person, or both.
 
 It is deliberately not a feed. There is no infinite scroll, no follower count,
 no popularity ranking, and no notification whose purpose is to pull you back in.
