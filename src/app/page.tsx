@@ -108,12 +108,49 @@ export default async function LandingPage() {
               </ul>
             </div>
 
-            {/* A real card, not a screenshot */}
-            <div className="animate-rise space-y-4 [animation-delay:120ms]">
-              <ExamplePersonCard />
-              <ExampleBunchCard />
-              <ExampleActivityCard />
-              <p className="text-center text-xs text-muted">
+            {/* The product, not a screenshot of it */}
+            <div className="animate-rise [animation-delay:120ms]">
+              {/*
+                The cluster says what a bunch is before any copy does — the same
+                idea the mark is built on, made out of people. Initials rather
+                than stock photography: invented faces on a page about meeting
+                real people is the one lie this product cannot afford.
+              */}
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex -space-x-2.5">
+                  {["Sarah", "Milan", "Elena", "Tomas", "Priya", "Wout"].map(
+                    (name) => (
+                      <Avatar
+                        key={name}
+                        name={name}
+                        size="sm"
+                        className="ring-2 ring-canvas"
+                      />
+                    ),
+                  )}
+                </div>
+                <p className="text-sm text-muted">
+                  A bunch is five to twelve people.
+                </p>
+              </div>
+
+              {/*
+                Rotated a degree or so and overlapped, so the three read as a
+                deck someone is holding rather than a stack of divs. They
+                straighten on hover.
+              */}
+              <div className="space-y-3">
+                <div className="rotate-[-0.8deg] transition-transform duration-300 hover:rotate-0">
+                  <ExamplePersonCard />
+                </div>
+                <div className="rotate-[0.6deg] transition-transform duration-300 hover:rotate-0">
+                  <ExampleBunchCard />
+                </div>
+                <div className="rotate-[-0.4deg] transition-transform duration-300 hover:rotate-0">
+                  <ExampleActivityCard />
+                </div>
+              </div>
+              <p className="mt-4 text-center text-xs text-muted">
                 Illustrative examples of what {brand.name} shows you.
               </p>
             </div>
@@ -121,40 +158,46 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* The problem, said plainly */}
-        <section className="band-warm py-20">
+        {/* The problem, said plainly — editorial, deliberately not a card grid */}
+        <section className="band-warm py-24">
           <div className="reveal mx-auto max-w-6xl px-5">
-            <h2 className="max-w-3xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              You don&rsquo;t need more followers. You need four people who
-              answer the group chat.
-            </h2>
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              <Ache
-                tone="accent"
-                title="Everyone is “busy”"
-                body="Not a brush-off — calendars genuinely stopped overlapping. So Bunchy asks when you are actually free, and only suggests people whose evenings match yours."
-              />
-              <Ache
-                tone="purple"
-                title="Apps optimise for the wrong thing"
-                body="A feed wants your attention, so it keeps you scrolling past people instead of meeting one. Nothing here is ranked by how long it holds you."
-              />
-              <Ache
-                tone="mint"
-                title="One-on-one is a lot of pressure"
-                body="Coffee with a stranger is an interview. Six people doing something together is not — and “something” can be a voice channel on a Tuesday just as easily as a bar on a Friday."
-              />
+            <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+              <h2 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
+                You don&rsquo;t need more followers. You need four people who
+                answer the group chat.
+              </h2>
+
+              {/*
+                Hairlines rather than cards. Three bordered boxes here made the
+                same shape as the section above and the section below it, and a
+                page where every idea arrives in an identical rectangle reads as
+                a template rather than an argument.
+              */}
+              <dl className="divide-y divide-line">
+                <Ache
+                  title="Everyone is “busy”"
+                  body="Not a brush-off — calendars genuinely stopped overlapping. So Bunchy asks when you are actually free, and only suggests people whose evenings match yours."
+                />
+                <Ache
+                  title="Apps optimise for the wrong thing"
+                  body="A feed wants your attention, so it keeps you scrolling past people instead of meeting one. Nothing here is ranked by how long it holds you."
+                />
+                <Ache
+                  title="One-on-one is a lot of pressure"
+                  body="Coffee with a stranger is an interview. Six people doing something together is not — and “something” can be a voice channel on a Tuesday just as easily as a bar on a Friday."
+                />
+              </dl>
             </div>
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how" className="py-20">
+        {/* How it works — a line with three stops on it */}
+        <section id="how" className="py-24">
           <div className="reveal mx-auto max-w-6xl px-5">
             <p className="text-sm font-semibold tracking-widest text-accent-ink">
               HOW IT WORKS
             </p>
-            <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="mt-3 max-w-2xl text-balance text-4xl font-semibold tracking-tight md:text-5xl">
               Built to end with you closing the tab.
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-ink-soft">
@@ -163,7 +206,22 @@ export default async function LandingPage() {
               different software.
             </p>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {/*
+              A rule threaded through the three numerals, so the eye reads a
+              sequence instead of three parallel boxes. The line is hidden on
+              narrow screens, where the steps stack and the order is obvious
+              from the stacking itself.
+            */}
+            <ol className="relative mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+              <div
+                aria-hidden
+                className="absolute left-[8%] right-[8%] top-6 hidden h-px md:block"
+                style={{
+                  background:
+                    "linear-gradient(to right, var(--color-accent), var(--color-purple), var(--color-mint))",
+                  opacity: 0.35,
+                }}
+              />
               <Step
                 n="01"
                 tone="accent"
@@ -182,60 +240,74 @@ export default async function LandingPage() {
                 title="Join a small bunch"
                 body="Five to twelve people with something real in common. Some meet in a bar, some only ever in a game or a call — both are the point, and you pick which you are up for."
               />
-            </div>
+            </ol>
           </div>
         </section>
 
-        {/* Both modes, said outright */}
-        <section className="band-cool py-20">
-          <div className="reveal mx-auto max-w-6xl px-5">
-            <p className="text-sm font-semibold tracking-widest text-purple-ink">
-              TWO WAYS TO MEET
-            </p>
-            <h2 className="mt-3 max-w-3xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              A voice channel counts. So does a coffee.
-            </h2>
-            <p className="mt-4 max-w-2xl text-lg text-ink-soft">
-              Plenty of real friendships start in a game, a call or a shared
-              project and stay there quite happily. {brand.name} treats that as
-              meeting people, not as practice for meeting people.
-            </p>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-2">
-              <div className="card-surface relative overflow-hidden p-6">
-                <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-purple" />
-                <h3 className="mt-2 text-lg font-semibold tracking-tight">
-                  Online
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Co-op nights, watch-alongs, study sessions, a bunch that lives
-                  in its own chat. Distance stops mattering, so matching leans on
-                  what you are into and when you are free. The meeting link is
-                  only ever shown to people who joined.
-                </p>
-              </div>
-
-              <div className="card-surface relative overflow-hidden p-6">
-                <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-accent" />
-                <h3 className="mt-2 text-lg font-semibold tracking-tight">
-                  In person
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Board games, climbing, a walk, a bar. Matching adds distance to
-                  the picture, activities carry a venue and a time, and there is
-                  a{" "}
-                  <Link href="/safety" className="text-accent-ink hover:underline">
-                    safety guide
-                  </Link>{" "}
-                  for the part where you meet a stranger.
-                </p>
-              </div>
+        {/* Two ways to meet — split down the middle, because that is the idea */}
+        <section className="px-5 py-10">
+          {/*
+            An inset panel rather than a full-bleed split. Full width, its dark
+            half ran straight into the dark band below it and the two merged
+            into one large mass — which cost the band underneath the impact of
+            being the only dark thing on the page. Canvas around the panel keeps
+            them separate, and the rounded edge makes the split read as a
+            deliberate object.
+          */}
+          <div className="reveal mx-auto grid max-w-6xl overflow-hidden rounded-[var(--radius-card)] shadow-[0_24px_60px_-40px_rgb(23_32_51/0.5)] md:grid-cols-2">
+          {/*
+            Half dark, half daylight, edge to edge and without a card in sight.
+            The section argues that online and in person are equals, and two
+            identical white boxes side by side argued it far less convincingly
+            than the page simply splitting in two.
+          */}
+          <div className="relative overflow-hidden bg-ink px-6 py-16 text-canvas md:px-10">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(30rem 20rem at 20% 10%, color-mix(in oklab, var(--color-purple) 26%, transparent), transparent 70%)",
+              }}
+            />
+            <div className="relative mx-auto max-w-md">
+              <p className="text-sm font-semibold tracking-widest opacity-70">
+                ONLINE
+              </p>
+              <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight">
+                A voice channel counts.
+              </h2>
+              <p className="mt-4 leading-relaxed opacity-80">
+                Co-op nights, watch-alongs, study sessions, a bunch that lives in
+                its own chat. Distance stops mattering, so matching leans on what
+                you are into and when you are free. The meeting link is only ever
+                shown to people who joined.
+              </p>
             </div>
+          </div>
 
-            <p className="mt-6 text-sm text-muted">
-              Nobody has to pick one. Your profile says how you like to spend
-              time, and suggestions follow it.
-            </p>
+          <div className="band-warm px-6 py-16 md:px-10">
+            <div className="mx-auto max-w-md">
+              <p className="text-sm font-semibold tracking-widest text-accent-ink">
+                IN PERSON
+              </p>
+              <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight">
+                So does a coffee.
+              </h2>
+              <p className="mt-4 leading-relaxed text-ink-soft">
+                Board games, climbing, a walk, a bar. Matching adds distance to
+                the picture, activities carry a venue and a time, and there is a{" "}
+                <Link href="/safety" className="text-accent-ink hover:underline">
+                  safety guide
+                </Link>{" "}
+                for the part where you meet a stranger.
+              </p>
+              <p className="mt-6 text-sm text-muted">
+                Nobody has to pick one. Your profile says how you like to spend
+                time, and suggestions follow it.
+              </p>
+            </div>
+          </div>
           </div>
         </section>
 
@@ -399,26 +471,16 @@ export default async function LandingPage() {
  * colours read as three separate ideas, where three identical ones read as a
  * list somebody padded to fit the grid.
  */
-function Ache({
-  tone,
-  title,
-  body,
-}: {
-  tone: "accent" | "purple" | "mint";
-  title: string;
-  body: string;
-}) {
-  const bar = {
-    accent: "bg-accent",
-    purple: "bg-purple",
-    mint: "bg-mint",
-  }[tone];
-
+function Ache({ title, body }: { title: string; body: string }) {
+  /*
+    A row on a hairline rather than a bordered card. Card chrome around three
+    sentences adds weight without adding meaning, and this section sits between
+    two others that already use cards.
+  */
   return (
-    <div className="card-surface relative overflow-hidden p-6">
-      <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${bar}`} />
-      <h3 className="mt-2 text-lg font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
+    <div className="py-6 first:pt-0 last:pb-0">
+      <dt className="text-lg font-semibold tracking-tight">{title}</dt>
+      <dd className="mt-2 leading-relaxed text-ink-soft">{body}</dd>
     </div>
   );
 }
@@ -435,9 +497,9 @@ function Step({
   body: string;
 }) {
   /*
-    The numeral carries the colour rather than the card edge. Three steps in a
-    row want a sense of order more than they want three coloured borders, and a
-    filled numeral reads as a sequence at a glance.
+    The numeral sits on the rule that threads the three steps together, so it
+    carries a canvas-coloured ring — without it the line runs straight through
+    the badge and the sequence stops reading as stops on a line.
   */
   const badge = {
     accent: "bg-accent-soft text-accent-ink",
@@ -446,15 +508,15 @@ function Step({
   }[tone];
 
   return (
-    <div className="card-surface p-6 transition-shadow duration-200 hover:shadow-[0_10px_30px_-16px_rgb(23_32_51/0.35)]">
+    <li className="relative">
       <span
-        className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-semibold ${badge}`}
+        className={`relative inline-flex size-12 items-center justify-center rounded-full text-sm font-semibold ring-8 ring-canvas ${badge}`}
       >
         {n}
       </span>
-      <h3 className="mt-4 text-lg font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
-    </div>
+      <h3 className="mt-5 text-xl font-semibold tracking-tight">{title}</h3>
+      <p className="mt-2 leading-relaxed text-ink-soft">{body}</p>
+    </li>
   );
 }
 
