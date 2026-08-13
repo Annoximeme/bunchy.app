@@ -4,10 +4,12 @@ import { notFound } from "next/navigation";
 import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getActivity } from "@/server/modules/activities/service";
+import { env } from "@/server/env";
 import { activityWhen } from "@/lib/format";
 import { PageShell } from "@/components/page-header";
 import { ActivityJoinButton } from "@/components/activity-actions";
 import { ReportButton } from "@/components/moderation-actions";
+import { TellSomeone } from "@/components/tell-someone";
 import { Avatar, Card, Chip } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
@@ -123,14 +125,41 @@ export default async function ActivityPage({
               week first.
             */}
             {activity.status !== "CANCELLED" && (
-              <a
-                href={`/api/activities/${activity.id}/calendar`}
-                className="rounded-[var(--radius-control)] border border-line px-3.5 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
-              >
-                Add to calendar
-              </a>
+              <>
+                <a
+                  href={`/api/activities/${activity.id}/calendar`}
+                  className="rounded-[var(--radius-control)] border border-line px-3.5 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+                >
+                  Add to calendar
+                </a>
+                <TellSomeone
+                  title={activity.title}
+                  whenLabel={activityWhen(activity.startsAt)}
+                  whereLabel={
+                    activity.mode === "ONLINE"
+                      ? null
+                      : (activity.locationLabel ?? activity.cityLabel)
+                  }
+                  url={`${env().APP_URL}/activities/${activity.id}`}
+                />
+              </>
             )}
           </div>
+
+          {activity.mode !== "ONLINE" && (
+            /*
+              Shown on offline activities only. On an online one it would be
+              noise, and a safety notice that appears everywhere is a safety
+              notice nobody reads anywhere.
+            */
+            <p className="mt-6 text-xs text-muted">
+              Meeting someone new? Public place, tell a friend where you are, and
+              leave whenever you want to.{" "}
+              <Link href="/safety" className="text-accent-ink hover:underline">
+                Meeting safely
+              </Link>
+            </p>
+          )}
 
           {!activity.viewerIsOrganizer && (
             <div className="mt-6 border-t border-line pt-4">

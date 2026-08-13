@@ -21,7 +21,27 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/admin", "/onboarding", "/discover", "/bunches"],
+      // Everything behind a session. All of it already redirects a signed-out
+      // crawler to /login, so this changes no access — it stops a crawler
+      // queueing thousands of URLs it will only be bounced from, and makes the
+      // claim on /safety ("search engines see the marketing pages and nothing
+      // else") true by declaration as well as by enforcement.
+      disallow: [
+        "/api/",
+        "/admin",
+        "/onboarding",
+        "/discover",
+        "/bunches",
+        "/activities",
+        "/connections",
+        "/messages",
+        "/notifications",
+        "/profile",
+        "/radar",
+        "/assistant",
+        "/start",
+        "/u/",
+      ],
     },
     sitemap: new URL("/sitemap.xml", env().APP_URL).toString(),
   };
