@@ -10,6 +10,7 @@ import {
   myAvailability,
 } from "@/server/modules/availability/service";
 import { nextIntroduction } from "@/server/modules/discovery/introductions";
+import { neighbourhoodFor } from "@/server/modules/discovery/neighbourhood";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageHeader, PageShell } from "@/components/page-header";
@@ -43,6 +44,10 @@ export default async function DiscoverPage() {
       availabilityClusters(viewer.profileId),
       availabilityDisabled(viewer.profileId),
     ]);
+
+  // Only needed when there is nothing to show, but fetching it here keeps the
+  // empty branch synchronous and costs one indexed count.
+  const neighbourhood = await neighbourhoodFor(viewer.profileId);
 
   // Computed here rather than behind an endpoint: an introduction reuses the
   // recommendations this page already loaded, and a route that hands them out
@@ -104,9 +109,30 @@ export default async function DiscoverPage() {
       {nothingAtAll ? (
         <EmptyState
           icon="🌱"
-          title="It's quiet here — for now"
-          description="Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
-          action={<LinkButton href="/start">Start a bunch</LinkButton>}
+          title={
+            neighbourhood.label
+              ? `You're one of ${neighbourhood.count} near ${neighbourhood.label}`
+              : "It's quiet here — for now"
+          }
+          /*
+            A count and a target, rather than an apology. The emptiness is the
+            same either way; this version says what has to happen and who can
+            make it happen, which is the only honest ask when a matching product
+            has not reached the density its introductions depend on.
+          */
+          description={
+            neighbourhood.label
+              ? `Bunches tend to hold together from about ${neighbourhood.target} people nearby, so introductions stay thin until then. Inviting one person moves this more than anything else on the page — and starting a bunch gives whoever joins next somewhere to land.`
+              : "Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
+          }
+          action={
+            <div className="flex flex-wrap justify-center gap-3">
+              <LinkButton href="/start">Start a bunch</LinkButton>
+              <LinkButton href="/profile#invite" variant="secondary">
+                Get my invite link
+              </LinkButton>
+            </div>
+          }
         />
       ) : (
         <div className="space-y-12">

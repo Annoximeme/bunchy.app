@@ -234,7 +234,12 @@ export default async function ProfilePage() {
           </Card>
         )}
 
-        <ReferralCard />
+        {/* Anchor target: the empty Discover state links straight here, and
+            landing at the top of the profile would leave people hunting for
+            the thing they just clicked. */}
+        <div id="invite" className="scroll-mt-24">
+          <ReferralCard />
+        </div>
 
         <AccountData />
       </div>
