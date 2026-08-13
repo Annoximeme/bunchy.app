@@ -233,12 +233,41 @@ export function Avatar({
       aria-hidden
       className={cn(
         shared,
-        "flex items-center justify-center bg-surface-sunken font-semibold text-ink-soft",
+        "flex items-center justify-center font-semibold",
+        avatarTone(name),
       )}
     >
       {initials(name)}
     </span>
   );
+}
+
+/**
+ * Avatar colours are the one place a palette colour carries no state meaning.
+ *
+ * Everywhere else in this file a tone is a meaning — `ai` is purple because the
+ * system inferred something, `positive` is teal because it went well. Here the
+ * colour is derived from the person and says only "this is a different person
+ * from the one above". Before this, a page of members without photos was a
+ * column of identical grey circles, which reads as a placeholder rather than as
+ * people.
+ */
+const AVATAR_TONES = [
+  "bg-accent-soft text-accent-ink",
+  "bg-purple-soft text-purple-ink",
+  "bg-mint-soft text-mint-ink",
+  "bg-yellow-soft text-yellow-ink",
+] as const;
+
+function avatarTone(name: string): string {
+  // FNV-1a. Deterministic, so someone keeps their colour across every page and
+  // every session — a colour that changed on each render would be noise.
+  let hash = 2166136261;
+  for (let i = 0; i < name.length; i += 1) {
+    hash ^= name.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return AVATAR_TONES[Math.abs(hash) % AVATAR_TONES.length]!;
 }
 
 // --- Form fields ------------------------------------------------------------

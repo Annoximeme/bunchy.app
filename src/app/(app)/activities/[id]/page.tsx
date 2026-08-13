@@ -107,7 +107,7 @@ export default async function ActivityPage({
             </div>
           )}
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <ActivityJoinButton
               activityId={activity.id}
               viewerStatus={activity.viewerStatus}
@@ -115,6 +115,21 @@ export default async function ActivityPage({
               isOrganizer={activity.viewerIsOrganizer}
               status={activity.status}
             />
+            {/*
+              A plain link, not a button: it is a file download, and the browser
+              already knows how to do that. Offered to everyone who can see the
+              activity rather than only to people who joined — deciding whether
+              an evening fits often means putting it next to the rest of the
+              week first.
+            */}
+            {activity.status !== "CANCELLED" && (
+              <a
+                href={`/api/activities/${activity.id}/calendar`}
+                className="rounded-[var(--radius-control)] border border-line px-3.5 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+              >
+                Add to calendar
+              </a>
+            )}
           </div>
 
           {!activity.viewerIsOrganizer && (

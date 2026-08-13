@@ -60,6 +60,21 @@ export default async function LandingPage() {
               <p className="mt-6 text-sm text-muted">
                 Free to join. Your location stays approximate, always.
               </p>
+
+              {/*
+                Being early is the only thing Bunchy can honestly offer someone
+                arriving before the members do, and it was previously invisible
+                — the badge existed and nothing said so until after signup.
+                Phrased as a fact rather than a countdown: there is no live
+                counter here on purpose, because "137 spots left" is a pressure
+                tactic and §29 rules out anything that ranks one member above
+                another.
+              */}
+              <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-yellow-soft px-3 py-1.5 text-sm text-yellow-ink">
+                <span aria-hidden>★</span>
+                The first members keep a founding badge — here since the
+                beginning, permanently.
+              </p>
             </div>
 
             {/* A real card, not a screenshot */}
