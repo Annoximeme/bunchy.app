@@ -62,14 +62,20 @@ export default async function PublicProfilePage({
                 {profile.locationLabel && ` · ${profile.locationLabel}`}
               </p>
               {profile.bio && <p className="mt-3 text-ink-soft">{profile.bio}</p>}
-              {(profile.title || profile.foundingMember) && (
+              {(profile.staff || profile.title || profile.foundingMember) && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {/*
-                    Accent rather than purple: purple is the `ai` chip tone and
-                    means "the system inferred this". A staff title is the
-                    opposite — it is the one thing on a profile that Bunchy
-                    itself asserts.
+                    Ink, accent, yellow — deliberately not purple, which is the
+                    `ai` chip tone and means "the system inferred this". These
+                    three are the opposite: the things Bunchy itself asserts
+                    about a person.
                   */}
+                  {profile.staff && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-[var(--color-canvas)]">
+                      <span aria-hidden>◆</span>
+                      Staff
+                    </span>
+                  )}
                   {profile.title && (
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-ink">
                       <span aria-hidden>✦</span>

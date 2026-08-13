@@ -52,11 +52,19 @@ export interface PublicProfile {
    */
   foundingMember: boolean;
   /**
-   * A staff title such as "Founder & Developer of Bunchy". Set from the CLI
-   * only — see the schema comment on `Profile.title` for why a member-editable
-   * badge would be an impersonation surface.
+   * A staff title such as "Founder & Lead Developer of Bunchy". Set from the
+   * CLI only — see the schema comment on `Profile.title` for why a
+   * member-editable badge would be an impersonation surface.
    */
   title: string | null;
+  /**
+   * Whether this member works here.
+   *
+   * `User.role` itself is never serialized: ADMIN and MODERATOR both surface as
+   * a plain `true`, so the badge says "this person is staff" without publishing
+   * who can ban whom. The distinction is authorization data and stays private.
+   */
+  staff: boolean;
 }
 
 export const GOAL_LABELS: Record<string, string> = {
@@ -135,7 +143,7 @@ export interface SerializeInput {
   createdAt: Date;
   foundingMember: boolean;
   title: string | null;
-  user: { birthYear: number | null };
+  user: { birthYear: number | null; role: string };
   privacy: { showApproxLocation: boolean; showExactAge: boolean } | null;
   interests: Array<{
     strength: number;
@@ -190,6 +198,7 @@ export function toPublicProfile(
     joinedAt: row.createdAt.toISOString(),
     foundingMember: row.foundingMember,
     title: row.title,
+    staff: row.user.role !== "MEMBER",
   };
 }
 
@@ -206,7 +215,7 @@ export const PUBLIC_PROFILE_SELECT = {
   createdAt: true,
   foundingMember: true,
   title: true,
-  user: { select: { birthYear: true } },
+  user: { select: { birthYear: true, role: true } },
   privacy: { select: { showApproxLocation: true, showExactAge: true } },
   interests: {
     select: {
