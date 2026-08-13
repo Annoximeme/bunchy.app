@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { brand } from "@/lib/brand";
-import { legalReviewComplete } from "@/lib/legal";
 import { BunchyLogo } from "@/components/logo";
 
 /**
@@ -53,22 +52,6 @@ export function LegalPage({
           </a>
           .
         </p>
-
-        {!legalReviewComplete() && (
-          /*
-           * A page that reads as finished implies a review that has not
-           * happened. The notice is deliberately narrow — the contents are
-           * accurate, it is the legal wording that is unchecked — because
-           * overstating the caveat would make people discount the parts that
-           * are true.
-           */
-          <div className="mt-8 rounded-[var(--radius-card)] border border-yellow bg-yellow-soft p-4 text-sm text-yellow-ink">
-            <strong className="font-semibold">Not yet reviewed by a lawyer.</strong>{" "}
-            Everything here accurately describes what {brand.name} does — it was
-            written from the code — but the legal wording has not been checked by
-            a qualified practitioner yet.
-          </div>
-        )}
 
         <div className="mt-12 space-y-11">{children}</div>
 

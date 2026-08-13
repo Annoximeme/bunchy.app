@@ -64,8 +64,16 @@ model User {
   emailVerifiedAt DateTime?
   /// Null for OAuth-only accounts. Never stores a plaintext password.
   passwordHash    String?
-  /// Year only. Full dates of birth are more identifying than we need.
+  /// Year and month, never the day.
+  ///
+  /// A full date of birth is the identifier used to open bank accounts; it is
+  /// worth much more to whoever steals this database than it is to us. Year
+  /// alone was not enough to state an age truthfully — a subtraction of years
+  /// reads a year high until someone's birthday — so the month is stored and
+  /// the day is not. The remaining error is the weeks before a birthday within
+  /// the birth month itself.
   birthYear       Int?
+  birthMonth      Int?
   status          UserStatus @default(ACTIVE)
   role            UserRole   @default(MEMBER)
   /// When a suspension lifts. Null on an indefinite suspension.
