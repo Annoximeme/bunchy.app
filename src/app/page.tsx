@@ -179,6 +179,12 @@ export default async function LandingPage() {
             <Link href="/signup" className="transition-colors hover:text-ink">
               Join
             </Link>
+            {/* Before Privacy and Terms on purpose: someone deciding whether
+                this is safe to join should not have to read a policy to find
+                out what happens when it isn't. */}
+            <Link href="/safety" className="transition-colors hover:text-ink">
+              Safety
+            </Link>
             <Link href="/privacy" className="transition-colors hover:text-ink">
               Privacy
             </Link>
