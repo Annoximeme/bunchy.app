@@ -59,9 +59,24 @@ fi
 mv "$PARTIAL" "$TARGET"
 chmod 600 "$TARGET"
 
+# Uploaded avatars: the only member data that is not in Postgres, and therefore
+# the only other thing on this machine that a restore cannot reconstruct. Small
+# — one compressed image per member — so it is taken in full every night rather
+# than incrementally.
+UPLOADS="$DEST/bunchy-uploads-$STAMP.tgz"
+if docker volume inspect bunchy_uploads >/dev/null 2>&1; then
+  docker run --rm \
+    -v bunchy_uploads:/uploads:ro \
+    -v "$DEST":/backup \
+    alpine tar czf "/backup/$(basename "$UPLOADS").partial" -C /uploads . 2>/dev/null
+  mv "$UPLOADS.partial" "$UPLOADS"
+  chmod 600 "$UPLOADS"
+fi
+
 # Retention. Deletes only files this script names, so a stray file in the
 # directory is never removed by it.
 find "$DEST" -maxdepth 1 -name 'bunchy-*.dump' -mtime "+$KEEP_DAYS" -delete
+find "$DEST" -maxdepth 1 -name 'bunchy-uploads-*.tgz' -mtime "+$KEEP_DAYS" -delete
 
 echo "[backup] $TARGET ($SIZE bytes), keeping $KEEP_DAYS days"
 

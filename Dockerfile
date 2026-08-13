@@ -97,6 +97,12 @@ RUN addgroup -g 1001 -S bunchy && adduser -u 1001 -S bunchy -G bunchy
 # build outright rather than being skipped, which is how this was found.
 COPY --from=build --chown=bunchy:bunchy /app/.next/standalone ./
 COPY --from=build --chown=bunchy:bunchy /app/.next/static ./.next/static
+
+# Uploaded avatars. Created here, owned by the runtime user, because a named
+# volume mounted over a directory inherits that directory's ownership from the
+# image — mount it over a path that does not exist and Docker creates it owned
+# by root, where a process running as uid 1001 cannot write.
+RUN mkdir -p /app/uploads/avatars && chown -R bunchy:bunchy /app/uploads
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 

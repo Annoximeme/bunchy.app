@@ -104,7 +104,13 @@ export async function saveBasics(
         username: input.username,
         displayName: input.displayName,
         bio: input.bio || null,
-        avatarUrl: input.avatarUrl || null,
+        // Only when the step actually carried a value. The basics form does not
+        // submit this field at all now that pictures are uploaded separately,
+        // and an unconditional write here would delete someone's picture every
+        // time they edited their display name.
+        ...(input.avatarUrl === undefined
+          ? {}
+          : { avatarUrl: input.avatarUrl || null }),
         cityLabel: place?.cityLabel ?? input.cityLabel,
         regionLabel: place?.regionLabel ?? null,
         ...(timezone ? { timezone } : {}),
