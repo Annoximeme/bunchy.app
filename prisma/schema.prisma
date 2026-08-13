@@ -43,7 +43,13 @@ enum UserStatus {
 }
 
 /// Staff privilege. Lives on `User` rather than `Profile` because it is
-/// authorization data, never something another member can see.
+/// authorization data.
+///
+/// The level is never serialized. Profiles do show a plain "Staff" badge
+/// derived from this — ADMIN and MODERATOR both flatten to one label, so a
+/// member can verify that an account claiming to be staff is, which is the
+/// other half of the impersonation defence that `Profile.title` starts. What
+/// stays private is who holds which power.
 enum UserRole {
   MEMBER
   /// Can work the report queue and act on content.
