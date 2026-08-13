@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
-import { BunchyLogo } from "@/components/logo";
+import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { Avatar, Chip, CompatibilityBadge, LinkButton } from "@/components/ui";
 
 /**
@@ -82,24 +82,30 @@ export default async function LandingPage() {
                 </LinkButton>
               </div>
 
-              <p className="mt-6 text-sm text-muted">
-                Free to join. Your location stays approximate, always.
-              </p>
-
               {/*
+                One row, not a sentence plus a yellow panel. The panel version
+                sat directly under the buttons and read as a notification the
+                page was showing you, which is the opposite of a reward.
+
                 Being early is the only thing Bunchy can honestly offer someone
-                arriving before the members do, and it was previously invisible
-                — the badge existed and nothing said so until after signup.
-                Phrased as a fact rather than a countdown: there is no live
-                counter here on purpose, because "137 spots left" is a pressure
+                arriving before the members do, so it stays — phrased as a fact
+                rather than a countdown, because "137 spots left" is a pressure
                 tactic and §29 rules out anything that ranks one member above
                 another.
               */}
-              <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-yellow-soft px-3 py-1.5 text-sm text-yellow-ink">
-                <span aria-hidden>★</span>
-                The first members keep a founding badge — here since the
-                beginning, permanently.
-              </p>
+              <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
+                <li>Free to join</li>
+                <li className="flex items-center gap-1.5">
+                  <span aria-hidden className="text-line">
+                    ·
+                  </span>
+                  Location stays approximate
+                </li>
+                <li className="flex items-center gap-1.5 font-medium text-yellow-ink">
+                  <span aria-hidden>★</span>
+                  Early members keep a founding badge
+                </li>
+              </ul>
             </div>
 
             {/* A real card, not a screenshot */}
@@ -233,8 +239,16 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* Principles */}
-        <section className="py-20">
+        {/* Principles — the one inverted band on the page */}
+        <section className="bg-ink py-20 text-canvas">
+          {/*
+            Dark, because this section is the argument rather than a feature
+            list, and five cream sections in a row let the eye slide past the
+            one that says what Bunchy refuses to do. The tokens flip in dark
+            mode — `--color-ink` is the light one there — so this stays an
+            inversion of its surroundings in both themes rather than becoming a
+            navy block on a navy page.
+          */}
           <div className="mx-auto max-w-6xl px-5">
             <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
               What you won&rsquo;t find here.
@@ -331,11 +345,14 @@ export default async function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-line py-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 text-sm text-muted">
-          <span>
-            {brand.name} — {brand.tagline}
-          </span>
+      <footer className="border-t border-line py-10">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 text-sm text-muted">
+          <div className="flex items-center gap-3">
+            <BunchyMark size={26} />
+            <span>
+              {brand.name} — {brand.tagline}
+            </span>
+          </div>
           <div className="flex gap-5">
             <Link href="/login" className="transition-colors hover:text-ink">
               Sign in
@@ -445,22 +462,22 @@ function Question({ q, children }: { q: string; children: ReactNode }) {
 
 function Principle({ title, body }: { title: string; body: string }) {
   /*
-    Each of these is a "no", so each carries a struck-through mark. It is the
-    one section on the page whose content is entirely absences, and a column of
-    plain paragraphs made four deliberate decisions look like filler.
+    Each of these is a "no", so each carries a struck-through mark. Colours come
+    from `currentColor` and opacity rather than a token, so the same component
+    works on the inverted band without a second set of classes to keep in step.
   */
   return (
     <div>
       <div className="flex items-center gap-2">
         <span
           aria-hidden
-          className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-surface-sunken text-[11px] font-bold text-muted"
+          className="inline-flex size-5 shrink-0 items-center justify-center rounded-full border border-current text-[10px] font-bold opacity-55"
         >
           ✕
         </span>
         <h3 className="font-semibold tracking-tight">{title}</h3>
       </div>
-      <p className="mt-1.5 pl-7 text-sm leading-relaxed text-muted">{body}</p>
+      <p className="mt-1.5 pl-7 text-sm leading-relaxed opacity-70">{body}</p>
     </div>
   );
 }
@@ -516,7 +533,7 @@ function ExampleBunchCard() {
 
 function ExampleActivityCard() {
   return (
-    <div className="card-surface flex items-center justify-between gap-4 p-5">
+    <div className="card-surface flex items-center justify-between gap-4 p-5 transition-transform duration-200 hover:-translate-y-0.5">
       <div>
         <p className="font-semibold tracking-tight">Co-op night — Deep Rock</p>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-muted">
