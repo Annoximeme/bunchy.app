@@ -13,6 +13,11 @@ interface Place {
 
 const CURRENT_YEAR = new Date().getUTCFullYear();
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
 export function BasicsStep({
   initial,
 }: {
@@ -20,6 +25,8 @@ export function BasicsStep({
     username: string;
     displayName: string;
     bio: string | null;
+    birthYear: number | null;
+    birthMonth: number | null;
     cityLabel: string | null;
     countryCode: string | null;
   };
@@ -101,6 +108,11 @@ export function BasicsStep({
           displayName: String(data.get("displayName") ?? ""),
           bio: String(data.get("bio") ?? "") || undefined,
           birthYear: Number(data.get("birthYear")),
+          // Optional: left blank it is simply not sent, and the age falls back
+          // to a year subtraction that reads a year high until a birthday.
+          birthMonth: data.get("birthMonth")
+            ? Number(data.get("birthMonth"))
+            : undefined,
           cityLabel: place.cityLabel,
           countryCode: place.countryCode,
           // Sent, never shown. The browser already knows the zone; asking would
@@ -153,20 +165,38 @@ export function BasicsStep({
       </Field>
 
       <Field
-        label="What year were you born?"
+        label="When were you born?"
         htmlFor="birthYear"
-        hint="We use this for matching. You can hide your exact age later."
+        hint="Month and year, never the day — enough to state your age correctly, and not the number that opens bank accounts. You can hide your exact age later."
       >
-        <Input
-          id="birthYear"
-          name="birthYear"
-          type="number"
-          inputMode="numeric"
-          required
-          min={CURRENT_YEAR - 100}
-          max={CURRENT_YEAR - 16}
-          placeholder="1996"
-        />
+        <div className="flex gap-2.5">
+          <Input
+            id="birthYear"
+            name="birthYear"
+            type="number"
+            inputMode="numeric"
+            required
+            min={CURRENT_YEAR - 100}
+            max={CURRENT_YEAR - 16}
+            placeholder="1996"
+            defaultValue={initial.birthYear ?? ""}
+            className="w-32"
+          />
+          <select
+            id="birthMonth"
+            name="birthMonth"
+            defaultValue={initial.birthMonth ?? ""}
+            aria-label="Birth month"
+            className="min-w-0 flex-1 rounded-[var(--radius-control)] border border-line bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors focus:border-ink-soft focus:outline-none"
+          >
+            <option value="">Month (optional)</option>
+            {MONTHS.map((month, i) => (
+              <option key={month} value={i + 1}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
       </Field>
 
       <div ref={placeBoxRef} className="relative">

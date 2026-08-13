@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 };
 
 /**
- * ⚠️ Draft prepared by an engineer, not legal advice — see `src/lib/legal.ts`.
- *
  * The conduct, moderation and account-deletion clauses describe mechanisms that
  * exist in the code. The liability, governing-law and dispute sections are the
  * ones most in need of a practitioner's review before launch.

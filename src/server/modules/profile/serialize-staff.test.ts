@@ -16,7 +16,7 @@ const ROW = {
   createdAt: new Date("2026-08-13T00:00:00.000Z"),
   foundingMember: true,
   title: "Founder & Lead Developer of Bunchy",
-  user: { birthYear: 1996, role: "MEMBER" },
+  user: { birthYear: 1996, birthMonth: 4, role: "MEMBER" },
   privacy: null,
   interests: [],
   goals: [],

@@ -1,0 +1,13 @@
+-- Birth month, so an age can be right.
+--
+-- Only the year was stored, and age was computed as a subtraction of years.
+-- That is correct for the part of the year after someone's birthday and a year
+-- too high before it — so roughly half of all members saw an age that was not
+-- theirs, which is a poor first impression on a profile other people read.
+--
+-- The month, not the day. A full date of birth is the identifier used to open
+-- bank accounts and is worth far more to whoever steals this database than it
+-- is to us; year plus month narrows the error to the weeks before a birthday in
+-- the birth month itself, which is a good trade. Nullable, because everyone who
+-- signed up before this column existed has no answer to give.
+ALTER TABLE "User" ADD COLUMN "birthMonth" INTEGER;

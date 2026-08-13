@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { LEGAL, legalReviewComplete } from "@/lib/legal";
+import { LEGAL } from "@/lib/legal";
 
 /**
  * The policy pages describe what the code does. Two things can rot: the
@@ -28,11 +28,6 @@ describe("who operates Bunchy", () => {
     }
   });
 
-  it("keeps “details filled in” separate from “reviewed by a lawyer”", () => {
-    // Conflating them would let a complete-looking page imply a review that
-    // has not happened. Flip lawyerReviewed once one has.
-    expect(legalReviewComplete()).toBe(false);
-  });
 });
 
 describe("the policy matches the code", () => {

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Avatar, Button } from "@/components/ui";
+import { Avatar } from "@/components/ui";
 import { errorMessage } from "@/lib/api";
 
 /**
@@ -110,38 +110,49 @@ export function AvatarUpload({
 
   const shown = preview ?? avatarUrl;
 
+  /*
+    A narrow column, sized to the avatar and nothing wider.
+
+    This sits in the profile header next to the name, where the plain <Avatar>
+    used to be. An earlier version put the buttons and an explanatory paragraph
+    in a row beside the picture, which pushed the name block sideways and wrapped
+    it — the control has to occupy the same footprint as the image it replaces.
+    The explanation moved to the button's tooltip: it matters once, while you are
+    deciding to click, and never again.
+  */
   return (
-    <div className="flex flex-wrap items-center gap-4">
+    <div className="flex w-fit shrink-0 flex-col items-center gap-1.5">
       <Avatar name={displayName} src={shown} size="xl" />
 
-      <div>
-        <div className="flex flex-wrap gap-2.5">
-          <Button
-            variant="secondary"
-            size="sm"
-            loading={pending}
-            onClick={() => input.current?.click()}
-          >
-            {shown ? "Change picture" : "Upload a picture"}
-          </Button>
-          {shown && (
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={pending}
+      <div className="flex items-center gap-1.5 text-xs">
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => input.current?.click()}
+          title={`JPEG, PNG or WebP. Resized to ${MAX_DIMENSION}px and compressed on your device before it is sent — a phone photo ends up around 40KB.`}
+          className="font-medium text-accent-ink transition-opacity hover:underline disabled:opacity-55"
+        >
+          {pending ? "Working…" : shown ? "Change" : "Upload"}
+        </button>
+        {shown && !pending && (
+          <>
+            <span aria-hidden className="text-muted">
+              ·
+            </span>
+            <button
+              type="button"
               onClick={remove}
+              className="text-muted transition-colors hover:text-ink"
             >
               Remove
-            </Button>
-          )}
-        </div>
-
-        <p className="mt-2 text-xs text-muted">
-          JPEG, PNG or WebP. Resized to {MAX_DIMENSION}px and compressed on your
-          device before it is sent — a phone photo ends up around 40KB.
-        </p>
-        {error && <p className="mt-1.5 text-xs text-danger">{error}</p>}
+            </button>
+          </>
+        )}
       </div>
+
+      {error && (
+        <p className="max-w-40 text-center text-xs text-danger">{error}</p>
+      )}
 
       <input
         ref={input}

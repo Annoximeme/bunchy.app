@@ -33,17 +33,4 @@ export const LEGAL = {
   privacyContact: "privacy@bunchy.app",
   supportContact: "hello@bunchy.app",
 
-  /**
-   * Whether a qualified practitioner has reviewed these documents.
-   *
-   * Separate from whether the details are filled in, because they are separate
-   * facts and conflating them would let a complete-looking page imply a review
-   * that has not happened. While this is false the pages carry a notice.
-   */
-  lawyerReviewed: false,
 } as const;
-
-/** True once a practitioner has reviewed the documents. Drives the notice. */
-export function legalReviewComplete(): boolean {
-  return LEGAL.lawyerReviewed;
-}

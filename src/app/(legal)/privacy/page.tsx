@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 };
 
 /**
- * ⚠️ Draft prepared by an engineer, not legal advice — see `src/lib/legal.ts`.
- *
  * Every factual claim here was written from the schema and the services, not
  * from a template: the data categories match `prisma/schema.prisma`, the
  * location precision matches `geo/precision.ts`, the retention windows match

@@ -122,7 +122,10 @@ export async function saveBasics(
     }),
     db.user.update({
       where: { id: profile.userId },
-      data: { birthYear: input.birthYear },
+      data: {
+        birthYear: input.birthYear,
+        ...(input.birthMonth === undefined ? {} : { birthMonth: input.birthMonth }),
+      },
     }),
   ]);
 

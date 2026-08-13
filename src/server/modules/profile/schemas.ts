@@ -37,6 +37,11 @@ export const basicsSchema = z.object({
     // Bunchy is 16+; the matching model and the safety model both assume adults
     // and older teens rather than children.
     .max(CURRENT_YEAR - 16, "You need to be at least 16 to join Bunchy."),
+  /**
+   * 1–12. Optional, because members who joined before it was asked for have no
+   * answer stored and must not be blocked from editing anything else.
+   */
+  birthMonth: z.number().int().min(1).max(12).optional(),
   cityLabel: z.string().trim().min(1).max(80),
   countryCode: z.string().trim().length(2).toUpperCase(),
   avatarUrl: z.string().trim().url().max(500).optional().or(z.literal("")),

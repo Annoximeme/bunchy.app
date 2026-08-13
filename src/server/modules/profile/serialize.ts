@@ -143,7 +143,7 @@ export interface SerializeInput {
   createdAt: Date;
   foundingMember: boolean;
   title: string | null;
-  user: { birthYear: number | null; role: string };
+  user: { birthYear: number | null; birthMonth: number | null; role: string };
   privacy: { showApproxLocation: boolean; showExactAge: boolean } | null;
   interests: Array<{
     strength: number;
@@ -156,14 +156,35 @@ export interface SerializeInput {
   _count?: { bunchMemberships?: number };
 }
 
+/**
+ * Age from a birth year and, when we have it, a birth month.
+ *
+ * A subtraction of years is a year too high for everyone who has not had their
+ * birthday yet — half the year, half the members. With the month, the only
+ * remaining error is the days before a birthday inside the birth month, because
+ * the day is deliberately not stored.
+ */
+export function ageFrom(
+  birthYear: number | null,
+  birthMonth: number | null,
+  now: Date,
+): number | null {
+  if (!birthYear) return null;
+
+  const age = now.getUTCFullYear() - birthYear;
+  if (!birthMonth) return age;
+
+  // getUTCMonth is zero-based; birthMonth is 1–12 as a person would write it.
+  const monthNow = now.getUTCMonth() + 1;
+  return monthNow < birthMonth ? age - 1 : age;
+}
+
 export function toPublicProfile(
   row: SerializeInput,
   options: { connectionState: ConnectionState; now?: Date },
 ): PublicProfile {
   const now = options.now ?? new Date();
-  const rawAge = row.user.birthYear
-    ? now.getUTCFullYear() - row.user.birthYear
-    : null;
+  const rawAge = ageFrom(row.user.birthYear, row.user.birthMonth, now);
 
   const showExactAge = row.privacy?.showExactAge ?? true;
   const showLocation = row.privacy?.showApproxLocation ?? true;
@@ -215,7 +236,7 @@ export const PUBLIC_PROFILE_SELECT = {
   createdAt: true,
   foundingMember: true,
   title: true,
-  user: { select: { birthYear: true, role: true } },
+  user: { select: { birthYear: true, birthMonth: true, role: true } },
   privacy: { select: { showApproxLocation: true, showExactAge: true } },
   interests: {
     select: {

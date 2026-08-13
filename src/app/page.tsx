@@ -35,17 +35,40 @@ export default async function LandingPage() {
 
       <main id="main">
         {/* Hero */}
-        <section className="mx-auto max-w-6xl px-5 pb-16 pt-10 md:pt-20">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
+        <section className="relative overflow-hidden">
+          {/*
+            Two soft colour fields behind the hero rather than a flat canvas.
+            They are the brand's own coral and purple at very low opacity, which
+            warms the page without becoming a gradient anybody has to look at —
+            the cards in the right-hand column are the thing to look at.
+          */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10"
+            style={{
+              background:
+                "radial-gradient(60rem 30rem at 12% -10%, color-mix(in oklab, var(--color-accent) 16%, transparent), transparent 70%), radial-gradient(48rem 26rem at 92% 0%, color-mix(in oklab, var(--color-purple) 13%, transparent), transparent 68%)",
+            }}
+          />
+
+          <div className="mx-auto max-w-6xl px-5 pb-20 pt-10 md:pt-20">
+            <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
             <div className="animate-rise">
               <Chip tone="teal" className="mb-6">
                 No feed. No followers. Just people.
               </Chip>
               <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-                {brand.tagline}
+                Making friends as an adult is{" "}
+                <span className="bg-[linear-gradient(100deg,var(--color-accent),var(--color-purple))] bg-clip-text text-transparent">
+                  absurdly hard.
+                </span>
+                <br />
+                It shouldn&rsquo;t be.
               </h1>
               <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-soft">
-                {brand.subtitle}
+                You left school, the group chat went quiet, and everyone got
+                busy. {brand.name} finds the handful of people near you worth
+                spending a Tuesday evening with — then helps you actually go.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
@@ -86,13 +109,44 @@ export default async function LandingPage() {
                 Illustrative examples of what {brand.name} shows you.
               </p>
             </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The problem, said plainly */}
+        <section className="border-y border-line bg-surface/60 py-20">
+          <div className="mx-auto max-w-6xl px-5">
+            <h2 className="max-w-3xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              You don&rsquo;t need more followers. You need four people who
+              answer the group chat.
+            </h2>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              <Ache
+                tone="accent"
+                title="Everyone is “busy”"
+                body="Not a brush-off — calendars genuinely stopped overlapping. So Bunchy asks when you are actually free, and only suggests people whose evenings match yours."
+              />
+              <Ache
+                tone="purple"
+                title="Apps optimise for the wrong thing"
+                body="A feed wants your attention, so it keeps you scrolling past people instead of meeting one. Nothing here is ranked by how long it holds you."
+              />
+              <Ache
+                tone="mint"
+                title="One-on-one is a lot of pressure"
+                body="Coffee with a stranger is an interview. A bunch of six doing something is a night out, and it is far easier to be yourself in one."
+              />
+            </div>
           </div>
         </section>
 
         {/* How it works */}
-        <section id="how" className="border-y border-line bg-surface/60 py-20">
+        <section id="how" className="py-20">
           <div className="mx-auto max-w-6xl px-5">
-            <h2 className="max-w-2xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+            <p className="text-sm font-semibold tracking-widest text-accent-ink">
+              HOW IT WORKS
+            </p>
+            <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight md:text-4xl">
               Built to end with you closing the tab.
             </h2>
             <p className="mt-4 max-w-2xl text-lg text-ink-soft">
@@ -149,20 +203,33 @@ export default async function LandingPage() {
         </section>
 
         {/* Close */}
-        <section className="pb-24">
-          <div className="mx-auto max-w-3xl px-5 text-center">
+        <section className="px-5 pb-24">
+          <div
+            className="mx-auto max-w-4xl overflow-hidden rounded-[var(--radius-card)] px-6 py-16 text-center"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--color-accent) 14%, var(--color-surface)), color-mix(in oklab, var(--color-purple) 14%, var(--color-surface)))",
+            }}
+          >
             <h2 className="text-balance text-4xl font-semibold tracking-tight">
               Go talk to someone.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-ink-soft">
-              Tell us what you&rsquo;re into and when you&rsquo;re free. We&rsquo;ll
-              handle the introductions.
+              Tell us what you&rsquo;re into and when you&rsquo;re free.
+              We&rsquo;ll handle the introductions. It takes about three minutes,
+              and the next step is a real evening with real people.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <LinkButton href="/signup" size="lg">
                 Find my bunch
               </LinkButton>
+              <LinkButton href="/safety" variant="secondary" size="lg">
+                How we keep it safe
+              </LinkButton>
             </div>
+            <p className="mt-6 text-sm text-muted">
+              Free, 16+, and you can delete everything in two clicks.
+            </p>
           </div>
         </section>
       </main>
@@ -194,6 +261,37 @@ export default async function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/**
+ * A named ache, in the member's words rather than the product's.
+ *
+ * The tone is per card and fixed at the call site: three cards in three brand
+ * colours read as three separate ideas, where three identical ones read as a
+ * list somebody padded to fit the grid.
+ */
+function Ache({
+  tone,
+  title,
+  body,
+}: {
+  tone: "accent" | "purple" | "mint";
+  title: string;
+  body: string;
+}) {
+  const bar = {
+    accent: "bg-accent",
+    purple: "bg-purple",
+    mint: "bg-mint",
+  }[tone];
+
+  return (
+    <div className="card-surface relative overflow-hidden p-6">
+      <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${bar}`} />
+      <h3 className="mt-2 text-lg font-semibold tracking-tight">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
     </div>
   );
 }

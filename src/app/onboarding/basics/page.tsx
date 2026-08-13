@@ -16,6 +16,11 @@ export default async function BasicsPage() {
       bio: true,
       cityLabel: true,
       countryCode: true,
+      // Loaded so the form can show what is already stored. Without this the
+      // birth year came back blank every time somebody opened this page to edit
+      // something else, which made it look like a field they had never filled
+      // in and could not change.
+      user: { select: { birthYear: true, birthMonth: true } },
     },
   });
 
@@ -31,6 +36,8 @@ export default async function BasicsPage() {
           username: profile.username.includes("-") ? "" : profile.username,
           displayName: profile.displayName.includes("-") ? "" : profile.displayName,
           bio: profile.bio,
+          birthYear: profile.user.birthYear,
+          birthMonth: profile.user.birthMonth,
           cityLabel: profile.cityLabel,
           countryCode: profile.countryCode,
         }}
