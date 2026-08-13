@@ -51,6 +51,12 @@ export interface PublicProfile {
    * anywhere in the codebase, and it confers nothing beyond the badge.
    */
   foundingMember: boolean;
+  /**
+   * A staff title such as "Founder & Developer of Bunchy". Set from the CLI
+   * only — see the schema comment on `Profile.title` for why a member-editable
+   * badge would be an impersonation surface.
+   */
+  title: string | null;
 }
 
 export const GOAL_LABELS: Record<string, string> = {
@@ -128,6 +134,7 @@ export interface SerializeInput {
   countryCode: string | null;
   createdAt: Date;
   foundingMember: boolean;
+  title: string | null;
   user: { birthYear: number | null };
   privacy: { showApproxLocation: boolean; showExactAge: boolean } | null;
   interests: Array<{
@@ -182,6 +189,7 @@ export function toPublicProfile(
     connectionState: options.connectionState,
     joinedAt: row.createdAt.toISOString(),
     foundingMember: row.foundingMember,
+    title: row.title,
   };
 }
 
@@ -197,6 +205,7 @@ export const PUBLIC_PROFILE_SELECT = {
   countryCode: true,
   createdAt: true,
   foundingMember: true,
+  title: true,
   user: { select: { birthYear: true } },
   privacy: { select: { showApproxLocation: true, showExactAge: true } },
   interests: {

@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Caddy already strips `Server` on the way out; advertising the framework
+  // here undoes that for no benefit. It tells a scanner which CVE list to try
+  // and tells nobody else anything.
+  poweredByHeader: false,
   // Emits `.next/standalone` — a self-contained server with only the modules
   // actually reached, traced from the entry points. It is what makes the
   // production image ~200MB instead of ~1.5GB, and it is inert during

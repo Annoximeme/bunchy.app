@@ -62,6 +62,10 @@ services:
     build:
       context: .
       target: runner
+      args:
+        # Baked into the pages at build time — see the Dockerfile for why the
+        # public origin cannot wait until boot.
+        APP_URL: ${APP_URL:?APP_URL is required}
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -94,6 +98,10 @@ services:
     build:
       context: .
       target: jobs
+      args:
+        # Same value as `app`, so both share one cached build stage instead of
+        # rebuilding it twice per deploy.
+        APP_URL: ${APP_URL:?APP_URL is required}
     restart: unless-stopped
     environment:
       NODE_ENV: production

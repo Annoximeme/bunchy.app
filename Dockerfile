@@ -48,6 +48,15 @@ RUN npx prisma generate
 # the real secrets are asserted at boot on the first server start, never here.
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build"
+
+# The public origin has to be known at build time, not just at boot: metadata is
+# resolved while the pages are being generated, and `metadataBase` is what turns
+# the og:image path into the absolute URL a crawler fetches. Left unset, Next
+# falls back to localhost and every shared link previews with an unreachable
+# image — which looks exactly like having no preview image at all.
+ARG APP_URL="http://localhost:3000"
+ENV APP_URL=$APP_URL
+
 RUN npm run build
 
 # --- migrate ----------------------------------------------------------------

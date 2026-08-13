@@ -228,6 +228,19 @@ model Profile {
   /// leaderboard, and §29 rules out numbers that rank one member above another.
   foundingMember  Boolean @default(false)
 
+  /// A staff title such as "Founder & Developer of Bunchy", shown as a badge on
+  /// the profile.
+  ///
+  /// Deliberately NOT member-editable. A free-text line rendered in a badge is
+  /// an impersonation surface — anyone could write "Bunchy Support" and ask a
+  /// member for their password. It is set from the CLI
+  /// (`scripts/set-title.ts`), which means it requires database access, the
+  /// same bar as granting the first admin (§13).
+  ///
+  /// Not the same thing as `foundingMember`: that is a fact about when someone
+  /// arrived and confers nothing. This says what someone does here.
+  title String?
+
   /// Stable, shareable, and not the username — usernames can change and a
   /// printed invite link should not rot when they do.
   referralCode String? @unique

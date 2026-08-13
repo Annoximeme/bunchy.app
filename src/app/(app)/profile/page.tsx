@@ -53,11 +53,21 @@ export default async function ProfilePage() {
               {profile.bio && (
                 <p className="mt-3 text-ink-soft">{profile.bio}</p>
               )}
-              {profile.foundingMember && (
-                <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-yellow-soft px-2.5 py-1 text-xs font-medium text-yellow-ink">
-                  <span aria-hidden>★</span>
-                  Here since the beginning
-                </span>
+              {(profile.title || profile.foundingMember) && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {profile.title && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-ink">
+                      <span aria-hidden>✦</span>
+                      {profile.title}
+                    </span>
+                  )}
+                  {profile.foundingMember && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-soft px-2.5 py-1 text-xs font-medium text-yellow-ink">
+                      <span aria-hidden>★</span>
+                      Here since the beginning
+                    </span>
+                  )}
+                </div>
               )}
 
             </div>
