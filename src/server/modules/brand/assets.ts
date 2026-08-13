@@ -79,7 +79,19 @@ export function wordmarkSvg(treatment: Treatment): string {
  * optical weight — the mark is inset inside its own box, so matching the boxes
  * leaves it looking undersized. Same ratio the component uses.
  */
-export function lockupSvg(treatment: Treatment): string {
+export function lockupSvg(
+  treatment: Treatment,
+  /**
+   * The wordmark's colour, when it differs from the mark's.
+   *
+   * The logo on a dark background is not "the white logo" — it is the coloured
+   * cluster with the name in white. The four colours are the most recognisable
+   * thing Bunchy has, and throwing them away on every dark surface throws away
+   * the recognition with them. Defaults to matching the mark, so the
+   * single-treatment calls are unchanged.
+   */
+  wordTreatment: Treatment = treatment,
+): string {
   const WORDMARK_CAP = 100;
   const markSize = WORDMARK_CAP * 1.45;
   const markScale = markSize / 48;
@@ -91,7 +103,7 @@ export function lockupSvg(treatment: Treatment): string {
   const wordY = (markSize - WORDMARK_CAP) / 2;
 
   const width = markSize + gap + wordWidth;
-  const colour = treatment === "white" ? "#FFFFFF" : INK;
+  const colour = wordTreatment === "white" ? "#FFFFFF" : INK;
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -188,6 +200,33 @@ export const BRAND_ASSETS: readonly BrandAsset[] = [
     "#172033",
   ),
   png(
+    "bunchy-profile-colour-dark-1024.png",
+    "Profile picture, colour on dark",
+    "The full-colour cluster on ink. The one to use on a dark profile — the four colours are the recognisable part, and the white version throws them away.",
+    () => markSvg("colour"),
+    1024,
+    1,
+    INK,
+  ),
+  png(
+    "bunchy-cover-colour-dark-1600.png",
+    "Wide lockup, colour on dark",
+    "Coloured cluster, white name, ink background. The default for anything dark with room for the name.",
+    () => lockupSvg("colour", "white"),
+    1600,
+    LOCKUP_RATIO,
+    INK,
+  ),
+  png(
+    "bunchy-lockup-colour-white-1600.png",
+    "Wide lockup, colour + white, transparent",
+    "The same artwork with no background, to drop onto a dark photograph.",
+    () => lockupSvg("colour", "white"),
+    1600,
+    LOCKUP_RATIO,
+    undefined,
+  ),
+  png(
     "bunchy-cover-1600.png",
     "Wide lockup",
     "Cover images, banners, slide corners, anywhere with room for the name.",
@@ -247,6 +286,13 @@ export const BRAND_ASSETS: readonly BrandAsset[] = [
     use: "Single-colour printing, embroidery, engraving.",
     format: "svg",
     svg: () => lockupSvg("ink"),
+  },
+  {
+    slug: "bunchy-lockup-colour-dark.svg",
+    label: "Lockup, colour on dark",
+    use: "Vector. Coloured cluster with a white name, for dark backgrounds.",
+    format: "svg",
+    svg: () => lockupSvg("colour", "white"),
   },
   {
     slug: "bunchy-lockup-white.svg",

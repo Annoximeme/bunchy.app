@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { AdminHeader, Panel } from "@/components/admin/primitives";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
+import { cn } from "@/components/ui";
 import { brand } from "@/lib/brand";
-import { BRAND_ASSETS, BRAND_PALETTE } from "@/server/modules/brand/assets";
+import {
+  BRAND_ASSETS,
+  BRAND_PALETTE,
+  type BrandAsset,
+} from "@/server/modules/brand/assets";
 
 export const metadata: Metadata = { title: "Brand" };
 export const dynamic = "force-dynamic";
@@ -58,26 +63,31 @@ export default async function AdminBrandPage() {
               these are the files to reach for when you are setting up an account
               or running an ad.
             </p>
-            <ul className="grid gap-3 sm:grid-cols-2">
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {uploads.map((asset) => (
                 <li
                   key={asset.slug}
-                  className="flex items-start justify-between gap-4 rounded-[var(--radius-control)] border border-line p-3.5"
+                  className="flex flex-col rounded-[var(--radius-control)] border border-line p-3"
                 >
-                  <div className="min-w-0">
+                  <Preview asset={asset} className="h-28 border-0" />
+                  <div className="mt-3 flex flex-1 flex-col">
                     <p className="text-sm font-medium">{asset.label}</p>
-                    <p className="mt-0.5 text-xs text-muted">{asset.use}</p>
-                    <p className="mt-1.5 font-mono text-[11px] text-muted">
-                      {asset.width}×{asset.height}
-                      {asset.background ? "" : " · transparent"}
+                    <p className="mt-0.5 flex-1 text-xs leading-relaxed text-muted">
+                      {asset.use}
                     </p>
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="font-mono text-[11px] text-muted">
+                        {asset.width}×{asset.height}
+                        {asset.background ? "" : " · transparent"}
+                      </span>
+                      <a
+                        href={`/api/admin/brand/${asset.slug}`}
+                        className="rounded-[var(--radius-control)] bg-accent px-3 py-1.5 text-xs font-semibold text-[var(--color-on-accent)] transition-colors hover:bg-accent-hover"
+                      >
+                        Download PNG
+                      </a>
+                    </div>
                   </div>
-                  <a
-                    href={`/api/admin/brand/${asset.slug}`}
-                    className="shrink-0 rounded-[var(--radius-control)] bg-accent px-3 py-1.5 text-xs font-semibold text-[var(--color-on-accent)] transition-colors hover:bg-accent-hover"
-                  >
-                    PNG
-                  </a>
                 </li>
               ))}
             </ul>
@@ -90,9 +100,10 @@ export default async function AdminBrandPage() {
               {vectors.map((asset) => (
                 <li
                   key={asset.slug}
-                  className="flex items-center justify-between gap-4 rounded-[var(--radius-control)] border border-line px-3.5 py-2.5"
+                  className="flex items-center gap-3 rounded-[var(--radius-control)] border border-line px-3 py-2.5"
                 >
-                  <div className="min-w-0">
+                  <Preview asset={asset} className="size-12 shrink-0 p-1.5" />
+                  <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{asset.label}</p>
                     <p className="truncate text-xs text-muted">{asset.use}</p>
                   </div>
@@ -210,5 +221,51 @@ export default async function AdminBrandPage() {
         </div>
       </div>
     </>
+  );
+}
+
+/**
+ * A preview of exactly what the file contains.
+ *
+ * Drawn from the asset's own vector as a data URI rather than by fetching the
+ * PNG: identical artwork, no extra request per row, and it renders under the
+ * CSP because `img-src` already allows `data:`.
+ *
+ * Transparent assets get a checkerboard in two mid-greys — light enough that the
+ * ink artwork reads, dark enough that the white knockout does too, which a plain
+ * white or plain dark backdrop would each fail at for half the set.
+ */
+function Preview({
+  asset,
+  className,
+}: {
+  asset: BrandAsset;
+  className?: string;
+}) {
+  const src = `data:image/svg+xml;base64,${Buffer.from(asset.svg(), "utf8").toString("base64")}`;
+
+  const transparent = {
+    backgroundImage:
+      "linear-gradient(45deg, #d8d2c8 25%, transparent 25%), linear-gradient(-45deg, #d8d2c8 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d8d2c8 75%), linear-gradient(-45deg, transparent 75%, #d8d2c8 75%)",
+    backgroundSize: "14px 14px",
+    backgroundPosition: "0 0, 0 7px, 7px -7px, -7px 0px",
+    backgroundColor: "#efeae2",
+  } as const;
+
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-center overflow-hidden rounded-[var(--radius-control)] border border-line p-4",
+        className,
+      )}
+      style={asset.background ? { background: asset.background } : transparent}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={`${asset.label} preview`}
+        className="max-h-full max-w-full object-contain"
+      />
+    </div>
   );
 }
