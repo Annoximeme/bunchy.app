@@ -27,9 +27,15 @@ const REMINDER_LEAD_HOURS = 24;
 /** At most one bunch suggestion per member per fortnight. */
 const RECOMMENDATION_COOLDOWN_DAYS = 14;
 
+/** Long enough that the evening has actually ended before anyone is asked. */
+const FOLLOW_UP_SETTLE_HOURS = 3;
+/** And not so long that the job re-asks about last month on every run. */
+const FOLLOW_UP_WINDOW_HOURS = 48;
+
 export interface JobResult {
   activityReminders: number;
   bunchRecommendations: number;
+  activityFollowUps: number;
 }
 
 export async function runScheduledNotifications(
@@ -38,7 +44,70 @@ export async function runScheduledNotifications(
   return {
     activityReminders: await sendActivityReminders(now),
     bunchRecommendations: await sendBunchRecommendations(now),
+    activityFollowUps: await sendActivityFollowUps(now),
   };
+}
+
+/**
+ * "Did you go?" — the only notification sent after something rather than before.
+ *
+ * Sent once, a few hours after an activity ends, to the people who said they
+ * were coming. It asks the question the product is actually built to answer,
+ * and it is the one notification whose value to the member is indirect: they
+ * answer it so the introductions get better, which is worth saying out loud
+ * rather than dressing up as a favour.
+ *
+ * Deliberately no chasing. One prompt, and silence is an answer.
+ */
+export async function sendActivityFollowUps(
+  now = new Date(),
+): Promise<number> {
+  const settled = new Date(now.getTime() - FOLLOW_UP_SETTLE_HOURS * 3_600_000);
+  const horizon = new Date(now.getTime() - FOLLOW_UP_WINDOW_HOURS * 3_600_000);
+
+  const activities = await db.activity.findMany({
+    where: {
+      status: { not: "CANCELLED" },
+      startsAt: { gte: horizon, lte: settled },
+    },
+    select: {
+      id: true,
+      title: true,
+      participants: {
+        where: { status: "JOINED" },
+        select: { profileId: true },
+      },
+      outcomes: { select: { profileId: true } },
+    },
+  });
+
+  let sent = 0;
+  for (const activity of activities) {
+    const groupKey = `activity-follow-up:${activity.id}`;
+    const answered = new Set(activity.outcomes.map((o) => o.profileId));
+
+    for (const participant of activity.participants) {
+      if (answered.has(participant.profileId)) continue;
+
+      const already = await db.notification.findFirst({
+        where: { profileId: participant.profileId, groupKey },
+        select: { id: true },
+      });
+      if (already) continue;
+
+      await notify({
+        profileId: participant.profileId,
+        type: "ACTIVITY_FOLLOW_UP",
+        title: `How was ${activity.title}?`,
+        body: "Two taps: did you go, and did you meet anyone worth seeing again? It is what makes the next introduction better.",
+        linkPath: "/discover",
+        groupKey,
+      });
+      sent += 1;
+    }
+  }
+
+  return sent;
 }
 
 /**

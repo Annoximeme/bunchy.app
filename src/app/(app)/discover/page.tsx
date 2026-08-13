@@ -11,12 +11,14 @@ import {
 } from "@/server/modules/availability/service";
 import { nextIntroduction } from "@/server/modules/discovery/introductions";
 import { neighbourhoodFor } from "@/server/modules/discovery/neighbourhood";
+import { pendingOutcome } from "@/server/modules/activities/outcomes";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { IntroductionCard } from "@/components/introduction-card";
 import { WhosUp } from "@/components/whos-up";
+import { OutcomePrompt } from "@/components/outcome-prompt";
 import { Chip, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Discover" };
@@ -48,6 +50,11 @@ export default async function DiscoverPage() {
   // Only needed when there is nothing to show, but fetching it here keeps the
   // empty branch synchronous and costs one indexed count.
   const neighbourhood = await neighbourhoodFor(viewer.profileId);
+
+  // Asked here rather than in a modal or an email: this is the page someone
+  // opens anyway, and the question is about the last time they used the product
+  // rather than an interruption to this time.
+  const outcome = await pendingOutcome(viewer.profileId);
 
   // Computed here rather than behind an endpoint: an introduction reuses the
   // recommendations this page already loaded, and a route that hands them out
@@ -93,6 +100,12 @@ export default async function DiscoverPage() {
           Open the radar
         </LinkButton>
       </div>
+
+      {outcome && (
+        <div className="mb-8">
+          <OutcomePrompt prompt={outcome} />
+        </div>
+      )}
 
       <div className="mb-8">
         <WhosUp

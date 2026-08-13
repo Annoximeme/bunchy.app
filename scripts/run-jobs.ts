@@ -26,6 +26,7 @@ async function main() {
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
+      `follow-ups: ${result.activityFollowUps}, ` +
       `bunch recommendations: ${result.bunchRecommendations}, ` +
       `expired statuses purged: ${purged}, ` +
       `bunches scored: ${chemistry.scored} ` +

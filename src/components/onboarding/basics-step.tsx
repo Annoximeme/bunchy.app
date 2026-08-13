@@ -103,6 +103,12 @@ export function BasicsStep({
           birthYear: Number(data.get("birthYear")),
           cityLabel: place.cityLabel,
           countryCode: place.countryCode,
+          // Sent, never shown. The browser already knows the zone; asking would
+          // put a 400-entry dropdown in front of someone still deciding whether
+          // to join. Undefined on a runtime without `Intl`, which the server
+          // reads as "not sent" and falls back to the country.
+          timezone:
+            Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
         },
       });
       router.push(result.next);

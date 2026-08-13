@@ -282,6 +282,7 @@ model Profile {
 
   organizedActivities Activity[]            @relation("ActivityOrganizer")
   activityEntries     ActivityParticipant[]
+  activityOutcomes    ActivityOutcome[]
 
   blocksMade     Block[] @relation("Blocker")
   blocksReceived Block[] @relation("Blocked")
@@ -756,6 +757,7 @@ model Activity {
   organizer    Profile               @relation("ActivityOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   bunch       Bunch?               @relation(fields: [bunchId], references: [id], onDelete: SetNull)
   participants ActivityParticipant[]
+  outcomes     ActivityOutcome[]
   /// The plan this came out of, when it came out of one.
   plan         SocialPlan?
 
@@ -783,6 +785,41 @@ model ActivityParticipant {
   @@id([activityId, profileId])
   @@index([profileId, status])
   @@index([activityId, status])
+}
+
+/// What actually happened.
+///
+/// Bunchy measures whether someone met a person, not how long they stayed on
+/// the site — and until this table existed, that measurement did not exist
+/// either. Every other signal in the schema is about intent: who was
+/// recommended, who joined, who said they were free. This is the only one about
+/// outcome, which makes it the only honest input to whether the matching works.
+///
+/// Two questions, both optional to answer and both answerable in one tap.
+/// Anything longer is a survey, and a survey after a night out is a survey
+/// nobody fills in.
+model ActivityOutcome {
+  id         String   @id @default(cuid())
+  activityId String
+  profileId  String
+
+  /// Did they actually go. Null while unanswered.
+  attended   Boolean?
+  /// Did they meet someone they would see again. Deliberately not "did you
+  /// enjoy it": enjoyment is a rating, and a rating of an evening is a rating of
+  /// the people who were at it.
+  metSomeone Boolean?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  /// One answer per person per activity; answering again edits it.
+  @@unique([activityId, profileId])
+  @@index([profileId])
+  @@index([createdAt])
 }
 
 // ---------------------------------------------------------------------------
@@ -948,6 +985,9 @@ enum NotificationType {
   ACTIVITY_INVITE
   ACTIVITY_REMINDER
   ACTIVITY_CHANGED
+  /// "Did you go?" — the only notification sent after something, rather than
+  /// before it. See ActivityOutcome.
+  ACTIVITY_FOLLOW_UP
 }
 
 model Notification {
