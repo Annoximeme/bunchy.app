@@ -177,16 +177,25 @@ export default async function ModeratorsPage() {
               somebody with a history here rather than an address we have never
               seen.
             </p>
+            {/*
+              These two are buttons that happen to be links, and they sit
+              inside the legal prose wrapper, whose `[&_a]:…` rules style every
+              descendant link as body-copy link — coral ink, underlined. A
+              descendant selector out-specifies the element's own classes, so
+              the primary button was rendering coral text on a coral fill at
+              1.7:1, which is very nearly invisible. The `!` is the narrow fix:
+              these two opt out of the prose treatment they are nested inside.
+            */}
             <p className="flex flex-wrap gap-3">
               <Link
                 href="/signup"
-                className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-[var(--color-on-accent)]"
+                className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-[var(--color-on-accent)]! no-underline!"
               >
                 Create an account
               </Link>
               <Link
                 href="/login"
-                className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-soft hover:bg-surface-sunken"
+                className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-soft! no-underline! hover:bg-surface-sunken"
               >
                 Sign in
               </Link>
