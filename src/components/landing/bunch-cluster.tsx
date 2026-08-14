@@ -99,8 +99,9 @@ export function BunchCluster() {
           <span className="text-sm font-bold tracking-[0.2em] text-white">
             BUNCHY
           </span>
+          {/* Not "nearby": half of what a bunch does never has a location. */}
           <span className="mt-0.5 text-[10px] font-medium text-white/75">
-            6 nearby
+            6 people
           </span>
         </div>
 
@@ -125,7 +126,7 @@ export function BunchCluster() {
 
         {/* Floating plans. Hidden on phones, where they land on the people. */}
         <PlanCard
-          className="-left-4 top-[34%] sm:-left-10"
+          className="-left-4 top-[43%] sm:-left-12"
           seconds={6.4}
           delay={0.4}
           tone="#FFC857"

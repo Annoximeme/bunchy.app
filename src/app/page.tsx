@@ -139,7 +139,7 @@ export default async function LandingPage() {
         </section>
 
         {/* 2b — The product, starting here */}
-        <section className="px-5 pb-24">
+        <section className="px-5 pb-4">
           <div className="reveal mx-auto max-w-6xl">
             <UpFor />
           </div>

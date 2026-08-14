@@ -74,6 +74,18 @@ export function BunchMoment() {
   return (
     <div className="flex flex-col items-center">
       <div className="relative flex h-[300px] w-full max-w-lg items-center justify-center sm:h-[340px]">
+        {/*
+          At rest the stage holds one circle and a lot of dark. This ring is the
+          only thing saying the section is waiting for a press rather than
+          broken — it stops the moment anything else starts happening.
+        */}
+        {stage === "alone" && (
+          <span
+            aria-hidden
+            className="idle-pulse absolute size-32 rounded-full border-2 border-purple-ai"
+          />
+        )}
+
         {/* Discovery rings, only while the search is running. */}
         {stage === "searching" &&
           [0, 1, 2].map((ring) => (
