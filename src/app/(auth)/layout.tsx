@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
-import { personColour } from "@/lib/example-people";
+import { person } from "@/lib/example-people";
 
 /**
  * The frame around signing in, joining, and the password flows.
@@ -77,8 +77,11 @@ export default function AuthLayout({
                 {CAST.map((initial) => (
                   <span
                     key={initial}
-                    className="flex size-11 items-center justify-center rounded-full text-sm font-bold text-white ring-4 ring-navy-base"
-                    style={{ background: personColour(initial) }}
+                    className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-navy-base"
+                    style={{
+                      background: person(initial).fill,
+                      color: person(initial).ink,
+                    }}
                   >
                     {initial}
                   </span>

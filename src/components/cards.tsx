@@ -80,7 +80,16 @@ export function PersonCard({ person }: { person: PersonCardData }) {
   return (
     <article className="card-surface flex flex-col p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]">
       <div className="flex items-start gap-4">
-        <Link href={`/u/${person.username}`} className="shrink-0">
+        {/* Decorative: the person's name sits right beside this and links to
+              the same profile, so exposing the avatar as a second link gave a
+              screen reader an unnamed stop and a keyboard user two tabs to
+              reach one place. */}
+        <Link
+          href={`/u/${person.username}`}
+          className="shrink-0"
+          aria-hidden
+          tabIndex={-1}
+        >
           <Avatar name={person.displayName} src={person.avatarUrl} size="lg" />
         </Link>
 

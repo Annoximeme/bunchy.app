@@ -8,7 +8,7 @@ import { ArrowRight, Heart, MessageCircle, Sparkles } from "lucide-react";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
-import { personColour } from "@/lib/example-people";
+import { person } from "@/lib/example-people";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
@@ -893,10 +893,13 @@ function Moment({
           {people.map((initial, i) => (
             <span
               key={`${initial}-${i}`}
-              className="flex size-9 items-center justify-center rounded-full text-xs font-bold text-white ring-4 ring-navy-base"
-              // Colour comes from who they are, not where they sit in the
-              // array — see lib/example-people.ts.
-              style={{ background: personColour(initial) }}
+              className="flex size-9 items-center justify-center rounded-full text-xs font-bold ring-4 ring-navy-base"
+              // Colour and label both come from who they are — the fill is too
+              // bright to carry white on yellow or mint. See lib/palette.ts.
+              style={{
+                background: person(initial).fill,
+                color: person(initial).ink,
+              }}
             >
               {initial}
             </span>

@@ -460,7 +460,16 @@ function Candidate({
           className="mt-1 size-5 shrink-0 accent-[var(--color-accent)]"
         />
 
-        <Link href={`/u/${person.username}`} className="shrink-0">
+        {/* Decorative: the person's name sits right beside this and links to
+              the same profile, so exposing the avatar as a second link gave a
+              screen reader an unnamed stop and a keyboard user two tabs to
+              reach one place. */}
+        <Link
+          href={`/u/${person.username}`}
+          className="shrink-0"
+          aria-hidden
+          tabIndex={-1}
+        >
           <Avatar name={person.displayName} src={person.avatarUrl} size="md" />
         </Link>
 
