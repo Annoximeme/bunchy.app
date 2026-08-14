@@ -40,14 +40,30 @@ export default async function AdminBrandPage() {
 
       <div className="space-y-6">
         <Panel title="The logo" note="light, dark and the mark alone">
+          {/*
+            Fixed swatch colours, not tokens. These panels demonstrate the logo
+            *on light* and *on dark* — so they have to stay light and dark. With
+            `bg-canvas`/`bg-ink` the pair swapped in dark mode and the knockout
+            logo was rendered white on a near-white panel, i.e. invisible, on the
+            one page whose job is showing people what the logo looks like.
+          */}
           <div className="grid gap-4 p-5 sm:grid-cols-3">
-            <div className="flex items-center justify-center rounded-[var(--radius-control)] border border-line bg-canvas px-4 py-8">
-              <BunchyLogo height={28} />
+            <div
+              className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-black/10"
+              style={{ background: "#FFF9F3" }}
+            >
+              <BunchyLogo height={28} color="#172033" />
             </div>
-            <div className="flex items-center justify-center rounded-[var(--radius-control)] bg-ink px-4 py-8">
+            <div
+              className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-white/10"
+              style={{ background: "#172033" }}
+            >
               <BunchyLogo height={28} color="#FFFFFF" monochrome="#FFFFFF" />
             </div>
-            <div className="flex items-center justify-center rounded-[var(--radius-control)] border border-line bg-canvas px-4 py-8">
+            <div
+              className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-black/10"
+              style={{ background: "#FFF9F3" }}
+            >
               <BunchyMark size={44} />
             </div>
           </div>

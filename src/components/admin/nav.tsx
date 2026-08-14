@@ -59,7 +59,7 @@ export function AdminNav({
               >
                 {item.label}
                 {badge > 0 && (
-                  <span className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white">
+                  <span className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold leading-none text-[var(--color-on-accent)]">
                     {badge}
                   </span>
                 )}

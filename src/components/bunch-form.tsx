@@ -255,7 +255,7 @@ export function BunchForm({
                         className={cn(
                           "rounded-full border px-3 py-1.5 text-sm transition-all duration-200 active:scale-95",
                           active
-                            ? "border-accent bg-accent text-white"
+                            ? "border-accent bg-accent text-[var(--color-on-accent)]"
                             : "border-line bg-surface text-ink-soft hover:border-ink-soft",
                           disabled && "cursor-not-allowed opacity-40",
                         )}

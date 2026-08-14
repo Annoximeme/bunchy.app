@@ -245,7 +245,7 @@ export function DirectThread({
                     className={cn(
                       "max-w-[80%] rounded-2xl px-3.5 py-2",
                       message.fromViewer
-                        ? "bg-accent text-white"
+                        ? "bg-accent text-[var(--color-on-accent)]"
                         : "bg-surface-sunken text-ink-soft",
                       message.deleted && "italic opacity-70",
                     )}
@@ -256,7 +256,9 @@ export function DirectThread({
                     <p
                       className={cn(
                         "mt-0.5 text-[11px]",
-                        message.fromViewer ? "text-white/70" : "text-muted",
+                        message.fromViewer
+                          ? "text-[var(--color-on-accent)]/70"
+                          : "text-muted",
                       )}
                     >
                       {messageTime(message.createdAt)}
