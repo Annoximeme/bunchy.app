@@ -109,7 +109,15 @@ www.{$DOMAIN} {
 			# the real homepage has to displace it.
 			@page status 200
 			handle_response @page {
-				copy_response_headers
+				# Everything the app sets is worth keeping (its CSP, the
+				# security headers, Set-Cookie) except the hop-by-hop ones.
+				# `copy_response_headers` copies verbatim, and Connection,
+				# Keep-Alive and Transfer-Encoding are forbidden in HTTP/2:
+				# copying them made the response a protocol violation that
+				# strict clients refuse outright rather than merely dislike.
+				copy_response_headers {
+					exclude Connection Keep-Alive Transfer-Encoding Upgrade Proxy-Connection
+				}
 				copy_response 503
 			}
 		}
