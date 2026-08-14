@@ -42,7 +42,22 @@ export default async function AppLayout({
   ]);
 
   return (
-    <div className="min-h-dvh md:pl-60">
+    <div className="relative min-h-dvh md:pl-60">
+      {/*
+        The same two washes the landing hero opens with, carried into the app so
+        the product does not go flat the moment somebody signs in. Kept far
+        weaker than the landing's — that page is a poster and this one is read
+        for an hour at a time — and `fixed` so it stays a property of the room
+        rather than something that scrolls away with the first screen.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(46rem 26rem at 12% -8%, var(--wash-coral), transparent 62%), radial-gradient(42rem 24rem at 94% 2%, var(--wash-purple), transparent 62%)",
+        }}
+      />
       <AppNav
         displayName={viewer.displayName}
         username={viewer.username}

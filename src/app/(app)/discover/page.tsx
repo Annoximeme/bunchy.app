@@ -19,7 +19,7 @@ import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { IntroductionCard } from "@/components/introduction-card";
 import { WhosUp } from "@/components/whos-up";
 import { OutcomePrompt } from "@/components/outcome-prompt";
-import { Chip, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Discover" };
 
@@ -171,9 +171,10 @@ export default async function DiscoverPage() {
           {people.length > 0 && (
             <section>
               <SectionHeading
+                eyebrow="Matched for you"
+                eyebrowTone="ai"
                 title="People you might connect with"
                 subtitle="Ranked on interests, goals, availability and how you like to spend time."
-                action={<Chip tone="ai">Matched for you</Chip>}
               />
               <div className="grid gap-4 lg:grid-cols-2">
                 {people.map((person) => (
@@ -201,6 +202,8 @@ export default async function DiscoverPage() {
           {bunches.length > 0 && (
             <section>
               <SectionHeading
+                eyebrow="Groups"
+                eyebrowTone="accent"
                 title="Bunches for you"
                 subtitle="Small groups with room for one more."
                 action={
@@ -220,6 +223,8 @@ export default async function DiscoverPage() {
           {activities.length > 0 && (
             <section>
               <SectionHeading
+                eyebrow="Activities"
+                eyebrowTone="teal"
                 title="Things happening"
                 subtitle="Somewhere to actually turn up."
                 action={

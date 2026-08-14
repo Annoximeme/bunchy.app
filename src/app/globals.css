@@ -40,6 +40,12 @@
   --color-muted: #646977;
   --color-line: #efe6da;
 
+  /* The app's ambient washes, carried over from the landing hero. Light mode
+     gets a whisper of them: the same gesture at the same strength would read as
+     a stain on cream, and this is a surface people read for an hour. */
+  --wash-coral: rgba(255, 92, 108, 0.07);
+  --wash-purple: rgba(118, 87, 255, 0.07);
+
   /* Coral — the signature. Brand, primary action, active state. */
   --color-accent: #ff5c6c;
   --color-accent-hover: #f5455a;
@@ -141,6 +147,11 @@
     --color-muted: #8c97a8;
     --color-line: #29344a;
 
+    /* Stronger on navy, where the landing's own washes live and where the
+       gradient has room to be seen without competing with the text. */
+    --wash-coral: rgba(255, 92, 108, 0.13);
+    --wash-purple: rgba(118, 87, 255, 0.16);
+
     /* The fills and their labels are unchanged: a coral button with a navy
        label is the same object in both modes. Only the *text* colours move,
        because those are the ones whose contrast depends on the background. */
@@ -188,6 +199,11 @@
     --color-ink-soft: #c3cad6;
     --color-muted: #8c97a8;
     --color-line: #29344a;
+
+    /* Stronger on navy, where the landing's own washes live and where the
+       gradient has room to be seen without competing with the text. */
+    --wash-coral: rgba(255, 92, 108, 0.13);
+    --wash-purple: rgba(118, 87, 255, 0.16);
 
     /* The fills and their labels are unchanged: a coral button with a navy
        label is the same object in both modes. Only the *text* colours move,

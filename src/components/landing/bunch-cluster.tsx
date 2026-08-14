@@ -1,5 +1,5 @@
 import { Gamepad2, Coffee, Users } from "lucide-react";
-import { personColour } from "@/lib/example-people";
+import { person } from "@/lib/example-people";
 
 /**
  * The hero visual: separate people, drawn as a bunch.
@@ -23,7 +23,8 @@ import { personColour } from "@/lib/example-people";
 
 interface Person {
   initial: string;
-  colour: string;
+  fill: string;
+  ink: string;
   /** Centre of the avatar, as a percentage of the stage. */
   x: number;
   y: number;
@@ -40,7 +41,7 @@ const PEOPLE: Person[] = [
   { initial: "T", x: 53, y: 81, seconds: 5.3, delay: 0.3 },
   { initial: "P", x: 21, y: 65, seconds: 5.9, delay: 0.9 },
   { initial: "W", x: 17, y: 25, seconds: 6.5, delay: 1.5 },
-].map((p) => ({ ...p, colour: personColour(p.initial) }));
+].map((p) => ({ ...p, ...person(p.initial) }));
 
 export function BunchCluster() {
   return (
@@ -124,9 +125,10 @@ export function BunchCluster() {
             style={{ left: `${person.x}%`, top: `${person.y}%` }}
           >
             <div
-              className="float flex size-14 items-center justify-center rounded-full text-lg font-bold text-white ring-4 sm:size-16"
+              className="float flex size-14 items-center justify-center rounded-full text-lg font-bold ring-4 sm:size-16"
               style={{
-                background: person.colour,
+                background: person.fill,
+                color: person.ink,
                 // The ring is the page behind them, so the bubbles overlap
                 // cleanly wherever they drift over one another.
                 ["--tw-ring-color" as string]: "#0A0E1A",

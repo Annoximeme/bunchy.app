@@ -1,3 +1,4 @@
+import { colourFor } from "@/lib/palette";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
@@ -104,18 +105,51 @@ export function Card({
   );
 }
 
+/**
+ * `eyebrow` is the landing page's device, brought inside.
+ *
+ * Every section there opens with a short coloured label in caps — THE PROBLEM,
+ * WHAT YOU CAN ACTUALLY DO — and it does two jobs: it separates sections
+ * without a rule, and the colour says what kind of thing follows. The signed-in
+ * product had none of it, which is a large part of why a page of stacked white
+ * cards read as a different product from the one that sold it.
+ *
+ * The tone is the same vocabulary the chips use, so a purple eyebrow still
+ * means "the system worked this out" rather than "purple looked nice here".
+ */
 export function SectionHeading({
+  eyebrow,
+  eyebrowTone = "accent",
   title,
   subtitle,
   action,
 }: {
+  eyebrow?: string;
+  eyebrowTone?: "accent" | "ai" | "positive" | "teal";
   title: string;
   subtitle?: string;
   action?: ReactNode;
 }) {
+  const tones = {
+    accent: "text-accent-ink",
+    ai: "text-purple-ink",
+    positive: "text-positive",
+    teal: "text-teal",
+  } as const;
+
   return (
     <div className="mb-4 flex items-end justify-between gap-4">
       <div>
+        {eyebrow && (
+          <p
+            className={cn(
+              "mb-1.5 text-xs font-bold uppercase tracking-widest",
+              tones[eyebrowTone],
+            )}
+          >
+            {eyebrow}
+          </p>
+        )}
         <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>
         {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
       </div>
@@ -184,7 +218,11 @@ export function CompatibilityBadge({ score }: { score: number }) {
       title="How well your interests, goals, availability and style line up"
     >
       <span className="text-sm font-semibold tabular-nums">{score}%</span>
-      <span className="text-[11px] font-medium opacity-80">match</span>
+      {/* No `opacity-80` here. Dimming the label pulled it to 3.61:1 on the
+          soft coral behind it — the quietness was worth having and was being
+          bought by making the word hard to read. The smaller size already
+          subordinates it. */}
+      <span className="text-[11px] font-medium">match</span>
     </span>
   );
 }
@@ -231,46 +269,21 @@ export function Avatar({
     return <img src={src} alt="" className={shared} loading="lazy" />;
   }
 
+  const { fill, ink } = colourFor(name);
+
   return (
     <span
       aria-hidden
-      className={cn(
-        shared,
-        "flex items-center justify-center font-semibold",
-        avatarTone(name),
-      )}
+      className={cn(shared, "flex items-center justify-center font-bold")}
+      // A saturated disc rather than a pastel wash, which is what the landing
+      // page does and what made a signed-in page look like a different product.
+      // The label colour comes from the same table, so bright fills carry deep
+      // navy rather than the white that measures 1.54:1 on yellow.
+      style={{ background: fill, color: ink }}
     >
       {initials(name)}
     </span>
   );
-}
-
-/**
- * Avatar colours are the one place a palette colour carries no state meaning.
- *
- * Everywhere else in this file a tone is a meaning — `ai` is purple because the
- * system inferred something, `positive` is teal because it went well. Here the
- * colour is derived from the person and says only "this is a different person
- * from the one above". Before this, a page of members without photos was a
- * column of identical grey circles, which reads as a placeholder rather than as
- * people.
- */
-const AVATAR_TONES = [
-  "bg-accent-soft text-accent-ink",
-  "bg-purple-soft text-purple-ink",
-  "bg-mint-soft text-mint-ink",
-  "bg-yellow-soft text-yellow-ink",
-] as const;
-
-function avatarTone(name: string): string {
-  // FNV-1a. Deterministic, so someone keeps their colour across every page and
-  // every session — a colour that changed on each render would be noise.
-  let hash = 2166136261;
-  for (let i = 0; i < name.length; i += 1) {
-    hash ^= name.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return AVATAR_TONES[Math.abs(hash) % AVATAR_TONES.length]!;
 }
 
 // --- Form fields ------------------------------------------------------------

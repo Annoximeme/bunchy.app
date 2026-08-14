@@ -98,7 +98,16 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
       )}
 
       <div className="mt-4 flex items-start gap-4">
-        <Link href={`/u/${intro.username}`} className="shrink-0">
+        {/* Decorative: the person's name sits right beside this and links to
+              the same profile, so exposing the avatar as a second link gave a
+              screen reader an unnamed stop and a keyboard user two tabs to
+              reach one place. */}
+        <Link
+          href={`/u/${intro.username}`}
+          className="shrink-0"
+          aria-hidden
+          tabIndex={-1}
+        >
           <Avatar name={intro.displayName} src={intro.avatarUrl} size="lg" />
         </Link>
 
