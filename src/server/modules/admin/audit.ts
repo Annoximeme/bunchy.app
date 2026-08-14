@@ -19,7 +19,16 @@ import type { StaffViewer } from "@/server/modules/admin/guard";
 export interface AuditInput {
   actor: StaffViewer;
   action: ModerationAction;
-  targetType: "USER" | "PROFILE" | "REPORT" | "BUNCH" | "ACTIVITY" | "BUNCH_MESSAGE" | "INTEREST";
+  /** "SITE" is the platform itself — currently only the public on/off gate. */
+  targetType:
+    | "USER"
+    | "PROFILE"
+    | "REPORT"
+    | "BUNCH"
+    | "ACTIVITY"
+    | "BUNCH_MESSAGE"
+    | "INTEREST"
+    | "SITE";
   targetId: string;
   reason?: string;
   metadata?: Record<string, unknown>;

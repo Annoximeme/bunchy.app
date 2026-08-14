@@ -9,6 +9,11 @@ interface NavItem {
   label: string;
   /** Overview would otherwise match every nested route. */
   exact?: boolean;
+  /**
+   * Hidden from moderators. The page behind it answers 404 for them anyway —
+   * this only stops the nav offering a door that will not open.
+   */
+  adminOnly?: boolean;
 }
 
 const ITEMS: NavItem[] = [
@@ -21,6 +26,7 @@ const ITEMS: NavItem[] = [
   { href: "/admin/activities", label: "Activities" },
   { href: "/admin/interests", label: "Interests" },
   { href: "/admin/moderators", label: "Volunteers" },
+  { href: "/admin/site", label: "Public site", adminOnly: true },
   { href: "/admin/brand", label: "Brand" },
   { href: "/admin/audit", label: "Audit log" },
 ];
@@ -40,7 +46,7 @@ export function AdminNav({
       className="border-b border-line bg-surface px-5 shadow-[var(--shadow-card)]"
     >
       <ul className="mx-auto flex max-w-6xl gap-1 overflow-x-auto">
-        {ITEMS.map((item) => {
+        {ITEMS.filter((item) => !item.adminOnly || canManageAccounts).map((item) => {
           const active = item.exact
             ? pathname === item.href
             : pathname.startsWith(item.href);

@@ -16,7 +16,12 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 FLAGS="docker/flags"
+# 0777 because two different uids write here: you, from the host, and the app
+# container (uid 1001) when an admin uses /admin/site. A bind mount does not
+# map uids, so there is no single owner that satisfies both. The directory
+# holds two empty marker files and nothing else, so the mode costs nothing.
 mkdir -p "$FLAGS"
+chmod 0777 "$FLAGS" 2>/dev/null || true
 
 domain() {
   # shellcheck disable=SC2002
