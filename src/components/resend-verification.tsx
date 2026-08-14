@@ -23,7 +23,7 @@ export function ResendVerification() {
   }
 
   if (sent) {
-    return <p className="text-sm text-positive">Sent — check your inbox.</p>;
+    return <p className="text-sm text-positive">Sent, check your inbox.</p>;
   }
 
   return (

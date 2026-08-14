@@ -94,7 +94,7 @@ export async function createPlan(
     throw validationFailed("Offer at least two times, or people have nothing to choose between.");
   }
   if (options.length > MAX_OPTIONS) {
-    throw validationFailed(`Six options is plenty — more and nobody answers.`);
+    throw validationFailed(`Six options is plenty, more and nobody answers.`);
   }
   const now = Date.now();
   if (options.some((o) => o.startsAt.getTime() < now - 3_600_000)) {
@@ -123,7 +123,7 @@ export async function createPlan(
     data: {
       bunchId,
       kind: "SYSTEM",
-      body: `${title} — a few times to choose between.`,
+      body: `${title}. A few times to choose between.`,
     },
   });
 
@@ -215,7 +215,7 @@ export async function decidePlan(
     data: {
       bunchId: plan.bunchId,
       kind: "SYSTEM",
-      body: `${plan.title} — a time has been settled.`,
+      body: `${plan.title}. A time has been settled.`,
     },
   });
 }
@@ -467,7 +467,7 @@ export async function startChallenge(
       bunchId,
       authorId: profileId,
       kind: "PROMPT",
-      body: `${challenge.title} — ${challenge.description}`,
+      body: `${challenge.title}, ${challenge.description}`,
     },
   });
 
@@ -590,7 +590,7 @@ export async function notifyPlanMembers(
     await notify({
       profileId: member.profileId,
       type: "ACTIVITY_INVITE",
-      title: `${title} — when suits you?`,
+      title: `${title}. When suits you?`,
       body: "Your bunch is trying to find a time.",
       linkPath: `/bunches/${slug}`,
     });

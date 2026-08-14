@@ -48,7 +48,7 @@ export default async function SignUpPage({
             {intent.want.label} · {intent.where.label} · {intent.when.label}
           </p>
           <p className="mt-1.5 text-sm text-muted">
-            We&rsquo;ll pick this up once you&rsquo;re in — you can change it any
+            We&rsquo;ll pick this up once you&rsquo;re in. You can change it any
             time.
           </p>
         </div>

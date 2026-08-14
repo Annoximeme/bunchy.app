@@ -131,7 +131,7 @@ export default async function BunchyNowPage({
                 }
                 description={
                   board.people.relaxations.length > 0
-                    ? "Loosening one thing usually finds somebody — or set your own status and let people come to you."
+                    ? "Loosening one thing usually finds somebody. Or set your own status and let people come to you."
                     : "Set your own status so people can find you, or start something and invite whoever turns up."
                 }
                 action={

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
    */
   metadataBase: new URL(env().APP_URL),
   title: {
-    default: `${brand.name} — ${brand.tagline}`,
+    default: `${brand.name}, ${brand.tagline}`,
     template: `%s · ${brand.name}`,
   },
   description: brand.subtitle,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
    */
   alternates: { canonical: "./" },
   openGraph: {
-    title: `${brand.name} — ${brand.tagline}`,
+    title: `${brand.name}, ${brand.tagline}`,
     description: brand.subtitle,
     siteName: brand.name,
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
    */
   twitter: {
     card: "summary_large_image",
-    title: `${brand.name} — ${brand.tagline}`,
+    title: `${brand.name}, ${brand.tagline}`,
     description: brand.subtitle,
   },
   // This is a place to meet people, not a page to be indexed for.

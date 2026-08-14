@@ -98,7 +98,7 @@ export function ConnectButton({
   if (state === "pending_incoming") {
     return (
       <p className="text-sm text-ink-soft">
-        They asked to connect — answer it on your{" "}
+        They asked to connect. Answer it on your{" "}
         <a href="/connections" className="font-medium text-accent-ink underline underline-offset-2">
           connections page
         </a>

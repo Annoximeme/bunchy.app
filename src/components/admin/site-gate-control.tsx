@@ -30,7 +30,7 @@ const OPTIONS: Array<{
     mode: "MAINTENANCE",
     label: "Maintenance",
     blurb:
-      "For deliberate downtime. The public gets the maintenance page, which says the site is back shortly — so do not leave it on for days.",
+      "For deliberate downtime. The public gets the maintenance page, which says the site is back shortly. So do not leave it on for days.",
     tone: "#8a5e00",
   },
 ];

@@ -25,7 +25,7 @@ export default async function PersonalityPage() {
     <OnboardingShell
       step="personality"
       question="How do you like to spend time?"
-      intro="Seven quick questions. Not a personality test — nobody sees a score, including you."
+      intro="Seven quick questions. Not a personality test. Nobody sees a score, including you."
     >
       <PersonalityStep initial={personality} />
     </OnboardingShell>

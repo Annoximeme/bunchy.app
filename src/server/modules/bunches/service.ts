@@ -275,7 +275,7 @@ export async function approveJoinRequest(
   await notify({
     profileId: targetProfileId,
     type: "BUNCH_INVITE",
-    title: `You're in — welcome to ${bunch.name}`,
+    title: `You're in, welcome to ${bunch.name}`,
     linkPath: `/bunches/${bunchId}`,
   });
 }

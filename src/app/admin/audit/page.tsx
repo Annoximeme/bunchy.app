@@ -24,7 +24,7 @@ export default async function AdminAuditPage() {
     <>
       <AdminHeader
         title="Audit log"
-        subtitle="Every staff action, oldest at the bottom. Append-only — nothing here can be edited or removed."
+        subtitle="Every staff action, oldest at the bottom. Append-only. Nothing here can be edited or removed."
       />
 
       <Panel>
@@ -49,7 +49,7 @@ export default async function AdminAuditPage() {
                 <code className="text-[11px]">{event.targetId}</code>
               </Cell>
               <Cell className="max-w-sm text-xs text-ink-soft">
-                {event.reason ?? <span className="text-muted">—</span>}
+                {event.reason ?? <span className="text-muted">-</span>}
                 {event.metadata !== null && (
                   <details className="mt-1">
                     <summary className="cursor-pointer text-muted">details</summary>

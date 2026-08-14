@@ -42,7 +42,7 @@ export const ICEBREAKERS: readonly Prompt[] = [
   { key: "on-repeat", text: "What have you had on repeat lately, embarrassing or otherwise?", interests: ["music", "live-music", "vinyl", "festivals", "music-production"] },
   { key: "best-gig", text: "Best live thing you've ever been to?", interests: ["live-music", "festivals", "music"] },
   { key: "surprising-film", text: "What's the last film or series that genuinely surprised you?", interests: ["movies", "tv", "anime", "documentaries", "sci-fi", "horror"] },
-  { key: "watch-next", text: "What should everyone here watch next — and not the obvious one?", interests: ["anime", "movies", "tv", "sci-fi"] },
+  { key: "watch-next", text: "What should everyone here watch next. And not the obvious one?", interests: ["anime", "movies", "tv", "sci-fi"] },
   { key: "cant-be-bothered", text: "What do you cook when you can't be bothered but still want it to be good?", interests: ["cooking", "baking", "food", "restaurants"] },
   { key: "first-visit", text: "Where would you take someone on their first day in this city?", interests: ["restaurants", "coffee", "craft-beer", "city-walks", "museums", "food"] },
   { key: "training-week", text: "What does a normal week of training look like for you at the moment?", interests: ["fitness", "running", "climbing", "cycling", "swimming", "martial-arts"] },
@@ -91,7 +91,7 @@ export const CHALLENGES: readonly Challenge[] = [
   {
     key: "one-song-each",
     title: "Everyone recommends one song",
-    description: "One each, no explanation required — though an explanation is usually the fun part.",
+    description: "One each, no explanation required, though an explanation is usually the fun part.",
   },
   {
     key: "pick-a-film",

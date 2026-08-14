@@ -53,7 +53,7 @@ export function OutcomePrompt({ prompt }: { prompt: Prompt }) {
   if (step === "done") {
     return (
       <Card className="border-positive/30 bg-positive-soft/40">
-        <p className="text-sm font-medium">Thanks — that shapes what we show you next.</p>
+        <p className="text-sm font-medium">Thanks. That shapes what we show you next.</p>
       </Card>
     );
   }

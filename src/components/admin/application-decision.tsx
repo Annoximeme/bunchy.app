@@ -77,7 +77,7 @@ export function ApplicationDecision({
 
       {status === "ACCEPTED" && (
         <p className="mt-2 max-w-[15rem] text-right text-xs text-muted">
-          Not staff yet — grant it with
+          Not staff yet. Grant it with
           <code className="mx-1 rounded bg-surface-sunken px-1 py-0.5">
             npm run role -- &lt;email&gt; MODERATOR
           </code>

@@ -94,7 +94,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       // control whose accessible name is its state reads to a screen reader as
       // a claim rather than an action.
       aria-label={`Switch to: ${LABEL[next]}`}
-      title={`Theme: ${LABEL[current]} — click for ${LABEL[next]}`}
+      title={`Theme: ${LABEL[current]}, click for ${LABEL[next]}`}
       className={cn(
         "inline-flex size-9 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-surface-sunken hover:text-ink",
         className,

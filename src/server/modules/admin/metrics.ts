@@ -136,7 +136,7 @@ export async function platformMetrics(): Promise<{
       value: Math.round(perActive * 100) / 100,
       label: "Meaningful connections per active member",
       definition:
-        "Accepted connections where both people have spoken in the conversation, or both attended the same activity — divided by members active in the last 30 days.",
+        "Accepted connections where both people have spoken in the conversation, or both attended the same activity, divided by members active in the last 30 days.",
     },
     groups: [
       {
@@ -210,7 +210,7 @@ export async function platformMetrics(): Promise<{
 }
 
 function percent(part: number, whole: number): string {
-  if (whole === 0) return "—";
+  if (whole === 0) return "-";
   return `${Math.round((part / whole) * 100)}%`;
 }
 

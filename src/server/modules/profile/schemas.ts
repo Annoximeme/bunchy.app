@@ -72,7 +72,7 @@ export const interestSelectionSchema = z.object({
         intent: z.enum(["PRACTICES", "CURIOUS"]).default("PRACTICES"),
       }),
     )
-    .max(40, "That's a lot of interests — pick your favourites."),
+    .max(40, "That's a lot of interests, pick your favourites."),
   customInterests: z
     .array(
       z.object({

@@ -34,7 +34,7 @@ const INTEREST_OPENERS: Record<string, string[]> = {
   ],
   "board-games": [
     "What's the one board game you can always get people to play?",
-    "Heavy euro or party game — where do you land?",
+    "Heavy euro or party game, where do you land?",
   ],
   "tabletop-games": ["What's your current campaign?"],
   "dungeons-and-dragons": ["Do you play or DM more often?"],
@@ -66,7 +66,7 @@ const INTEREST_OPENERS: Record<string, string[]> = {
   ],
   "live-music": ["Who's the best live act you've seen?"],
   movies: ["What's the last film that genuinely surprised you?"],
-  anime: ["What should I watch next — and don't say the obvious one."],
+  anime: ["What should I watch next. And don't say the obvious one."],
   books: ["What's the book you push on everyone?"],
   fitness: ["What does a normal week of training look like for you?"],
   running: ["Are you training for something, or just running?"],
@@ -85,7 +85,7 @@ const INTEREST_OPENERS: Record<string, string[]> = {
 };
 
 const COMPLEMENTARY_TEMPLATES = [
-  (topic: string) => `You mentioned you're getting into ${topic} — how far along are you?`,
+  (topic: string) => `You mentioned you're getting into ${topic}, how far along are you?`,
   (topic: string) => `How did you get started with ${topic}?`,
 ];
 
@@ -145,7 +145,7 @@ export class BunchyAssistant implements Assistant {
 
     const what =
       topics.length > 0
-        ? ` — mostly about ${topics.slice(0, 3).join(", ")}`
+        ? `, mostly about ${topics.slice(0, 3).join(", ")}`
         : "";
 
     return `${messages.length} message${messages.length === 1 ? "" : "s"} from ${who}${what}.`;

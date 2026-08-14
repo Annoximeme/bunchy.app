@@ -18,8 +18,8 @@ beforeEach(() => {
   api.mockResolvedValue({ ok: true });
 });
 
-const suggestion = "A bunch you might like — in app";
-const personEvent = "Someone wants to connect — in app";
+const suggestion = "A bunch you might like, in app";
+const personEvent = "Someone wants to connect, in app";
 
 describe("notification preferences", () => {
   it("shows suggestions off and person events on, before anything is saved", () => {
@@ -41,12 +41,19 @@ describe("notification preferences", () => {
   it("shows nothing switched on for email until asked", () => {
     render(<NotificationPreferences initial={[]} />);
 
+    // Counted rather than only asserted inside the branch. The suffix used to
+    // be "— email"; when the copy dropped its em dashes this loop stopped
+    // matching anything and the test kept passing on zero switches, which is
+    // the quietest way for a test to stop testing.
+    let checked = 0;
     for (const control of screen.getAllByRole("switch")) {
       const label = control.getAttribute("aria-label") ?? "";
-      if (label.endsWith("— email")) {
+      if (label.endsWith(", email")) {
         expect(control).toHaveAttribute("aria-checked", "false");
+        checked += 1;
       }
     }
+    expect(checked).toBeGreaterThan(0);
   });
 
   it("saves the moment a switch moves, with no Save button to press", async () => {

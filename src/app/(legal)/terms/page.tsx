@@ -19,14 +19,14 @@ export default function TermsPage() {
     <LegalPage
       title="Terms"
       contact={LEGAL.supportContact}
-      summary={`The agreement between you and ${brand.name}. Written to be read — if a clause here is unclear, that is our problem to fix, not yours to decipher.`}
+      summary={`The agreement between you and ${brand.name}. Written to be read. If a clause here is unclear, that is our problem to fix, not yours to decipher.`}
     >
       <Clause n={1} title="The agreement">
         <p>
           These terms are between you and <strong>{LEGAL.operator}</strong>,{" "}
           {LEGAL.operatorDescription}, based in {LEGAL.jurisdiction}. Using{" "}
           {brand.name} means accepting them. If you do
-          not, do not use the service — and if you already have an account, you
+          not, do not use the service. And if you already have an account, you
           can delete it in one step from your{" "}
           <Link href="/profile">profile</Link>.
         </p>
@@ -40,7 +40,7 @@ export default function TermsPage() {
         <p>
           You must be at least 16 and legally able to enter into this agreement.
           One account per person. Do not create an account for anyone else, and
-          do not pretend to be someone you are not — the entire product rests on
+          do not pretend to be someone you are not. The entire product rests on
           people meeting who they think they are meeting.
         </p>
       </Clause>
@@ -73,7 +73,7 @@ export default function TermsPage() {
         <p>
           We are not a party to anything you arrange with another member and we
           are not responsible for what they do. If someone behaves badly, block
-          and report them — both are one click, and a person reads every report.
+          and report them. Both are one click, and a person reads every report.
         </p>
       </Clause>
 
@@ -112,8 +112,9 @@ export default function TermsPage() {
       <Clause n={6} title="What you write stays yours">
         <p>
           You keep ownership of everything you post. You give us permission to
-          store it and show it to the people it was meant for — your bunch, your
-          connection, the members of an activity — so that the service can work.
+          store it and show it to the people it was meant for: your bunch, your
+          connection, the members of an activity. That is so the service can
+          work.
           That permission covers nothing else: we will not use your messages or
           your photos in marketing.
         </p>
@@ -127,7 +128,7 @@ export default function TermsPage() {
         <p>
           We may remove content and suspend or close accounts that break these
           terms. Reports go to a human, and every staff action is written to an
-          audit log — moderation power without a record of its use is how a
+          audit log. Moderation power without a record of its use is how a
           platform quietly becomes unaccountable.
         </p>
         <p>
@@ -138,9 +139,9 @@ export default function TermsPage() {
           and a person will look again.
         </p>
         <p>
-          Serious cases — threats, content involving children, anything
-          endangering someone — may be reported to the authorities and will lead
-          to a permanent ban.
+          Serious cases (threats, content involving children, anything endangering
+          someone) may be reported to the authorities and will lead to a
+          permanent ban.
         </p>
       </Clause>
 
@@ -162,7 +163,7 @@ export default function TermsPage() {
           {brand.name} uses software to suggest people, bunches and activities,
           and to offer optional help such as conversation starters and catch-up
           summaries. These are suggestions and they are sometimes wrong. They
-          only ever run when you ask for them — nothing generates on a timer.
+          only ever run when you ask for them. Nothing generates on a timer.
         </p>
         <p>
           How this works, and where it runs, is described in our{" "}

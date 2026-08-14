@@ -56,7 +56,7 @@ export default async function GuidelinesPage() {
             did.
           </Rule>
           <Rule n={5} title="When it stops being a platform problem, stop">
-            Threats, a child, someone in danger — that is an admin and, where
+            Threats, a child, someone in danger. That is an admin and, where
             it belongs, the police. Not a suspension and a shrug.
           </Rule>
           <Rule n={6} title="You are recorded, and that is the point">
@@ -114,7 +114,7 @@ export default async function GuidelinesPage() {
           <p className="mt-1.5">
             Moderators may action members. Admins may action members and
             moderators. <strong>Nobody may action an admin</strong>, and{" "}
-            <strong>nobody may action their own account</strong> — not even to
+            <strong>nobody may action their own account</strong>, not even to
             lift their own suspension. These are enforced in code, not by
             etiquette, so a mistake here fails rather than goes through.
           </p>
@@ -129,15 +129,15 @@ export default async function GuidelinesPage() {
         <h3 className="text-sm font-semibold text-ink">Order of work</h3>
         <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-ink-soft">
           <li>
-            <strong>Self-harm and threats to a person</strong> — before
+            <strong>Self-harm and threats to a person</strong>, before
             anything else, every time.
           </li>
           <li>
-            <strong>Anything involving someone under 16</strong> — Bunchy is
+            <strong>Anything involving someone under 16</strong>. Bunchy is
             16+, so this is an account problem as well as a content one.
           </li>
           <li>
-            <strong>Scams and impersonation</strong> — these get worse while
+            <strong>Scams and impersonation</strong>, these get worse while
             they sit, because the next person has not been warned.
           </li>
           <li>Everything else, oldest first.</li>
@@ -151,7 +151,7 @@ export default async function GuidelinesPage() {
             <StatusPill status="REVIEWING" />{" "}
             <span className="ml-1">
               You have picked it up and are still working. Use it when you need
-              to read a whole conversation or wait on an admin — it stops two
+              to read a whole conversation or wait on an admin. It stops two
               people doing the same job.
             </span>
           </p>
@@ -166,7 +166,7 @@ export default async function GuidelinesPage() {
             <StatusPill status="DISMISSED" />{" "}
             <span className="ml-1">
               Nothing here breaks the rules. Dismissing is a real and correct
-              outcome — a queue where everything gets actioned is a queue where
+              outcome. A queue where everything gets actioned is a queue where
               reporting has become a weapon.
             </span>
           </p>
@@ -211,7 +211,7 @@ export default async function GuidelinesPage() {
           <Reason
             name="Scam or fraud"
             what="Requests for money, crypto, gift cards, investment talk, off-platform payment."
-            then="Suspend and escalate. /safety tells members money is the reddest flag — act like we meant it."
+            then="Suspend and escalate. /safety tells members money is the reddest flag, act like we meant it."
           />
           <Reason
             name="Impersonation"
@@ -225,7 +225,7 @@ export default async function GuidelinesPage() {
           />
           <Reason
             name="Other"
-            what="Whatever did not fit. Read it properly — the useful reports are often in here."
+            what="Whatever did not fit. Read it properly. The useful reports are often in here."
             then="Judge it on the content. If it turns out to be one of the above, treat it as that."
           />
         </dl>
@@ -248,7 +248,7 @@ export default async function GuidelinesPage() {
             <strong>1 day</strong> for a heated moment.{" "}
             <strong>7 days</strong> for something deliberate, or a repeat.{" "}
             <strong>30 days</strong> for a serious single incident. A suspension
-            lifts itself when it expires — you do not need to remember it.
+            lifts itself when it expires. You do not need to remember it.
           </Step>
           <Step n="4" title="Suspend indefinitely">
             Only when you believe a ban is right but the decision is not yours.
@@ -257,7 +257,7 @@ export default async function GuidelinesPage() {
           </Step>
           <Step n="5" title="Archive the bunch">
             When the group itself is the problem rather than one member. This
-            affects everyone in it, including people who did nothing — so it is
+            affects everyone in it, including people who did nothing. So it is
             near the bottom of the list for a reason. It is reversible.
           </Step>
           <Step n="6" title="Escalate to an admin">
@@ -294,7 +294,7 @@ export default async function GuidelinesPage() {
             from any account.
           </li>
           <li>
-            Never repeat what you have seen outside the staff area — not the
+            Never repeat what you have seen outside the staff area, not the
             content, not the names, not &ldquo;you would not believe what I
             read today&rdquo;.
           </li>
@@ -304,7 +304,7 @@ export default async function GuidelinesPage() {
           </li>
           <li>
             Passwords are stored only as hashes. Nobody, including admins, can
-            see a member&rsquo;s password — if someone claims otherwise, they
+            see a member&rsquo;s password. If someone claims otherwise, they
             are not staff.
           </li>
         </ul>
@@ -322,16 +322,16 @@ export default async function GuidelinesPage() {
       >
         <ul className="list-disc space-y-2 pl-5 text-sm text-ink-soft">
           <li>
-            <strong>Someone at immediate risk</strong> — escalate to an admin
+            <strong>Someone at immediate risk</strong>, escalate to an admin
             straight away. Do not suspend the person at risk; losing their
             account removes the people who might notice.
           </li>
           <li>
-            <strong>Credible threats of violence</strong> — escalate. This is a
+            <strong>Credible threats of violence</strong>, escalate. This is a
             police matter and the account action is secondary.
           </li>
           <li>
-            <strong>Anyone who appears to be under 16</strong> — escalate. Do
+            <strong>Anyone who appears to be under 16</strong>, escalate. Do
             not interrogate them and do not ask for identification.
           </li>
           <li>
@@ -355,7 +355,7 @@ export default async function GuidelinesPage() {
       <Section title="The audit log" className="mt-6">
         <p className="text-sm text-ink-soft">
           Every action on this dashboard writes an entry before it takes effect
-          — who, what, when, and the reason you gave. There is no path that
+. Who, what, when, and the reason you gave. There is no path that
           skips it, including for admins, and entries survive the deletion of
           the account that made them.
         </p>

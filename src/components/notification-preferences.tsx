@@ -132,7 +132,7 @@ export function NotificationPreferences({
                                 checked={value[channel]}
                                 busy={savingType === info.type}
                                 onChange={() => toggle(info.type, channel)}
-                                label={`${info.label} — ${
+                                label={`${info.label}, ${
                                   channel === "inApp" ? "in app" : "email"
                                 }`}
                               />

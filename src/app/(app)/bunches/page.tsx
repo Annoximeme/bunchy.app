@@ -58,7 +58,7 @@ export default async function BunchesPage({
             <EmptyState
               icon="○"
               title="You're not in a bunch yet"
-              description="A bunch is the easiest way in — you join a group that already talks to each other instead of starting from a blank conversation."
+              description="A bunch is the easiest way in. You join a group that already talks to each other instead of starting from a blank conversation."
               action={<LinkButton href="/bunches/new">Start one</LinkButton>}
             />
           ) : (
@@ -116,7 +116,7 @@ export default async function BunchesPage({
               description={
                 q
                   ? "Try a broader word, or start a bunch for it yourself."
-                  : "Be the first — a bunch with one thoughtful description attracts better people than an empty search page."
+                  : "Be the first. A bunch with one thoughtful description attracts better people than an empty search page."
               }
               action={<LinkButton href="/bunches/new">Start a bunch</LinkButton>}
             />

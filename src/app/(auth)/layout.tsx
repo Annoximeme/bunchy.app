@@ -43,7 +43,7 @@ export default function AuthLayout({
         <header className="py-6">
           <Link
             href="/"
-            aria-label={`${brand.name} — back to the homepage`}
+            aria-label={`Back to the ${brand.name} homepage`}
             className="inline-block rounded"
           >
             <BunchyLogo height={22} color="#FFFFFF" />
@@ -88,7 +88,7 @@ export default function AuthLayout({
                 ))}
               </div>
               <p className="text-sm text-white/55">
-                An example bunch — Bunchy hasn&rsquo;t launched yet.
+                An example bunch. Bunchy hasn&rsquo;t launched yet.
               </p>
             </div>
           </div>

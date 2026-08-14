@@ -36,7 +36,7 @@ export default function PrivacyPage() {
           Write to{" "}
           <a href={`mailto:${LEGAL.privacyContact}`}>{LEGAL.privacyContact}</a>{" "}
           about anything on this page and that person will answer. A postal
-          address is available on request — it is a home address, so it is not
+          address is available on request. It is a home address, so it is not
           published here.
         </p>
       </Clause>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
             ],
             [
               "Approximate location",
-              "A town or city and a coarse coordinate — see section 3. Never an address.",
+              "A town or city and a coarse coordinate (see section 3). Never an address.",
             ],
             [
               "Interests, goals, availability, personality answers",
@@ -82,15 +82,15 @@ export default function PrivacyPage() {
             ],
             [
               "Sessions",
-              "A random token, stored hashed, plus your browser's user-agent string and a hashed version of your IP address — enough to show you where you are signed in and to spot abuse, not enough to reconstruct your address.",
+              "A random token, stored hashed, plus your browser's user-agent string and a hashed version of your IP address, enough to show you where you are signed in and to spot abuse, not enough to reconstruct your address.",
             ],
             [
               "Product events",
-              "That an account was created, a connection was sent, a bunch was joined — see section 5.",
+              "That an account was created, a connection was sent, a bunch was joined (see section 5).",
             ],
             [
               "Banned addresses",
-              "If an account is banned, a one-way keyed fingerprint of its email address — never the address itself. See section 9.",
+              "If an account is banned, a one-way keyed fingerprint of its email address, never the address itself. See section 9.",
             ],
           ]}
         />
@@ -116,7 +116,7 @@ export default function PrivacyPage() {
       <Clause n={4} title="Who can see what">
         <p>
           Your profile, interests and goals are visible to other signed-in
-          members — that is what makes an introduction possible. Your email
+          members. That is what makes an introduction possible. Your email
           address, birth year and coordinates are never shown to anyone.
         </p>
         <p>
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
             <strong>No contact list, address book or phone number.</strong>
           </li>
           <li>
-            <strong>No precise location, ever</strong> — section 3.
+            <strong>No precise location, ever</strong>, section 3.
           </li>
           <li>
             <strong>No profile of you sold, shared or licensed to anyone.</strong>{" "}
@@ -176,7 +176,7 @@ export default function PrivacyPage() {
             ],
             [
               "Your consent",
-              "Optional notifications — in particular any suggestion we send that no person asked for. Off unless you switch it on, and withdrawable at any time from your profile.",
+              "Optional notifications, in particular any suggestion we send that no person asked for. Off unless you switch it on, and withdrawable at any time from your profile.",
             ],
             [
               "Legal obligation",
@@ -197,9 +197,9 @@ export default function PrivacyPage() {
         </p>
         <p>
           Today this runs as a deterministic algorithm on our own servers, and
-          nothing you write is sent to an external AI provider. If that changes
-          — for example if a language model starts generating conversation
-          starters remotely — we will say so here before it does, and name the
+          nothing you write is sent to an external AI provider. If that changes,
+          for example if a language model starts generating conversation
+          starters remotely. We will say so here before it does, and name the
           provider.
         </p>
         <p>
@@ -248,7 +248,7 @@ export default function PrivacyPage() {
             ],
             [
               "A banned address",
-              "Kept until the ban is lifted. Only for bans — a suspension or a member simply leaving never creates one.",
+              "Kept until the ban is lifted. Only for bans. A suspension or a member simply leaving never creates one.",
             ],
           ]}
         />
@@ -258,7 +258,7 @@ export default function PrivacyPage() {
           account frees its email address, so without it a banned member deletes
           and signs straight back up, and every block and report about them
           stops meaning anything. What we keep is a <strong>keyed one-way
-          fingerprint</strong> of the address — not the address, and not
+          fingerprint</strong> of the address, not the address, and not
           something anyone holding a copy of that table could turn back into
           one. It is linked to no account, no name and no profile. If a ban is
           lifted, it is deleted.
@@ -279,12 +279,12 @@ export default function PrivacyPage() {
         </p>
         <ul className="ml-5 list-disc space-y-1.5">
           <li>
-            <strong>A copy of everything</strong> — one JSON file, downloaded
+            <strong>A copy of everything</strong>. One JSON file, downloaded
             immediately from your{" "}
             <Link href="/profile">profile</Link>. No form, no waiting period.
           </li>
           <li>
-            <strong>Deletion</strong> — immediate and irreversible, from the same
+            <strong>Deletion</strong>, immediate and irreversible, from the same
             page. We do not keep a copy for thirty days in case you change your
             mind.
           </li>
@@ -310,8 +310,8 @@ export default function PrivacyPage() {
         <p>
           {brand.name} is operated from {LEGAL.jurisdiction} and your data is
           stored in the European Union. Where a provider processes data outside that region, we
-          rely on the safeguards the law requires — standard contractual clauses
-          or an adequacy decision — and we will name any such transfer here.
+          rely on the safeguards the law requires, standard contractual clauses
+          or an adequacy decision. And we will name any such transfer here.
         </p>
       </Clause>
 
@@ -328,7 +328,7 @@ export default function PrivacyPage() {
       <Clause n={14} title="Changes">
         <p>
           If we change anything that affects what we hold or what we do with it,
-          we will tell you in the product before it takes effect — not with a
+          we will tell you in the product before it takes effect, not with a
           quiet edit and a new date at the top.
         </p>
       </Clause>

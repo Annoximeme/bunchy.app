@@ -156,7 +156,6 @@ services:
       # maintenance page that lives inside the container it is meant to cover
       # for is a page nobody can reach at the moment it is needed.
       - ./docker/maintenance.html:/srv/pages/maintenance.html:ro
-      - ./docker/coming-soon.html:/srv/pages/coming-soon.html:ro
       # The manual switches. Read-write is deliberate but unused by Caddy — it
       # only ever tests for the files' existence; ./maintenance.sh writes them
       # from the host.

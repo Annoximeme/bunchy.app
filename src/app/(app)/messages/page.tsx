@@ -24,7 +24,7 @@ export default async function MessagesPage() {
         <EmptyState
           icon="💬"
           title="No conversations yet"
-          description="A conversation opens as soon as someone accepts your connection request — or you accept theirs."
+          description="A conversation opens as soon as someone accepts your connection request, or you accept theirs."
           action={<LinkButton href="/discover">Find people</LinkButton>}
         />
       ) : (

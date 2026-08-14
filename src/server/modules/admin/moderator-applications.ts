@@ -59,7 +59,7 @@ export async function applyToModerate(
     select: { id: true },
   });
   if (existing) {
-    throw conflict("You have already applied — we have it, and we will reply.");
+    throw conflict("You have already applied. We have it, and we will reply.");
   }
 
   await db.moderatorApplication.create({

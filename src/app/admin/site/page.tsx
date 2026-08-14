@@ -31,7 +31,7 @@ export default async function AdminSitePage() {
 
       <Panel
         title="Visibility"
-        note="Takes effect on the next request — no deploy, no restart. The app keeps running behind the gate, which is why you keep your own access."
+        note="Takes effect on the next request. No deploy, no restart. The app keeps running behind the gate, which is why you keep your own access."
       >
         <SiteGateControl current={mode} tokenConfigured={tokenConfigured} />
       </Panel>
@@ -61,7 +61,7 @@ export default async function AdminSitePage() {
         </dl>
         <p className="mt-5 border-t border-line pt-4 text-sm text-muted">
           Both pages are also served automatically, by the proxy, whenever the
-          app itself is unreachable — during a deploy, for instance. That does
+          app itself is unreachable, during a deploy, for instance. That does
           not depend on this switch.
         </p>
       </Panel>

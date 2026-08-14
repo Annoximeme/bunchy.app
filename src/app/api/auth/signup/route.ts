@@ -12,7 +12,7 @@ const schema = z.object({
   email: z.string().trim().toLowerCase().email("That doesn't look like an email."),
   password: z
     .string()
-    .min(10, "Use at least 10 characters — length beats symbols.")
+    .min(10, "Use at least 10 characters, length beats symbols.")
     .max(200),
   /** From a personal invite link. Optional, and never a reason to fail. */
   referralCode: z.string().trim().max(16).optional(),

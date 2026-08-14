@@ -74,7 +74,7 @@ export function SurpriseMe() {
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink-soft">
           Discover ranks people by how much you have in common. This does the
-          opposite on purpose — different interests, similar way of spending an
+          opposite on purpose, different interests, similar way of spending an
           evening.
         </p>
         {error && <p className="mt-3 text-sm text-danger">{error}</p>}

@@ -35,7 +35,7 @@ export default async function ActivitiesPage() {
             <EmptyState
               icon="📍"
               title="Nothing in your calendar yet"
-              description="Join something below, or plan the thing you wish existed — most people are waiting for someone else to suggest it."
+              description="Join something below, or plan the thing you wish existed. Most people are waiting for someone else to suggest it."
               action={<LinkButton href="/activities/new">Plan something</LinkButton>}
             />
           ) : (

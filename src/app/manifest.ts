@@ -15,7 +15,7 @@ import { brand } from "@/lib/brand";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${brand.name} — ${brand.tagline}`,
+    name: `${brand.name}, ${brand.tagline}`,
     short_name: brand.name,
     description: brand.subtitle,
     start_url: "/",

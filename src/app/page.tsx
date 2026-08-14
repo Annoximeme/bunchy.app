@@ -161,7 +161,7 @@ export default async function LandingPage() {
               <p className="mt-3 max-w-lg text-lg leading-relaxed text-white/65">
                 Gaming tonight, a film on Saturday, coffee next week.{" "}
                 {brand.name} finds people who are into the same things and free
-                when you are —{" "}
+                when you are:{" "}
                 <span className="font-semibold text-mint-status">online</span>,{" "}
                 <span className="font-semibold text-yellow-fun">nearby</span>,
                 or both.
@@ -307,7 +307,7 @@ export default async function LandingPage() {
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-white/65">
               Matching looks at interests, goals, distance and when you are free
-              — then stops. There is no feed to fall into afterwards.
+              then stops. There is no feed to fall into afterwards.
             </p>
           </div>
 
@@ -344,7 +344,7 @@ export default async function LandingPage() {
               <Stage
                 colour="#FF5C6C"
                 name="Discover"
-                body="People, bunches and activities — online or nearby — each with a plain-English reason it was shown."
+                body="People, bunches and activities, online or nearby, each with a plain-English reason it was shown."
               />
               <Stage
                 colour="#9250FF"
@@ -364,7 +364,7 @@ export default async function LandingPage() {
               <Stage
                 colour="#55D6BE"
                 name="Together"
-                body="A voice channel on Thursday, a table on Saturday. Both count — this is the only stage that does."
+                body="A voice channel on Thursday, a table on Saturday. Both count. This is the only stage that does."
                 emphasis
               />
             </ol>
@@ -386,7 +386,7 @@ export default async function LandingPage() {
               Seven ways in. All of them end in the same place.
             </h2>
             <p className="reveal mt-4 max-w-2xl text-white/60">
-              Different starting points for different moods — whether you know
+              Different starting points for different moods, whether you know
               exactly what you want, or only that you don&rsquo;t want another
               evening in.
             </p>
@@ -400,7 +400,7 @@ export default async function LandingPage() {
                 <Feature
                   colour="#FF5C6C"
                   name="Discover"
-                  line="People, bunches and activities ranked by how well they actually fit — and finite, so it ends."
+                  line="People, bunches and activities ranked by how well they actually fit, and finite, so it ends."
                 />
                 <Feature
                   colour="#55D6BE"
@@ -422,7 +422,7 @@ export default async function LandingPage() {
                 <Feature
                   colour="#FFC857"
                   name="Do something"
-                  line="Say what you have — money, time, energy — and get an evening back. Five taps, no typing."
+                  line="Say what you have (money, time, energy) and get an evening back. Five taps, no typing."
                 />
                 <Feature
                   colour="#FF5C6C"
@@ -439,7 +439,7 @@ export default async function LandingPage() {
                 <Feature
                   colour="#7657FF"
                   name="Start a bunch"
-                  line="Say what you'd like to do. We'll find people who might be up for it — no form to fill in first."
+                  line="Say what you'd like to do. We'll find people who might be up for it. No form to fill in first."
                 />
                 <Feature
                   colour="#55D6BE"
@@ -471,7 +471,7 @@ export default async function LandingPage() {
             <p className="reveal mt-4 max-w-2xl text-white/60">
               Bunchy is not trying to get you off your screen, and it is not
               trying to keep you on it. These are the shapes of plans bunches
-              make — real ones replace them, with permission, the day there are
+              make. Real ones replace them, with permission, the day there are
               real ones to show.
             </p>
 
@@ -529,7 +529,7 @@ export default async function LandingPage() {
                 A gaming bunch plays every Thursday for two months, and one week
                 somebody asks whether anyone fancies pizza. That is a good
                 outcome. So is playing every Thursday for two years and never
-                asking. Bunchy will never nudge you toward the first one — the
+                asking. Bunchy will never nudge you toward the first one. The
                 group decides, and both endings are the product working.
               </p>
             </div>
@@ -547,7 +547,7 @@ export default async function LandingPage() {
             </h2>
             <p className="mt-4 max-w-2xl text-white/60">
               The hard part was never one good evening. It is the second one, and
-              the eighth. A bunch is built to keep going — a standing night, the
+              the eighth. A bunch is built to keep going: a standing night, the
               same people, no reintroductions.
             </p>
 
@@ -588,7 +588,7 @@ export default async function LandingPage() {
                 hostage.
               </Question>
               <Question q="Who can see my profile?">
-                Signed-in members only — never search engines, never the open
+                Signed-in members only, never search engines, never the open
                 internet. Your location is stored as an approximate area, never
                 an address.
               </Question>
@@ -662,7 +662,7 @@ export default async function LandingPage() {
           <div className="flex items-center gap-3">
             <BunchyMark size={26} />
             <span>
-              {brand.name} — {brand.tagline}
+              {brand.name}. {brand.tagline}
             </span>
           </div>
           <div className="flex items-center gap-5">

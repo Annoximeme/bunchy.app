@@ -24,7 +24,7 @@ export default async function FormationPage() {
     <>
       <AdminHeader
         title="Bunch formation"
-        subtitle="Groups the matcher thinks would work, built from members who aren't in a bunch yet. Creating one sends invitations — nobody is added without accepting."
+        subtitle="Groups the matcher thinks would work, built from members who aren't in a bunch yet. Creating one sends invitations. Nobody is added without accepting."
       />
 
       <Panel title="The pool">
@@ -36,7 +36,7 @@ export default async function FormationPage() {
             <>
               {" "}
               Scored the {report.poolSize} most recently active of{" "}
-              {report.truncatedFrom} — every pair is scored, so the pool is
+              {report.truncatedFrom}. Every pair is scored, so the pool is
               capped rather than sampled.
             </>
           )}
@@ -56,7 +56,7 @@ export default async function FormationPage() {
             <p className="text-sm text-ink-soft">
               There are enough people, but no group of five clears the
               compatibility floor without leaving someone in it poorly matched.
-              That is the honest answer — a bunch assembled from people who
+              That is the honest answer. A bunch assembled from people who
               merely tolerate each other is worse than no bunch.
             </p>
           </Panel>
@@ -67,7 +67,7 @@ export default async function FormationPage() {
         {report.proposals.map((proposal, index) => (
           <Panel
             key={proposal.members.map((m) => m.profileId).join("-")}
-            title={`Proposal ${index + 1} — ${proposal.suggestedName}`}
+            title={`Proposal ${index + 1}, ${proposal.suggestedName}`}
           >
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <span>

@@ -208,7 +208,7 @@ export function parseIntent(
     const gaming = catalogue.interests.find((i) => i.slug === "gaming");
     if (gaming && !slugs.includes(gaming.slug)) {
       slugs.push(gaming.slug);
-      notes.push(`Read “${unknownGame}” as gaming — change it if that's wrong.`);
+      notes.push(`Read “${unknownGame}” as gaming, change it if that's wrong.`);
     }
   }
 
@@ -357,7 +357,7 @@ function takeWhen(
     // Never propose a slot that has already started passing.
     const clamped = from.getTime() < now.getTime() ? now : from;
     if (clamped !== from) {
-      notes.push(`“${label}” has already started — showing what's left of it.`);
+      notes.push(`“${label}” has already started, showing what's left of it.`);
     }
 
     const weekend = spansWeekend(today.weekday, daysAhead, spanDays);
@@ -531,7 +531,7 @@ function inferMode(slugs: string[], notes: string[]): "ONLINE" | "OFFLINE" | nul
   const online = slugs.filter((s) => ONLINE_FIRST_INTERESTS.has(s)).length;
   if (online === 0) return null;
   if (online === slugs.length) {
-    notes.push("Assumed online — say “in person” if you'd rather meet up.");
+    notes.push("Assumed online, say “in person” if you'd rather meet up.");
     return "ONLINE";
   }
   return null;

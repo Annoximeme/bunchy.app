@@ -167,7 +167,7 @@ export function BasicsStep({
       <Field
         label="When were you born?"
         htmlFor="birthYear"
-        hint="Month and year, never the day — enough to state your age correctly, and not the number that opens bank accounts. You can hide your exact age later."
+        hint="Month and year, never the day, enough to state your age correctly, and not the number that opens bank accounts. You can hide your exact age later."
       >
         <div className="flex gap-2.5">
           <Input

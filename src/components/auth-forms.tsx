@@ -60,7 +60,7 @@ export function SignUpForm() {
       <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
       <p className="mt-1.5 text-sm text-muted">
         {referralCode
-          ? "Someone invited you. Two fields now — the interesting questions come next."
+          ? "Someone invited you. Two fields now. The interesting questions come next."
           : "Two fields now. The interesting questions come next."}
       </p>
 

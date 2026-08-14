@@ -220,7 +220,7 @@ export function BunchCluster() {
         does not exist on the one page most people will only ever see.
       */}
       <p className="mt-6 text-center text-xs text-white/55">
-        An example bunch. Bunchy hasn&rsquo;t launched yet — these aren&rsquo;t
+        An example bunch. Bunchy hasn&rsquo;t launched yet, these aren&rsquo;t
         real people.
       </p>
     </div>

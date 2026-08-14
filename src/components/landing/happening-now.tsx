@@ -42,7 +42,7 @@ export async function HappeningNow() {
             </h2>
             <p className="reveal mt-4 max-w-2xl text-white/60">
               Bunchy hasn&rsquo;t launched, so there is nothing real to show here
-              yet — and we would rather show you an empty board than invent a
+              yet. And we would rather show you an empty board than invent a
               busy one. Every card below is an example of what this looks like
               once people are on it.
             </p>

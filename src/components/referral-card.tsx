@@ -39,7 +39,7 @@ export function ReferralCard() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError("Couldn't copy — select the link and copy it manually.");
+      setError("Couldn't copy, select the link and copy it manually.");
     }
   }
 

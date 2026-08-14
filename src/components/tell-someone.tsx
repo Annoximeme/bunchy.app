@@ -64,10 +64,10 @@ export function TellSomeone({
         Tell someone
       </button>
       {state === "copied" && (
-        <span className="text-xs text-positive">Copied — paste it to a friend</span>
+        <span className="text-xs text-positive">Copied, paste it to a friend</span>
       )}
       {state === "failed" && (
-        <span className="text-xs text-muted">Couldn&apos;t copy — long-press to select</span>
+        <span className="text-xs text-muted">Couldn&apos;t copy, long-press to select</span>
       )}
     </span>
   );

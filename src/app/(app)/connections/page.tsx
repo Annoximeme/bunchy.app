@@ -35,7 +35,7 @@ export default async function ConnectionsPage() {
           <section>
             <SectionHeading
               title={`Waiting on you (${pending.incoming.length})`}
-              subtitle="No rush — declining is silent, they're never told."
+              subtitle="No rush. Declining is silent, and they're never told."
             />
             <ul className="space-y-3">
               {pending.incoming.map((request) => (
