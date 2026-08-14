@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { env } from "@/server/env";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ArrowRight, Heart, MessageCircle, Sparkles } from "lucide-react";
 import { getViewer } from "@/server/auth/current-user";
@@ -32,12 +34,70 @@ const display = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+/**
+ * Structured data, restricted to what is actually true.
+ *
+ * `WebSite` and `WebApplication` and nothing else. Not `Organization`: Bunchy
+ * is run by one person and is explicitly not a company (see lib/legal.ts), and
+ * claiming a corporate identity in machine-readable form to win a knowledge
+ * panel is exactly the kind of thing that is both dishonest and, when noticed,
+ * a manual action.
+ *
+ * No `aggregateRating` and no `review` either. Those are the two properties
+ * most worth faking and the two Google penalises hardest for self-serving
+ * markup — and there is nothing to report, because nobody has used this yet.
+ *
+ * The price is a real claim the page already makes out loud, so it is safe to
+ * make it here as well.
+ */
+function structuredData(origin: string) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${origin}/#website`,
+        url: `${origin}/`,
+        name: brand.name,
+        description: brand.subtitle,
+        inLanguage: "en",
+      },
+      {
+        "@type": "WebApplication",
+        "@id": `${origin}/#app`,
+        name: brand.name,
+        url: `${origin}/`,
+        description: brand.subtitle,
+        applicationCategory: "SocialNetworkingApplication",
+        operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript for some features.",
+        isAccessibleForFree: true,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "EUR",
+        },
+      },
+    ],
+  };
+}
+
 export default async function LandingPage() {
   const viewer = await getViewer();
   if (viewer) redirect(onboardingPath(viewer.onboardingStage));
 
+  // Carries the CSP nonce: this app runs a nonce-based policy with no
+  // `unsafe-inline`, and an unnonced inline script is refused outright.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const jsonLd = structuredData(env().APP_URL.replace(/\/$/, ""));
+
   return (
     <div className={`${display.className} min-h-dvh bg-navy-base text-white`}>
+      <script
+        type="application/ld+json"
+        nonce={nonce}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 1 — Navigation */}
       <header className="absolute inset-x-0 top-0 z-40">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
@@ -542,7 +602,10 @@ export default async function LandingPage() {
         </section>
 
         {/* 7 — Final CTA */}
-        <section className="px-5 pb-24">
+        {/* py, not just pb: this section had no top padding, so the card began
+            at the exact pixel the cream section ended and the two collided at
+            the colour change. Every other section on the page is py-24. */}
+        <section className="px-5 py-24">
           {/*
             The padding used to be 80px top and bottom against 24px at the
             sides, so the headline ran nearly edge to edge inside a card that
