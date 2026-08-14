@@ -2,7 +2,7 @@
   "name": "bunchy",
   "version": "0.1.0",
   "private": true,
-  "description": "Bunchy \u2014 find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
+  "description": "Bunchy — find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
   "engines": {
     "node": ">=22"
   },
@@ -35,6 +35,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "framer-motion": "^13.1.0",
+    "lucide-react": "^1.31.0",
     "next": "^16.3.0",
     "nodemailer": "^9.0.5",
     "react": "^19.2.0",

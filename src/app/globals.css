@@ -85,6 +85,22 @@
   --shadow-lift: 0 2px 4px rgb(23 32 51 / 0.06), 0 18px 40px -20px rgb(23 32 51 / 0.26);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Landing palette (spec names) ---------------------------------------
+   *
+   * The landing page is pinned to a fixed light-and-dark composition rather
+   * than following the theme, so it needs colours that do not move. These are
+   * that set. Four of them are the brand tokens' own values written literally;
+   * `navy-base` is deliberately deeper than the app's dark canvas (#101826),
+   * because the page uses it as a stage the cards sit on rather than as a
+   * reading background.
+   */
+  --color-navy-base: #0A0E1A;
+  --color-cream-bg: #FFF9F3;
+  --color-coral-primary: #FF5C6C;
+  --color-purple-ai: #7657FF;
+  --color-yellow-fun: #FFC857;
+  --color-mint-status: #55D6BE;
 }
 
 /**
