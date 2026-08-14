@@ -36,6 +36,17 @@ echo "==> Migrating and restarting"
 # because `app` declares service_completed_successfully on it.
 docker compose up -d --remove-orphans
 
+# Caddy separately, and always.
+#
+# The Caddyfile is bind-mounted as a single file, and a single-file bind mount
+# pins the inode. Editing the file writes a new one and renames it over the
+# old, so the container goes on serving the config it started with while the
+# host shows the new one — and `up -d` sees an unchanged container spec and
+# leaves it alone. That failure is silent and total: the proxy config simply
+# never changes. Recreating is what re-resolves the mount.
+echo "==> Reloading the proxy"
+docker compose up -d --force-recreate caddy
+
 echo "==> Waiting for health"
 for i in $(seq 1 60); do
   if [ "$(docker compose ps app --format '{{.Health}}' 2>/dev/null)" = "healthy" ]; then

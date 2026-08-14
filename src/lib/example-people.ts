@@ -8,17 +8,19 @@
  * rather than decoration. A person whose colour changes between two cards is
  * two people.
  *
- * Six names against four brand colours means two of them share, which is fine:
- * the point is that a given initial is always the same colour, not that every
- * colour is unique.
+ * Six people against four accents, so P and W take the deeper coral and the
+ * lighter purple the palette already carries as its text-safe inks rather than
+ * repeating a fill exactly. When two of these overlap in a cluster — and they
+ * always do, the avatars are deliberately stacked — two identical circles read
+ * as one wide blob rather than as two people.
  */
 export const PERSON_COLOUR: Record<string, string> = {
   S: "#FF5C6C",
   M: "#7657FF",
   E: "#55D6BE",
   T: "#FFC857",
-  P: "#FF5C6C",
-  W: "#7657FF",
+  P: "#CE2F45",
+  W: "#9B85FF",
 };
 
 /** Falls back to coral for any initial not in the cast. */

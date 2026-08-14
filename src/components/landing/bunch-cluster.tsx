@@ -1,4 +1,5 @@
 import { Gamepad2, Coffee, Users } from "lucide-react";
+import { personColour } from "@/lib/example-people";
 
 /**
  * The hero visual: separate people, drawn as a bunch.
@@ -30,14 +31,16 @@ interface Person {
   delay: number;
 }
 
+/** Colours come from the shared cast, so a person is the same person here and
+ *  in every card further down the page. */
 const PEOPLE: Person[] = [
-  { initial: "S", colour: "#FF5C6C", x: 49, y: 11, seconds: 5.0, delay: 0 },
-  { initial: "M", colour: "#7657FF", x: 77, y: 27, seconds: 5.6, delay: 0.6 },
-  { initial: "E", colour: "#55D6BE", x: 83, y: 63, seconds: 6.2, delay: 1.2 },
-  { initial: "T", colour: "#FFC857", x: 53, y: 81, seconds: 5.3, delay: 0.3 },
-  { initial: "P", colour: "#FF5C6C", x: 21, y: 65, seconds: 5.9, delay: 0.9 },
-  { initial: "W", colour: "#7657FF", x: 17, y: 25, seconds: 6.5, delay: 1.5 },
-];
+  { initial: "S", x: 49, y: 11, seconds: 5.0, delay: 0 },
+  { initial: "M", x: 77, y: 27, seconds: 5.6, delay: 0.6 },
+  { initial: "E", x: 83, y: 63, seconds: 6.2, delay: 1.2 },
+  { initial: "T", x: 53, y: 81, seconds: 5.3, delay: 0.3 },
+  { initial: "P", x: 21, y: 65, seconds: 5.9, delay: 0.9 },
+  { initial: "W", x: 17, y: 25, seconds: 6.5, delay: 1.5 },
+].map((p) => ({ ...p, colour: personColour(p.initial) }));
 
 export function BunchCluster() {
   return (
