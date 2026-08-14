@@ -1,4 +1,5 @@
 import { db } from "@/server/db/client";
+import { availabilityAudienceCondition } from "@/server/modules/availability/service";
 import type { Prisma } from "@/generated/prisma/client";
 import type {
   AvailabilityWindow,
@@ -262,6 +263,15 @@ function applyCriteria(
     // `expiresAt` in the future is what "live" means — expired rows are left
     // in place rather than swept, so every read must exclude them itself.
     criteria.push({ availabilityStatus: { is: { expiresAt: { gt: now } } } });
+
+    // And the audience, here rather than only at render time.
+    //
+    // Attaching the badge already respected `whoCanSeeAvailability`, so a
+    // member who limits their status to connections never had it shown to a
+    // stranger. But this filter selected them anyway, so they still appeared in
+    // a list headed "free right now" — and appearing in that list discloses the
+    // status just as plainly as the badge would have. Membership is disclosure.
+    criteria.push(availabilityAudienceCondition(subject.profileId));
   }
 
   const box = boundingBox(filter, subject);
