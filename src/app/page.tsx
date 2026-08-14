@@ -261,23 +261,35 @@ export default async function LandingPage() {
             identical white boxes side by side argued it far less convincingly
             than the page simply splitting in two.
           */}
-          <div className="relative overflow-hidden bg-ink px-6 py-16 text-canvas md:px-10">
+          <div
+            className="relative overflow-hidden px-6 py-16 md:px-10"
+            style={{
+              /*
+                Hard-coded, like the short-list panel below and for the same
+                reason: `bg-ink` with `text-canvas` inverts in dark mode, so this
+                half rendered as a white panel on a dark page — the screen-lit
+                side of a split about screens, glowing white at night.
+              */
+              background:
+                "linear-gradient(150deg, #161f33 0%, #1c1b33 60%, #221a33 100%)",
+            }}
+          >
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(30rem 20rem at 20% 10%, color-mix(in oklab, var(--color-purple) 26%, transparent), transparent 70%)",
+                  "radial-gradient(30rem 20rem at 20% 10%, rgb(118 87 255 / 0.28), transparent 70%)",
               }}
             />
-            <div className="relative mx-auto max-w-md">
-              <p className="text-sm font-semibold tracking-widest opacity-70">
+            <div className="relative mx-auto max-w-md text-white">
+              <p className="text-sm font-semibold tracking-widest text-white/65">
                 ONLINE
               </p>
               <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight">
                 A voice channel counts.
               </h2>
-              <p className="mt-4 leading-relaxed opacity-80">
+              <p className="mt-4 leading-relaxed text-white/75">
                 Co-op nights, watch-alongs, study sessions, a bunch that lives in
                 its own chat. Distance stops mattering, so matching leans on what
                 you are into and when you are free. The meeting link is only ever
@@ -311,50 +323,74 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* Principles — the one inverted band on the page */}
-        <section className="relative overflow-hidden bg-ink py-20 text-canvas">
-          {/*
-            Two coloured glows inside the dark band. Without them it is a black
-            rectangle dropped into a warm page; with them it belongs to the same
-            palette as everything above it, just after dark.
-          */}
+        {/* What you won't find here — specimens of the things Bunchy refuses */}
+        <section className="px-5 py-16">
           <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
+            className="reveal relative mx-auto max-w-6xl overflow-hidden rounded-[var(--radius-card)] px-6 py-16 ring-1 ring-white/10 md:px-12"
             style={{
+              /*
+                Fixed colours, not tokens.
+                
+                This band used `bg-ink` with `text-canvas`, which flips in dark
+                mode — `--color-ink` is #f5f7fa there — so the one dark moment on
+                the page rendered as a large white slab for anyone browsing dark.
+                An inversion of the surrounding page is not the same thing as a
+                dark panel, and this section wants the second one. Hard-coded
+                navy and plum keep it dark in both themes; the ring is what keeps
+                it from dissolving into a dark canvas.
+              */
               background:
-                "radial-gradient(40rem 22rem at 10% 0%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 65%), radial-gradient(36rem 20rem at 90% 100%, color-mix(in oklab, var(--color-purple) 20%, transparent), transparent 65%)",
+                "linear-gradient(155deg, #151d2f 0%, #1b1930 55%, #241b32 100%)",
             }}
-          />
-          {/*
-            Dark, because this section is the argument rather than a feature
-            list, and five cream sections in a row let the eye slide past the
-            one that says what Bunchy refuses to do. The tokens flip in dark
-            mode — `--color-ink` is the light one there — so this stays an
-            inversion of its surroundings in both themes rather than becoming a
-            navy block on a navy page.
-          */}
-          <div className="reveal relative mx-auto max-w-6xl px-5">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              What you won&rsquo;t find here.
-            </h2>
-            <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-              <Principle
-                title="No infinite scroll"
-                body="Discover shows a finite set of suggestions. When you've seen them, you're done."
-              />
-              <Principle
-                title="No follower counts"
-                body="Nobody has an audience. There is no number that makes one member worth more than another."
-              />
-              <Principle
-                title="No engagement bait"
-                body="We notify you when a person is waiting on you. Never to pull you back in."
-              />
-              <Principle
-                title="No exact location"
-                body="We store a coarse area, never an address — precise enough to find people nearby, useless for finding you."
-              />
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(34rem 20rem at 8% 0%, rgb(255 92 108 / 0.20), transparent 65%), radial-gradient(30rem 18rem at 95% 100%, rgb(118 87 255 / 0.26), transparent 65%)",
+              }}
+            />
+
+            <div className="relative">
+              <p className="text-sm font-semibold tracking-widest text-[rgb(255_140_150)]">
+                THE SHORT LIST
+              </p>
+              <h2 className="mt-3 max-w-2xl text-balance text-4xl font-semibold tracking-tight text-white md:text-5xl">
+                What you won&rsquo;t find here.
+              </h2>
+              <p className="mt-4 max-w-xl text-white/65">
+                Every one of these exists in the apps you already have. None of
+                them are missing by accident.
+              </p>
+
+              {/*
+                Each item shows the thing itself, struck out, before naming it.
+                A list of four "no" statements is a paragraph; a follower count
+                with a line through it is the argument in one glance.
+              */}
+              <div className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2">
+                <Refusal
+                  specimen="12,431 followers"
+                  title="No follower counts"
+                  body="Nobody has an audience. There is no number that makes one member worth more than another."
+                />
+                <Refusal
+                  specimen="Loading 240 more…"
+                  title="No infinite scroll"
+                  body="Discover shows a finite set of suggestions. When you have seen them, you are done."
+                />
+                <Refusal
+                  specimen="🔥 5 people you may know"
+                  title="No engagement bait"
+                  body="We notify you when a person is waiting on you. Never to pull you back in."
+                />
+                <Refusal
+                  specimen="Kerkstraat 12, 2000"
+                  title="No exact location"
+                  body="We store a coarse area, never an address — precise enough to find people nearby, useless for finding you."
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -535,24 +571,34 @@ function Question({ q, children }: { q: string; children: ReactNode }) {
   );
 }
 
-function Principle({ title, body }: { title: string; body: string }) {
+function Refusal({
+  specimen,
+  title,
+  body,
+}: {
+  specimen: string;
+  title: string;
+  body: string;
+}) {
   /*
-    Each of these is a "no", so each carries a struck-through mark. Colours come
-    from `currentColor` and opacity rather than a token, so the same component
-    works on the inverted band without a second set of classes to keep in step.
+    The specimen is the borrowed artefact — a follower count, a location, a
+    notification — shown struck through in the colours of the thing being
+    refused, then named underneath. Marked aria-hidden: it is an illustration of
+    something absent, and read aloud in sequence it would sound like a feature
+    list of the opposite product.
   */
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <span
-          aria-hidden
-          className="inline-flex size-5 shrink-0 items-center justify-center rounded-full border border-current text-[10px] font-bold opacity-55"
-        >
-          ✕
-        </span>
-        <h3 className="font-semibold tracking-tight">{title}</h3>
-      </div>
-      <p className="mt-1.5 pl-7 text-sm leading-relaxed opacity-70">{body}</p>
+      <span
+        aria-hidden
+        className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1.5 text-sm text-white/45 line-through decoration-[rgb(255_92_108)] decoration-2"
+      >
+        {specimen}
+      </span>
+      <h3 className="mt-3 text-lg font-semibold tracking-tight text-white">
+        {title}
+      </h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-white/60">{body}</p>
     </div>
   );
 }
