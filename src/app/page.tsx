@@ -129,46 +129,42 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 3 — The contrast */}
-        <section className="px-5 py-20">
+        {/* 3 — The contrast, in daylight */}
+        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
           <div className="mx-auto max-w-6xl">
-            <h2 className="reveal max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+            <p className="reveal text-sm font-bold tracking-widest text-coral-primary">
+              THE PROBLEM
+            </p>
+            <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
               You don&rsquo;t need more followers. You need four people who
               answer the group chat.
             </h2>
 
-            <div className="reveal mt-12 grid gap-6 md:grid-cols-2">
+            <div className="reveal mt-12 grid items-stretch gap-6 md:grid-cols-2">
               {/* Everywhere else */}
-              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8">
-                <p className="text-xs font-semibold tracking-widest text-white/35">
+              <div className="rounded-3xl border border-[#172033]/10 bg-white/60 p-8">
+                <p className="text-xs font-semibold tracking-widest text-[#6B7280]">
                   EVERYWHERE ELSE
                 </p>
                 <div className="mt-6 space-y-3">
-                  <p className="text-3xl font-bold text-white/45">
+                  <p className="text-3xl font-bold text-[#6B7280]">
                     1,284 followers
                   </p>
-                  <p className="flex items-center gap-2 text-white/30">
+                  <p className="flex items-center gap-2 text-[#6B7280]">
                     <Heart size={18} aria-hidden />
                     17 likes
                   </p>
-                  <p className="flex items-center gap-2 text-white/30">
+                  <p className="flex items-center gap-2 text-[#6B7280]">
                     <MessageCircle size={18} aria-hidden />3 comments
                   </p>
                 </div>
-                <p className="mt-8 border-t border-white/[0.06] pt-5 text-white/45">
+                <p className="mt-8 border-t border-[#172033]/10 pt-5 text-[#6B7280]">
                   Still nobody to go out with.
                 </p>
               </div>
 
               {/* Here */}
-              <div
-                className="relative overflow-hidden rounded-3xl p-8"
-                style={{
-                  background:
-                    "linear-gradient(150deg, rgba(255,92,108,0.16), rgba(118,87,255,0.18))",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                }}
-              >
+              <div className="relative overflow-hidden rounded-3xl border border-[#172033]/10 bg-white p-8 shadow-[0_24px_60px_-34px_rgba(23,32,51,0.5)]">
                 <p className="text-xs font-semibold tracking-widest text-coral-primary">
                   ON {brand.name.toUpperCase()}
                 </p>
@@ -182,7 +178,7 @@ export default async function LandingPage() {
                   ].map((a) => (
                     <span
                       key={a.i}
-                      className="flex size-12 items-center justify-center rounded-full text-base font-bold text-white ring-4 ring-navy-base"
+                      className="flex size-12 items-center justify-center rounded-full text-base font-bold text-white ring-4 ring-white"
                       style={{ background: a.c }}
                     >
                       {a.i}
@@ -196,44 +192,16 @@ export default async function LandingPage() {
                   <Pill>🥾 Hiking</Pill>
                 </div>
 
-                <p className="mt-8 border-t border-white/10 pt-5 text-lg font-semibold text-white">
+                <p className="mt-8 border-t border-[#172033]/10 pt-5 text-lg font-semibold text-[#172033]">
                   &ldquo;We&rsquo;re going Saturday.&rdquo;
                 </p>
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* 4 — How it works, in daylight */}
-        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
-          <div className="reveal mx-auto max-w-6xl">
-            <p className="text-sm font-bold tracking-widest text-coral-primary">
-              HOW {brand.name.toUpperCase()} WORKS
+            <p className="reveal mx-auto mt-10 max-w-2xl text-balance text-center text-lg text-[#3d4759]">
+              An audience is not a social life. The number that matters is the
+              one you could text tonight.
             </p>
-            <h2 className="mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Three steps, and none of them are scrolling.
-            </h2>
-
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              <Step
-                n="01"
-                colour="#FF5C6C"
-                title="Share what you like doing"
-                body="A short conversation, not a form. What you are into, what you are looking for, and when you are actually free."
-              />
-              <Step
-                n="02"
-                colour="#7657FF"
-                title="Get matched into a local bunch"
-                body="Four to six people near you with real overlap — interests, goals, and evenings that line up with yours."
-              />
-              <Step
-                n="03"
-                colour="#55D6BE"
-                title="Make a plan and go"
-                body="A game on Thursday, a coffee on Saturday. The bunch picks something and Bunchy gets out of the way."
-              />
-            </div>
           </div>
         </section>
 
@@ -254,6 +222,135 @@ export default async function LandingPage() {
 
           <div className="mt-12">
             <BunchMoment />
+          </div>
+        </section>
+
+        {/* 6 — How it works, in daylight */}
+        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
+          <div className="mx-auto max-w-6xl">
+            <p className="reveal text-sm font-bold tracking-widest text-coral-primary">
+              HOW {brand.name.toUpperCase()} WORKS
+            </p>
+            <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Five stages, and none of them are scrolling.
+            </h2>
+
+            {/*
+              A sequence, drawn as one. The connector is the point: these are
+              not five features, they are five positions along the same evening.
+            */}
+            <ol className="reveal relative mt-14 grid gap-8 md:grid-cols-5 md:gap-4">
+              <div
+                aria-hidden
+                className="absolute left-6 top-3 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-[#FF5C6C] via-[#7657FF] to-[#55D6BE] md:block"
+              />
+              <Stage
+                colour="#FF5C6C"
+                name="Discover"
+                body="People, bunches and activities near you — each with a plain-English reason it was shown."
+              />
+              <Stage
+                colour="#9250FF"
+                name="Match"
+                body="Eight weighted signals, not a tag intersection. Including the ones you're curious about but haven't done."
+              />
+              <Stage
+                colour="#7657FF"
+                name="Bunch"
+                body="Four to six people come together. Small enough that everyone speaks."
+              />
+              <Stage
+                colour="#22A08B"
+                name="Plan"
+                body="Somebody suggests Thursday. The bunch agrees on something real."
+              />
+              <Stage
+                colour="#55D6BE"
+                name="Meet"
+                body="You close the tab and go. This is the only stage that counts."
+                emphasis
+              />
+            </ol>
+
+            <p className="reveal mt-12 max-w-2xl text-lg text-[#3d4759]">
+              Most social products are built to keep you at stage one. Bunchy is
+              built to get you to stage five and then leave you alone.
+            </p>
+          </div>
+        </section>
+
+        {/* 7 — What you can actually do */}
+        <section className="px-5 py-24">
+          <div className="mx-auto max-w-6xl">
+            <p className="reveal text-sm font-bold tracking-widest text-purple-ai">
+              WHAT YOU CAN ACTUALLY DO
+            </p>
+            <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Seven ways in. All of them end in the same place.
+            </h2>
+            <p className="reveal mt-4 max-w-2xl text-white/60">
+              Different starting points for different moods — whether you know
+              exactly what you want, or only that you don&rsquo;t want another
+              evening in.
+            </p>
+
+            <div className="mt-14 flex flex-col gap-12">
+              <Band
+                label="Find people"
+                colour="#FF5C6C"
+                blurb="Three different answers to “who is out there”."
+              >
+                <Feature
+                  colour="#FF5C6C"
+                  name="Discover"
+                  line="People, bunches and activities ranked by how well they actually fit — and finite, so it ends."
+                />
+                <Feature
+                  colour="#55D6BE"
+                  name="Bunchy Now"
+                  line="Who is up for something, and when. Counts are approximate and never name anyone."
+                />
+                <Feature
+                  colour="#7657FF"
+                  name="Surprise me"
+                  line="The opposite of a recommendation: someone whose interests don't look like yours, but whose evenings do."
+                />
+              </Band>
+
+              <Band
+                label="Work out what to do"
+                colour="#FFC857"
+                blurb="For when the group chat has gone quiet on the question."
+              >
+                <Feature
+                  colour="#FFC857"
+                  name="Do something"
+                  line="Say what you have — money, time, energy — and get an evening back. Five taps, no typing."
+                />
+                <Feature
+                  colour="#FF5C6C"
+                  name="Radar"
+                  line="Bunches and activities around you. Areas, never addresses."
+                />
+              </Band>
+
+              <Band
+                label="Make it real"
+                colour="#55D6BE"
+                blurb="The half that most products never build."
+              >
+                <Feature
+                  colour="#7657FF"
+                  name="Start a bunch"
+                  line="Say what you'd like to do. We'll find people who might be up for it — no form to fill in first."
+                />
+                <Feature
+                  colour="#55D6BE"
+                  name="Plans"
+                  line="Turn “we should do something” into a date, a place and a count of who is coming."
+                />
+              </Band>
+            </div>
           </div>
         </section>
 
@@ -312,12 +409,12 @@ export default async function LandingPage() {
         </section>
 
         {/* Objections — kept from the previous page, because they convert */}
-        <section className="px-5 py-20">
+        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
           <div className="reveal mx-auto max-w-3xl">
             <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
               Before you sign up.
             </h2>
-            <dl className="mt-10 divide-y divide-white/10 border-y border-white/10">
+            <dl className="mt-10 divide-y divide-[#172033]/10 border-y border-[#172033]/10">
               <Question q="Is this a dating app?">
                 No, and it is not one with the labels changed either. No swiping,
                 no romantic intent field, nothing that ranks people by
@@ -407,36 +504,114 @@ export default async function LandingPage() {
   );
 }
 
-/** Activity tags. Yellow is activities; mint is reserved for availability. */
+/**
+ * Activity tags. Yellow is activities; mint is reserved for availability.
+ *
+ * The ink is `#8a5e00` rather than the yellow fill: this pill sits on a white
+ * card on the cream band, and #FFC857 on white is about 1.7:1 — a colour that
+ * works as a fill and not at all as text.
+ */
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-fun/30 bg-yellow-fun/15 px-3.5 py-1.5 text-sm font-medium text-yellow-fun">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#8a5e00]/20 bg-yellow-fun/20 px-3.5 py-1.5 text-sm font-semibold text-[#8a5e00]">
       {children}
     </span>
   );
 }
 
-function Step({
-  n,
+/**
+ * One position in the Discover → Match → Bunch → Plan → Meet sequence.
+ *
+ * `emphasis` belongs to Meet alone. It is the stage the whole product exists to
+ * reach, and a sequence that renders it identically to the four leading up to it
+ * is quietly saying they matter the same amount.
+ */
+function Stage({
   colour,
-  title,
+  name,
   body,
+  emphasis = false,
 }: {
-  n: string;
   colour: string;
-  title: string;
+  name: string;
   body: string;
+  emphasis?: boolean;
 }) {
   return (
-    <div className="rounded-3xl bg-white p-7 shadow-[0_18px_50px_-30px_rgba(23,32,51,0.45)]">
+    <li className="relative">
       <span
-        className="flex size-12 items-center justify-center rounded-2xl text-sm font-extrabold text-white"
+        className="flex size-6 items-center justify-center rounded-full ring-4 ring-cream-bg"
         style={{ background: colour }}
       >
-        {n}
+        {emphasis && <span className="size-2 rounded-full bg-white" />}
       </span>
-      <h3 className="mt-5 text-xl font-bold tracking-tight">{title}</h3>
-      <p className="mt-2 leading-relaxed text-[#3d4759]">{body}</p>
+      <h3
+        className={`mt-4 text-lg font-extrabold tracking-tight ${
+          emphasis ? "text-[#0e7a69]" : ""
+        }`}
+      >
+        {name}
+      </h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-[#3d4759]">{body}</p>
+    </li>
+  );
+}
+
+/**
+ * A group of features that answer the same question.
+ *
+ * The brief asked for seven features that read as one ecosystem rather than
+ * seven unrelated cards. Banding them by the question they answer is what does
+ * that: the reader sees three decisions, not seven products.
+ */
+function Band({
+  label,
+  colour,
+  blurb,
+  children,
+}: {
+  label: string;
+  colour: string;
+  blurb: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="reveal grid gap-6 lg:grid-cols-[15rem_1fr]">
+      <div className="lg:pt-1">
+        <span
+          className="inline-flex items-center gap-2 text-sm font-bold tracking-wide"
+          style={{ color: colour }}
+        >
+          <span
+            className="size-2.5 rounded-full"
+            style={{ background: colour }}
+          />
+          {label}
+        </span>
+        <p className="mt-2 max-w-xs text-sm text-white/45">{blurb}</p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{children}</div>
+    </div>
+  );
+}
+
+function Feature({
+  colour,
+  name,
+  line,
+}: {
+  colour: string;
+  name: string;
+  line: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6 transition-colors duration-200 hover:border-white/20 hover:bg-white/[0.06]">
+      <span
+        className="block h-1 w-9 rounded-full"
+        style={{ background: colour }}
+      />
+      <h3 className="mt-4 text-lg font-bold tracking-tight">{name}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-white/60">{line}</p>
     </div>
   );
 }
@@ -498,7 +673,7 @@ function Question({ q, children }: { q: string; children: ReactNode }) {
   return (
     <div className="py-5">
       <dt className="font-bold tracking-tight">{q}</dt>
-      <dd className="mt-1.5 leading-relaxed text-white/65">{children}</dd>
+      <dd className="mt-1.5 leading-relaxed text-[#3d4759]">{children}</dd>
     </div>
   );
 }

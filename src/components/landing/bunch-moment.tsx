@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
-import { Sparkles, RotateCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
 
 /**
- * The signature moment: one person, a search, a bunch.
+ * The signature moment: one person, a search, a bunch, a plan.
  *
- * Three states, driven by a click rather than by scroll position. Scroll-driven
+ * Four states, driven by a click rather than by scroll position. Scroll-driven
  * would play it once, unseen, while somebody was still reading the sentence
  * above it — and this is the one thing on the page worth replaying, so it has a
  * button that says so.
  *
- * With reduced motion the same three states exist and simply cut between each
- * other. The point survives without the travel.
+ * The fourth state is the point. Three states stop at "here are some compatible
+ * people", which is what every other product on this shelf already claims. The
+ * plan is the thing Bunchy is actually for, so the animation has to reach it.
+ *
+ * No animation library: these are CSS transitions on `translate`, `scale` and
+ * `opacity`. The global `prefers-reduced-motion` rule in globals.css already
+ * collapses every transition and animation to nothing, so with motion reduced
+ * the four states simply cut between each other and the point survives without
+ * the travel. The stage timings shorten to match, read from `matchMedia` at
+ * click time rather than at render, so there is nothing for hydration to
+ * disagree about.
  */
 
 const MATCHES = [
@@ -23,61 +31,71 @@ const MATCHES = [
   { initial: "P", colour: "#FF5C6C", x: 104, y: 58, tag: "Films" },
 ];
 
-type Stage = "alone" | "searching" | "found";
+type Stage = "alone" | "searching" | "found" | "plan";
+
+const CAPTIONS: Record<Stage, string> = {
+  alone: "on your own",
+  searching: "finding your people…",
+  found: "Bunch found",
+  plan: "Thursday, 8pm",
+};
 
 export function BunchMoment() {
   const [stage, setStage] = useState<Stage>("alone");
-  const still = useReducedMotion();
+  const timers = useRef<number[]>([]);
+
+  // A replay while one is already running would otherwise leave the old timers
+  // to advance the new run past where it should be.
+  function clearTimers() {
+    for (const id of timers.current) window.clearTimeout(id);
+    timers.current = [];
+  }
+
+  useEffect(() => clearTimers, []);
 
   function run() {
-    if (stage === "found") {
+    clearTimers();
+
+    if (stage === "plan") {
       setStage("alone");
       return;
     }
+
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setStage("searching");
-    window.setTimeout(() => setStage("found"), still ? 350 : 1400);
+    timers.current.push(
+      window.setTimeout(() => setStage("found"), still ? 200 : 1400),
+      window.setTimeout(() => setStage("plan"), still ? 400 : 2900),
+    );
   }
+
+  const spread = stage === "found" || stage === "plan";
 
   return (
     <div className="flex flex-col items-center">
       <div className="relative flex h-[300px] w-full max-w-lg items-center justify-center sm:h-[340px]">
-        {/* Discovery rings */}
-        <AnimatePresence>
-          {stage === "searching" &&
-            !still &&
-            [0, 1, 2].map((ring) => (
-              <motion.span
-                key={ring}
-                aria-hidden
-                initial={{ scale: 0.35, opacity: 0.7 }}
-                animate={{ scale: 2.4, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 1.4,
-                  delay: ring * 0.25,
-                  ease: "easeOut",
-                }}
-                className="absolute size-40 rounded-full border-2 border-purple-ai"
-              />
-            ))}
-        </AnimatePresence>
+        {/* Discovery rings, only while the search is running. */}
+        {stage === "searching" &&
+          [0, 1, 2].map((ring) => (
+            <span
+              key={ring}
+              aria-hidden
+              className="ping-ring absolute size-40 rounded-full border-2 border-purple-ai"
+              style={{ ["--ping-delay" as string]: `${ring * 0.25}s` }}
+            />
+          ))}
 
-        {/* The matches, which exist only once they have been found */}
+        {/* The matches, which exist only once they have been found. */}
         {MATCHES.map((match, i) => (
-          <motion.div
+          <div
             key={match.initial}
-            initial={false}
-            animate={
-              stage === "found"
-                ? { x: match.x, y: match.y, opacity: 1, scale: 1 }
-                : { x: 0, y: 0, opacity: 0, scale: 0.4 }
-            }
-            transition={
-              still
-                ? { duration: 0 }
-                : { type: "spring", stiffness: 120, damping: 14, delay: i * 0.08 }
-            }
-            className="absolute flex flex-col items-center gap-2"
+            className="absolute flex flex-col items-center gap-2 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              translate: spread ? `${match.x}px ${match.y}px` : "0 0",
+              scale: spread ? "1" : "0.4",
+              opacity: spread ? 1 : 0,
+              transitionDelay: `${i * 80}ms`,
+            }}
           >
             <span
               className="flex size-16 items-center justify-center rounded-full text-lg font-bold text-white ring-4 ring-navy-base"
@@ -88,16 +106,13 @@ export function BunchMoment() {
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
               {match.tag}
             </span>
-          </motion.div>
+          </div>
         ))}
 
         {/* You */}
-        <motion.div
-          animate={
-            still ? {} : { scale: stage === "searching" ? 1.06 : 1 }
-          }
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="relative z-10 flex flex-col items-center gap-2"
+        <div
+          className="relative z-10 flex flex-col items-center gap-2 transition-transform duration-500 ease-in-out"
+          style={{ scale: stage === "searching" ? "1.06" : "1" }}
         >
           <span
             className="flex size-20 items-center justify-center rounded-full text-xl font-bold text-white"
@@ -109,11 +124,32 @@ export function BunchMoment() {
             You
           </span>
           <span className="text-xs font-medium tracking-wide text-white/60">
-            {stage === "alone" && "on your own"}
-            {stage === "searching" && "finding your people…"}
-            {stage === "found" && "Bunch found"}
+            {CAPTIONS[stage]}
           </span>
-        </motion.div>
+        </div>
+
+        {/*
+          The plan. Sits under the cluster rather than inside it, because it is
+          the outcome of the group rather than another member of it.
+        */}
+        <div
+          aria-hidden={stage !== "plan"}
+          className="absolute bottom-0 flex items-center gap-3 rounded-3xl border border-mint-status/30 bg-mint-status/10 px-5 py-3 backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          style={{
+            translate: stage === "plan" ? "0 0" : "0 14px",
+            opacity: stage === "plan" ? 1 : 0,
+          }}
+        >
+          <span className="flex size-9 items-center justify-center rounded-2xl bg-mint-status/20 text-mint-status">
+            <CalendarCheck size={18} aria-hidden />
+          </span>
+          <span className="text-sm font-semibold text-white">
+            Board games at Tom&rsquo;s
+            <span className="block text-xs font-medium text-white/60">
+              5 going · Thursday
+            </span>
+          </span>
+        </div>
       </div>
 
       <button
@@ -121,7 +157,7 @@ export function BunchMoment() {
         onClick={run}
         className="mt-4 inline-flex items-center gap-2 rounded-full border border-purple-ai/50 bg-purple-ai/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-purple-ai/25"
       >
-        {stage === "found" ? (
+        {stage === "plan" ? (
           <>
             <RotateCcw size={16} aria-hidden />
             Again
@@ -133,6 +169,16 @@ export function BunchMoment() {
           </>
         )}
       </button>
+
+      {/* The four beats, for anyone who cannot see the animation at all. */}
+      <p className="sr-only" role="status">
+        {stage === "alone" && "One person, on their own."}
+        {stage === "searching" && "Bunchy is finding compatible people nearby."}
+        {stage === "found" &&
+          "Four compatible people found: gaming, hiking, food and films."}
+        {stage === "plan" &&
+          "The bunch made a plan: board games at Tom's, five going, Thursday."}
+      </p>
     </div>
   );
 }

@@ -386,3 +386,52 @@ body {
     }
   }
 }
+
+/* --- Landing motion -------------------------------------------------------
+ *
+ * The hero cluster and the Bunch Moment used to run on framer-motion. Every
+ * animation they needed is a transform loop or a transition between two states,
+ * which is what CSS does natively — so the library was ~50KB of client
+ * JavaScript on the one page a first-time visitor loads before deciding whether
+ * to stay.
+ *
+ * Each animated element sets its own `--float-*` custom properties, so the
+ * loops stay out of phase with one another. A cluster where everything moves in
+ * lockstep reads as a carousel rather than as a group of separate people.
+ *
+ * All of it sits behind `prefers-reduced-motion: no-preference`. With motion
+ * reduced the composition renders in exactly the same arrangement, simply
+ * still — the layout never depends on an animation having run.
+ */
+@keyframes bunchy-float {
+  from,
+  to {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--float-distance, 10px) * -1);
+  }
+}
+
+@keyframes bunchy-ping {
+  from {
+    scale: 0.35;
+    opacity: 0.7;
+  }
+  to {
+    scale: 2.4;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .float {
+    animation: bunchy-float var(--float-duration, 5s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
+  .ping-ring {
+    animation: bunchy-ping 1.4s ease-out infinite;
+    animation-delay: var(--ping-delay, 0s);
+  }
+}
