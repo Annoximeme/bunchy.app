@@ -96,6 +96,7 @@ export default async function GuidelinesPage() {
               <Row action="Suspend or unsuspend an account (1–365 days, or indefinite)" who="Moderator" reach="One member, entirely locked out" />
               <Row action="Ban or unban an account" who="Admin" reach="Permanent, and the email is blocked" admin />
               <Row action="Change somebody's role" who="Admin" reach="Grants or removes this power" admin />
+              <Row action="See a member's email address" who="Admin" reach="Withheld from moderators server-side" admin />
               <Row action="Take the public site down" who="Admin" reach="Everybody, at once" admin />
             </tbody>
           </table>
@@ -266,8 +267,15 @@ export default async function GuidelinesPage() {
       >
         <p className="text-sm text-ink-soft">
           The queue shows you reported content in place, which means you will
-          read private messages that were never addressed to you. Account search
-          shows you email addresses. None of that is yours.
+          read private messages that were never addressed to you. None of that
+          is yours.
+        </p>
+        <p className="mt-2 text-sm text-ink-soft">
+          Email addresses are the one thing deliberately kept from moderators —
+          account search returns them to admins only, and they are stripped on
+          the server rather than hidden in the page, so there is nothing in the
+          response to uncover. If you genuinely need one for a report, ask an
+          admin and say why.
         </p>
         <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-ink-soft">
           <li>

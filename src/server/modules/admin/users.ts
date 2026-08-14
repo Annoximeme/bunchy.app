@@ -64,7 +64,22 @@ export interface UserSearchQuery {
   cursor?: string;
 }
 
-export async function searchUsers(query: UserSearchQuery = {}) {
+/**
+ * Account search.
+ *
+ * `canSeeEmail` is an admin-only capability, and it is applied here rather than
+ * in the page that renders the result: redacting in the UI still ships the
+ * address to the browser, where it is one devtools panel away from being read.
+ *
+ * It also removes email from the *search*, not just the output. A moderator who
+ * can type an address and see whether a row comes back has been handed a
+ * membership oracle — they would learn the fact without ever seeing the field,
+ * which is the thing the restriction exists to prevent.
+ */
+export async function searchUsers(
+  query: UserSearchQuery = {},
+  options: { canSeeEmail: boolean } = { canSeeEmail: false },
+) {
   const limit = Math.min(query.limit ?? 25, 100);
   const needle = query.q?.trim();
 
@@ -75,7 +90,16 @@ export async function searchUsers(query: UserSearchQuery = {}) {
       ...(needle
         ? {
             OR: [
-              { email: { contains: needle, mode: "insensitive" as const } },
+              ...(options.canSeeEmail
+                ? [
+                    {
+                      email: {
+                        contains: needle,
+                        mode: "insensitive" as const,
+                      },
+                    },
+                  ]
+                : []),
               {
                 profile: {
                   username: { contains: needle, mode: "insensitive" as const },
@@ -130,7 +154,7 @@ export async function searchUsers(query: UserSearchQuery = {}) {
   return {
     users: users.map((u) => ({
       id: u.id,
-      email: u.email,
+      email: options.canSeeEmail ? u.email : null,
       status: u.status,
       role: u.role,
       suspendedUntil: u.suspendedUntil?.toISOString() ?? null,

@@ -138,11 +138,24 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={6} title="What a moderator cannot do">
+      <Clause n={6} title="What a moderator can and cannot do">
         <p>
-          Moderators work reports and act on content. They cannot suspend or ban
-          accounts, change roles, or see anybody&rsquo;s email or password
-          — those need an admin, and admin is a separate decision.
+          Moderators work reports, act on content, and can suspend an account —
+          for a day, a month, or indefinitely. That is real power over somebody
+          else&rsquo;s week, and it is deliberate: the person reading the report
+          at midnight should be able to stop what is happening without waiting
+          for anyone.
+        </p>
+        <p>
+          They cannot ban an account, change anybody&rsquo;s role, or take the
+          site offline. Those are permanent or platform-wide, so they need an
+          admin, and admin is a separate decision.
+        </p>
+        <p>
+          Moderators cannot see your email address — account search shows it to
+          admins only, and it is withheld before it ever leaves our server
+          rather than merely hidden on the page. Nobody can see your password,
+          at any level: only a hash of it is ever stored.
         </p>
         <p>
           Every staff action is written to an audit trail before it takes

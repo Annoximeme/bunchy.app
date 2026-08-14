@@ -29,25 +29,39 @@ export default async function AdminUsersPage({
   const canManageAccounts = isAdmin(viewer);
   const params = await searchParams;
 
-  const { users } = await searchUsers({
-    q: params.q,
-    status: params.status as UserStatus | undefined,
-    role: params.role as UserRole | undefined,
-    limit: 50,
-  });
+  const { users } = await searchUsers(
+    {
+      q: params.q,
+      status: params.status as UserStatus | undefined,
+      role: params.role as UserRole | undefined,
+      limit: 50,
+    },
+    // Email addresses are admin-only. A moderator works reports on behaviour,
+    // which never needs the address, and /moderators promises members that the
+    // volunteers cannot see it.
+    { canSeeEmail: canManageAccounts },
+  );
 
   return (
     <>
       <AdminHeader
         title="People"
-        subtitle="Search by name, username or email."
+        subtitle={
+          canManageAccounts
+            ? "Search by name, username or email."
+            : "Search by name or username. Email addresses are admin-only."
+        }
       />
 
       <div className="mb-5">
         <AdminSearch
           basePath="/admin/users"
           initialQuery={params.q ?? ""}
-          placeholder="sarah, @sarah, sarah@example.com…"
+          placeholder={
+            canManageAccounts
+              ? "sarah, @sarah, sarah@example.com…"
+              : "sarah, @sarah…"
+          }
           filters={[
             {
               name: "status",
@@ -93,7 +107,7 @@ export default async function AdminUsersPage({
                 <Cell>
                   <div className="flex items-center gap-2.5">
                     <Avatar
-                      name={user.displayName ?? user.email}
+                      name={user.displayName ?? user.username ?? "Account"}
                       src={user.avatarUrl}
                       size="sm"
                     />
@@ -110,7 +124,17 @@ export default async function AdminUsersPage({
                           <span className="text-muted">No profile</span>
                         )}
                       </p>
-                      <p className="truncate text-xs text-muted">{user.email}</p>
+                      {/* Null for moderators — redacted server-side, so there
+                          is nothing in the payload to reveal either. */}
+                      {user.email ? (
+                        <p className="truncate text-xs text-muted">
+                          {user.email}
+                        </p>
+                      ) : (
+                        <p className="truncate text-xs text-muted">
+                          {user.username ? `@${user.username}` : "No profile"}
+                        </p>
+                      )}
                       {user.reportsAgainst > 0 && (
                         <p className="text-xs text-danger">
                           {user.reportsAgainst} report
@@ -171,7 +195,7 @@ export default async function AdminUsersPage({
                         method="PATCH"
                         payload={{ action: "suspend" }}
                         danger
-                        confirmLabel={`Suspend ${user.displayName ?? user.email}`}
+                        confirmLabel={`Suspend ${user.displayName ?? user.username ?? "this account"}`}
                         extraField={{
                           name: "days",
                           label: "Days (blank = indefinite)",
@@ -201,7 +225,7 @@ export default async function AdminUsersPage({
                           method="PATCH"
                           payload={{ action: "ban" }}
                           danger
-                          confirmLabel={`Permanently ban ${user.displayName ?? user.email}`}
+                          confirmLabel={`Permanently ban ${user.displayName ?? user.username ?? "this account"}`}
                           disabled={locked}
                           disabledHint={lockHint}
                         />
