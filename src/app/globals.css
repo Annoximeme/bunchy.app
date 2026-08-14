@@ -424,6 +424,21 @@ body {
   }
 }
 
+/* At rest the Bunch Moment is one circle in a large empty stage, which reads as
+   a section that failed to load rather than one waiting to be pressed. A slow
+   breath around it says "this does something" without demanding attention. */
+@keyframes bunchy-idle {
+  from,
+  to {
+    opacity: 0.2;
+    scale: 1;
+  }
+  50% {
+    opacity: 0.55;
+    scale: 1.14;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .float {
     animation: bunchy-float var(--float-duration, 5s) ease-in-out infinite;
@@ -433,5 +448,9 @@ body {
   .ping-ring {
     animation: bunchy-ping 1.4s ease-out infinite;
     animation-delay: var(--ping-delay, 0s);
+  }
+
+  .idle-pulse {
+    animation: bunchy-idle 2.8s ease-in-out infinite;
   }
 }

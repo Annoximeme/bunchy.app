@@ -130,7 +130,10 @@ function Chip({
         className="peer sr-only"
       />
       <span
-        className="inline-flex select-none items-center rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm font-medium text-white/70 transition-colors duration-150 hover:border-white/25 hover:text-white peer-checked:border-[var(--tone)] peer-checked:bg-[color-mix(in_srgb,var(--tone)_18%,transparent)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--tone)]"
+        // Selection has to survive a glance across twelve chips, so it changes
+        // three things at once — fill, border and weight. An 18% tint alone
+        // read as "slightly different", which is not the same as "chosen".
+        className="inline-flex select-none items-center rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm font-medium text-white/70 transition-colors duration-150 hover:border-white/25 hover:text-white peer-checked:border-[var(--tone)] peer-checked:bg-[color-mix(in_srgb,var(--tone)_32%,transparent)] peer-checked:font-semibold peer-checked:text-white peer-checked:shadow-[0_0_0_1px_var(--tone)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--tone)]"
         style={{ ["--tone" as string]: tone }}
       >
         {label}
