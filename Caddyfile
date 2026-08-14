@@ -33,6 +33,75 @@
 	@immutable path /_next/static/*
 	header @immutable Cache-Control "public, max-age=31536000, immutable"
 
+	# --- Manual gate ---------------------------------------------------------
+	#
+	# Two switches, flipped by ./maintenance.sh, which just creates or removes a
+	# flag file in the mounted flags directory. A file rather than an
+	# environment variable so that turning the site off does not require
+	# restarting the thing that serves the "off" page.
+	#
+	#   flags/SOON  — pre-launch. The site is finished enough to be private and
+	#                 not finished enough to be public.
+	#   flags/ON    — maintenance. Deliberate, longer than a deploy.
+	#
+	# Both are bypassed by a preview cookie, because a switch that also locks
+	# out the person who flipped it is a switch nobody can safely use. Visiting
+	# /?preview=$PREVIEW_TOKEN once sets the cookie for thirty days.
+
+	# Hand out the cookie, then bounce to the same path without the token in the
+	# URL — so a shared screenshot or a browser history entry does not leak it.
+	@preview_grant query preview={$PREVIEW_TOKEN}
+	handle @preview_grant {
+		header Set-Cookie "bunchy_preview={$PREVIEW_TOKEN}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
+		redir {path} 302
+	}
+
+	# Giving it back, for testing the gate from your own browser.
+	@preview_revoke query preview=off
+	handle @preview_revoke {
+		header Set-Cookie "bunchy_preview=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+		redir {path} 302
+	}
+
+	@holder header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
+
+	@soon {
+		file {
+			root /srv/flags
+			try_files SOON
+		}
+		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
+	}
+	handle @soon {
+		root * /srv/pages
+		rewrite * /coming-soon.html
+		# 503 keeps an unlaunched site out of the index. A day is the right
+		# Retry-After here: this state lasts weeks, not the two minutes a
+		# restart does.
+		file_server {
+			status 503
+		}
+		header Retry-After "86400"
+		header Cache-Control "no-store, must-revalidate"
+	}
+
+	@maint {
+		file {
+			root /srv/flags
+			try_files ON
+		}
+		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
+	}
+	handle @maint {
+		root * /srv/pages
+		rewrite * /maintenance.html
+		file_server {
+			status 503
+		}
+		header Retry-After "600"
+		header Cache-Control "no-store, must-revalidate"
+	}
+
 	reverse_proxy app:3000 {
 		# Without this the app sees Caddy's container IP as the client address,
 		# which would make rate limiting count the whole internet as one person.
@@ -54,7 +123,7 @@
 	handle_errors {
 		@down expression {err.status_code} in [502, 503, 504]
 		handle @down {
-			root * /srv/maintenance
+			root * /srv/pages
 			rewrite * /maintenance.html
 			# 503, not 200. A maintenance page that returns "OK" tells crawlers
 			# the site is fine and this is its content, which is how an outage
