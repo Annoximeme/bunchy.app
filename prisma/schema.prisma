@@ -297,6 +297,7 @@ model Profile {
   organizedActivities Activity[]            @relation("ActivityOrganizer")
   activityEntries     ActivityParticipant[]
   activityOutcomes    ActivityOutcome[]
+  moderatorApplication ModeratorApplication?
 
   blocksMade     Block[] @relation("Blocker")
   blocksReceived Block[] @relation("Blocked")
@@ -812,6 +813,52 @@ model ActivityParticipant {
 /// Two questions, both optional to answer and both answerable in one tap.
 /// Anything longer is a survey, and a survey after a night out is a survey
 /// nobody fills in.
+/// Someone offering to work the report queue.
+///
+/// Kept as its own record rather than an email in an inbox: an application that
+/// lives in a mailbox gets lost, and the person who wrote it is left wondering
+/// for a month whether anybody read it. One per profile, so applying is not
+/// something that can be done repeatedly to get attention.
+///
+/// Deliberately tied to a member rather than open to anonymous submissions. A
+/// moderator has to be someone with a history here, and it means the form never
+/// collects a name or an email we already have.
+model ModeratorApplication {
+  id        String                     @id @default(cuid())
+  profileId String                     @unique
+  /// Roughly how much time they expect to give, in hours per week. Stored so
+  /// nobody is quietly rostered for more than they offered.
+  hoursPerWeek Int
+  /// Why they want to do it, in their words.
+  motivation   String
+  /// Anything relevant they have done before. Optional — most good moderators
+  /// have never been one.
+  experience   String?
+  /// They confirmed they understand the queue contains harassment, scams and
+  /// reported private messages. Recorded because consent to see that is the
+  /// one thing this form genuinely needs.
+  acknowledgedExposure Boolean @default(false)
+
+  status     ModeratorApplicationStatus @default(NEW)
+  reviewedAt DateTime?
+  reviewNote String?
+  createdAt  DateTime                   @default(now())
+  updatedAt  DateTime                   @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+enum ModeratorApplicationStatus {
+  NEW
+  REVIEWING
+  ACCEPTED
+  DECLINED
+  /// They asked to be taken off the list, or stepped down.
+  WITHDRAWN
+}
+
 model ActivityOutcome {
   id         String   @id @default(cuid())
   activityId String

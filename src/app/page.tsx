@@ -385,6 +385,12 @@ export default async function LandingPage() {
             <Link href="/safety" className="transition-colors hover:text-white">
               Safety
             </Link>
+            <Link
+              href="/moderators"
+              className="transition-colors hover:text-white"
+            >
+              Volunteer
+            </Link>
             <Link href="/privacy" className="transition-colors hover:text-white">
               Privacy
             </Link>
