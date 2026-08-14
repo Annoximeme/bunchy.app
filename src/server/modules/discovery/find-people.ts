@@ -13,6 +13,7 @@ import {
   AVAILABILITY_LABELS,
   visibleStatusCondition,
 } from "@/server/modules/availability/service";
+import { ageFrom } from "@/server/modules/profile/serialize";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
@@ -310,7 +311,7 @@ async function decorate(
         bio: true,
         cityLabel: true,
         regionLabel: true,
-        user: { select: { birthYear: true } },
+        user: { select: { birthYear: true, birthMonth: true } },
         privacy: { select: { showApproxLocation: true, showExactAge: true } },
       },
     }),
@@ -355,9 +356,18 @@ async function decorate(
         avatarUrl: profile.avatarUrl,
         bio: profile.bio,
         age:
-          profile.privacy?.showExactAge === false || !profile.user.birthYear
+          profile.privacy?.showExactAge === false
             ? null
-            : now.getUTCFullYear() - profile.user.birthYear,
+            : // Shared with the profile serializer rather than subtracted here.
+              // This path had its own copy, so the birth month never reached it
+              // and everyone whose birthday had not arrived yet was shown a
+              // year too old — on the one screen that puts an age next to a
+              // face somebody is deciding whether to message.
+              ageFrom(
+                profile.user.birthYear,
+                profile.user.birthMonth,
+                now,
+              ),
         locationLabel:
           profile.privacy?.showApproxLocation === false
             ? null

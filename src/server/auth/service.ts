@@ -99,7 +99,21 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
     select: { id: true, email: true, profile: { select: { id: true } } },
   });
 
-  await sendVerificationEmail(user.id, user.email);
+  // Non-fatal, deliberately.
+  //
+  // The account exists by this point. Letting a mail failure throw out of
+  // signUp returned a 500 with no session cookie, so the member saw "something
+  // went wrong", tried again, and was told the email was already taken — locked
+  // out of an account they had just successfully created. A provider outage, a
+  // rejected recipient domain or an expired API key would each do it.
+  //
+  // The verification email is re-requestable from the profile, so the recovery
+  // path already exists; the signup does not need to fail with it.
+  try {
+    await sendVerificationEmail(user.id, user.email);
+  } catch (error) {
+    console.error("Signup succeeded but the verification email failed:", error);
+  }
   track({
     name: ANALYTICS_EVENTS.ACCOUNT_CREATED,
     profileId: user.profile?.id ?? null,
