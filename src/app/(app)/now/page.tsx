@@ -12,6 +12,14 @@ import { WhosUp } from "@/components/whos-up";
 export const metadata: Metadata = { title: "Bunchy Now" };
 export const dynamic = "force-dynamic";
 
+/** What the member was looking for, phrased for the intent parser. */
+const START_QUERY: Record<Horizon | "all", string> = {
+  now: "something to do right now",
+  tonight: "something to do tonight",
+  weekend: "something to do this weekend",
+  all: "something to do with people nearby",
+};
+
 const HORIZONS: Array<{ value: Horizon | "all"; label: string }> = [
   { value: "all", label: "Anytime" },
   { value: "now", label: "Now" },
@@ -128,8 +136,27 @@ export default async function BunchyNowPage({
                 }
                 action={
                   <div className="flex flex-wrap justify-center gap-3">
-                    <LinkButton href="/start">Start a bunch</LinkButton>
-                    {board.people.relaxations.length > 0 && (
+                    {/* The horizon travels with the member. Somebody filtering
+                        "tonight" and finding nobody should land in Start with
+                        "tonight" already typed, not on an empty box. */}
+                    <LinkButton href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}>
+                      Start something
+                    </LinkButton>
+                    {board.people.people.length > 0 && (
+              <div className="mt-8 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3.5 text-sm">
+                <span className="text-ink-soft">
+                  Seen someone worth an evening?{" "}
+                </span>
+                <Link
+                  href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}
+                  className="font-medium text-accent-ink hover:underline"
+                >
+                  Start something and invite them
+                </Link>
+              </div>
+            )}
+
+            {board.people.relaxations.length > 0 && (
                       <LinkButton href="/now" variant="secondary">
                         Clear filters
                       </LinkButton>

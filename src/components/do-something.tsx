@@ -240,7 +240,11 @@ export function DoSomething() {
                       {idea.blurb}
                     </p>
                     <Link
-                      href={`/start?idea=${encodeURIComponent(idea.title)}`}
+                      // `q`, not `idea`: /start already accepts a natural
+                      // language query and hands it to the intent parser. A
+                      // second parameter name would have been silently ignored,
+                      // which is exactly what the first version of this did.
+                      href={`/start?q=${encodeURIComponent(idea.title)}`}
                       className="mt-4 inline-flex rounded-full bg-accent px-4 py-2 text-sm font-semibold text-[var(--color-on-accent)]"
                     >
                       Make it a plan

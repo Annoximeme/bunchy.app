@@ -188,6 +188,19 @@ export function SurpriseMe() {
             >
               See {person.displayName.split(" ")[0]}
             </Link>
+            {/* The bridge becomes the plan. Somebody who has just been told
+                "one of you does climbing, the other wants to" should be one tap
+                from proposing exactly that, with it already typed. */}
+            <Link
+              href={`/start?q=${encodeURIComponent(
+                match!.complementaryInterests[0] ??
+                  match!.sharedInterests[0] ??
+                  "something this week",
+              )}`}
+              className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+            >
+              Start something
+            </Link>
             <Button
               variant="secondary"
               onClick={() => draw(seen)}
