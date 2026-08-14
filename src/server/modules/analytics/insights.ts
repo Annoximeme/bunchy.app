@@ -208,7 +208,7 @@ export async function socialHealth(): Promise<SocialHealth[]> {
   ]);
 
   const share = (part: number, whole: number) =>
-    whole === 0 ? "—" : `${Math.round((part / whole) * 100)}%`;
+    whole === 0 ? "-" : `${Math.round((part / whole) * 100)}%`;
 
   return [
     {
@@ -224,7 +224,7 @@ export async function socialHealth(): Promise<SocialHealth[]> {
     {
       label: "Median connections per member",
       value: String(medianRow[0]?.median ?? 0),
-      hint: "The median, not the mean — averages hide an empty middle",
+      hint: "The median, not the mean, averages hide an empty middle",
     },
     {
       label: "Accepted connections",
@@ -233,12 +233,12 @@ export async function socialHealth(): Promise<SocialHealth[]> {
     {
       label: "Likely offline meetings",
       value: String(attendedPastOffline),
-      hint: "Sign-ups to in-person activities that have happened — an estimate until attendance is confirmed",
+      hint: "Sign-ups to in-person activities that have happened. An estimate until attendance is confirmed",
     },
     {
       label: "Members who deleted their account",
       value: String(departed),
-      hint: "Counted from departure events, which carry no profile — the number is all that survives, by design",
+      hint: "Counted from departure events, which carry no profile. The number is all that survives, by design",
     },
   ];
 }

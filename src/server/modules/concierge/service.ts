@@ -104,7 +104,7 @@ async function answerPeople(profileId: string, text: string, now: Date) {
     return {
       say: blocker
         ? [
-            `Nobody matches all of that right now. ${blocker.message} — but ${blocker.found} ${blocker.found === 1 ? "person matches" : "people match"} everything else.`,
+            `Nobody matches all of that right now. ${blocker.message}. But ${blocker.found} ${blocker.found === 1 ? "person matches" : "people match"} everything else.`,
           ]
         : [
             what
@@ -275,13 +275,13 @@ async function answerExplain(profileId: string) {
   ]);
 
   const say = [
-    "Suggestions come from what you filled in — nothing is bought, boosted or sponsored, and nobody pays to appear.",
+    "Suggestions come from what you filled in. Nothing is bought, boosted or sponsored, and nobody pays to appear.",
     `Right now that's ${interests} interest${interests === 1 ? "" : "s"}, ${goals} thing${goals === 1 ? "" : "s"} you're looking for, and ${windows} time${windows === 1 ? "" : "s"} you're usually free.`,
   ];
 
   if (!profile?.personality) {
     say.push(
-      "You haven't answered the style questions, so nothing is being matched on how you like to spend time yet — that is usually the fastest way to improve what you see.",
+      "You haven't answered the style questions, so nothing is being matched on how you like to spend time yet. That is usually the fastest way to improve what you see.",
     );
   }
   if (interests < 5) {
@@ -303,7 +303,7 @@ async function answerExplain(profileId: string) {
 function answerHelp() {
   return {
     say: [
-      "I can look things up for you — I can't send anything or join anything on your behalf.",
+      "I can look things up for you. I can't send anything or join anything on your behalf.",
       "Try: “I want to play Warhammer tonight”, “what's happening this weekend”, “find a bunch for board games”, “who's around right now”, or “why am I seeing these people”.",
     ],
     actions: [

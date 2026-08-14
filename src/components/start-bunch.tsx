@@ -385,7 +385,7 @@ function Reading({
         </div>
       ) : (
         <p className="mt-2 text-sm text-muted">
-          Not much to go on — try naming an activity or a time, like &ldquo;board
+          Not much to go on, try naming an activity or a time, like &ldquo;board
           games Saturday&rdquo;.
         </p>
       )}
@@ -424,7 +424,7 @@ function Reading({
               ? `Within ${search.applied.withinKm} km${
                   search.applied.nearCity ? ` of ${search.applied.nearCity}` : ""
                 }.`
-              : "Searching everywhere — right for anything you'd do online."
+              : "Searching everywhere, right for anything you'd do online."
           }
         />
       </div>
@@ -627,7 +627,7 @@ function NobodyFound({
                 className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] bg-surface-sunken px-4 py-3"
               >
                 <span className="text-sm">
-                  {relaxation.message} — {relaxation.found}{" "}
+                  {relaxation.message}, {relaxation.found}{" "}
                   {relaxation.found === 1 ? "person matches" : "people match"}{" "}
                   everything else.
                 </span>
@@ -648,7 +648,7 @@ function NobodyFound({
         </>
       ) : (
         <p className="mt-1 text-sm text-muted">
-          Nobody on Bunchy matches this yet — not even loosely. That usually means
+          Nobody on Bunchy matches this yet, not even loosely. That usually means
           it is early days in your area rather than anything about the request.
         </p>
       )}
@@ -665,7 +665,7 @@ function NobodyFound({
         </Link>
       </div>
       <p className="mt-2 text-sm text-muted">
-        A bunch with one member is a fine place to start — people can find it, and
+        A bunch with one member is a fine place to start, people can find it, and
         you can invite anyone later.
       </p>
     </Card>

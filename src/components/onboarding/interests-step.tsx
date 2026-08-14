@@ -155,7 +155,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
             </span>
           </p>
           <p className="mt-1 text-sm text-muted">
-            Mark anything you&rsquo;re still learning — it helps us pair you with
+            Mark anything you&rsquo;re still learning. It helps us pair you with
             someone who can show you.
           </p>
 
@@ -261,7 +261,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
         ))}
         {filtered?.length === 0 && (
           <p className="text-sm text-muted">
-            Nothing matching &ldquo;{query}&rdquo; — add it as your own above.
+            Nothing matching &ldquo;{query}&rdquo;, add it as your own above.
           </p>
         )}
       </div>

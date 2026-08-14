@@ -46,7 +46,7 @@ describe("toICalendar", () => {
     expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(1);
   });
 
-  it("uses CRLF throughout — some clients reject bare newlines", () => {
+  it("uses CRLF throughout, some clients reject bare newlines", () => {
     const ics = build();
     expect(ics.includes("\n")).toBe(true);
     expect(/[^\r]\n/.test(ics)).toBe(false);

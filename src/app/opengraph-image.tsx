@@ -21,7 +21,7 @@ import { lockupSvg } from "@/server/modules/brand/assets";
  * chat it landed in.
  */
 
-export const alt = `${brand.name} — ${brand.tagline}`;
+export const alt = `${brand.name}, ${brand.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

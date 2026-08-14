@@ -236,7 +236,7 @@ function Answer({ reply }: { reply: Reply }) {
           {reply.clusters.slice(0, 5).map((cluster) => (
             <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
               <strong className="font-semibold tabular-nums">{cluster.count}</strong> near{" "}
-              {cluster.where} — {cluster.label.toLowerCase()}
+              {cluster.where}, {cluster.label.toLowerCase()}
             </li>
           ))}
         </ul>

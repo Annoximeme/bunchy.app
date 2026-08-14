@@ -53,7 +53,7 @@ export function CreateProposedBunch({
   if (done !== null) {
     return (
       <p className="text-sm font-medium text-positive">
-        Created — {done} {done === 1 ? "person has" : "people have"} been invited.
+        Created, {done} {done === 1 ? "person has" : "people have"} been invited.
         Nobody is a member until they accept.
       </p>
     );

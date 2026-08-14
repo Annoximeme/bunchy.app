@@ -59,7 +59,7 @@ export function ReportButton({
   if (done) {
     return (
       <p className="text-sm text-positive">
-        Thanks — a moderator will look at this. We&rsquo;ll act on what we find,
+        Thanks. A moderator will look at this. We&rsquo;ll act on what we find,
         not on how many reports something gets.
       </p>
     );

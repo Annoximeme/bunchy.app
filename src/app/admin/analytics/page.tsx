@@ -35,7 +35,7 @@ export default async function AdminAnalyticsPage() {
     <>
       <AdminHeader
         title="Analytics"
-        subtitle="Cohorts, funnel and network health — computed from recorded events, not current state."
+        subtitle="Cohorts, funnel and network health, computed from recorded events, not current state."
       />
 
       {totalEvents === 0 && (
@@ -78,7 +78,7 @@ export default async function AdminAnalyticsPage() {
                         <span className="ml-1.5 text-xs text-muted">
                           {cohort.size > 0
                             ? `${Math.round((value / cohort.size) * 100)}%`
-                            : "—"}
+                            : "-"}
                         </span>
                       </>
                     )}
@@ -89,7 +89,7 @@ export default async function AdminAnalyticsPage() {
           </DataTable>
           <p className="border-t border-line px-4 py-2.5 text-xs text-muted">
             &ldquo;Came back&rdquo; means connecting, messaging, joining a bunch
-            or joining an activity — not opening a page. A cohort younger than
+            or joining an activity, not opening a page. A cohort younger than
             the window reads <em>too soon</em> rather than 0%.
           </p>
         </Panel>
@@ -117,7 +117,7 @@ export default async function AdminAnalyticsPage() {
                       {step.dataGap && (
                         <span
                           className="ml-2 text-xs font-medium text-muted"
-                          title="More people here than at the previous step — the earlier step was not recorded for some of them."
+                          title="More people here than at the previous step. The earlier step was not recorded for some of them."
                         >
                           gap
                         </span>
@@ -142,8 +142,8 @@ export default async function AdminAnalyticsPage() {
             <p className="border-t border-line px-4 py-2.5 text-xs text-muted">
               Only steps taken since the event spine shipped are counted. Accounts
               that onboarded before then show at the first and last step but not
-              in between — those intermediate moments were never recorded, and
-              guessing them would make this chart fiction.
+              in between. Those intermediate moments were never recorded, and guessing
+              them would make this chart fiction.
             </p>
           </Panel>
 
@@ -192,7 +192,7 @@ export default async function AdminAnalyticsPage() {
 
           <Panel
             title="Events firing"
-            note="last 30 days — a zero usually means a missing call site"
+            note="last 30 days. A zero usually means a missing call site"
           >
             <DataTable headers={["Event", "Count"]} empty="Nothing recorded yet.">
               {breakdown.map((event) => (

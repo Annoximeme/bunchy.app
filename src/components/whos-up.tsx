@@ -150,7 +150,7 @@ export function WhosUp({
       ) : (
         <>
           <p className="mt-1 text-sm text-muted">
-            Let compatible people know you&rsquo;re around. It clears itself — nothing
+            Let compatible people know you&rsquo;re around. It clears itself. Nothing
             stays set.
           </p>
           <div className="mt-3">
@@ -205,7 +205,7 @@ export function WhosUp({
             {clusters.slice(0, 5).map((cluster) => (
               <li key={`${cluster.where}-${cluster.kind}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong>{" "}
-                {cluster.count === 1 ? "person" : "people"} near {cluster.where} —{" "}
+                {cluster.count === 1 ? "person" : "people"} near {cluster.where},{" "}
                 {cluster.label.toLowerCase()}
               </li>
             ))}

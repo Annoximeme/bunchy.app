@@ -173,7 +173,7 @@ export default async function AdminUsersPage({
                       {user.bunchCount} bunch{user.bunchCount === 1 ? "" : "es"}
                     </>
                   ) : (
-                    "—"
+                    "-"
                   )}
                 </Cell>
 

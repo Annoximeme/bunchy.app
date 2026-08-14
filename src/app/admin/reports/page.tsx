@@ -38,7 +38,7 @@ export default async function AdminReportsPage({
     <>
       <AdminHeader
         title="Reports"
-        subtitle="Oldest first. Nothing is auto-actioned — a coordinated group filing reports must not be able to mute anyone."
+        subtitle="Oldest first. Nothing is auto-actioned. A coordinated group filing reports must not be able to mute anyone."
       />
 
       <nav className="mb-5 flex flex-wrap gap-1" aria-label="Report status">

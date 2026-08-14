@@ -88,17 +88,34 @@ www.{$DOMAIN} {
 		# too, which meant every link to bunchy.app shared privately before
 		# launch previewed as broken. None of these say anything the
 		# coming-soon page does not already say out loud.
-		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt
+		# Next's own asset paths have to reach the app, or the page the gate
+		# serves arrives without its stylesheet.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /_next/* /api/waitlist
 	}
 	handle @soon {
-		root * /srv/pages
-		rewrite * /coming-soon.html
+		# Rewritten to the real page rather than a static file. The coming-soon
+		# gate is flipped deliberately while the app is running, unlike
+		# maintenance, which exists for when it is not. So this one can have a
+		# working form, a server-rendered count, the app's stylesheet and a CSP.
+		# If the app does fall over while the gate is up, handle_errors below
+		# still catches it and serves the static maintenance page.
+		rewrite * /coming-soon
+		reverse_proxy app:3000 {
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+			# The app answers 200, as it should. Rewriting it to 503 on the way
+			# out is what keeps an unlaunched site out of the index: a crawler
+			# that gets a 200 files this away as the site's content, and then
+			# the real homepage has to displace it.
+			@page status 200
+			handle_response @page {
+				copy_response_headers
+				copy_response 503
+			}
+		}
 		# 503 keeps an unlaunched site out of the index. A day is the right
 		# Retry-After here: this state lasts weeks, not the two minutes a
 		# restart does.
-		file_server {
-			status 503
-		}
 		header Retry-After "86400"
 		header Cache-Control "no-store, must-revalidate"
 	}

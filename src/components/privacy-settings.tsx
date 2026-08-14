@@ -58,7 +58,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
     <Card>
       <h2 className="text-lg font-semibold tracking-tight">Privacy</h2>
       <p className="mt-1 text-sm text-muted">
-        We never store your address or precise location — only a rough area.
+        We never store your address or precise location, only a rough area.
       </p>
 
       {error && (
@@ -103,7 +103,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
             ))}
           </Select>
           <p className="mt-1.5 text-sm text-muted">
-            Connections can always message you — that&rsquo;s what accepting means.
+            Connections can always message you. That&rsquo;s what accepting means.
           </p>
         </div>
 

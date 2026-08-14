@@ -35,7 +35,7 @@ export default async function AdminBunchesPage({
     <>
       <AdminHeader
         title="Bunches"
-        subtitle="Archive rather than delete — a removed bunch takes its members' history with it, and a mistake needs to be reversible."
+        subtitle="Archive rather than delete. A removed bunch takes its members' history with it, and a mistake needs to be reversible."
       />
 
       <div className="mb-5">

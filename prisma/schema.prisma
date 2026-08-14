@@ -1365,3 +1365,19 @@ model BunchChallenge {
 
   @@index([bunchId, status])
 }
+
+/// Somebody who asked to be told when Bunchy opens.
+///
+/// Deliberately the smallest table in the schema. An email and a timestamp is
+/// everything needed to send one message on launch day, so it is everything
+/// that gets stored: no name, no IP, no referrer, no marketing profile. The
+/// coming-soon page says as much in plain words, and this model is what makes
+/// that promise checkable rather than a claim.
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  /// Lowercased on write, so one person cannot occupy three rows.
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

@@ -210,7 +210,7 @@ export function DoSomething() {
             </h2>
             <p className="mb-4 text-sm text-muted">
               Kinds of evening, not places. Bunchy does not know which venues are
-              near you or what they charge, so it will not pretend to — you pick
+              near you or what they charge, so it will not pretend to. You pick
               where, and it becomes a real plan.
             </p>
 

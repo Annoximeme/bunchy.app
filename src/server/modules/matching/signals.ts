@@ -418,7 +418,7 @@ export function personalitySignal(
     evidence: best.map((x) => x.text),
     reason:
       best.length > 0
-        ? `Similar styles — ${listPhrase(best.map((x) => x.text), 2)}`
+        ? `Similar styles, ${listPhrase(best.map((x) => x.text), 2)}`
         : "Different styles that can balance out",
   };
 }

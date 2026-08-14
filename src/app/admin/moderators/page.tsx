@@ -34,7 +34,7 @@ export default async function AdminModeratorsPage() {
     <>
       <AdminHeader
         title="Moderator applications"
-        subtitle="People offering to work the report queue. Accepting one is a decision to talk to them, not a promotion — the role is still granted from the CLI."
+        subtitle="People offering to work the report queue. Accepting one is a decision to talk to them, not a promotion. The role is still granted from the CLI."
       />
 
       <div className="mb-6 flex flex-wrap gap-2">

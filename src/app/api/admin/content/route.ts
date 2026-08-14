@@ -19,7 +19,7 @@ import {
 const reason = z
   .string()
   .trim()
-  .min(3, "Record why — this goes in the audit log.")
+  .min(3, "Record why. This goes in the audit log.")
   .max(1000);
 
 const id = z.string().trim().min(1).max(40);

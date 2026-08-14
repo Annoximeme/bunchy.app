@@ -30,11 +30,11 @@ export default function SafetyPage() {
     <LegalPage
       title="Meeting safely"
       contact={LEGAL.supportContact}
-      summary={`Plenty of ${brand.name} happens online, where the worst case is blocking someone. This page is about the other half — meeting in person, which is worth doing carefully. Here is what we recommend, what we do on our side, and what to do when something is wrong.`}
+      summary={`Plenty of ${brand.name} happens online, where the worst case is blocking someone. This page is about the other half, meeting in person, which is worth doing carefully. Here is what we recommend, what we do on our side, and what to do when something is wrong.`}
     >
       <Clause n={1} title="First meets go in public">
         <p>
-          A café, a bar, a park, a shop — anywhere with staff and strangers
+          A café, a bar, a park, a shop: anywhere with staff and strangers
           around. Not a home, not a car, not somewhere you would have trouble
           leaving. Someone worth meeting will not mind meeting in public, and
           someone who pushes back on it has told you something useful.
@@ -50,7 +50,7 @@ export default function SafetyPage() {
       <Clause n={2} title="Tell someone where you are going">
         <p>
           Every activity page has a <strong>Tell someone</strong> button. It
-          copies the what, where and when — plus a link — so you can send it to a
+          copies the what, where and when, plus a link, so you can send it to a
           friend in one message. They do not need a {brand.name} account, and we
           send nothing on your behalf.
         </p>
@@ -65,7 +65,7 @@ export default function SafetyPage() {
         <p>
           You are never obliged to share a phone number, a last name, a workplace
           or an address, and {brand.name} never asks for any of them. Your
-          location is stored as a coarse area, never a street — see the{" "}
+          location is stored as a coarse area, never a street. See the{" "}
           <Link href="/privacy" className="text-accent-ink underline underline-offset-2">
             privacy policy
           </Link>{" "}
@@ -97,7 +97,7 @@ export default function SafetyPage() {
         </p>
         <p>
           Reports are read by a person. We deliberately do not auto-suspend an
-          account because it was reported — automatic enforcement on unreviewed
+          account because it was reported, automatic enforcement on unreviewed
           reports is a tool for harassing people, not for stopping it. That means
           a wait, and we would rather be honest about the wait than pretend to a
           speed we cannot deliver.
@@ -111,7 +111,7 @@ export default function SafetyPage() {
       <Clause n={6} title="When it is more than a platform problem">
         <p>
           If you are in immediate danger, contact your local emergency services
-          first — <strong>112</strong> across the EU, <strong>999</strong> in the
+          first, <strong>112</strong> across the EU, <strong>999</strong> in the
           UK, <strong>911</strong> in the US and Canada. We are a small team and
           we cannot be an emergency service.
         </p>
@@ -123,7 +123,7 @@ export default function SafetyPage() {
           >
             {LEGAL.supportContact}
           </a>
-          . If police are involved, tell us — we can preserve the account and its
+          . If police are involved, tell us. We can preserve the account and its
           messages, which becomes much harder once data is deleted on the normal
           schedule.
         </p>
@@ -132,7 +132,7 @@ export default function SafetyPage() {
       <Clause n={7} title="What we do on our side">
         <p>
           Exact locations are never stored. Nothing on your profile is public to
-          the open internet — signed-out visitors and search engines see the
+          the open internet, signed-out visitors and search engines see the
           marketing pages and nothing else. Accounts are 16+. Staff actions are
           written to an audit trail before they take effect, so moderation power
           is reviewable rather than quiet.

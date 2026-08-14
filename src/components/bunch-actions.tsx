@@ -227,7 +227,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
 
       if (task === "summary") setSummary(result.summary ?? "Nothing to catch up on.");
       else if (result.suggestion) setIdea(result.suggestion);
-      else setError("Not enough to go on yet — try once the bunch has talked a bit.");
+      else setError("Not enough to go on yet, try once the bunch has talked a bit.");
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {

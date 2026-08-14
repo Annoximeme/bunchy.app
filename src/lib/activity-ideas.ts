@@ -77,7 +77,7 @@ export const ACTIVITY_IDEAS: readonly ActivityIdea[] = [
   {
     slug: "free-museum-evening",
     title: "Late opening at a museum",
-    blurb: "Most cities have one evening a week that costs little or nothing — check what yours is.",
+    blurb: "Most cities have one evening a week that costs little or nothing, check what yours is.",
     category: "culture",
     moods: ["chill", "social"],
     cost: "low",
@@ -89,7 +89,7 @@ export const ACTIVITY_IDEAS: readonly ActivityIdea[] = [
   {
     slug: "photo-walk",
     title: "Photo walk, one theme",
-    blurb: "Pick a theme — red things, doors, reflections — and compare at the end.",
+    blurb: "Pick a theme, red things, doors, reflections. And compare at the end.",
     category: "creative",
     moods: ["chill", "adventurous"],
     cost: "free",

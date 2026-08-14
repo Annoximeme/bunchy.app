@@ -156,7 +156,7 @@ export function BunchPlans({
 
         {icebreaker && (
           <p className="mt-3 rounded-[var(--radius-control)] bg-purple-soft px-3.5 py-2.5 text-sm text-purple-ink">
-            {icebreaker} — posted to the chat.
+            {icebreaker}, posted to the chat.
           </p>
         )}
 
@@ -417,7 +417,7 @@ function PlanCard({
               .
             </>
           ) : (
-            "A time is set. Someone still needs to turn it into an activity — nothing is booked automatically."
+            "A time is set. Someone still needs to turn it into an activity. Nothing is booked automatically."
           )}
         </p>
       )}

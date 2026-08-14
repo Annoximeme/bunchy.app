@@ -33,6 +33,10 @@ export const RULES = {
   // Far more than anyone needs, and still a ceiling on how fast a loop can
   // write 256KB files onto the volume.
   avatarUpload: { limit: 10, windowMs: 24 * 60 * 60 * 1000 },
+  // The one endpoint reachable before launch without a session, so it is the
+  // one most worth a ceiling. Generous enough for a shared office, tight
+  // enough that nobody fills the list from a script.
+  waitlist: { limit: 8, windowMs: 60 * 60 * 1000 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export type RuleName = keyof typeof RULES;

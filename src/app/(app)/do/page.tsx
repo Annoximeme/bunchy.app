@@ -13,7 +13,7 @@ export default async function DoSomethingPage() {
     <PageShell>
       <PageHeader
         title="Do something"
-        subtitle="Say what you have — money, time, energy — and get an evening back. Five taps, no typing."
+        subtitle="Say what you have (money, time, energy) and get an evening back. Five taps, no typing."
       />
       <DoSomething />
     </PageShell>

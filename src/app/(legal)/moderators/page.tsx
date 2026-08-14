@@ -37,7 +37,7 @@ export default async function ModeratorsPage() {
     <LegalPage
       title="Volunteer moderators"
       contact={LEGAL.supportContact}
-      summary={`${brand.name} needs a few people to read the report queue and decide what happens. It is unpaid right now — the platform earns nothing — and this page explains exactly what the work is, what we will and will not promise you, and how to stop.`}
+      summary={`${brand.name} needs a few people to read the report queue and decide what happens. It is unpaid right now, because the platform earns nothing, and this page explains exactly what the work is, what we will and will not promise you, and how to stop.`}
     >
       <Clause n={1} title="What the job actually is">
         <p>
@@ -48,7 +48,7 @@ export default async function ModeratorsPage() {
         </p>
         <p>
           <strong>You will see unpleasant things.</strong> Harassment, scam
-          attempts, and private messages that somebody reported — you see the
+          attempts, and private messages that somebody reported. You see the
           message because you cannot judge a report without it. Most of the
           queue is dull, some of it is grim, and we would rather you knew which
           before you volunteered than after.
@@ -60,11 +60,11 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={2} title="About pay — the honest version">
+      <Clause n={2} title="About pay. The honest version">
         <p>
           <strong>It is unpaid.</strong> {brand.name} has no revenue, no
           investors and no runway; there is no budget this comes out of. If that
-          is a dealbreaker, it should be, and you should stop reading here — that
+          is a dealbreaker, and it may well be, you should stop reading here. That
           is a completely reasonable position and we would rather hear it now.
         </p>
         <p>
@@ -76,7 +76,7 @@ export default async function ModeratorsPage() {
         <p>
           What we will write down, publicly, so it can be held against us: if{" "}
           {brand.name} ever earns money, paying the people who kept it safe is
-          the first thing that money should do — before features, before
+          the first thing that money should do, before features, before
           marketing, before anyone takes a salary out of it. That is our
           intention and it is on a public page for a reason. It is not a
           contract, and you should treat the difference seriously.
@@ -90,8 +90,8 @@ export default async function ModeratorsPage() {
       <Clause n={3} title="What you get that is real">
         <p>
           A <strong>Staff badge</strong> on your profile, so members can tell a
-          real moderator from someone claiming to be one. A say in the rules —
-          the people working the queue see what actually goes wrong long before
+          real moderator from someone claiming to be one. A say in the rules: the
+          people working the queue see what actually goes wrong long before
           anyone else does, and the moderation rules should follow them. And a
           direct line to whoever is running this, which at the moment is one
           person.
@@ -111,7 +111,7 @@ export default async function ModeratorsPage() {
         </p>
         <p>
           You have been here long enough to know how the place works. You treat
-          what you see in the queue as private — reading a reported message is
+          what you see in the queue as private, reading a reported message is
           not permission to repeat it, screenshot it or mention who sent it. And
           you tell us when a report involves someone you know, so it can go to
           somebody else.
@@ -132,7 +132,7 @@ export default async function ModeratorsPage() {
           volunteering.
         </p>
         <p>
-          If the queue is getting to you, say so and stop — that is a normal
+          If the queue is getting to you, say so and stop. That is a normal
           thing to happen to moderators and it is not a failure. We would rather
           lose a volunteer than grind one down.
         </p>
@@ -140,8 +140,8 @@ export default async function ModeratorsPage() {
 
       <Clause n={6} title="What a moderator can and cannot do">
         <p>
-          Moderators work reports, act on content, and can suspend an account —
-          for a day, a month, or indefinitely. That is real power over somebody
+          Moderators work reports, act on content, and can suspend an account for
+          a day, a month, or indefinitely. That is real power over somebody
           else&rsquo;s week, and it is deliberate: the person reading the report
           at midnight should be able to stop what is happening without waiting
           for anyone.
@@ -152,7 +152,7 @@ export default async function ModeratorsPage() {
           admin, and admin is a separate decision.
         </p>
         <p>
-          Moderators cannot see your email address — account search shows it to
+          Moderators cannot see your email address. Account search shows it to
           admins only, and it is withheld before it ever leaves our server
           rather than merely hidden on the page. Nobody can see your password,
           at any level: only a hash of it is ever stored.
@@ -171,7 +171,7 @@ export default async function ModeratorsPage() {
             You applied on{" "}
             {new Date(existing.createdAt).toLocaleDateString()}, and it is
             marked <strong>{existing.status.toLowerCase()}</strong>. We read
-            every one and reply — if it has been more than a couple of weeks,
+            every one and reply. If it has been more than a couple of weeks,
             chase us at {LEGAL.supportContact}.
           </p>
         ) : viewer ? (
@@ -179,7 +179,7 @@ export default async function ModeratorsPage() {
             <p>
               Three questions. There is no wrong answer to the second one, and
               &ldquo;I have never moderated anything&rdquo; is a perfectly good
-              answer to the third — most good moderators have not.
+              answer to the third. Most good moderators have not.
             </p>
             <ModeratorApplicationForm />
           </>

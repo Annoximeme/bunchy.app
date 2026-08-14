@@ -77,7 +77,7 @@ export function AdminNav({
         })}
         {!canManageAccounts && (
           <li className="ml-auto flex items-center px-3 text-xs text-muted">
-            Moderator — account actions need an admin
+            Moderator. Account actions need an admin
           </li>
         )}
       </ul>

@@ -21,7 +21,7 @@ export default async function InterestsPage() {
     <OnboardingShell
       step="interests"
       question="What are you into?"
-      intro="Pick a few. Add anything we're missing — plenty of people are here for something niche."
+      intro="Pick a few. Add anything we're missing, plenty of people are here for something niche."
     >
       <InterestsStep
         initial={rows.map((r) => ({

@@ -147,7 +147,7 @@ export function PersonCard({ person }: { person: PersonCardData }) {
       <div className="mt-5 flex items-center gap-2">
         {state === "sent" ? (
           <p className="text-sm font-medium text-positive">
-            Request sent — you&rsquo;ll hear back here.
+            Request sent. You&rsquo;ll hear back here.
           </p>
         ) : (
           <>

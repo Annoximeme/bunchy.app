@@ -71,7 +71,7 @@ export default async function AdminBrandPage() {
 
         <Panel
           title="Ready to upload"
-          note="PNG — what social platforms actually accept"
+          note="PNG. What social platforms actually accept"
         >
           <div className="p-5">
             <p className="mb-4 text-sm text-muted">
@@ -163,7 +163,7 @@ export default async function AdminBrandPage() {
               {[
                 [
                   "Give it room",
-                  "Clear space on every side is the height of the mark's largest shape. Nothing sits inside that — not a tagline, not a partner logo, not the edge of the page.",
+                  "Clear space on every side is the height of the mark's largest shape. Nothing sits inside that, not a tagline, not a partner logo, not the edge of the page.",
                 ],
                 [
                   "Never redraw it",
@@ -175,7 +175,7 @@ export default async function AdminBrandPage() {
                 ],
                 [
                   "Small means the mark",
-                  "Below about 20px of height the wordmark stops being legible. Use the mark alone — it was drawn to still read as several shapes at favicon size.",
+                  "Below about 20px of height the wordmark stops being legible. Use the mark alone. It was drawn to still read as several shapes at favicon size.",
                 ],
               ].map(([title, body]) => (
                 <div key={title} className="px-5 py-3.5">
@@ -200,7 +200,7 @@ export default async function AdminBrandPage() {
                   >
                     /opengraph-image
                   </a>{" "}
-                  — 1200×630, the size Meta, LinkedIn, Slack and iMessage all
+, 1200×630, the size Meta, LinkedIn, Slack and iMessage all
                   want.
                 </p>
               </div>
@@ -223,7 +223,7 @@ export default async function AdminBrandPage() {
                 <p className="font-medium text-ink">What not to claim</p>
                 <p className="mt-1 text-xs leading-relaxed text-muted">
                   No member counts, no testimonials from accounts that are not
-                  real, and nothing implying we verify identities — we cannot,
+                  real, and nothing implying we verify identities. We do not,
                   and{" "}
                   <a href="/safety" className="text-accent-ink underline underline-offset-2">
                     /safety

@@ -167,7 +167,7 @@ export function Radar({
             <Link href="/onboarding/basics" className="font-medium text-accent-ink underline underline-offset-2">
               Add one
             </Link>{" "}
-            — it stays a rough area, never an address.
+. It stays a rough area, never an address.
           </p>
         )}
       </Card>
@@ -181,7 +181,7 @@ export function Radar({
             {data.clusters.slice(0, 4).map((cluster) => (
               <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong> near{" "}
-                {cluster.where} — {cluster.label.toLowerCase()}
+                {cluster.where}, {cluster.label.toLowerCase()}
               </li>
             ))}
           </ul>
@@ -192,7 +192,7 @@ export function Radar({
         <EmptyState
           icon="📡"
           title="Nothing on the radar yet"
-          description="No public bunches or open activities match that. Starting something is how the first person always fixes it — and it gives whoever looks next somewhere to land."
+          description="No public bunches or open activities match that. Starting something is how the first person always fixes it. And it gives whoever looks next somewhere to land."
           action={<LinkButton href="/start">Start a bunch</LinkButton>}
         />
       ) : (

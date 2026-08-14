@@ -188,7 +188,7 @@ export function bunchChemistry(input: ChemistryInput): BunchChemistry {
       const topShare = Math.max(...counts.values()) / total;
       if (topShare > 0.6 && counts.size > 1) {
         observations.push(
-          "Most of the messages are coming from one person — the others may be waiting to be asked something.",
+          "Most of the messages are coming from one person. The others may be waiting to be asked something.",
         );
       }
     }
@@ -210,7 +210,7 @@ export function bunchChemistry(input: ChemistryInput): BunchChemistry {
     });
 
     if (recent.length === 0) {
-      observations.push("This bunch has gone quiet — nobody has posted in a month.");
+      observations.push("This bunch has gone quiet. Nobody has posted in a month.");
     }
   }
 
@@ -242,10 +242,10 @@ export function bunchChemistry(input: ChemistryInput): BunchChemistry {
     weight: WEIGHTS.size,
     reason:
       memberCount < 5
-        ? `${memberCount} member${memberCount === 1 ? "" : "s"} — still filling up`
+        ? `${memberCount} member${memberCount === 1 ? "" : "s"}, still filling up`
         : memberCount <= 12
-          ? `${memberCount} members — a good size`
-          : `${memberCount} members — large enough that people start to go unnoticed`,
+          ? `${memberCount} members. A good size`
+          : `${memberCount} members, large enough that people start to go unnoticed`,
   });
 
   if (memberCount < 5 && warmedUp) {
@@ -266,7 +266,7 @@ export function bunchChemistry(input: ChemistryInput): BunchChemistry {
       signals,
       observations: warmedUp
         ? observations
-        : ["Too new to tell — check back once the bunch has had a week."],
+        : ["Too new to tell, check back once the bunch has had a week."],
     };
   }
 

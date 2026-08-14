@@ -193,7 +193,7 @@ export const BRAND_ASSETS: readonly BrandAsset[] = [
   png(
     "bunchy-profile-dark-1024.png",
     "Profile picture, dark",
-    "The same, knocked out on ink — for platforms with a dark shell.",
+    "The same, knocked out on ink, for platforms with a dark shell.",
     () => markSvg("white"),
     1024,
     1,
@@ -202,7 +202,7 @@ export const BRAND_ASSETS: readonly BrandAsset[] = [
   png(
     "bunchy-profile-colour-dark-1024.png",
     "Profile picture, colour on dark",
-    "The full-colour cluster on ink. The one to use on a dark profile — the four colours are the recognisable part, and the white version throws them away.",
+    "The full-colour cluster on ink. The one to use on a dark profile. The four colours are the recognisable part, and the white version throws them away.",
     () => markSvg("colour"),
     1024,
     1,
@@ -332,7 +332,7 @@ export function findAsset(slug: string): BrandAsset | undefined {
 export const BRAND_PALETTE = [
   { name: "Coral", hex: "#FF5C6C", role: "The signature. Primary actions, the largest shape in the mark." },
   { name: "Purple", hex: "#7657FF", role: "Anything the system inferred rather than a person stated." },
-  { name: "Mint", hex: "#55D6BE", role: "Curiosity — “wants to get into”." },
+  { name: "Mint", hex: "#55D6BE", role: "Curiosity, “wants to get into”." },
   { name: "Yellow", hex: "#FFC857", role: "Time and dates. Also the founding-member badge." },
   { name: "Ink", hex: "#172033", role: "Text. Navy rather than black, so dark mode is the brand dimmed." },
   { name: "Canvas", hex: "#FFF9F3", role: "The page. Warm, never grey." },

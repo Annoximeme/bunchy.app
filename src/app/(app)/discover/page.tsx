@@ -144,7 +144,7 @@ export default async function DiscoverPage() {
           title={
             neighbourhood.label
               ? `You're one of ${neighbourhood.count} near ${neighbourhood.label}`
-              : "It's quiet here — for now"
+              : "It's quiet here, for now"
           }
           /*
             A count and a target, rather than an apology. The emptiness is the
@@ -154,7 +154,7 @@ export default async function DiscoverPage() {
           */
           description={
             neighbourhood.label
-              ? `Bunches tend to hold together from about ${neighbourhood.target} people nearby, so introductions stay thin until then. Inviting one person moves this more than anything else on the page — and starting a bunch gives whoever joins next somewhere to land.`
+              ? `Bunches tend to hold together from about ${neighbourhood.target} people nearby, so introductions stay thin until then. Inviting one person moves this more than anything else on the page. And starting a bunch gives whoever joins next somewhere to land.`
               : "Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
           }
           action={

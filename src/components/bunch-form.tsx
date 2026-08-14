@@ -134,7 +134,7 @@ export function BunchForm({
           required
           minLength={20}
           maxLength={600}
-          placeholder="A small group who meet twice a month to play heavier board games. Beginners welcome — we'll teach."
+          placeholder="A small group who meet twice a month to play heavier board games. Beginners welcome, we'll teach."
         />
       </Field>
 
@@ -145,9 +145,9 @@ export function BunchForm({
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="INTEREST">Interest — built around a topic</option>
-            <option value="LOCAL">Local — built around a place</option>
-            <option value="ACTIVITY">Activity — built around doing a thing</option>
+            <option value="INTEREST">Interest, built around a topic</option>
+            <option value="LOCAL">Local, built around a place</option>
+            <option value="ACTIVITY">Activity, built around doing a thing</option>
           </Select>
         </Field>
 
@@ -191,7 +191,7 @@ export function BunchForm({
         <Field
           label="Where does it meet?"
           htmlFor="bunch-city"
-          hint="Optional — leave empty for an online bunch."
+          hint="Optional, leave empty for an online bunch."
         >
           <Input
             id="bunch-city"

@@ -254,7 +254,7 @@ export function BunchChat({
       >
         {messages.length === 0 && (
           <p className="py-10 text-center text-sm text-muted">
-            Nothing here yet. Say hello — someone has to go first.
+            Nothing here yet. Say hello, someone has to go first.
           </p>
         )}
 

@@ -129,7 +129,7 @@ export function AvatarUpload({
           type="button"
           disabled={pending}
           onClick={() => input.current?.click()}
-          title={`JPEG, PNG or WebP. Resized to ${MAX_DIMENSION}px and compressed on your device before it is sent — a phone photo ends up around 40KB.`}
+          title={`JPEG, PNG or WebP. Resized to ${MAX_DIMENSION}px and compressed on your device before it is sent. A phone photo ends up around 40KB.`}
           className="font-medium text-accent-ink transition-opacity hover:underline disabled:opacity-55"
         >
           {pending ? "Working…" : shown ? "Change" : "Upload"}
