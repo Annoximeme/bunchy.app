@@ -194,6 +194,17 @@ export function BunchCluster() {
           detail="6 going"
         />
       </div>
+
+      {/*
+        Said once, quietly, under the whole composition. Every number in here —
+        the match percentages, the counts going — is invented, and Bunchy has
+        not launched, so leaving them unlabelled would be claiming traction that
+        does not exist on the one page most people will only ever see.
+      */}
+      <p className="mt-6 text-center text-xs text-white/35">
+        An example bunch. Bunchy hasn&rsquo;t launched yet — these aren&rsquo;t
+        real people.
+      </p>
     </div>
   );
 }
