@@ -1,0 +1,4 @@
+# The manual gate flag files (ON / SOON) are runtime state, not source.
+# The directory is tracked so the compose mount always has something to bind.
+*
+!.gitignore
