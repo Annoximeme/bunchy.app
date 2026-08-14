@@ -28,7 +28,7 @@ export function UpFor() {
       className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-9"
     >
       <fieldset>
-        <legend className="text-xs font-bold tracking-widest text-white/40">
+        <legend className="text-xs font-bold tracking-widest text-white/55">
           WHAT ARE YOU UP FOR?
         </legend>
         <div className="mt-4 flex flex-wrap gap-2.5">
@@ -47,7 +47,7 @@ export function UpFor() {
 
       <div className="mt-8 grid gap-8 sm:grid-cols-2">
         <fieldset>
-          <legend className="text-xs font-bold tracking-widest text-white/40">
+          <legend className="text-xs font-bold tracking-widest text-white/55">
             WHERE
           </legend>
           <div className="mt-4 flex flex-wrap gap-2.5">
@@ -65,7 +65,7 @@ export function UpFor() {
         </fieldset>
 
         <fieldset>
-          <legend className="text-xs font-bold tracking-widest text-white/40">
+          <legend className="text-xs font-bold tracking-widest text-white/55">
             WHEN
           </legend>
           <div className="mt-4 flex flex-wrap gap-2.5">
@@ -91,7 +91,7 @@ export function UpFor() {
           Find my bunch
           <ArrowRight size={18} aria-hidden />
         </button>
-        <p className="text-sm text-white/45">
+        <p className="text-sm text-white/55">
           Takes you to sign-up with this already filled in.
         </p>
       </div>

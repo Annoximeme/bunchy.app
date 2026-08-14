@@ -164,7 +164,7 @@ export function Radar({
         {data.locationUnknown && (
           <p className="mt-3 text-sm text-muted">
             You haven&rsquo;t set an area, so nothing can be sorted by distance.{" "}
-            <Link href="/onboarding/basics" className="font-medium text-accent-ink hover:underline">
+            <Link href="/onboarding/basics" className="font-medium text-accent-ink underline underline-offset-2">
               Add one
             </Link>{" "}
             — it stays a rough area, never an address.

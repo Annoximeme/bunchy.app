@@ -68,7 +68,7 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
         <p className="text-sm">
           Sent to {intro.displayName}. They&rsquo;ll see it when they accept —
           you&rsquo;ll find the conversation in{" "}
-          <Link href="/messages" className="font-medium text-accent-ink hover:underline">
+          <Link href="/messages" className="font-medium text-accent-ink underline underline-offset-2">
             Messages
           </Link>{" "}
           once they do.

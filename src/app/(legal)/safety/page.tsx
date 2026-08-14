@@ -66,7 +66,7 @@ export default function SafetyPage() {
           You are never obliged to share a phone number, a last name, a workplace
           or an address, and {brand.name} never asks for any of them. Your
           location is stored as a coarse area, never a street — see the{" "}
-          <Link href="/privacy" className="text-accent-ink hover:underline">
+          <Link href="/privacy" className="text-accent-ink underline underline-offset-2">
             privacy policy
           </Link>{" "}
           for exactly what is kept.
@@ -119,7 +119,7 @@ export default function SafetyPage() {
           Afterwards, write to{" "}
           <a
             href={`mailto:${LEGAL.supportContact}`}
-            className="text-accent-ink hover:underline"
+            className="text-accent-ink underline underline-offset-2"
           >
             {LEGAL.supportContact}
           </a>

@@ -98,9 +98,32 @@ export function SignUpForm() {
         </Button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-muted">
+      {/*
+        Lives here rather than in the shared auth footer, where it used to greet
+        people on Sign in and Reset your password too — neither of which is
+        joining anything.
+      */}
+      <p className="mt-5 text-center text-xs text-muted">
+        By creating an account you agree to our{" "}
+        <Link
+          href="/terms"
+          className="text-accent-ink underline underline-offset-2"
+        >
+          terms
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="text-accent-ink underline underline-offset-2"
+        >
+          privacy policy
+        </Link>
+        .
+      </p>
+
+      <p className="mt-4 border-t border-line pt-4 text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-accent-ink hover:underline">
+        <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
           Sign in
         </Link>
       </p>
@@ -159,14 +182,14 @@ export function SignInForm() {
         <p>
           <Link
             href="/forgot-password"
-            className="font-medium text-accent-ink hover:underline"
+            className="font-medium text-accent-ink underline underline-offset-2"
           >
             Forgot your password?
           </Link>
         </p>
         <p>
           New here?{" "}
-          <Link href="/signup" className="font-medium text-accent-ink hover:underline">
+          <Link href="/signup" className="font-medium text-accent-ink underline underline-offset-2">
             Create an account
           </Link>
         </p>
@@ -195,7 +218,7 @@ export function ForgotPasswordForm() {
           in an hour.
         </p>
         <p className="mt-5 text-sm text-muted">
-          <Link href="/login" className="font-medium text-accent-ink hover:underline">
+          <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
             Back to sign in
           </Link>
         </p>
@@ -221,7 +244,7 @@ export function ForgotPasswordForm() {
       </form>
 
       <p className="mt-5 text-center text-sm text-muted">
-        <Link href="/login" className="font-medium text-accent-ink hover:underline">
+        <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
           Back to sign in
         </Link>
       </p>
@@ -252,7 +275,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         <p className="mt-5 text-sm">
           <Link
             href="/forgot-password"
-            className="font-medium text-accent-ink hover:underline"
+            className="font-medium text-accent-ink underline underline-offset-2"
           >
             Request a new link
           </Link>
@@ -336,7 +359,7 @@ export function VerifyEmailPanel({ token }: { token: string }) {
         <h1 className="text-2xl font-semibold tracking-tight">Email confirmed</h1>
         <p className="mt-2 text-sm text-ink-soft">You&rsquo;re all set.</p>
         <div className="mt-5">
-          <Link href="/discover" className="font-medium text-accent-ink hover:underline">
+          <Link href="/discover" className="font-medium text-accent-ink underline underline-offset-2">
             Go to Discover
           </Link>
         </div>

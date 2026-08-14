@@ -83,7 +83,7 @@ export default async function DiscoverPage() {
           <span className="text-ink-soft">
             Confirm your email so you don&rsquo;t lose access to your account.
           </span>{" "}
-          <Link href="/profile" className="font-medium text-accent-ink hover:underline">
+          <Link href="/profile" className="font-medium text-accent-ink underline underline-offset-2">
             Resend the link
           </Link>
         </div>

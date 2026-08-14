@@ -98,7 +98,7 @@ export default async function AdminReportsPage({
                         {" · about "}
                         <Link
                           href={`/admin/users?q=${encodeURIComponent(report.reported.username)}`}
-                          className="text-accent-ink hover:underline"
+                          className="text-accent-ink underline underline-offset-2"
                         >
                           {report.reported.displayName}
                         </Link>
@@ -131,7 +131,7 @@ export default async function AdminReportsPage({
                   {report.target.href && (
                     <Link
                       href={report.target.href}
-                      className="mt-2 inline-block text-xs text-accent-ink hover:underline"
+                      className="mt-2 inline-block text-xs text-accent-ink underline underline-offset-2"
                     >
                       Open in the app →
                     </Link>

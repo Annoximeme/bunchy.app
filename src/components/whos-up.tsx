@@ -101,7 +101,7 @@ export function WhosUp({
         <h2 className="text-lg font-semibold tracking-tight">Who&rsquo;s up?</h2>
         <p className="mt-1 text-sm text-muted">
           You have this switched off.{" "}
-          <Link href="/profile" className="font-medium text-accent-ink hover:underline">
+          <Link href="/profile" className="font-medium text-accent-ink underline underline-offset-2">
             Turn it back on
           </Link>{" "}
           in your privacy settings if you&rsquo;d like to use it.

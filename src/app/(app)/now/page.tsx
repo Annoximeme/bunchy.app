@@ -149,7 +149,7 @@ export default async function BunchyNowPage({
                 </span>
                 <Link
                   href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}
-                  className="font-medium text-accent-ink hover:underline"
+                  className="font-medium text-accent-ink underline underline-offset-2"
                 >
                   Start something and invite them
                 </Link>
@@ -177,7 +177,7 @@ export default async function BunchyNowPage({
                 <p className="mt-6 text-sm text-muted">
                   Try dropping:{" "}
                   {board.people.relaxations.map((r) => r.constraint).join(", ")}.{" "}
-                  <Link href="/find" className="text-accent-ink hover:underline">
+                  <Link href="/find" className="text-accent-ink underline underline-offset-2">
                     Search with your own words
                   </Link>
                 </p>

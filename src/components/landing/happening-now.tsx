@@ -131,7 +131,7 @@ function Example({
         <span className="text-2xl" aria-hidden>
           {icon}
         </span>
-        <span className="rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-bold tracking-widest text-white/40">
+        <span className="rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-bold tracking-widest text-white/55">
           EXAMPLE
         </span>
       </div>
@@ -147,7 +147,7 @@ function Example({
           />
           {mode.toUpperCase()}
         </span>
-        <span className="text-white/35">·</span>
+        <span className="text-white/55">·</span>
         <span className="text-white/50">{when}</span>
       </p>
     </li>

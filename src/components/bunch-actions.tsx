@@ -288,7 +288,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
           )}
           <a
             href={`/activities/new?bunchId=${bunchId}&title=${encodeURIComponent(idea.title)}&description=${encodeURIComponent(idea.description)}`}
-            className="mt-3 inline-block text-sm font-medium text-accent-ink hover:underline"
+            className="mt-3 inline-block text-sm font-medium text-accent-ink underline underline-offset-2"
           >
             Turn this into a plan →
           </a>

@@ -99,7 +99,7 @@ export default async function ActivityPage({
                 href={activity.onlineUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="mt-1 block break-all text-sm text-accent-ink hover:underline"
+                className="mt-1 block break-all text-sm text-accent-ink underline underline-offset-2"
               >
                 {activity.onlineUrl}
               </a>
@@ -155,7 +155,7 @@ export default async function ActivityPage({
             <p className="mt-6 text-xs text-muted">
               Meeting someone new? Public place, tell a friend where you are, and
               leave whenever you want to.{" "}
-              <Link href="/safety" className="text-accent-ink hover:underline">
+              <Link href="/safety" className="text-accent-ink underline underline-offset-2">
                 Meeting safely
               </Link>
             </p>

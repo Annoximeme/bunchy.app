@@ -47,7 +47,7 @@ export function LegalPage({
 
         <p className="mt-6 text-sm text-muted">
           Questions:{" "}
-          <a href={`mailto:${contact}`} className="text-accent-ink hover:underline">
+          <a href={`mailto:${contact}`} className="text-accent-ink underline underline-offset-2">
             {contact}
           </a>
           .
