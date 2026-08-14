@@ -85,42 +85,54 @@ export function BunchCluster() {
           ))}
         </svg>
 
-        {/* Centre node */}
-        <div
-          className="float absolute left-1/2 top-1/2 flex size-28 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full text-center"
-          style={{
-            background: "linear-gradient(135deg, #FF5C6C 0%, #7657FF 100%)",
-            boxShadow: "0 20px 60px -20px rgba(118,87,255,0.9)",
-            ["--float-distance" as string]: "6px",
-            ["--float-duration" as string]: "5.2s",
-            ["--float-delay" as string]: "0.2s",
-          }}
-        >
-          <span className="text-sm font-bold tracking-[0.2em] text-white">
-            BUNCHY
-          </span>
-          {/* Not "nearby": half of what a bunch does never has a location. */}
-          <span className="mt-0.5 text-[10px] font-medium text-white/75">
-            6 people
-          </span>
+        {/*
+          Two elements per node, and the split is load-bearing. The outer one
+          centres itself on its coordinate with `-translate-*`; the inner one
+          floats. Both cannot live on the same element, because the float
+          keyframe animates the `translate` property and would overwrite the
+          centring outright — which silently shifts every avatar half its own
+          width away from the line drawn to it.
+        */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div
+            className="float flex size-28 flex-col items-center justify-center rounded-full text-center"
+            style={{
+              background: "linear-gradient(135deg, #FF5C6C 0%, #7657FF 100%)",
+              boxShadow: "0 20px 60px -20px rgba(118,87,255,0.9)",
+              ["--float-distance" as string]: "6px",
+              ["--float-duration" as string]: "5.2s",
+              ["--float-delay" as string]: "0.2s",
+            }}
+          >
+            <span className="text-sm font-bold tracking-[0.2em] text-white">
+              BUNCHY
+            </span>
+            {/* Not "nearby": half of what a bunch does never has a location. */}
+            <span className="mt-0.5 text-[10px] font-medium text-white/75">
+              6 people
+            </span>
+          </div>
         </div>
 
         {PEOPLE.map((person) => (
           <div
             key={person.initial}
-            className="float absolute flex size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-lg font-bold text-white ring-4 sm:size-16"
-            style={{
-              left: `${person.x}%`,
-              top: `${person.y}%`,
-              background: person.colour,
-              // The ring is the page behind them, so the bubbles overlap
-              // cleanly wherever they drift over one another.
-              ["--tw-ring-color" as string]: "#0A0E1A",
-              ["--float-duration" as string]: `${person.seconds}s`,
-              ["--float-delay" as string]: `${person.delay}s`,
-            }}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: `${person.x}%`, top: `${person.y}%` }}
           >
-            {person.initial}
+            <div
+              className="float flex size-14 items-center justify-center rounded-full text-lg font-bold text-white ring-4 sm:size-16"
+              style={{
+                background: person.colour,
+                // The ring is the page behind them, so the bubbles overlap
+                // cleanly wherever they drift over one another.
+                ["--tw-ring-color" as string]: "#0A0E1A",
+                ["--float-duration" as string]: `${person.seconds}s`,
+                ["--float-delay" as string]: `${person.delay}s`,
+              }}
+            >
+              {person.initial}
+            </div>
           </div>
         ))}
 
