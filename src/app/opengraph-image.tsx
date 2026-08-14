@@ -70,7 +70,6 @@ export default function OpengraphImage() {
             width: 720,
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={lockup} alt="" height={62} />
 
           <div style={{ display: "flex", flexDirection: "column" }}>
