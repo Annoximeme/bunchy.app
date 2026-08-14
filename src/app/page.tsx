@@ -563,8 +563,15 @@ export default async function LandingPage() {
               background: "linear-gradient(120deg, #FF5C6C 0%, #7657FF 100%)",
             }}
           >
-            <h2 className="mx-auto max-w-3xl text-balance text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              Find your people. Do something together.
+            {/*
+              Two sentences, so the line breaks between them rather than
+              wherever the measure runs out. `text-balance` was breaking after
+              "Do", which orphans a verb onto the end of one line and reads as
+              a wrap rather than as the two-line statement this is meant to be.
+            */}
+            <h2 className="mx-auto max-w-3xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl">
+              <span className="block">Find your people.</span>
+              <span className="block">Do something together.</span>
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-lg font-semibold text-white/90">
               Online. In person. Or both.
