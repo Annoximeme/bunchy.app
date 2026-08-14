@@ -22,8 +22,10 @@
  * Coral is the case that proves the point. White on #FF5C6C is 3.00:1, which
  * fails AA for body text, so primary buttons carry a deep navy label (5.42:1)
  * rather than the white one every other consumer app reaches for. Coral as text
- * on cream is 2.87:1 and is never used; --color-accent-ink (#CE2F45, 4.88:1)
- * is. Ratios are measured, not estimated, and are listed in the brand guide.
+ * on cream is 2.87:1 and is never used; --color-accent-ink (#C42A40, 5.36:1)
+ * is. Ratios are measured, not estimated, and are listed in the brand guide —
+ * and measured against every ground the token actually lands on, not just
+ * cream, which is what an axe pass over the dashboard caught them missing.
  */
 
 @theme {
@@ -32,14 +34,19 @@
   --color-surface-sunken: #f9f0e6;
   --color-ink: #172033;
   --color-ink-soft: #3d4759;
-  --color-muted: #6b7280;
+  /* Was #6b7280, which is 4.29:1 on --color-surface-sunken — under AA, and
+     sunken is the admin dashboard's page background, so every muted caption in
+     there was failing. This clears 4.5:1 on all three light grounds. */
+  --color-muted: #646977;
   --color-line: #efe6da;
 
   /* Coral — the signature. Brand, primary action, active state. */
   --color-accent: #ff5c6c;
   --color-accent-hover: #f5455a;
   --color-accent-soft: #ffe9eb;
-  --color-accent-ink: #ce2f45;
+  /* Was #ce2f45. That reads on cream, but on --color-accent-soft — which is
+     what the status pills use behind it — it is 4.40:1, just under AA. */
+  --color-accent-ink: #c42a40;
   --color-on-accent: #172033;
 
   /* Purple — intelligence. AI, recommendations, premium. */

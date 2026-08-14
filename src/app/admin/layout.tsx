@@ -27,13 +27,15 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-dvh bg-surface-sunken">
-      {/* A permanent, unmistakable marker that these actions affect real people. */}
-      <div className="bg-ink px-5 py-1.5 text-center text-xs font-medium text-canvas">
+      {/* A permanent, unmistakable marker that these actions affect real people.
+          A <header> rather than a <div> so it sits inside a landmark — content
+          outside one is content a screen-reader user has no way to jump to. */}
+      <header className="bg-ink px-5 py-1.5 text-center text-xs font-medium text-canvas">
         Staff area · signed in as {viewer!.displayName} ({viewer!.role.toLowerCase()})
         <Link href="/discover" className="ml-3 underline underline-offset-2">
           Back to Bunchy
         </Link>
-      </div>
+      </header>
 
       <AdminNav openReports={openReports} canManageAccounts={isAdmin(viewer)} />
 
