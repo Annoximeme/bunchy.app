@@ -25,6 +25,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const ITEMS = [
   { href: "/discover", label: "Discover", icon: CompassIcon },
+  { href: "/now", label: "Bunchy Now", icon: BoltIcon },
   { href: "/bunches", label: "Bunches", icon: BunchesIcon },
   { href: "/radar", label: "Radar", icon: RadarIcon },
   { href: "/activities", label: "Activities", icon: CalendarIcon },
@@ -35,12 +36,17 @@ const ITEMS = [
  * The mobile bar carries four destinations plus You, split either side of the
  * compose button.
  *
- * Radar is deliberately not among them. Six items plus the button in 390px
+ * Radar and Bunchy Now are deliberately not among them. Six items plus the
+ * button in 390px
  * gives ~48px targets with no breathing room, against the 67px the current
  * five get — and §16 asks for large touch targets before it asks for
- * completeness. On a phone the radar is reached from Discover.
+ * completeness. On a phone both are reached from Discover, which carries them
+ * as hero actions — prominence bought by shrinking every target on the bar is
+ * not prominence worth having.
  */
-const MOBILE_ITEMS = ITEMS.filter((item) => item.href !== "/radar");
+const MOBILE_ITEMS = ITEMS.filter(
+  (item) => item.href !== "/radar" && item.href !== "/now",
+);
 const MOBILE_LEFT = MOBILE_ITEMS.slice(0, 2);
 const MOBILE_RIGHT = MOBILE_ITEMS.slice(2);
 
@@ -317,6 +323,23 @@ function Badge({ count }: { count: number }) {
 }
 
 // --- Icons (inline so there is no icon dependency to load) ------------------
+
+function BoltIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
+    </svg>
+  );
+}
 
 function CompassIcon({ className }: { className?: string }) {
   return (

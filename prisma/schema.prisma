@@ -1153,6 +1153,13 @@ enum AvailabilityKind {
   UP_FOR_GAMING
   UP_FOR_ACTIVITIES
   OPEN_TO_MEETING
+  /// Added for Bunchy Now. Same machinery as the rest — one row per member,
+  /// always expiring — just more specific about what someone is up for, because
+  /// "up for something" and "up for a match tonight" find different people.
+  UP_FOR_FOOD
+  UP_FOR_SPORTS
+  UP_FOR_NIGHTLIFE
+  UP_FOR_SPONTANEOUS
 }
 
 /// A member saying "I'm free, come find me" — for a while.
