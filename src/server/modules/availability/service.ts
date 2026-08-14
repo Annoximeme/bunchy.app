@@ -217,7 +217,18 @@ export async function myAvailability(
  * somebody whose request you accepted seeing that you are free is the least
  * surprising thing this feature can do.
  */
-export function visibleStatusCondition(viewerProfileId: string) {
+/**
+ * The audience test, as a condition on the *profile*.
+ *
+ * Needed in two shapes. Reading statuses, it hangs off the status row —
+ * that is `visibleStatusCondition` below. Selecting *people who are
+ * available*, it has to apply to the profile itself, because a filter that
+ * only checks "has a live status" returns members whose audience excludes
+ * the viewer. Their badge is then hidden, and their presence in a list
+ * headed "free right now" discloses exactly what the audience setting exists
+ * to keep private.
+ */
+export function availabilityAudienceCondition(viewerProfileId: string) {
   const connectedToViewer = {
     OR: [
       { sentConnections: { some: { addresseeId: viewerProfileId, status: "ACCEPTED" as const } } },
@@ -226,46 +237,49 @@ export function visibleStatusCondition(viewerProfileId: string) {
   };
 
   return {
-    profile: {
-      OR: [
-        { privacy: { is: { whoCanSeeAvailability: "EVERYONE" as AudienceScope } } },
-        {
-          privacy: { is: { whoCanSeeAvailability: "CONNECTIONS" as AudienceScope } },
-          OR: [
-            // Connected to the viewer directly…
-            ...connectedToViewer.OR,
-            // …or connected to somebody who is.
-            {
-              sentConnections: {
-                some: { status: "ACCEPTED" as const, addressee: connectedToViewer },
-              },
+    OR: [
+      { privacy: { is: { whoCanSeeAvailability: "EVERYONE" as AudienceScope } } },
+      {
+        privacy: { is: { whoCanSeeAvailability: "CONNECTIONS" as AudienceScope } },
+        OR: [
+          // Connected to the viewer directly…
+          ...connectedToViewer.OR,
+          // …or connected to somebody who is.
+          {
+            sentConnections: {
+              some: { status: "ACCEPTED" as const, addressee: connectedToViewer },
             },
-            {
-              receivedConnections: {
-                some: { status: "ACCEPTED" as const, requester: connectedToViewer },
-              },
+          },
+          {
+            receivedConnections: {
+              some: { status: "ACCEPTED" as const, requester: connectedToViewer },
             },
-          ],
-        },
-        {
-          privacy: { is: { whoCanSeeAvailability: "BUNCH_MEMBERS" as AudienceScope } },
-          bunchMemberships: {
-            some: {
-              status: "ACTIVE" as const,
-              bunch: {
-                memberships: {
-                  some: { profileId: viewerProfileId, status: "ACTIVE" as const },
-                },
+          },
+        ],
+      },
+      {
+        privacy: { is: { whoCanSeeAvailability: "BUNCH_MEMBERS" as AudienceScope } },
+        bunchMemberships: {
+          some: {
+            status: "ACTIVE" as const,
+            bunch: {
+              memberships: {
+                some: { profileId: viewerProfileId, status: "ACTIVE" as const },
               },
             },
           },
         },
-        // A member with no privacy row at all has never been offered the
-        // choice, so they are treated as the default the column carries.
-        { privacy: { is: null } },
-      ],
-    },
+      },
+      // A member with no privacy row at all has never been offered the
+      // choice, so they are treated as the default the column carries.
+      { privacy: { is: null } },
+    ],
   };
+}
+
+/** The same test, shaped for a query over AvailabilityStatus rows. */
+export function visibleStatusCondition(viewerProfileId: string) {
+  return { profile: availabilityAudienceCondition(viewerProfileId) };
 }
 
 // --- Aggregates -------------------------------------------------------------
