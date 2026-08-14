@@ -71,6 +71,13 @@
 			try_files SOON
 		}
 		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
+		# The brand assets stay reachable while the gate is up. A browser
+		# fetches the manifest without credentials, so even a previewer got a
+		# 503 and a console error — and, worse, the Open Graph image was gated
+		# too, which meant every link to bunchy.app shared privately before
+		# launch previewed as broken. None of these say anything the
+		# coming-soon page does not already say out loud.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt
 	}
 	handle @soon {
 		root * /srv/pages
@@ -91,6 +98,13 @@
 			try_files ON
 		}
 		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
+		# The brand assets stay reachable while the gate is up. A browser
+		# fetches the manifest without credentials, so even a previewer got a
+		# 503 and a console error — and, worse, the Open Graph image was gated
+		# too, which meant every link to bunchy.app shared privately before
+		# launch previewed as broken. None of these say anything the
+		# coming-soon page does not already say out loud.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt
 	}
 	handle @maint {
 		root * /srv/pages

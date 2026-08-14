@@ -131,7 +131,7 @@ function Example({
         <span className="text-2xl" aria-hidden>
           {icon}
         </span>
-        <span className="rounded-full border border-white/15 px-2.5 py-1 text-[10px] font-bold tracking-widest text-white/40">
+        <span className="rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-bold tracking-widest text-white/40">
           EXAMPLE
         </span>
       </div>

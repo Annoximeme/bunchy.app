@@ -108,7 +108,7 @@ export function BunchCluster() {
               BUNCHY
             </span>
             {/* Not "nearby": half of what a bunch does never has a location. */}
-            <span className="mt-0.5 text-[10px] font-medium text-white/75">
+            <span className="mt-0.5 text-[11px] font-medium text-white/75">
               6 people
             </span>
           </div>
