@@ -57,7 +57,7 @@ export default async function MessagesPage() {
                   </p>
                 </div>
                 {conversation.unreadCount > 0 && (
-                  <span className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold text-white">
+                  <span className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold text-[var(--color-on-accent)]">
                     {conversation.unreadCount > 9 ? "9+" : conversation.unreadCount}
                     <span className="sr-only"> unread</span>
                   </span>

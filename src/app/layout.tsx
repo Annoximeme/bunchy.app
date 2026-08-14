@@ -69,7 +69,7 @@ export default async function RootLayout({
       <body className="min-h-dvh antialiased">
         <a
           href="#main"
-          className="sr-only rounded-full bg-accent px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          className="sr-only rounded-full bg-accent px-4 py-2 text-[var(--color-on-accent)] focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
         >
           Skip to content
         </a>

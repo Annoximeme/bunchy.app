@@ -248,7 +248,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
                     className={cn(
                       "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all duration-200 ease-[var(--ease-out-soft)] active:scale-95",
                       active
-                        ? "border-accent bg-accent text-white"
+                        ? "border-accent bg-accent text-[var(--color-on-accent)]"
                         : "border-line bg-surface text-ink-soft hover:border-ink-soft hover:text-ink",
                     )}
                   >
