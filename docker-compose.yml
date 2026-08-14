@@ -139,6 +139,11 @@ services:
       TLS_EMAIL: ${TLS_EMAIL:?TLS_EMAIL is required}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Served when the app is unreachable. Mounted into Caddy rather than
+      # built into the app image on purpose: a maintenance page that lives
+      # inside the container it is meant to cover for is a page nobody can
+      # reach at the moment it is needed.
+      - ./docker/maintenance.html:/srv/maintenance/maintenance.html:ro
       # Certificates and the ACME account key. Losing this volume means
       # re-issuing on next start, which Let's Encrypt rate-limits — it is the
       # one volume people forget to back up.
