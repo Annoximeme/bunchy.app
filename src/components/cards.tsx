@@ -192,6 +192,29 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
 
       <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{bunch.description}</p>
 
+      {/*
+        Why you'd fit. The scorer has always produced these — five shared
+        interests, same preferred group size, active this weekend — and this
+        card accepted them in its props and then dropped them on the floor, so
+        a bunch recommendation was a number with no argument behind it. The
+        person card has rendered its equivalent from the start.
+      */}
+      {bunch.highlights && bunch.highlights.length > 0 && (
+        <ul className="mt-3 space-y-1">
+          {bunch.highlights.slice(0, 2).map((highlight) => (
+            <li
+              key={highlight}
+              className="flex items-start gap-1.5 text-sm text-ink-soft"
+            >
+              <span aria-hidden className="mt-0.5 text-teal">
+                ✓
+              </span>
+              {highlight}
+            </li>
+          ))}
+        </ul>
+      )}
+
       {bunch.interests.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {bunch.interests.slice(0, 4).map((interest) => (
