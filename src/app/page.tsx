@@ -6,6 +6,7 @@ import { ArrowRight, Heart, MessageCircle, Sparkles } from "lucide-react";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
+import { personColour } from "@/lib/example-people";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
@@ -111,7 +112,7 @@ export default async function LandingPage() {
                   href="/signup"
                   className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-8 py-4 text-base font-bold tracking-wide text-[#172033] shadow-[0_18px_40px_-18px_#FF5C6C] transition-transform duration-200 hover:scale-[1.04]"
                 >
-                  FIND MY BUNCH
+                  Find my bunch
                   <ArrowRight size={18} aria-hidden />
                 </Link>
                 <Link
@@ -270,9 +271,15 @@ export default async function LandingPage() {
               not five features, they are five positions along the same evening.
             */}
             <ol className="reveal relative mt-14 grid gap-8 md:grid-cols-5 md:gap-4">
+              {/*
+                Ends on the last dot rather than the container. The dots sit at
+                the left edge of five equal columns, so the span between the
+                first and last centre is four columns plus four gaps — not the
+                full width, which ran the line a whole column past Together.
+              */}
               <div
                 aria-hidden
-                className="absolute left-6 top-3 hidden h-px w-[calc(100%-3rem)] bg-gradient-to-r from-[#FF5C6C] via-[#7657FF] to-[#55D6BE] md:block"
+                className="absolute left-3 top-3 hidden h-px w-[calc(80%+0.8rem)] bg-gradient-to-r from-[#FF5C6C] via-[#7657FF] to-[#55D6BE] md:block"
               />
               <Stage
                 colour="#FF5C6C"
@@ -556,7 +563,7 @@ export default async function LandingPage() {
               href="/signup"
               className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[#172033] transition-transform duration-200 hover:scale-[1.04]"
             >
-              Get Started Free
+              Find my bunch
               <ArrowRight size={18} aria-hidden />
             </Link>
             <p className="mt-6 text-sm text-white/75">
@@ -639,7 +646,7 @@ function Exchange({
   return (
     <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
       <span
-        className="text-[10px] font-bold tracking-widest"
+        className="text-[11px] font-bold tracking-widest"
         style={{ color: tone }}
       >
         {where.toUpperCase()}
@@ -721,7 +728,14 @@ function Band({
         </span>
         <p className="mt-2 max-w-xs text-sm text-white/45">{blurb}</p>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{children}</div>
+      {/*
+        auto-fit rather than a fixed three columns: two of the three bands hold
+        two cards, and in a locked 3-column grid they left a third of the row
+        empty, which reads as a layout that failed rather than one that fits.
+      */}
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))]">
+        {children}
+      </div>
     </div>
   );
 }
@@ -774,11 +788,20 @@ function Moment({
         style={{ background: shape, opacity: 0.22 }}
       />
       <div className="relative">
+        {/*
+          Uppercased to match the ONLINE / IN PERSON / EITHER badges on the
+          board above. The same three words were set two different ways on one
+          page, which reads as two different labelling systems.
+        */}
         <span
-          className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold tracking-widest"
           style={{ background: `${shape}22`, color: shape }}
         >
-          {tag}
+          <span
+            className="size-1.5 rounded-full"
+            style={{ background: shape }}
+          />
+          {tag.toUpperCase()}
         </span>
         <h3 className="mt-4 text-xl font-bold tracking-tight">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-white/60">{detail}</p>
@@ -787,9 +810,9 @@ function Moment({
             <span
               key={`${initial}-${i}`}
               className="flex size-9 items-center justify-center rounded-full text-xs font-bold text-white ring-4 ring-navy-base"
-              style={{
-                background: ["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"][i % 4],
-              }}
+              // Colour comes from who they are, not where they sit in the
+              // array — see lib/example-people.ts.
+              style={{ background: personColour(initial) }}
             >
               {initial}
             </span>
