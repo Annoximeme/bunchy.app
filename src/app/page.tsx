@@ -299,7 +299,7 @@ export default async function LandingPage() {
         {/* 5 — The signature moment */}
         <section className="px-5 py-24">
           <div className="reveal mx-auto max-w-3xl text-center">
-            <p className="text-sm font-bold tracking-widest text-purple-ai">
+            <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
               THE BUNCH MOMENT
             </p>
             <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -379,7 +379,7 @@ export default async function LandingPage() {
         {/* 7 — What you can actually do */}
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
-            <p className="reveal text-sm font-bold tracking-widest text-purple-ai">
+            <p className="reveal text-sm font-bold tracking-widest text-[#9B85FF]">
               WHAT YOU CAN ACTUALLY DO
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -539,7 +539,7 @@ export default async function LandingPage() {
         {/* 9 — Recurring */}
         <section className="px-5 pb-24">
           <div className="reveal mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 sm:p-12">
-            <p className="text-sm font-bold tracking-widest text-purple-ai">
+            <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
               RECURRING BUNCHES
             </p>
             <h2 className="mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
