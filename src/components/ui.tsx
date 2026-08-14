@@ -308,7 +308,11 @@ export function Field({
 const CONTROL =
   "w-full rounded-[var(--radius-control)] border border-line bg-surface px-3.5 py-2.5 " +
   "text-ink placeholder:text-muted transition-colors duration-200 " +
-  "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 " +
+  // No `focus:outline-none` here. It compiles to a higher-specificity selector
+  // than the `:focus-visible` outline in globals.css and silently cancelled it
+  // on every input, textarea and select in the product — leaving a keyboard
+  // user with a 20%-opacity ring well under the 3:1 a focus indicator needs.
+  "focus:border-accent focus:ring-2 focus:ring-accent/30 " +
   "disabled:opacity-60";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
