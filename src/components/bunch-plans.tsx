@@ -102,7 +102,7 @@ export function BunchPlans({
             <button
               type="button"
               onClick={() => setComposing(true)}
-              className="text-sm font-medium text-accent-ink hover:underline"
+              className="text-sm font-medium text-accent-ink underline underline-offset-2"
             >
               Find a time
             </button>
@@ -280,7 +280,7 @@ function PlanComposer({
           <button
             type="button"
             onClick={() => setTimes((prev) => [...prev, ""])}
-            className="mt-2 text-sm font-medium text-accent-ink hover:underline"
+            className="mt-2 text-sm font-medium text-accent-ink underline underline-offset-2"
           >
             Add another time
           </button>
@@ -393,7 +393,7 @@ function PlanCard({
                     type="button"
                     onClick={() => onDecide(option.id)}
                     disabled={busy === `decide-${plan.id}`}
-                    className="ml-auto text-xs font-medium text-accent-ink hover:underline disabled:opacity-60"
+                    className="ml-auto text-xs font-medium text-accent-ink underline underline-offset-2 disabled:opacity-60"
                   >
                     Settle on this
                   </button>
@@ -410,7 +410,7 @@ function PlanCard({
             <>
               <Link
                 href={`/activities/${plan.activityId}`}
-                className="font-medium text-accent-ink hover:underline"
+                className="font-medium text-accent-ink underline underline-offset-2"
               >
                 See the activity
               </Link>

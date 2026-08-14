@@ -107,7 +107,7 @@ export default async function AdminOverviewPage() {
         Figures marked <em>approximate</em> are derived from current state rather
         than recorded events. True cohort retention, onboarding drop-off and
         network health live on{" "}
-        <Link href="/admin/analytics" className="text-accent-ink hover:underline">
+        <Link href="/admin/analytics" className="text-accent-ink underline underline-offset-2">
           Analytics
         </Link>
         , which is computed from the event log.

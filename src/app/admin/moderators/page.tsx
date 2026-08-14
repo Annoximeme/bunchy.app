@@ -55,7 +55,7 @@ export default async function AdminModeratorsPage() {
           <p className="text-sm font-medium">No applications yet.</p>
           <p className="mt-1 text-sm text-muted">
             The page is at{" "}
-            <Link href="/moderators" className="text-accent-ink hover:underline">
+            <Link href="/moderators" className="text-accent-ink underline underline-offset-2">
               /moderators
             </Link>
             . It is linked from the footer; nothing else points at it yet.

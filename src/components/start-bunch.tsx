@@ -287,7 +287,7 @@ export function StartBunch({ initialQuery = "" }: { initialQuery?: string }) {
                         : new Set(preview.search.people.map((p) => p.profileId)),
                     )
                   }
-                  className="text-sm font-medium text-accent-ink hover:underline"
+                  className="text-sm font-medium text-accent-ink underline underline-offset-2"
                 >
                   {selected.size === preview.search.people.length
                     ? "Clear selection"
@@ -497,7 +497,7 @@ function Candidate({
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="mt-2 text-sm font-medium text-accent-ink hover:underline"
+            className="mt-2 text-sm font-medium text-accent-ink underline underline-offset-2"
           >
             {open ? "Hide the breakdown" : "Why this match?"}
           </button>
@@ -650,7 +650,7 @@ function NobodyFound({
         </Button>
         <Link
           href="/profile"
-          className="inline-flex items-center text-sm font-medium text-accent-ink hover:underline"
+          className="inline-flex items-center text-sm font-medium text-accent-ink underline underline-offset-2"
         >
           Invite someone you know
         </Link>

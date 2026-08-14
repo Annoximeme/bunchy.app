@@ -111,7 +111,7 @@ export default async function ProfilePage() {
               <h2 className="text-lg font-semibold tracking-tight">Interests</h2>
               <Link
                 href="/onboarding/interests"
-                className="text-sm font-medium text-accent-ink hover:underline"
+                className="text-sm font-medium text-accent-ink underline underline-offset-2"
               >
                 Edit
               </Link>
@@ -137,7 +137,7 @@ export default async function ProfilePage() {
               </h2>
               <Link
                 href="/onboarding/goals"
-                className="text-sm font-medium text-accent-ink hover:underline"
+                className="text-sm font-medium text-accent-ink underline underline-offset-2"
               >
                 Edit
               </Link>
@@ -158,7 +158,7 @@ export default async function ProfilePage() {
               </h2>
               <Link
                 href="/onboarding/availability"
-                className="text-sm font-medium text-accent-ink hover:underline"
+                className="text-sm font-medium text-accent-ink underline underline-offset-2"
               >
                 Edit
               </Link>
@@ -175,7 +175,7 @@ export default async function ProfilePage() {
               <h2 className="text-lg font-semibold tracking-tight">Your details</h2>
               <Link
                 href="/onboarding/basics"
-                className="text-sm font-medium text-accent-ink hover:underline"
+                className="text-sm font-medium text-accent-ink underline underline-offset-2"
               >
                 Edit
               </Link>

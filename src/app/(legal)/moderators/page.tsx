@@ -123,7 +123,7 @@ export default async function ModeratorsPage() {
           Write one line to{" "}
           <a
             href={`mailto:${LEGAL.supportContact}`}
-            className="text-accent-ink hover:underline"
+            className="text-accent-ink underline underline-offset-2"
           >
             {LEGAL.supportContact}
           </a>{" "}

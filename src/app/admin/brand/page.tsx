@@ -196,7 +196,7 @@ export default async function AdminBrandPage() {
                   The image every shared link already previews with is at{" "}
                   <a
                     href="/opengraph-image"
-                    className="text-accent-ink hover:underline"
+                    className="text-accent-ink underline underline-offset-2"
                   >
                     /opengraph-image
                   </a>{" "}
@@ -225,7 +225,7 @@ export default async function AdminBrandPage() {
                   No member counts, no testimonials from accounts that are not
                   real, and nothing implying we verify identities — we cannot,
                   and{" "}
-                  <a href="/safety" className="text-accent-ink hover:underline">
+                  <a href="/safety" className="text-accent-ink underline underline-offset-2">
                     /safety
                   </a>{" "}
                   says so in writing. An advert that contradicts the safety page

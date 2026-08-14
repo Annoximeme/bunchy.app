@@ -62,7 +62,7 @@ export default async function PublicProfilePage({
             </p>
             <Link
               href="/profile"
-              className="text-sm font-medium text-accent-ink hover:underline"
+              className="text-sm font-medium text-accent-ink underline underline-offset-2"
             >
               Back to editing
             </Link>

@@ -34,7 +34,7 @@ export default async function StartPage({
 
         <p className="mt-8 text-sm text-muted">
           Know exactly what you want to build?{" "}
-          <Link href="/bunches/new" className="font-medium text-accent-ink hover:underline">
+          <Link href="/bunches/new" className="font-medium text-accent-ink underline underline-offset-2">
             Use the full form
           </Link>
           .

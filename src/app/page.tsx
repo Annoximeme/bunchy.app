@@ -810,7 +810,7 @@ function Band({
           />
           {label}
         </span>
-        <p className="mt-2 max-w-xs text-sm text-white/45">{blurb}</p>
+        <p className="mt-2 max-w-xs text-sm text-white/55">{blurb}</p>
       </div>
       {/*
         auto-fit rather than a fixed three columns: two of the three bands hold
