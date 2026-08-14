@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import { Avatar, cn } from "@/components/ui";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
  * Primary navigation.
@@ -166,13 +167,18 @@ export function AppNav({
               <span className="block truncate text-xs text-muted">@{username}</span>
             </span>
           </Link>
-          <button
-            onClick={signOut}
-            disabled={signingOut}
-            className="w-full rounded-[var(--radius-control)] px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-surface-sunken hover:text-ink disabled:opacity-60"
-          >
-            {signingOut ? "Signing out…" : "Sign out"}
-          </button>
+          <div className="flex items-center justify-between gap-2 pr-1">
+            <button
+              onClick={signOut}
+              disabled={signingOut}
+              className="flex-1 rounded-[var(--radius-control)] px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-surface-sunken hover:text-ink disabled:opacity-60"
+            >
+              {signingOut ? "Signing out…" : "Sign out"}
+            </button>
+            {/* Beside sign out rather than in the list above: it is a setting,
+                not a destination. */}
+            <ThemeToggle />
+          </div>
         </div>
       </nav>
 
