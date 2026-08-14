@@ -23,6 +23,13 @@ const schema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
   APP_URL: z.string().default("http://localhost:3000"),
+  /**
+   * Bypass for the public on/off gate. Caddy recognises exactly this value in
+   * a `bunchy_preview` cookie; the admin dashboard sets that cookie when it
+   * takes the site down, so whoever flipped the switch is not locked out by it.
+   * Unset means the dashboard refuses to turn the gate on at all.
+   */
+  PREVIEW_TOKEN: z.string().optional(),
 });
 
 /**

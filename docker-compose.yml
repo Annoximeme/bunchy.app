@@ -80,6 +80,10 @@ services:
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # So /admin/site can hand the admin a bypass cookie in the same response
+      # that takes the site down. Unset means the dashboard refuses to turn the
+      # gate on at all, rather than locking whoever tried out of the off switch.
+      PREVIEW_TOKEN: ${PREVIEW_TOKEN:-}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -93,6 +97,10 @@ services:
       # Uploaded avatars. The one piece of member data that is not in Postgres,
       # so it is the one other thing worth backing up.
       - uploads:/app/uploads
+      # The public on/off switch, writable here and read-only in Caddy. Same
+      # two marker files ./maintenance.sh writes from the host, so the shell
+      # and /admin/site are one mechanism rather than two that can disagree.
+      - ./docker/flags:/srv/flags
     # Both: `backend` to reach Postgres, `egress` to reach the SMTP provider.
     # Publishing no ports is what keeps it unreachable from outside — being on
     # a bridge network does not expose it.
