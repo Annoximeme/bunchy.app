@@ -543,30 +543,44 @@ export default async function LandingPage() {
 
         {/* 7 — Final CTA */}
         <section className="px-5 pb-24">
+          {/*
+            The padding used to be 80px top and bottom against 24px at the
+            sides, so the headline ran nearly edge to edge inside a card that
+            was otherwise generously spaced. The sides now scale with the card
+            rather than staying at a phone-sized inset, and the headline gets a
+            max-width so it breaks at its own full stop instead of wherever the
+            card happens to end.
+
+            The vertical rhythm was also inverted: the gap *below* the subtitle
+            was smaller than the one above it, which bunched all three text
+            blocks together and then jumped to the button. The subtitle now sits
+            tight to the headline it continues, and the paragraph starts a new
+            beat with more air, not less.
+          */}
           <div
-            className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] px-6 py-20 text-center"
+            className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] px-6 py-20 text-center sm:px-14"
             style={{
               background: "linear-gradient(120deg, #FF5C6C 0%, #7657FF 100%)",
             }}
           >
-            <h2 className="text-balance text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+            <h2 className="mx-auto max-w-3xl text-balance text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl">
               Find your people. Do something together.
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg font-semibold text-white/90">
+            <p className="mx-auto mt-5 max-w-lg text-lg font-semibold text-white/90">
               Online. In person. Or both.
             </p>
-            <p className="mx-auto mt-3 max-w-lg text-white/80">
+            <p className="mx-auto mt-6 max-w-lg text-white/80">
               Three minutes to say what you are into and when you are free. The
               next step is an actual evening with actual people.
             </p>
             <Link
               href="/signup"
-              className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[#172033] transition-transform duration-200 hover:scale-[1.04]"
+              className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[#172033] transition-transform duration-200 hover:scale-[1.04]"
             >
               Find my bunch
               <ArrowRight size={18} aria-hidden />
             </Link>
-            <p className="mt-6 text-sm text-white/75">
+            <p className="mx-auto mt-5 max-w-sm text-sm text-white/75">
               Free, 16+, and you can delete everything in two clicks.
             </p>
           </div>
