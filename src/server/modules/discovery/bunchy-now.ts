@@ -29,11 +29,22 @@ import { findPeople, type FindPeopleResult } from "@/server/modules/discovery/fi
  * or starts something, and those exist.
  */
 
+/**
+ * The horizon, phrased so the parser hears a *time* and nothing else.
+ *
+ * These strings are load-bearing. "someone to do something with" reads as
+ * neutral and parses to `goals: [ACTIVITY_PARTNERS]`, which silently filtered
+ * the default board down to people who had ticked that one goal — a member
+ * three streets away with a live status simply did not appear, and the only
+ * clue was a "try dropping: goals" hint under an empty state.
+ *
+ * A test pins that these parse to no goals and no interests.
+ */
 const HORIZON_QUERY: Record<Horizon | "all", string> = {
   now: "someone free right now",
   tonight: "someone free tonight",
   weekend: "someone free this weekend",
-  all: "someone to do something with",
+  all: "someone free",
 };
 
 export interface BunchyNowFilters {
