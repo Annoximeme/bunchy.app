@@ -104,6 +104,9 @@ export default async function DiscoverPage() {
         <LinkButton href="/now" size="sm">
           Bunchy Now
         </LinkButton>
+        <LinkButton href="/surprise" variant="secondary" size="sm">
+          Surprise me
+        </LinkButton>
         <LinkButton
           href="/radar"
           variant="secondary"
