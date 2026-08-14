@@ -31,7 +31,7 @@ export default async function GuidelinesPage() {
         subtitle="How to work the queue, what your account can and cannot do, and the calls that are not yours to make."
       />
 
-      <Panel
+      <Section
         title="The short version"
         note="If you remember nothing else on this page, remember these."
       >
@@ -64,9 +64,9 @@ export default async function GuidelinesPage() {
             protects a defensible call as much as it catches a bad one.
           </Rule>
         </ol>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="What your account can do"
         note={
           admin
@@ -75,7 +75,14 @@ export default async function GuidelinesPage() {
         }
         className="mt-6"
       >
-        <div className="overflow-x-auto">
+        <div
+          // Focusable so a keyboard user can actually scroll it. A region that
+          // only a mouse can pan is a region a keyboard user cannot read.
+          tabIndex={0}
+          role="region"
+          aria-label="Which actions each staff role may take"
+          className="overflow-x-auto rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
           <table className="w-full min-w-[34rem] text-sm">
             <caption className="sr-only">
               Moderation actions and who may take them
@@ -112,9 +119,9 @@ export default async function GuidelinesPage() {
             etiquette, so a mistake here fails rather than goes through.
           </p>
         </div>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="Working the queue"
         note="Reports arrive Open. Nothing is urgent because it is old; some things are urgent because of what they are."
         className="mt-6"
@@ -173,9 +180,9 @@ export default async function GuidelinesPage() {
           after being told to stop. Removed the messages, suspended 7 days.&rdquo;</em>{" "}
           Not: <em>&ldquo;dealt with&rdquo;</em>.
         </p>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="The eight reasons, and what usually follows"
         note="A starting point, not a tariff. The reason a member picked is their description of the problem, not your finding."
         className="mt-6"
@@ -222,9 +229,9 @@ export default async function GuidelinesPage() {
             then="Judge it on the content. If it turns out to be one of the above, treat it as that."
           />
         </dl>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="Choosing how hard to act"
         note="Work down this list and stop at the first step that actually solves it."
         className="mt-6"
@@ -259,9 +266,9 @@ export default async function GuidelinesPage() {
             procedure.
           </Step>
         </ol>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="What you can see, and what that obliges you to"
         className="mt-6"
       >
@@ -306,9 +313,9 @@ export default async function GuidelinesPage() {
           is the one thing that ends a moderator&rsquo;s tenure immediately, with
           no conversation about intent.
         </p>
-      </Panel>
+      </Section>
 
-      <Panel
+      <Section
         title="When it is more than a platform problem"
         note="Removing a message is not a response to somebody being in danger."
         className="mt-6"
@@ -343,9 +350,9 @@ export default async function GuidelinesPage() {
           </Link>
           . It is worth reading, because it is what they have been promised.
         </p>
-      </Panel>
+      </Section>
 
-      <Panel title="The audit log" className="mt-6">
+      <Section title="The audit log" className="mt-6">
         <p className="text-sm text-ink-soft">
           Every action on this dashboard writes an entry before it takes effect
           — who, what, when, and the reason you gave. There is no path that
@@ -365,8 +372,34 @@ export default async function GuidelinesPage() {
           </Link>
           .
         </p>
-      </Panel>
+      </Section>
     </>
+  );
+}
+
+/**
+ * A Panel with its body padded.
+ *
+ * `Panel` deliberately pads only its title bar and hands `children` through
+ * untouched, so every consumer supplies its own — which meant the cards and
+ * table rows here sat flush against the panel edge while the heading above them
+ * was inset. One wrapper rather than eight copies of `p-5`.
+ */
+function Section({
+  title,
+  note,
+  className,
+  children,
+}: {
+  title: string;
+  note?: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Panel title={title} note={note} className={className}>
+      <div className="p-5">{children}</div>
+    </Panel>
   );
 }
 
