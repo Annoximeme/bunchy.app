@@ -1,500 +1,399 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { ArrowRight, Heart, MessageCircle, Sparkles } from "lucide-react";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, Chip, CompatibilityBadge, LinkButton } from "@/components/ui";
+import { BunchCluster } from "@/components/landing/bunch-cluster";
+import { BunchMoment } from "@/components/landing/bunch-moment";
 
 /**
  * The landing page.
  *
- * It has ten seconds to explain the product, so it shows the product: a real
- * person card, a real bunch, a real activity. The examples below are
- * illustrative and labelled as such — inventing fake member counts or
- * testimonials would be a lie told before anyone has even signed up.
+ * A fixed composition rather than a themed one: navy where the product is being
+ * shown off, cream where it is being explained, whatever the reader's theme
+ * says. Every colour here is written literally for that reason — the tokens
+ * flip, and a page that inverts halfway down is not a composition.
+ *
+ * The font is self-hosted through next/font. Google's CDN is blocked by this
+ * app's CSP, and rightly: a font request is a request that carries a referrer
+ * to somebody else's server on every single page load.
  */
+const display = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export default async function LandingPage() {
   const viewer = await getViewer();
   if (viewer) redirect(onboardingPath(viewer.onboardingStage));
 
   return (
-    <div className="min-h-dvh">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
-        <BunchyLogo height={22} color="var(--color-ink)" />
-        <nav className="flex items-center gap-2">
-          <ThemeToggle />
-          <LinkButton href="/login" variant="ghost" size="sm">
-            Sign in
-          </LinkButton>
-          <LinkButton href="/signup" size="sm">
-            Join
-          </LinkButton>
-        </nav>
+    <div className={`${display.className} min-h-dvh bg-navy-base text-white`}>
+      {/* 1 — Navigation */}
+      <header className="absolute inset-x-0 top-0 z-40">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
+          <BunchyLogo height={24} color="#FFFFFF" />
+          <nav className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="rounded-full px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:text-white"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-full bg-coral-primary px-5 py-2.5 text-sm font-semibold text-[#172033] transition-transform duration-200 hover:scale-[1.03]"
+            >
+              Join {brand.name}
+            </Link>
+          </nav>
+        </div>
       </header>
 
       <main id="main">
-        {/* Hero */}
-        <section className="relative overflow-hidden">
-          {/*
-            Two soft colour fields behind the hero rather than a flat canvas.
-            They are the brand's own coral and purple at very low opacity, which
-            warms the page without becoming a gradient anybody has to look at —
-            the cards in the right-hand column are the thing to look at.
-          */}
+        {/* 2 — Hero */}
+        <section className="relative overflow-hidden pb-20 pt-28 md:pt-36">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10"
+            className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(60rem 30rem at 12% -10%, color-mix(in oklab, var(--color-accent) 16%, transparent), transparent 70%), radial-gradient(48rem 26rem at 92% 0%, color-mix(in oklab, var(--color-purple) 13%, transparent), transparent 68%)",
+                "radial-gradient(48rem 30rem at 8% -8%, rgba(255,92,108,0.20), transparent 62%), radial-gradient(44rem 28rem at 96% 8%, rgba(118,87,255,0.26), transparent 62%)",
             }}
           />
 
-          <div className="mx-auto max-w-6xl px-5 pb-20 pt-10 md:pt-20">
-            <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
-            <div className="animate-rise">
-              <Chip tone="teal" className="mb-6">
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 lg:grid-cols-[1.02fr_1fr]">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-mint-status/30 bg-mint-status/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-mint-status">
+                <span className="size-1.5 rounded-full bg-mint-status" />
                 No feed. No followers. Just people.
-              </Chip>
-              <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+              </span>
+
+              <h1 className="mt-6 text-balance text-[2.75rem] font-extrabold leading-[1.03] tracking-tight sm:text-6xl">
                 Making friends as an adult is{" "}
-                <span className="bg-[linear-gradient(100deg,var(--color-accent),var(--color-purple))] bg-clip-text text-transparent">
+                <span
+                  style={{
+                    background:
+                      "linear-gradient(100deg, #FF5C6C 0%, #7657FF 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
                   absurdly hard.
-                </span>
-                <br />
+                </span>{" "}
                 It shouldn&rsquo;t be.
               </h1>
-              <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-soft">
+
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/70">
                 You left school, the group chat went quiet, and everyone got
-                busy. {brand.name} finds the few people worth your evenings —
-                a raid on Thursday, a coffee on Saturday, whichever you have the
-                energy for — and makes the first move less awkward.
+                busy. {brand.name} finds four or five people near you worth an
+                evening — then helps you actually make the plan.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                <LinkButton href="/signup" size="lg">
-                  Find my bunch
-                </LinkButton>
-                <LinkButton href="#how" variant="secondary" size="lg">
-                  Explore {brand.name}
-                </LinkButton>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-8 py-4 text-base font-bold tracking-wide text-[#172033] shadow-[0_18px_40px_-18px_#FF5C6C] transition-transform duration-200 hover:scale-[1.04]"
+                >
+                  FIND MY BUNCH
+                  <ArrowRight size={18} aria-hidden />
+                </Link>
+                <Link
+                  href="/signup?start=surprise"
+                  className="inline-flex items-center gap-2 rounded-full border border-purple-ai bg-purple-ai/20 px-6 py-4 text-base font-semibold text-white shadow-[0_0_36px_-10px_#7657FF] transition-colors hover:bg-purple-ai/30"
+                >
+                  <Sparkles size={18} aria-hidden />
+                  Surprise me
+                </Link>
               </div>
 
-              {/*
-                One row, not a sentence plus a yellow panel. The panel version
-                sat directly under the buttons and read as a notification the
-                page was showing you, which is the opposite of a reward.
-
-                Being early is the only thing Bunchy can honestly offer someone
-                arriving before the members do, so it stays — phrased as a fact
-                rather than a countdown, because "137 spots left" is a pressure
-                tactic and §29 rules out anything that ranks one member above
-                another.
-              */}
-              <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-                <li>Free to join</li>
-                <li className="flex items-center gap-1.5">
-                  <span aria-hidden className="text-line">
-                    ·
-                  </span>
-                  Location stays approximate
-                </li>
-                <li className="flex items-center gap-1.5 font-medium text-yellow-ink">
-                  <span aria-hidden>★</span>
-                  Early members keep a founding badge
-                </li>
-              </ul>
+              <p className="mt-5 text-sm text-white/50">
+                Already know what you&rsquo;re looking for?{" "}
+                <Link
+                  href="/signup"
+                  className="font-medium text-white/80 underline underline-offset-4 hover:text-white"
+                >
+                  Explore Bunches
+                </Link>
+              </p>
             </div>
 
-            {/* The product, not a screenshot of it */}
-            <div className="animate-rise [animation-delay:120ms]">
-              {/*
-                The cluster says what a bunch is before any copy does — the same
-                idea the mark is built on, made out of people. Initials rather
-                than stock photography: invented faces on a page about meeting
-                real people is the one lie this product cannot afford.
-              */}
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex -space-x-2.5">
-                  {["Sarah", "Milan", "Elena", "Tomas", "Priya", "Wout"].map(
-                    (name) => (
-                      <Avatar
-                        key={name}
-                        name={name}
-                        size="sm"
-                        className="ring-2 ring-canvas"
-                      />
-                    ),
-                  )}
+            <BunchCluster />
+          </div>
+        </section>
+
+        {/* 3 — The contrast */}
+        <section className="px-5 py-20">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="reveal max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+              You don&rsquo;t need more followers. You need four people who
+              answer the group chat.
+            </h2>
+
+            <div className="reveal mt-12 grid gap-6 md:grid-cols-2">
+              {/* Everywhere else */}
+              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8">
+                <p className="text-xs font-semibold tracking-widest text-white/35">
+                  EVERYWHERE ELSE
+                </p>
+                <div className="mt-6 space-y-3">
+                  <p className="text-3xl font-bold text-white/45">
+                    1,284 followers
+                  </p>
+                  <p className="flex items-center gap-2 text-white/30">
+                    <Heart size={18} aria-hidden />
+                    17 likes
+                  </p>
+                  <p className="flex items-center gap-2 text-white/30">
+                    <MessageCircle size={18} aria-hidden />3 comments
+                  </p>
                 </div>
-                <p className="text-sm text-muted">
-                  A bunch is five to twelve people.
+                <p className="mt-8 border-t border-white/[0.06] pt-5 text-white/45">
+                  Still nobody to go out with.
                 </p>
               </div>
 
-              {/*
-                Rotated a degree or so and overlapped, so the three read as a
-                deck someone is holding rather than a stack of divs. They
-                straighten on hover.
-              */}
-              <div className="space-y-3">
-                <div className="rotate-[-0.8deg] transition-transform duration-300 hover:rotate-0">
-                  <ExamplePersonCard />
-                </div>
-                <div className="rotate-[0.6deg] transition-transform duration-300 hover:rotate-0">
-                  <ExampleBunchCard />
-                </div>
-                <div className="rotate-[-0.4deg] transition-transform duration-300 hover:rotate-0">
-                  <ExampleActivityCard />
-                </div>
-              </div>
-              <p className="mt-4 text-center text-xs text-muted">
-                Illustrative examples of what {brand.name} shows you.
-              </p>
-            </div>
-            </div>
-          </div>
-        </section>
-
-        {/* The problem, said plainly — editorial, deliberately not a card grid */}
-        <section className="band-warm py-24">
-          <div className="reveal mx-auto max-w-6xl px-5">
-            <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
-              <h2 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight md:text-5xl">
-                You don&rsquo;t need more followers. You need four people who
-                answer the group chat.
-              </h2>
-
-              {/*
-                Hairlines rather than cards. Three bordered boxes here made the
-                same shape as the section above and the section below it, and a
-                page where every idea arrives in an identical rectangle reads as
-                a template rather than an argument.
-              */}
-              <dl className="divide-y divide-line">
-                <Ache
-                  title="Everyone is “busy”"
-                  body="Not a brush-off — calendars genuinely stopped overlapping. So Bunchy asks when you are actually free, and only suggests people whose evenings match yours."
-                />
-                <Ache
-                  title="Apps optimise for the wrong thing"
-                  body="A feed wants your attention, so it keeps you scrolling past people instead of meeting one. Nothing here is ranked by how long it holds you."
-                />
-                <Ache
-                  title="One-on-one is a lot of pressure"
-                  body="Coffee with a stranger is an interview. Six people doing something together is not — and “something” can be a voice channel on a Tuesday just as easily as a bar on a Friday."
-                />
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        {/* How it works — a line with three stops on it */}
-        <section id="how" className="py-24">
-          <div className="reveal mx-auto max-w-6xl px-5">
-            <p className="text-sm font-semibold tracking-widest text-accent-ink">
-              HOW IT WORKS
-            </p>
-            <h2 className="mt-3 max-w-2xl text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-              Built to end with you closing the tab.
-            </h2>
-            <p className="mt-4 max-w-2xl text-lg text-ink-soft">
-              Most social products measure how long they keep you. {brand.name}{" "}
-              measures whether you met someone. Those two goals build very
-              different software.
-            </p>
-
-            {/*
-              A rule threaded through the three numerals, so the eye reads a
-              sequence instead of three parallel boxes. The line is hidden on
-              narrow screens, where the steps stack and the order is obvious
-              from the stacking itself.
-            */}
-            <ol className="relative mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+              {/* Here */}
               <div
-                aria-hidden
-                className="absolute left-[8%] right-[8%] top-6 hidden h-px md:block"
+                className="relative overflow-hidden rounded-3xl p-8"
                 style={{
                   background:
-                    "linear-gradient(to right, var(--color-accent), var(--color-purple), var(--color-mint))",
-                  opacity: 0.35,
+                    "linear-gradient(150deg, rgba(255,92,108,0.16), rgba(118,87,255,0.18))",
+                  border: "1px solid rgba(255,255,255,0.12)",
                 }}
-              />
+              >
+                <p className="text-xs font-semibold tracking-widest text-coral-primary">
+                  ON {brand.name.toUpperCase()}
+                </p>
+
+                <div className="mt-6 flex -space-x-3">
+                  {[
+                    { i: "S", c: "#FF5C6C" },
+                    { i: "M", c: "#7657FF" },
+                    { i: "E", c: "#55D6BE" },
+                    { i: "T", c: "#FFC857" },
+                  ].map((a) => (
+                    <span
+                      key={a.i}
+                      className="flex size-12 items-center justify-center rounded-full text-base font-bold text-white ring-4 ring-navy-base"
+                      style={{ background: a.c }}
+                    >
+                      {a.i}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <Pill>🎮 Gaming</Pill>
+                  <Pill>🍜 Food</Pill>
+                  <Pill>🥾 Hiking</Pill>
+                </div>
+
+                <p className="mt-8 border-t border-white/10 pt-5 text-lg font-semibold text-white">
+                  &ldquo;We&rsquo;re going Saturday.&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4 — How it works, in daylight */}
+        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
+          <div className="reveal mx-auto max-w-6xl">
+            <p className="text-sm font-bold tracking-widest text-coral-primary">
+              HOW {brand.name.toUpperCase()} WORKS
+            </p>
+            <h2 className="mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Three steps, and none of them are scrolling.
+            </h2>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
               <Step
                 n="01"
-                tone="accent"
-                title="Tell us who you are"
-                body="A short conversation, not a form. Interests, what you're looking for, and when you're actually free."
+                colour="#FF5C6C"
+                title="Share what you like doing"
+                body="A short conversation, not a form. What you are into, what you are looking for, and when you are actually free."
               />
               <Step
                 n="02"
-                tone="purple"
-                title="Meet a few good matches"
-                body="Compatibility looks at goals, availability, distance and style — not just tags you both ticked."
+                colour="#7657FF"
+                title="Get matched into a local bunch"
+                body="Four to six people near you with real overlap — interests, goals, and evenings that line up with yours."
               />
               <Step
                 n="03"
-                tone="mint"
-                title="Join a small bunch"
-                body="Five to twelve people with something real in common. Some meet in a bar, some only ever in a game or a call — both are the point, and you pick which you are up for."
+                colour="#55D6BE"
+                title="Make a plan and go"
+                body="A game on Thursday, a coffee on Saturday. The bunch picks something and Bunchy gets out of the way."
               />
-            </ol>
-          </div>
-        </section>
-
-        {/* Two ways to meet — split down the middle, because that is the idea */}
-        <section className="px-5 py-10">
-          {/*
-            An inset panel rather than a full-bleed split. Full width, its dark
-            half ran straight into the dark band below it and the two merged
-            into one large mass — which cost the band underneath the impact of
-            being the only dark thing on the page. Canvas around the panel keeps
-            them separate, and the rounded edge makes the split read as a
-            deliberate object.
-          */}
-          <div className="reveal mx-auto grid max-w-6xl overflow-hidden rounded-[var(--radius-card)] shadow-[0_24px_60px_-40px_rgb(23_32_51/0.5)] md:grid-cols-2">
-          {/*
-            Half dark, half daylight, edge to edge and without a card in sight.
-            The section argues that online and in person are equals, and two
-            identical white boxes side by side argued it far less convincingly
-            than the page simply splitting in two.
-          */}
-          <div
-            className="relative overflow-hidden px-6 py-16 md:px-10"
-            style={{
-              /*
-                Hard-coded, like the short-list panel below and for the same
-                reason: `bg-ink` with `text-canvas` inverts in dark mode, so this
-                half rendered as a white panel on a dark page — the screen-lit
-                side of a split about screens, glowing white at night.
-              */
-              background:
-                "linear-gradient(150deg, #161f33 0%, #1c1b33 60%, #221a33 100%)",
-            }}
-          >
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(30rem 20rem at 20% 10%, rgb(118 87 255 / 0.28), transparent 70%)",
-              }}
-            />
-            <div className="relative mx-auto max-w-md text-white">
-              <p className="text-sm font-semibold tracking-widest text-white/65">
-                ONLINE
-              </p>
-              <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight">
-                A voice channel counts.
-              </h2>
-              <p className="mt-4 leading-relaxed text-white/75">
-                Co-op nights, watch-alongs, study sessions, a bunch that lives in
-                its own chat. Distance stops mattering, so matching leans on what
-                you are into and when you are free. The meeting link is only ever
-                shown to people who joined.
-              </p>
-            </div>
-          </div>
-
-          <div className="band-warm px-6 py-16 md:px-10">
-            <div className="mx-auto max-w-md">
-              <p className="text-sm font-semibold tracking-widest text-accent-ink">
-                IN PERSON
-              </p>
-              <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight">
-                So does a coffee.
-              </h2>
-              <p className="mt-4 leading-relaxed text-ink-soft">
-                Board games, climbing, a walk, a bar. Matching adds distance to
-                the picture, activities carry a venue and a time, and there is a{" "}
-                <Link href="/safety" className="text-accent-ink hover:underline">
-                  safety guide
-                </Link>{" "}
-                for the part where you meet a stranger.
-              </p>
-              <p className="mt-6 text-sm text-muted">
-                Nobody has to pick one. Your profile says how you like to spend
-                time, and suggestions follow it.
-              </p>
-            </div>
-          </div>
-          </div>
-        </section>
-
-        {/* What you won't find here — specimens of the things Bunchy refuses */}
-        <section className="px-5 py-16">
-          <div
-            className="reveal relative mx-auto max-w-6xl overflow-hidden rounded-[var(--radius-card)] px-6 py-16 ring-1 ring-white/10 md:px-12"
-            style={{
-              /*
-                Fixed colours, not tokens.
-                
-                This band used `bg-ink` with `text-canvas`, which flips in dark
-                mode — `--color-ink` is #f5f7fa there — so the one dark moment on
-                the page rendered as a large white slab for anyone browsing dark.
-                An inversion of the surrounding page is not the same thing as a
-                dark panel, and this section wants the second one. Hard-coded
-                navy and plum keep it dark in both themes; the ring is what keeps
-                it from dissolving into a dark canvas.
-              */
-              background:
-                "linear-gradient(155deg, #151d2f 0%, #1b1930 55%, #241b32 100%)",
-            }}
-          >
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(34rem 20rem at 8% 0%, rgb(255 92 108 / 0.20), transparent 65%), radial-gradient(30rem 18rem at 95% 100%, rgb(118 87 255 / 0.26), transparent 65%)",
-              }}
-            />
-
-            <div className="relative">
-              <p className="text-sm font-semibold tracking-widest text-[rgb(255_140_150)]">
-                THE SHORT LIST
-              </p>
-              <h2 className="mt-3 max-w-2xl text-balance text-4xl font-semibold tracking-tight text-white md:text-5xl">
-                What you won&rsquo;t find here.
-              </h2>
-              <p className="mt-4 max-w-xl text-white/65">
-                Every one of these exists in the apps you already have. None of
-                them are missing by accident.
-              </p>
-
-              {/*
-                Each item shows the thing itself, struck out, before naming it.
-                A list of four "no" statements is a paragraph; a follower count
-                with a line through it is the argument in one glance.
-              */}
-              <div className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2">
-                <Refusal
-                  specimen="12,431 followers"
-                  title="No follower counts"
-                  body="Nobody has an audience. There is no number that makes one member worth more than another."
-                />
-                <Refusal
-                  specimen="Loading 240 more…"
-                  title="No infinite scroll"
-                  body="Discover shows a finite set of suggestions. When you have seen them, you are done."
-                />
-                <Refusal
-                  specimen="🔥 5 people you may know"
-                  title="No engagement bait"
-                  body="We notify you when a person is waiting on you. Never to pull you back in."
-                />
-                <Refusal
-                  specimen="Kerkstraat 12, 2000"
-                  title="No exact location"
-                  body="We store a coarse area, never an address — precise enough to find people nearby, useless for finding you."
-                />
-              </div>
             </div>
           </div>
         </section>
 
-        {/* The questions people actually have before joining */}
-        <section className="py-20">
-          <div className="reveal mx-auto max-w-3xl px-5">
-            <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+        {/* 5 — The signature moment */}
+        <section className="px-5 py-24">
+          <div className="reveal mx-auto max-w-3xl text-center">
+            <p className="text-sm font-bold tracking-widest text-purple-ai">
+              THE BUNCH MOMENT
+            </p>
+            <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              This is the whole product, in one gesture.
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-white/65">
+              Matching looks at interests, goals, distance and when you are free
+              — then stops. There is no feed to fall into afterwards.
+            </p>
+          </div>
+
+          <div className="mt-12">
+            <BunchMoment />
+          </div>
+        </section>
+
+        {/* 6 — Real people, real plans */}
+        <section className="px-5 py-24">
+          <div className="reveal mx-auto max-w-6xl">
+            <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Real people. Real plans.
+            </h2>
+            {/*
+              No photographs and no testimonials. Bunchy has not launched, so
+              every face and quote here would have to be invented or bought — on
+              a page whose entire promise is meeting real people, and for a
+              product whose own brand rules forbid claiming traction it does not
+              have. These are the shapes of plans the product makes, labelled as
+              such, and they get replaced the moment there are real ones to show.
+            */}
+            <p className="mt-4 max-w-2xl text-white/60">
+              These are the kinds of plans bunches make. We will put real ones
+              here — with permission — as soon as there are real ones to show,
+              and not one day before.
+            </p>
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <Moment
+                shape="#FF5C6C"
+                tag="Board games"
+                title="Thursday night, six people, one table"
+                detail="Three strangers who all listed board games. Now it is a standing thing."
+                people={["S", "M", "E", "T", "P", "W"]}
+              />
+              <Moment
+                shape="#55D6BE"
+                tag="Coffee"
+                title="Saturday morning, no agenda"
+                detail="The low-stakes first meet most bunches start with."
+                people={["E", "T", "M"]}
+              />
+              <Moment
+                shape="#7657FF"
+                tag="Online"
+                title="Co-op night, six going"
+                detail="A bunch that lives in its own voice channel and likes it there."
+                people={["M", "W", "S", "P"]}
+              />
+              <Moment
+                className="sm:col-span-2"
+                shape="#FFC857"
+                tag="Outdoors"
+                title="Sunday walk, whoever is free"
+                detail="Availability is a real field here, so “whoever is free” is a query rather than a guess in a group chat."
+                people={["T", "S", "E", "W"]}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Objections — kept from the previous page, because they convert */}
+        <section className="px-5 py-20">
+          <div className="reveal mx-auto max-w-3xl">
+            <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
               Before you sign up.
             </h2>
-            <dl className="mt-10 divide-y divide-line border-y border-line">
+            <dl className="mt-10 divide-y divide-white/10 border-y border-white/10">
               <Question q="Is this a dating app?">
-                No, and it is not one with the labels changed either. There is no
-                swiping, no romantic intent field, and nothing that ranks people
-                by attractiveness. It is for friends — the thing that gets much
-                harder to find after school and that almost nothing is built for.
+                No, and it is not one with the labels changed either. No swiping,
+                no romantic intent field, nothing that ranks people by
+                attractiveness. It is for friends.
               </Question>
               <Question q="Is it actually free?">
                 Yes. No trial, no card, no paid tier holding the useful half
-                hostage. The assistant runs in-process rather than on a metered
-                API, which is what makes that sustainable rather than a promise
-                we quietly withdraw later.
+                hostage.
               </Question>
               <Question q="Who can see my profile?">
                 Signed-in members only — never search engines, never the open
                 internet. Your location is stored as an approximate area, never
-                an address, and you choose whether your exact age shows.
+                an address.
               </Question>
               <Question q="What if nobody near me has joined yet?">
-                Then Discover tells you so, plainly, with the number of people
-                nearby rather than an empty page pretending otherwise. Online
-                bunches work at any distance from day one, and inviting one
-                person changes your local picture more than anything else you
-                can do here.
-              </Question>
-              <Question q="What if I want to leave?">
-                Two clicks, from your profile. Your account and everything on it
-                goes; you can export it first if you want a copy.
+                Then Discover says so plainly, with the number of people nearby
+                rather than an empty page. Online bunches work at any distance
+                from day one.
               </Question>
             </dl>
           </div>
         </section>
 
-        {/* Close */}
+        {/* 7 — Final CTA */}
         <section className="px-5 pb-24">
           <div
-            className="mx-auto max-w-4xl overflow-hidden rounded-[var(--radius-card)] px-6 py-16 text-center"
+            className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] px-6 py-20 text-center"
             style={{
-              background:
-                "linear-gradient(135deg, color-mix(in oklab, var(--color-accent) 14%, var(--color-surface)), color-mix(in oklab, var(--color-purple) 14%, var(--color-surface)))",
+              background: "linear-gradient(120deg, #FF5C6C 0%, #7657FF 100%)",
             }}
           >
-            <h2 className="text-balance text-4xl font-semibold tracking-tight">
-              Go talk to someone.
+            <h2 className="text-balance text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Ready to find your bunch?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-ink-soft">
-              Tell us what you&rsquo;re into and when you&rsquo;re free.
-              We&rsquo;ll handle the introductions. It takes about three minutes,
-              and the next step is a real evening with real people.
+            <p className="mx-auto mt-4 max-w-lg text-white/85">
+              Three minutes to say what you are into and when you are free. The
+              next step is an actual evening with actual people.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <LinkButton href="/signup" size="lg">
-                Find my bunch
-              </LinkButton>
-              <LinkButton href="/safety" variant="secondary" size="lg">
-                How we keep it safe
-              </LinkButton>
-            </div>
-            <p className="mt-6 text-sm text-muted">
+            <Link
+              href="/signup"
+              className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[#172033] transition-transform duration-200 hover:scale-[1.04]"
+            >
+              Get Started Free
+              <ArrowRight size={18} aria-hidden />
+            </Link>
+            <p className="mt-6 text-sm text-white/75">
               Free, 16+, and you can delete everything in two clicks.
             </p>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-line py-10">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 text-sm text-muted">
+      <footer className="border-t border-white/10 py-10">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 text-sm text-white/50">
           <div className="flex items-center gap-3">
             <BunchyMark size={26} />
             <span>
               {brand.name} — {brand.tagline}
             </span>
           </div>
-          <div className="flex gap-5">
-            <Link href="/login" className="transition-colors hover:text-ink">
+          <div className="flex items-center gap-5">
+            <Link href="/login" className="transition-colors hover:text-white">
               Sign in
             </Link>
-            <Link href="/signup" className="transition-colors hover:text-ink">
-              Join
-            </Link>
-            {/* Before Privacy and Terms on purpose: someone deciding whether
-                this is safe to join should not have to read a policy to find
-                out what happens when it isn't. */}
-            <Link href="/safety" className="transition-colors hover:text-ink">
+            <Link href="/safety" className="transition-colors hover:text-white">
               Safety
             </Link>
-            <Link href="/privacy" className="transition-colors hover:text-ink">
+            <Link href="/privacy" className="transition-colors hover:text-white">
               Privacy
             </Link>
-            <Link href="/terms" className="transition-colors hover:text-ink">
+            <Link href="/terms" className="transition-colors hover:text-white">
               Terms
             </Link>
+            {/* This page is a fixed composition, but the control belongs
+                somewhere reachable for the pages that are not. */}
+            <ThemeToggle className="text-white/50 hover:bg-white/10 hover:text-white" />
           </div>
         </div>
       </footer>
@@ -502,175 +401,98 @@ export default async function LandingPage() {
   );
 }
 
-/**
- * A named ache, in the member's words rather than the product's.
- *
- * The tone is per card and fixed at the call site: three cards in three brand
- * colours read as three separate ideas, where three identical ones read as a
- * list somebody padded to fit the grid.
- */
-function Ache({ title, body }: { title: string; body: string }) {
-  /*
-    A row on a hairline rather than a bordered card. Card chrome around three
-    sentences adds weight without adding meaning, and this section sits between
-    two others that already use cards.
-  */
+/** Activity tags. Yellow is activities; mint is reserved for availability. */
+function Pill({ children }: { children: ReactNode }) {
   return (
-    <div className="py-6 first:pt-0 last:pb-0">
-      <dt className="text-lg font-semibold tracking-tight">{title}</dt>
-      <dd className="mt-2 leading-relaxed text-ink-soft">{body}</dd>
-    </div>
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-fun/30 bg-yellow-fun/15 px-3.5 py-1.5 text-sm font-medium text-yellow-fun">
+      {children}
+    </span>
   );
 }
 
 function Step({
   n,
-  tone,
+  colour,
   title,
   body,
 }: {
   n: string;
-  tone: "accent" | "purple" | "mint";
+  colour: string;
   title: string;
   body: string;
 }) {
-  /*
-    The numeral sits on the rule that threads the three steps together, so it
-    carries a canvas-coloured ring — without it the line runs straight through
-    the badge and the sequence stops reading as stops on a line.
-  */
-  const badge = {
-    accent: "bg-accent-soft text-accent-ink",
-    purple: "bg-purple-soft text-purple-ink",
-    mint: "bg-mint-soft text-mint-ink",
-  }[tone];
-
   return (
-    <li className="relative">
+    <div className="rounded-3xl bg-white p-7 shadow-[0_18px_50px_-30px_rgba(23,32,51,0.45)]">
       <span
-        className={`relative inline-flex size-12 items-center justify-center rounded-full text-sm font-semibold ring-8 ring-canvas ${badge}`}
+        className="flex size-12 items-center justify-center rounded-2xl text-sm font-extrabold text-white"
+        style={{ background: colour }}
       >
         {n}
       </span>
-      <h3 className="mt-5 text-xl font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 leading-relaxed text-ink-soft">{body}</p>
-    </li>
+      <h3 className="mt-5 text-xl font-bold tracking-tight">{title}</h3>
+      <p className="mt-2 leading-relaxed text-[#3d4759]">{body}</p>
+    </div>
+  );
+}
+
+function Moment({
+  shape,
+  tag,
+  title,
+  detail,
+  people,
+  className = "",
+}: {
+  shape: string;
+  tag: string;
+  title: string;
+  detail: string;
+  people: string[];
+  className?: string;
+}) {
+  return (
+    <div
+      className={`relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 ${className}`}
+    >
+      {/* The organic shape the brief asks for — behind the content, rather than
+          decorating an empty corner. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full blur-2xl"
+        style={{ background: shape, opacity: 0.22 }}
+      />
+      <div className="relative">
+        <span
+          className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+          style={{ background: `${shape}22`, color: shape }}
+        >
+          {tag}
+        </span>
+        <h3 className="mt-4 text-xl font-bold tracking-tight">{title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-white/60">{detail}</p>
+        <div className="mt-6 flex -space-x-2.5">
+          {people.map((initial, i) => (
+            <span
+              key={`${initial}-${i}`}
+              className="flex size-9 items-center justify-center rounded-full text-xs font-bold text-white ring-4 ring-navy-base"
+              style={{
+                background: ["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"][i % 4],
+              }}
+            >
+              {initial}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Question({ q, children }: { q: string; children: ReactNode }) {
-  /*
-    Objections, answered before they become reasons not to sign up. "Is this a
-    dating app" is the first thing most people will assume about a product that
-    matches strangers by compatibility, and leaving it unsaid costs more than
-    any amount of polish elsewhere buys.
-  */
   return (
     <div className="py-5">
-      <dt className="font-semibold tracking-tight">{q}</dt>
-      <dd className="mt-1.5 leading-relaxed text-ink-soft">{children}</dd>
-    </div>
-  );
-}
-
-function Refusal({
-  specimen,
-  title,
-  body,
-}: {
-  specimen: string;
-  title: string;
-  body: string;
-}) {
-  /*
-    The specimen is the borrowed artefact — a follower count, a location, a
-    notification — shown struck through in the colours of the thing being
-    refused, then named underneath. Marked aria-hidden: it is an illustration of
-    something absent, and read aloud in sequence it would sound like a feature
-    list of the opposite product.
-  */
-  return (
-    <div>
-      <span
-        aria-hidden
-        className="inline-flex items-center rounded-full bg-white/[0.06] px-3 py-1.5 text-sm text-white/45 line-through decoration-[rgb(255_92_108)] decoration-2"
-      >
-        {specimen}
-      </span>
-      <h3 className="mt-3 text-lg font-semibold tracking-tight text-white">
-        {title}
-      </h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-white/60">{body}</p>
-    </div>
-  );
-}
-
-function ExamplePersonCard() {
-  return (
-    <div className="card-surface p-5">
-      <div className="flex items-start gap-4">
-        <Avatar name="Sarah" size="lg" />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold tracking-tight">Sarah, 29</p>
-              <p className="text-sm text-muted">Antwerp region</p>
-            </div>
-            <CompatibilityBadge score={93} />
-          </div>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {["Gaming", "AI", "Movies", "Hiking"].map((t) => (
-              <Chip key={t}>{t}</Chip>
-            ))}
-          </div>
-          <p className="mt-3 text-sm text-ink-soft">
-            <span className="text-muted">Looking for </span>
-            gaming friends · local friends
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ExampleBunchCard() {
-  return (
-    <div className="card-surface p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-semibold tracking-tight">Gaming &amp; Tech</p>
-          <p className="text-sm text-muted">8 members · Antwerp · active evenings</p>
-        </div>
-        <CompatibilityBadge score={95} />
-      </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {["Gaming", "Technology", "AI", "PC building"].map((t) => (
-          <Chip key={t} tone="neutral">
-            {t}
-          </Chip>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ExampleActivityCard() {
-  return (
-    <div className="card-surface flex items-center justify-between gap-4 p-5 transition-transform duration-200 hover:-translate-y-0.5">
-      <div>
-        <p className="font-semibold tracking-tight">Co-op night — Deep Rock</p>
-        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-muted">
-          {/* Online is shown as a mode, not an apology. One of the three
-              example cards is online on purpose: these cards are the part of
-              the page people actually read, and a page of bars and cafés tells
-              someone who wants a voice channel that this is not for them. */}
-          <span className="rounded-full bg-purple-soft px-2 py-0.5 text-xs font-medium text-purple-ink">
-            Online
-          </span>
-          Thursday 20:00 · 2 spots left
-        </p>
-      </div>
-      <Chip tone="positive">6 going</Chip>
+      <dt className="font-bold tracking-tight">{q}</dt>
+      <dd className="mt-1.5 leading-relaxed text-white/65">{children}</dd>
     </div>
   );
 }
