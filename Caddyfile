@@ -14,7 +14,18 @@
 	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
-{$DOMAIN}, www.{$DOMAIN} {
+# www exists, and goes exactly one place.
+#
+# Both hostnames used to serve the same site from the same block, which means a
+# crawler could reach every page at two addresses and had no way to know which
+# was canonical — the textbook duplicate-content split, where the two versions
+# divide whatever authority the page earns instead of accumulating it. A 301 is
+# the unambiguous answer, and it is permanent so it is cached as such.
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}
+
+{$DOMAIN} {
 	encode zstd gzip
 
 	# HSTS. Deliberately not preloaded: preloading is close to irreversible,

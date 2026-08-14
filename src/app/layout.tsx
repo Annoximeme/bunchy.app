@@ -23,11 +23,33 @@ export const metadata: Metadata = {
   },
   description: brand.subtitle,
   applicationName: brand.name,
+  /**
+   * Relative canonical, resolved per route against `metadataBase`.
+   *
+   * Belt to the Caddyfile's braces: www now 301s to the apex, so the two-host
+   * split cannot happen at the network level, and this says the same thing in
+   * the document for anything that arrives with a tracking parameter stapled to
+   * the URL. `?utm_source=…` is a different URL to a crawler, and without a
+   * canonical each campaign link becomes its own thin duplicate of the page.
+   */
+  alternates: { canonical: "./" },
   openGraph: {
     title: `${brand.name} — ${brand.tagline}`,
     description: brand.subtitle,
     siteName: brand.name,
     type: "website",
+    locale: "en_GB",
+    url: "./",
+  },
+  /**
+   * Without this the card falls back to a small thumbnail beside the text. The
+   * OG image is a 1200×630 composition that is illegible at that size, so the
+   * one thing it exists to do only happens if the card type is declared.
+   */
+  twitter: {
+    card: "summary_large_image",
+    title: `${brand.name} — ${brand.tagline}`,
+    description: brand.subtitle,
   },
   // This is a place to meet people, not a page to be indexed for.
   robots: { index: true, follow: true },
