@@ -42,6 +42,31 @@
 		health_interval 30s
 	}
 
+	# When the app is unreachable — a deploy, a restart, an outage — serve the
+	# maintenance page rather than Caddy's bare error text. Every deploy takes
+	# the app down for around twenty seconds, so without this there is a window
+	# on every single release where the site says "502 Bad Gateway" to whoever
+	# is looking.
+	#
+	# Only the upstream-is-down statuses are caught. A 404 or a 500 raised *by*
+	# the app is the app's own answer and must not be dressed up as maintenance:
+	# doing that would hide real errors behind a reassuring page.
+	handle_errors {
+		@down expression {err.status_code} in [502, 503, 504]
+		handle @down {
+			root * /srv/maintenance
+			rewrite * /maintenance.html
+			# 503, not 200. A maintenance page that returns "OK" tells crawlers
+			# the site is fine and this is its content, which is how an outage
+			# turns into a de-indexing. Retry-After says how long to wait.
+			file_server {
+				status 503
+			}
+			header Retry-After "120"
+			header Cache-Control "no-store, must-revalidate"
+		}
+	}
+
 	log {
 		output stdout
 		format console

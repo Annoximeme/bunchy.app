@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bunchy — back shortly</title>
+    <!--
+      Keep this page out of search results. It is served with a 503 so crawlers
+      already know to come back, but a maintenance page that gets indexed is a
+      maintenance page that outranks the real one for a week afterwards.
+    -->
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="dark" />
+
+    <!--
+      Bunchy — maintenance.
+
+      Served by Caddy when the app container cannot be reached: during a deploy,
+      a restart, or an outage. That is the whole reason it is a flat file with
+      no build step, no framework and nothing loaded from anywhere. Every asset
+      a maintenance page depends on is an asset that can be down at the same
+      time as the thing it is apologising for, so this file depends on nothing —
+      the logo is inline SVG, the type is the system stack, and there is no
+      JavaScript at all.
+
+      Pinned dark rather than theme-aware, matching the landing page: this is a
+      fixed composition, and a page that inverts based on an OS setting is two
+      compositions maintained by nobody.
+    -->
+    <style>
+      :root {
+        --navy: #0a0e1a;
+        --surface: rgba(255, 255, 255, 0.04);
+        --line: rgba(255, 255, 255, 0.1);
+        --ink: #ffffff;
+        --ink-soft: rgba(255, 255, 255, 0.66);
+        --ink-faint: rgba(255, 255, 255, 0.4);
+        --coral: #ff5c6c;
+        --mint: #55d6be;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--navy);
+        color: var(--ink);
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        /* The same two washes the landing page opens with, so this reads as
+           the same product having a quiet moment rather than a different site. */
+        background-image:
+          radial-gradient(
+            40rem 26rem at 12% -10%,
+            rgba(255, 92, 108, 0.18),
+            transparent 62%
+          ),
+          radial-gradient(
+            38rem 24rem at 92% 6%,
+            rgba(118, 87, 255, 0.22),
+            transparent 62%
+          );
+        background-repeat: no-repeat;
+      }
+
+      main {
+        width: 100%;
+        max-width: 34rem;
+        text-align: center;
+      }
+
+      .mark {
+        display: block;
+        margin: 0 auto 28px;
+      }
+
+      /*
+        The pulse lives on the status dot, not the logo.
+        Fading the brand mark in and out means that for most of every cycle the
+        first thing on the page is a washed-out logo, which reads as another
+        thing that is broken — on the one page whose entire job is to say that
+        nothing is. The dot is the conventional "still alive" idiom and costs
+        the mark nothing.
+      */
+      @media (prefers-reduced-motion: no-preference) {
+        .dot {
+          animation: breathe 2.4s ease-in-out infinite;
+        }
+      }
+
+      @keyframes breathe {
+        from,
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.45;
+          transform: scale(0.82);
+        }
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid rgba(85, 214, 190, 0.3);
+        background: rgba(85, 214, 190, 0.1);
+        color: var(--mint);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mint);
+      }
+
+      h1 {
+        margin: 22px 0 0;
+        font-size: clamp(2rem, 6vw, 2.75rem);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        font-weight: 800;
+        text-wrap: balance;
+      }
+
+      p {
+        margin: 16px auto 0;
+        max-width: 30rem;
+        color: var(--ink-soft);
+        font-size: 1.05rem;
+      }
+
+      .panel {
+        margin-top: 32px;
+        padding: 20px 24px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        border-radius: 20px;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+      }
+
+      .panel strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .retry {
+        display: inline-block;
+        margin-top: 28px;
+        padding: 14px 30px;
+        border-radius: 999px;
+        background: var(--coral);
+        color: #172033;
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+      }
+
+      .retry:hover {
+        transform: scale(1.03);
+      }
+
+      .retry:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+      }
+
+      footer {
+        margin-top: 36px;
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <!-- The four-shape mark, inline. Geometry matches SHAPES in
+           src/components/logo.tsx; if that changes, change this too. -->
+      <svg
+        class="mark"
+        width="56"
+        height="56"
+        viewBox="0 0 48 48"
+        role="img"
+        aria-label="Bunchy"
+      >
+        <rect
+          x="4.8" y="6.2" width="21.4" height="21.4" rx="7.2"
+          fill="#FF5C6C" transform="rotate(-7 15.5 16.9)"
+        />
+        <rect
+          x="29" y="10.4" width="14.2" height="14.2" rx="4.8"
+          fill="#7657FF" transform="rotate(13 36.1 17.5)"
+        />
+        <rect
+          x="7.6" y="30.6" width="14.6" height="14.6" rx="4.9"
+          fill="#55D6BE" transform="rotate(8 14.9 37.9)"
+        />
+        <rect
+          x="26.4" y="28.4" width="16.2" height="16.2" rx="5.5"
+          fill="#FFC857" transform="rotate(-10 34.5 36.5)"
+        />
+      </svg>
+
+      <span class="badge"><span class="dot"></span>Maintenance</span>
+
+      <h1>Back in a few minutes.</h1>
+
+      <p>
+        We&rsquo;re shipping an update to Bunchy. This usually takes a minute or
+        two, and the site comes back on its own.
+      </p>
+
+      <div class="panel">
+        <strong>Nothing is lost.</strong> Your account, your bunches, your
+        messages and any plans you&rsquo;ve made are exactly where you left them.
+      </div>
+
+      <a class="retry" href="/">Try again</a>
+
+      <footer>Bunchy — find your people.</footer>
+    </main>
+  </body>
+</html>
