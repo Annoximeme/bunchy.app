@@ -95,8 +95,21 @@ export default async function DiscoverPage() {
         </div>
       )}
 
-      <div className="mb-4 md:hidden">
-        <LinkButton href="/radar" variant="secondary" size="sm">
+      {/*
+        The two destinations kept off the mobile bar, carried here instead.
+        Bunchy Now leads: it answers "is anyone around right now", which is the
+        question somebody opening this page at 8pm actually has.
+      */}
+      <div className="mb-6 flex flex-wrap gap-2.5">
+        <LinkButton href="/now" size="sm">
+          Bunchy Now
+        </LinkButton>
+        <LinkButton
+          href="/radar"
+          variant="secondary"
+          size="sm"
+          className="md:hidden"
+        >
           Open the radar
         </LinkButton>
       </div>

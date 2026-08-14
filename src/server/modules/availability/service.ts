@@ -11,9 +11,11 @@ import { locationLabel } from "@/server/modules/geo/precision";
  * Three rules hold this feature to the shape §4 asks for, and each is enforced
  * here rather than left to the UI:
  *
- * 1. **It expires, always.** `expiresAt` is computed from the kind, never
- *    accepted from the client, and every read filters on it. There is no code
- *    path that writes a status without an expiry.
+ * 1. **It expires, always.** `expiresAt` is computed here, never taken from the
+ *    client, and every read filters on it. There is no code path that writes a
+ *    status without an expiry. A member may now choose a shorter or longer life
+ *    from a fixed list, but only within twice the kind's own default — a
+ *    week-long "free now" is a profile field pretending to be a status.
  * 2. **It is one row.** The table is keyed on the profile, so setting a status
  *    replaces the previous one. Nothing accumulates, which means there is no
  *    history of when this person was at a loose end — the permanent
@@ -37,7 +39,30 @@ const LIFETIME_HOURS: Record<AvailabilityKind, number> = {
   UP_FOR_GAMING: 6,
   UP_FOR_ACTIVITIES: 24,
   OPEN_TO_MEETING: 24,
+  UP_FOR_FOOD: 6,
+  UP_FOR_SPORTS: 12,
+  UP_FOR_NIGHTLIFE: 8,
+  UP_FOR_SPONTANEOUS: 4,
 };
+
+/**
+ * Bunchy Now lets a member choose how long the status lives, within limits.
+ *
+ * The kind still sets the default, and the ceiling is still the kind's own
+ * lifetime doubled — "free now" cannot be stretched into a week, because a
+ * week-long "free now" is a profile field pretending to be a status, and the
+ * whole point of this table is that everything in it goes away.
+ */
+export const CUSTOM_HOURS = [1, 3, 6, 12, 24, 48] as const;
+
+function lifetimeFor(kind: AvailabilityKind, requested?: number | null): number {
+  const base = LIFETIME_HOURS[kind];
+  if (!requested) return base;
+  const allowed = CUSTOM_HOURS.filter((h) => h <= base * 2);
+  return allowed.includes(requested as (typeof CUSTOM_HOURS)[number])
+    ? requested
+    : base;
+}
 
 /**
  * Below this many people, a cluster is not a crowd — it is one or two
@@ -51,6 +76,8 @@ const MAX_NOTE = 140;
 
 export interface SetStatusInput {
   kind: AvailabilityKind;
+  /** Hours, from CUSTOM_HOURS. Anything else falls back to the kind's default. */
+  expiresInHours?: number | null;
   note?: string | null;
   interestIds?: string[];
   mode?: "ONLINE" | "OFFLINE" | null;
@@ -74,7 +101,26 @@ export const AVAILABILITY_LABELS: Record<AvailabilityKind, string> = {
   UP_FOR_GAMING: "Up for gaming",
   UP_FOR_ACTIVITIES: "Up for activities",
   OPEN_TO_MEETING: "Open to meeting someone new",
+  UP_FOR_FOOD: "Up for food",
+  UP_FOR_SPORTS: "Up for sports",
+  UP_FOR_NIGHTLIFE: "Up for a night out",
+  UP_FOR_SPONTANEOUS: "Up for something spontaneous",
 };
+
+/**
+ * The three horizons Bunchy Now filters on.
+ *
+ * Derived from the kind rather than stored, because a member picking "free
+ * tonight" has already said when — asking again would be a second question with
+ * the same answer.
+ */
+export const HORIZON_KINDS = {
+  now: ["FREE_NOW", "UP_FOR_SPONTANEOUS", "LOOKING_FOR_SOMETHING"],
+  tonight: ["FREE_TONIGHT", "UP_FOR_FOOD", "UP_FOR_NIGHTLIFE", "UP_FOR_GAMING"],
+  weekend: ["FREE_THIS_WEEKEND", "UP_FOR_SPORTS", "UP_FOR_ACTIVITIES"],
+} as const satisfies Record<string, readonly AvailabilityKind[]>;
+
+export type Horizon = keyof typeof HORIZON_KINDS;
 
 /**
  * Sets or replaces the member's status.
@@ -95,7 +141,7 @@ export async function setAvailability(
 
   const interestIds = await validInterestIds(input.interestIds ?? []);
   const expiresAt = new Date(
-    now.getTime() + LIFETIME_HOURS[input.kind] * 3_600_000,
+    now.getTime() + lifetimeFor(input.kind, input.expiresInHours) * 3_600_000,
   );
 
   const row = await db.availabilityStatus.upsert({

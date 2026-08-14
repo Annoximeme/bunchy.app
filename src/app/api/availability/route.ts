@@ -12,10 +12,10 @@ import { consume } from "@/server/ratelimit";
 /**
  * Who's Up.
  *
- * Note what the schema does *not* accept: an expiry. The lifetime of a status
- * belongs to the service, because a client that could name its own would
- * eventually name one a year out and turn a transient signal into a permanent
- * availability record.
+ * The schema accepts a *preferred* lifetime, not an expiry: a number of hours
+ * from a fixed list, which the service clamps to at most twice the kind's own
+ * default. A client that could name an absolute expiry would eventually name one
+ * a year out and turn a transient signal into a permanent availability record.
  */
 
 const schema = z.object({
