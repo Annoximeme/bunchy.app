@@ -5,6 +5,7 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { brand } from "@/lib/brand";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, Chip, CompatibilityBadge, LinkButton } from "@/components/ui";
 
 /**
@@ -25,6 +26,7 @@ export default async function LandingPage() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
         <BunchyLogo height={22} color="var(--color-ink)" />
         <nav className="flex items-center gap-2">
+          <ThemeToggle />
           <LinkButton href="/login" variant="ghost" size="sm">
             Sign in
           </LinkButton>

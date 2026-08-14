@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { brand } from "@/lib/brand";
 import { env } from "@/server/env";
 import "./globals.css";
@@ -41,11 +42,30 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+/**
+ * Applied before the first paint, so a hard refresh never flashes the wrong
+ * theme at somebody who chose one.
+ *
+ * It carries the CSP nonce because this app runs a nonce-based policy with no
+ * `unsafe-inline` — an unnonced inline script here would simply be refused, and
+ * the theme would flicker on every load with nothing in the console to explain
+ * it. `system` is stored as the absence of the attribute, which is what lets the
+ * media query take over again.
+ */
+const THEME_SCRIPT = `try{var t=localStorage.getItem("bunchy-theme");if(t==="dark"||t==="light"){document.documentElement.dataset.theme=t}}catch(e){}`;
+
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
-    <html lang="en">
+    // `suppressHydrationWarning`: the script above edits this element before
+    // React arrives, which is the entire point of it running that early.
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"

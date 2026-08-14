@@ -96,8 +96,18 @@
  * values unconditionally. Overriding the variables the generated utilities
  * already reference is the mechanism that actually respects the preference.
  */
+/* --- Dark mode, in three states --------------------------------------------
+ *
+ * The OS preference is the default, and an explicit choice overrides it. That
+ * needs both rules: the media query is scoped so it cannot win against someone
+ * who asked for light, and the attribute rule repeats the tokens so it can win
+ * against an OS that says dark.
+ *
+ * `data-theme` is set on <html> before first paint by the inline script in the
+ * layout, so there is no flash of the wrong theme on a hard refresh.
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     /* Navy all the way down rather than neutral grey — the dark mode is the
        brand's own colour dimmed, not a different product at night. */
     --color-canvas: #101826;
@@ -143,6 +153,53 @@
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
   }
+}
+
+:root[data-theme="dark"] {
+    /* Navy all the way down rather than neutral grey — the dark mode is the
+       brand's own colour dimmed, not a different product at night. */
+    --color-canvas: #101826;
+    --color-surface: #182231;
+    --color-surface-sunken: #1f2a3b;
+    --color-ink: #f5f7fa;
+    --color-ink-soft: #c3cad6;
+    --color-muted: #8c97a8;
+    --color-line: #29344a;
+
+    /* The fills and their labels are unchanged: a coral button with a navy
+       label is the same object in both modes. Only the *text* colours move,
+       because those are the ones whose contrast depends on the background. */
+    --color-accent: #ff5c6c;
+    --color-accent-hover: #ff7180;
+    --color-accent-soft: #3a1d22;
+    --color-accent-ink: #ff8391;
+    --color-on-accent: #172033;
+
+    --color-purple: #7657ff;
+    --color-purple-soft: #241c4a;
+    --color-purple-ink: #9b85ff;
+    --color-on-purple: #ffffff;
+
+    --color-yellow: #ffc857;
+    --color-yellow-soft: #33270f;
+    --color-yellow-ink: #ffc857;
+    --color-on-yellow: #172033;
+
+    --color-mint: #55d6be;
+    --color-mint-soft: #10302b;
+    --color-mint-ink: #55d6be;
+    --color-on-mint: #172033;
+
+    --color-teal: #55d6be;
+    --color-teal-soft: #10302b;
+
+    --color-positive: #55d6be;
+    --color-positive-soft: #10302b;
+    --color-danger: #ff8a7d;
+    --color-danger-soft: #3a1c19;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
 }
 
 * {
