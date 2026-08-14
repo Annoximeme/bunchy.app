@@ -10,6 +10,8 @@ import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
 import { BunchMoment } from "@/components/landing/bunch-moment";
+import { UpFor } from "@/components/landing/up-for";
+import { HappeningNow } from "@/components/landing/happening-now";
 
 /**
  * The landing page.
@@ -91,10 +93,17 @@ export default async function LandingPage() {
                 It shouldn&rsquo;t be.
               </h1>
 
-              <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/70">
-                You left school, the group chat went quiet, and everyone got
-                busy. {brand.name} finds four or five people near you worth an
-                evening — then helps you actually make the plan.
+              <p className="mt-6 max-w-lg text-xl font-semibold leading-snug text-white/90">
+                Tell us what you want to do. We&rsquo;ll find your people.
+              </p>
+
+              <p className="mt-3 max-w-lg text-lg leading-relaxed text-white/65">
+                Gaming tonight, a film on Saturday, coffee next week.{" "}
+                {brand.name} finds people who are into the same things and free
+                when you are —{" "}
+                <span className="font-semibold text-mint-status">online</span>,{" "}
+                <span className="font-semibold text-yellow-fun">nearby</span>,
+                or both.
               </p>
 
               <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -128,6 +137,16 @@ export default async function LandingPage() {
             <BunchCluster />
           </div>
         </section>
+
+        {/* 2b — The product, starting here */}
+        <section className="px-5 pb-24">
+          <div className="reveal mx-auto max-w-6xl">
+            <UpFor />
+          </div>
+        </section>
+
+        {/* 2c — What's happening */}
+        <HappeningNow />
 
         {/* 3 — The contrast, in daylight */}
         <section className="bg-cream-bg px-5 py-24 text-[#172033]">
@@ -192,9 +211,20 @@ export default async function LandingPage() {
                   <Pill>🥾 Hiking</Pill>
                 </div>
 
-                <p className="mt-8 border-t border-[#172033]/10 pt-5 text-lg font-semibold text-[#172033]">
-                  &ldquo;We&rsquo;re going Saturday.&rdquo;
-                </p>
+                <div className="mt-8 space-y-2.5 border-t border-[#172033]/10 pt-5">
+                  <Exchange
+                    tone="#0e7a69"
+                    where="Online"
+                    said="&ldquo;Anyone up for co-op?&rdquo;"
+                    back="&ldquo;Yep, 9pm.&rdquo;"
+                  />
+                  <Exchange
+                    tone="#8a5e00"
+                    where="In person"
+                    said="&ldquo;Coffee Saturday?&rdquo;"
+                    back="&ldquo;I&rsquo;m in.&rdquo;"
+                  />
+                </div>
               </div>
             </div>
 
@@ -247,7 +277,7 @@ export default async function LandingPage() {
               <Stage
                 colour="#FF5C6C"
                 name="Discover"
-                body="People, bunches and activities near you — each with a plain-English reason it was shown."
+                body="People, bunches and activities — online or nearby — each with a plain-English reason it was shown."
               />
               <Stage
                 colour="#9250FF"
@@ -266,8 +296,8 @@ export default async function LandingPage() {
               />
               <Stage
                 colour="#55D6BE"
-                name="Meet"
-                body="You close the tab and go. This is the only stage that counts."
+                name="Together"
+                body="A voice channel on Thursday, a table on Saturday. Both count — this is the only stage that does."
                 emphasis
               />
             </ol>
@@ -354,11 +384,14 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 6 — Real people, real plans */}
+        {/* 8 — Online, in person, or both */}
         <section className="px-5 py-24">
-          <div className="reveal mx-auto max-w-6xl">
-            <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Real people. Real plans.
+          <div className="mx-auto max-w-6xl">
+            <p className="reveal text-sm font-bold tracking-widest text-mint-status">
+              ONLINE · IN PERSON · EITHER
+            </p>
+            <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              A voice channel counts. So does a table. So does both.
             </h2>
             {/*
               No photographs and no testimonials. Bunchy has not launched, so
@@ -368,43 +401,106 @@ export default async function LandingPage() {
               have. These are the shapes of plans the product makes, labelled as
               such, and they get replaced the moment there are real ones to show.
             */}
-            <p className="mt-4 max-w-2xl text-white/60">
-              These are the kinds of plans bunches make. We will put real ones
-              here — with permission — as soon as there are real ones to show,
-              and not one day before.
+            <p className="reveal mt-4 max-w-2xl text-white/60">
+              Bunchy is not trying to get you off your screen, and it is not
+              trying to keep you on it. These are the shapes of plans bunches
+              make — real ones replace them, with permission, the day there are
+              real ones to show.
             </p>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <Moment
-                shape="#FF5C6C"
-                tag="Board games"
-                title="Thursday night, six people, one table"
-                detail="Three strangers who all listed board games. Now it is a standing thing."
-                people={["S", "M", "E", "T", "P", "W"]}
-              />
-              <Moment
                 shape="#55D6BE"
-                tag="Coffee"
-                title="Saturday morning, no agenda"
-                detail="The low-stakes first meet most bunches start with."
-                people={["E", "T", "M"]}
-              />
-              <Moment
-                shape="#7657FF"
                 tag="Online"
                 title="Co-op night, six going"
-                detail="A bunch that lives in its own voice channel and likes it there."
+                detail="A bunch that lives in its own voice channel and likes it there. No plan to meet, and none needed."
                 people={["M", "W", "S", "P"]}
               />
               <Moment
-                className="sm:col-span-2"
+                shape="#55D6BE"
+                tag="Online"
+                title="Focus session, 9am Tuesday"
+                detail="Four people who work alone, working alone together. Cameras optional."
+                people={["E", "T", "M"]}
+              />
+              <Moment
+                shape="#55D6BE"
+                tag="Online"
+                title="Watch party, 20:00"
+                detail="Same film, six places, one chat. Somebody always talks through the ending."
+                people={["S", "P", "W", "T"]}
+              />
+              <Moment
                 shape="#FFC857"
-                tag="Outdoors"
+                tag="In person"
+                title="Saturday coffee, no agenda"
+                detail="The low-stakes first meet a lot of bunches start with."
+                people={["E", "T", "M"]}
+              />
+              <Moment
+                shape="#FFC857"
+                tag="In person"
                 title="Sunday walk, whoever is free"
                 detail="Availability is a real field here, so “whoever is free” is a query rather than a guess in a group chat."
                 people={["T", "S", "E", "W"]}
               />
+              <Moment
+                shape="#9B85FF"
+                tag="Either"
+                title="Board games, table or tabletop"
+                detail="The same six people, playing the same game, in whichever form the week allows."
+                people={["S", "M", "E", "T", "P", "W"]}
+              />
             </div>
+
+            {/* The optional evolution — offered, never required. */}
+            <div className="reveal mt-8 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8">
+              <h3 className="text-xl font-bold tracking-tight">
+                And sometimes one becomes the other.
+              </h3>
+              <p className="mt-3 max-w-2xl leading-relaxed text-white/60">
+                A gaming bunch plays every Thursday for two months, and one week
+                somebody asks whether anyone fancies pizza. That is a good
+                outcome. So is playing every Thursday for two years and never
+                asking. Bunchy will never nudge you toward the first one — the
+                group decides, and both endings are the product working.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 9 — Recurring */}
+        <section className="px-5 pb-24">
+          <div className="reveal mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 sm:p-12">
+            <p className="text-sm font-bold tracking-widest text-purple-ai">
+              RECURRING BUNCHES
+            </p>
+            <h2 className="mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Find people you&rsquo;ll want to see again.
+            </h2>
+            <p className="mt-4 max-w-2xl text-white/60">
+              The hard part was never one good evening. It is the second one, and
+              the eighth. A bunch is built to keep going — a standing night, the
+              same people, no reintroductions.
+            </p>
+
+            <ul className="mt-9 flex flex-wrap gap-2.5">
+              {[
+                "Gaming every Thursday",
+                "Friday film night",
+                "Weekday focus sessions",
+                "Sunday walks",
+                "Monthly board games",
+                "Sunday anime",
+              ].map((r) => (
+                <li
+                  key={r}
+                  className="rounded-full border border-white/12 bg-white/[0.04] px-4 py-2 text-sm font-medium text-white/70"
+                >
+                  {r}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -447,9 +543,12 @@ export default async function LandingPage() {
             }}
           >
             <h2 className="text-balance text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-              Ready to find your bunch?
+              Find your people. Do something together.
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-white/85">
+            <p className="mx-auto mt-4 max-w-lg text-lg font-semibold text-white/90">
+              Online. In person. Or both.
+            </p>
+            <p className="mx-auto mt-3 max-w-lg text-white/80">
               Three minutes to say what you are into and when you are free. The
               next step is an actual evening with actual people.
             </p>
@@ -520,7 +619,39 @@ function Pill({ children }: { children: ReactNode }) {
 }
 
 /**
- * One position in the Discover → Match → Bunch → Plan → Meet sequence.
+ * A two-line exchange, labelled by where it happens.
+ *
+ * Both appear, and they are drawn identically, because the section's argument
+ * is against followers rather than against screens. Showing only the coffee
+ * would quietly say the co-op night was the lesser outcome.
+ */
+function Exchange({
+  tone,
+  where,
+  said,
+  back,
+}: {
+  tone: string;
+  where: string;
+  said: string;
+  back: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+      <span
+        className="text-[10px] font-bold tracking-widest"
+        style={{ color: tone }}
+      >
+        {where.toUpperCase()}
+      </span>
+      <span className="font-semibold text-[#172033]">{said}</span>
+      <span className="text-[#3d4759]">{back}</span>
+    </div>
+  );
+}
+
+/**
+ * One position in the Discover → Match → Bunch → Plan → Together sequence.
  *
  * `emphasis` belongs to Meet alone. It is the stage the whole product exists to
  * reach, and a sequence that renders it identically to the four leading up to it
