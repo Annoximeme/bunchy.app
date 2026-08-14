@@ -212,7 +212,7 @@ export default async function LandingPage() {
         {/* 3 — The contrast, in daylight */}
         <section className="bg-cream-bg px-5 py-24 text-[#172033]">
           <div className="mx-auto max-w-6xl">
-            <p className="reveal text-sm font-bold tracking-widest text-coral-primary">
+            <p className="reveal text-sm font-bold tracking-widest text-[#CE2F45]">
               THE PROBLEM
             </p>
             <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
@@ -245,7 +245,7 @@ export default async function LandingPage() {
 
               {/* Here */}
               <div className="relative overflow-hidden rounded-3xl border border-[#172033]/10 bg-white p-8 shadow-[0_24px_60px_-34px_rgba(23,32,51,0.5)]">
-                <p className="text-xs font-semibold tracking-widest text-coral-primary">
+                <p className="text-xs font-semibold tracking-widest text-[#CE2F45]">
                   ON {brand.name.toUpperCase()}
                 </p>
 
@@ -319,7 +319,7 @@ export default async function LandingPage() {
         {/* 6 — How it works, in daylight */}
         <section className="bg-cream-bg px-5 py-24 text-[#172033]">
           <div className="mx-auto max-w-6xl">
-            <p className="reveal text-sm font-bold tracking-widest text-coral-primary">
+            <p className="reveal text-sm font-bold tracking-widest text-[#CE2F45]">
               HOW {brand.name.toUpperCase()} WORKS
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">

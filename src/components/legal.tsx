@@ -89,7 +89,7 @@ export function Clause({
         62ch of the "0" glyph measures ~71 real characters, inside the 45-75
         range rather than at its edge.
       */}
-      <div className="mt-3 space-y-3 text-base leading-relaxed text-ink-soft [&>p]:max-w-[62ch] [&>ul]:max-w-[60ch] [&_a]:text-accent-ink [&_a:hover]:underline [&_strong]:font-semibold [&_strong]:text-ink">
+      <div className="mt-3 space-y-3 text-base leading-relaxed text-ink-soft [&>p]:max-w-[62ch] [&>ul]:max-w-[60ch] [&_a]:text-accent-ink [&_a]:underline [&_a]:underline-offset-2 [&_strong]:font-semibold [&_strong]:text-ink">
         {children}
       </div>
     </section>
