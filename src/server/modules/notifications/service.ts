@@ -1,5 +1,6 @@
 import { db } from "@/server/db/client";
 import { sendEmail } from "@/server/email";
+import { notificationEmail } from "@/server/email/templates";
 import { env } from "@/server/env";
 import { defaultPreference } from "@/lib/notifications";
 import type { NotificationType } from "@/generated/prisma/enums";
@@ -87,18 +88,15 @@ export async function notify(input: NotifyInput): Promise<void> {
       select: { user: { select: { email: true } } },
     });
     if (profile?.user.email) {
+      const appUrl = env().APP_URL.replace(/\/$/, "");
       await sendEmail({
         to: profile.user.email,
-        subject: input.title,
-        text: [
-          input.body ?? input.title,
-          "",
-          input.linkPath ? `${env().APP_URL}${input.linkPath}` : "",
-          "",
-          "Change what Bunchy emails you about in Settings.",
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        ...notificationEmail({
+          title: input.title,
+          body: input.body,
+          link: input.linkPath ? `${appUrl}${input.linkPath}` : undefined,
+          settingsUrl: `${appUrl}/profile`,
+        }),
       }).catch((error) => {
         // A failed notification email must never fail the action that caused it.
         console.error("Notification email failed:", error);
