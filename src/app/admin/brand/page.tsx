@@ -9,6 +9,7 @@ import {
   BRAND_PALETTE,
   type BrandAsset,
 } from "@/server/modules/brand/assets";
+import { EMAIL_PREVIEWS } from "@/server/email/previews";
 
 export const metadata: Metadata = { title: "Brand" };
 export const dynamic = "force-dynamic";
@@ -233,6 +234,47 @@ export default async function AdminBrandPage() {
                 </p>
               </div>
             </div>
+          </Panel>
+
+          {/*
+            The brand as it arrives in an inbox, which is the one surface
+            nobody ever looks at until a member forwards a screenshot of it.
+            Rendered by the real templates, so what opens here is byte for byte
+            what gets sent.
+          */}
+          <Panel
+            title="Email"
+            note="every message Bunchy sends, as it will arrive"
+          >
+            <ul className="divide-y divide-line">
+              {EMAIL_PREVIEWS.map((preview) => (
+                <li
+                  key={preview.slug}
+                  className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0">
+                    <p className="font-semibold">{preview.label}</p>
+                    <p className="mt-0.5 text-sm text-muted">{preview.when}</p>
+                    <p className="mt-1 truncate text-sm text-muted">
+                      Subject: <span className="font-medium">{preview.message.subject}</span>
+                    </p>
+                  </div>
+                  {/*
+                    A new tab, not a link in place. An email is a whole
+                    document with its own background, and this app sends
+                    X-Frame-Options: DENY, so an iframe is not on offer either.
+                  */}
+                  <a
+                    href={`/admin/brand/email/${preview.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="shrink-0 self-start rounded-[var(--radius-control)] border border-line px-3 py-1.5 text-sm font-medium hover:bg-raised sm:self-auto"
+                  >
+                    Preview
+                  </a>
+                </li>
+              ))}
+            </ul>
           </Panel>
         </div>
       </div>

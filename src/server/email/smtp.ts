@@ -82,7 +82,11 @@ export class SmtpEmailTransport implements EmailTransport {
           from: env().EMAIL_FROM,
           to: message.to,
           subject: message.subject,
+          // Both parts, so nodemailer builds a multipart/alternative and the
+          // client picks. Text first in the MIME order it produces, which is
+          // what the spec asks for and what the filters expect.
           text: message.text,
+          html: message.html,
         });
         return;
       } catch (error) {

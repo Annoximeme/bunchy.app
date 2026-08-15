@@ -9,6 +9,10 @@ import {
   type SessionContext,
 } from "@/server/auth/session";
 import { sendEmail } from "@/server/email";
+import {
+  passwordResetEmail,
+  verificationEmail,
+} from "@/server/email/templates";
 import { env } from "@/server/env";
 import { NOTIFICATION_DEFAULTS } from "@/server/modules/notifications/defaults";
 import { isEmailBanned } from "@/server/modules/moderation/banned-emails";
@@ -216,11 +220,7 @@ export async function sendVerificationEmail(userId: string, email: string) {
   });
 
   const link = `${env().APP_URL}/verify-email?token=${token}`;
-  await sendEmail({
-    to: email,
-    subject: "Confirm your email for Bunchy",
-    text: `Welcome to Bunchy.\n\nConfirm your email to finish setting up your account:\n\n${link}\n\nThis link expires in 24 hours. If you didn't sign up, you can ignore this message.`,
-  });
+  await sendEmail({ to: email, ...verificationEmail(link) });
 }
 
 export async function verifyEmail(token: string): Promise<void> {
@@ -287,11 +287,7 @@ export async function requestPasswordReset(rawEmail: string): Promise<void> {
   });
 
   const link = `${env().APP_URL}/reset-password?token=${token}`;
-  await sendEmail({
-    to: user.email,
-    subject: "Reset your Bunchy password",
-    text: `Someone asked to reset the password for this account.\n\n${link}\n\nThis link expires in one hour. If it wasn't you, nothing has changed and you can ignore this message.`,
-  });
+  await sendEmail({ to: user.email, ...passwordResetEmail(link) });
 }
 
 export async function resetPassword(
