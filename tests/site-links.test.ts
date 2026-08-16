@@ -65,7 +65,14 @@ describe("reachability", () => {
       new URL("../src/components/legal.tsx", import.meta.url).pathname,
       "utf8",
     );
-    expect(legal).toContain("SiteNav");
+    // `SITE_LINKS` rather than `SiteNav`. The policy shell draws the list
+    // itself now, because `SiteNav` is coloured from the theme tokens and the
+    // masthead it sits in is pinned navy. What this test is protecting is that
+    // the pages link to the *whole list from one source* — which is what broke
+    // originally — not which component renders it. Asserting on the component
+    // would fail the day a page legitimately draws the list another way, and
+    // pass the day somebody hand-types four links into the shell.
+    expect(legal).toContain("SITE_LINKS");
   });
 
   it("is mounted in the landing footer", () => {

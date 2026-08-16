@@ -35,12 +35,13 @@ export default async function ModeratorsPage() {
 
   return (
     <LegalPage
+      ground="themed"
       path="/moderators"
       title="Volunteer moderators"
       contact={LEGAL.supportContact}
       summary={`${brand.name} needs a few people to read the report queue and decide what happens. It is unpaid right now, because the platform earns nothing, and this page explains exactly what the work is, what we will and will not promise you, and how to stop.`}
     >
-      <Clause n={1} title="What the job actually is">
+      <Clause ground="themed" n={1} title="What the job actually is">
         <p>
           Members report profiles, messages, bunches and activities. Those
           reports land in a queue with the reported content attached, and a
@@ -61,7 +62,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={2} title="About pay. The honest version">
+      <Clause ground="themed" n={2} title="About pay. The honest version">
         <p>
           <strong>It is unpaid.</strong> {brand.name} has no revenue, no
           investors and no runway; there is no budget this comes out of. If that
@@ -88,7 +89,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={3} title="What you get that is real">
+      <Clause ground="themed" n={3} title="What you get that is real">
         <p>
           A <strong>Staff badge</strong> on your profile, so members can tell a
           real moderator from someone claiming to be one. A say in the rules: the
@@ -103,7 +104,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={4} title="What we ask">
+      <Clause ground="themed" n={4} title="What we ask">
         <p>
           You are {MINIMUM_AGE} or older. {brand.name} itself is 16+, and this
           bar is higher on purpose: the queue contains reported harassment and
@@ -119,7 +120,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={5} title="Stopping">
+      <Clause ground="themed" n={5} title="Stopping">
         <p>
           Write one line to{" "}
           <a
@@ -139,7 +140,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={6} title="What a moderator can and cannot do">
+      <Clause ground="themed" n={6} title="What a moderator can and cannot do">
         <p>
           Moderators work reports, act on content, and can suspend an account for
           a day, a month, or indefinitely. That is real power over somebody
@@ -166,7 +167,7 @@ export default async function ModeratorsPage() {
         </p>
       </Clause>
 
-      <Clause n={7} title="Applying">
+      <Clause ground="themed" n={7} title="Applying">
         {existing ? (
           <p>
             You applied on{" "}

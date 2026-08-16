@@ -73,26 +73,3 @@ export function SiteFooter({ className }: { className?: string }) {
     </footer>
   );
 }
-
-/**
- * The same list as a header nav, for the public pages.
- *
- * `current` drops the page you are already on. A nav whose most prominent
- * entry points at the current page is a row of five links where one does
- * nothing.
- */
-export function SiteNav({ current }: { current?: string }) {
-  return (
-    <nav aria-label="About Bunchy" className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted">
-      {SITE_LINKS.filter((link) => link.href !== current).map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className="transition-colors hover:text-ink"
-        >
-          {link.label}
-        </Link>
-      ))}
-    </nav>
-  );
-}
