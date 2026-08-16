@@ -28,12 +28,13 @@ export const metadata: Metadata = {
 export default function SafetyPage() {
   return (
     <LegalPage
+      ground="themed"
       path="/safety"
       title="Meeting safely"
       contact={LEGAL.supportContact}
       summary={`Plenty of ${brand.name} happens online, where the worst case is blocking someone. This page is about the other half, meeting in person, which is worth doing carefully. Here is what we recommend, what we do on our side, and what to do when something is wrong.`}
     >
-      <Clause n={1} title="First meets go in public">
+      <Clause ground="themed" n={1} title="First meets go in public">
         <p>
           A café, a bar, a park, a shop: anywhere with staff and strangers
           around. Not a home, not a car, not somewhere you would have trouble
@@ -48,7 +49,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={2} title="Tell someone where you are going">
+      <Clause ground="themed" n={2} title="Tell someone where you are going">
         <p>
           Every activity page has a <strong>Tell someone</strong> button. It
           copies the what, where and when, plus a link, so you can send it to a
@@ -62,7 +63,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={3} title="Go at your own pace">
+      <Clause ground="themed" n={3} title="Go at your own pace">
         <p>
           You are never obliged to share a phone number, a last name, a workplace
           or an address, and {brand.name} never asks for any of them. Your
@@ -79,7 +80,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={4} title="Money is the reddest flag">
+      <Clause ground="themed" n={4} title="Money is the reddest flag">
         <p>
           Nobody you meet here should be asking you for money, investment advice,
           a crypto tip, a loan or a favour involving your bank. This is the most
@@ -89,7 +90,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={5} title="Blocking and reporting">
+      <Clause ground="themed" n={5} title="Blocking and reporting">
         <p>
           <strong>Block</strong> removes someone from your view entirely: they
           cannot message you, see your profile or appear in your suggestions,
@@ -109,7 +110,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={6} title="When it is more than a platform problem">
+      <Clause ground="themed" n={6} title="When it is more than a platform problem">
         <p>
           If you are in immediate danger, contact your local emergency services
           first, <strong>112</strong> across the EU, <strong>999</strong> in the
@@ -130,7 +131,7 @@ export default function SafetyPage() {
         </p>
       </Clause>
 
-      <Clause n={7} title="What we do on our side">
+      <Clause ground="themed" n={7} title="What we do on our side">
         <p>
           Exact locations are never stored. Nothing on your profile is public to
           the open internet, signed-out visitors and search engines see the

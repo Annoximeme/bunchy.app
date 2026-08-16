@@ -51,6 +51,8 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/about", name: "about", signedOut: true },
   { path: "/moderators", name: "moderators" },
   { path: "/safety", name: "safety", signedOut: true },
+  { path: "/terms", name: "terms", signedOut: true },
+  { path: "/privacy", name: "privacy", signedOut: true },
 ];
 
 const VIEWPORTS = [
