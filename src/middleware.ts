@@ -19,7 +19,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * an already-trusted script inherit that trust, so the nonce covers the
  * bootstrap and the bootstrap covers everything under `/_next/static`.
  */
-function contentSecurityPolicy(nonce: string, isDev: boolean): string {
+function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean): string {
   return [
     "default-src 'self'",
     // 'unsafe-eval' is the price of React Fast Refresh, and it is scoped to
@@ -39,7 +39,12 @@ function contentSecurityPolicy(nonce: string, isDev: boolean): string {
     "form-action 'self'",
     // Duplicates X-Frame-Options: DENY for browsers that honour CSP instead.
     "frame-ancestors 'none'",
-    ...(isDev ? [] : ["upgrade-insecure-requests"]),
+    // Keyed on the scheme the app is actually served over, not on NODE_ENV.
+    // The real site is https and still gets it. A preview build runs with
+    // NODE_ENV=production over plain http, and there the directive rewrites
+    // the login form's own action to https, which fails to connect and is then
+    // blocked by form-action 'self' — a signed-out app that looks fine.
+    ...(isDev || !isHttps ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");
 }
 
@@ -49,7 +54,13 @@ export function middleware(request: NextRequest) {
   const nonce = btoa(String.fromCharCode(...bytes));
 
   const isDev = process.env.NODE_ENV === "development";
-  const csp = contentSecurityPolicy(nonce, isDev);
+  // Read off the request rather than an env var: middleware is bundled, and a
+  // build-time-inlined value would silently drop the directive on the real
+  // site. Caddy terminates TLS and sets x-forwarded-proto.
+  const isHttps =
+    (request.headers.get("x-forwarded-proto") ?? request.nextUrl.protocol.replace(":", "")) ===
+    "https";
+  const csp = contentSecurityPolicy(nonce, isDev, isHttps);
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);

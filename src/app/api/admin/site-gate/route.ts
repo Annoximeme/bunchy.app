@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { errorResponse, parseJson } from "@/server/http/route";
 import { requireAdmin } from "@/server/modules/admin/guard";
 import { readGate, setGate } from "@/server/modules/admin/site-gate";
-import { env } from "@/server/env";
+import { secureCookies } from "@/server/auth/cookies";
 
 const schema = z.object({
   mode: z.enum(["OFF", "SOON", "MAINTENANCE"]),
@@ -33,7 +33,7 @@ export async function PATCH(request: Request) {
       const store = await cookies();
       store.set("bunchy_preview", change.token, {
         httpOnly: true,
-        secure: env().NODE_ENV === "production",
+        secure: secureCookies(),
         sameSite: "lax",
         path: "/",
         maxAge: 30 * 24 * 60 * 60,
