@@ -229,6 +229,37 @@ export async function recordMatchFeedback(
   });
 }
 
+/**
+ * Take back a "not for me".
+ *
+ * The exclusion is meant to be instant and permanent — a member will only tell
+ * us what they do not want if it is — but permanent applies to the *engine*,
+ * not to a mis-tap. The button is small, it sits next to "Connect", and on a
+ * phone the two are a thumb apart. Without a way back, the cost of a slip is a
+ * person the member never sees again and no way to know it happened.
+ *
+ * Deleting the row rather than writing a third signal keeps the exclusion
+ * simple: the repository asks whether feedback exists, and a "dismissed, but
+ * actually not" state would be a third case for every reader of it to get
+ * wrong.
+ *
+ * One known skew: the dismissal already emitted RECOMMENDATION_DISMISSED, and
+ * an analytics event cannot be retracted. So the quality loop counts an undone
+ * dismissal as a dismissal. It over-reports dismissals slightly, which is the
+ * safe direction to be wrong in — it makes the engine look worse than it is
+ * rather than better.
+ */
+export async function undoMatchFeedback(
+  profileId: string,
+  targetId: string,
+): Promise<void> {
+  await db.matchFeedback.deleteMany({ where: { profileId, targetId } });
+  await db.recommendation.updateMany({
+    where: { profileId, kind: "PERSON", targetId },
+    data: { dismissedAt: null },
+  });
+}
+
 /** Marks a recommendation as acted on, which is how we measure whether it worked. */
 export async function markRecommendationActed(
   profileId: string,

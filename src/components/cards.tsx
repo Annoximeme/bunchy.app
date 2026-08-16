@@ -61,19 +61,64 @@ export function PersonCard({ person }: { person: PersonCardData }) {
 
   async function dismiss() {
     setState("dismissed");
+    setError(null);
     try {
       await api("/api/discover/feedback", {
         method: "POST",
         json: { profileId: person.profileId, signal: "NOT_INTERESTED" },
       });
-      router.refresh();
+      // Deliberately no `router.refresh()` here.
+      //
+      // Refreshing re-runs the page's recommendations, which drops this card
+      // and reflows everything below it — under the cursor of somebody who has
+      // just pressed a small button, and taking the undo with it. The card
+      // stays in its own hole until the next natural navigation.
     } catch (cause) {
       setError(errorMessage(cause));
       setState("idle");
     }
   }
 
-  if (state === "dismissed") return null;
+  async function undoDismiss() {
+    setState("idle");
+    setError(null);
+    try {
+      await api("/api/discover/feedback", {
+        method: "DELETE",
+        json: { profileId: person.profileId },
+      });
+    } catch (cause) {
+      setError(errorMessage(cause));
+    }
+  }
+
+  /*
+    A dismissal leaves its own footprint rather than vanishing.
+
+    "Not for me" used to unmount the card outright: one mis-tap on a phone and
+    a person was gone with nothing to say so and no way back. The grid also
+    resnapped around the hole, which moves every remaining card under the
+    finger that just tapped.
+
+    The slot stays, at a fraction of the height, and holds the undo. It is the
+    quietest possible acknowledgement that something happened.
+  */
+  if (state === "dismissed") {
+    return (
+      <div className="flex items-center justify-between gap-3 rounded-[var(--radius-card)] border border-dashed border-line px-5 py-4 text-sm">
+        <span className="text-muted">
+          You won&rsquo;t see {person.displayName} again.
+        </span>
+        <button
+          type="button"
+          onClick={undoDismiss}
+          className="font-medium text-accent-ink underline underline-offset-2"
+        >
+          Undo
+        </button>
+      </div>
+    );
+  }
 
   const meta = [person.age, person.locationLabel].filter(Boolean).join(" · ");
 
