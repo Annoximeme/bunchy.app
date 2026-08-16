@@ -46,7 +46,15 @@ export function CompatibilityRadar({
   highlights,
   className,
 }: {
-  score: number;
+  /**
+   * Omit when the surrounding page already states the number.
+   *
+   * The profile page shows the match as a pill above this breakdown, and a
+   * second "92% compatible" heading inside the very panel that explains that
+   * number reads as a rendering mistake. Required-looking by default because
+   * every other caller opens with it.
+   */
+  score?: number;
   signals: RadarSignal[];
   /** Short phrases for "why you might click". */
   highlights?: string[];
@@ -62,12 +70,14 @@ export function CompatibilityRadar({
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-semibold tabular-nums tracking-tight">
-          {score}%
-        </span>
-        <span className="text-sm text-muted">compatible</span>
-      </div>
+      {score !== undefined && (
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl font-semibold tabular-nums tracking-tight">
+            {score}%
+          </span>
+          <span className="text-sm text-muted">compatible</span>
+        </div>
+      )}
 
       <dl className="space-y-2.5">
         {ordered.map((signal) => (
