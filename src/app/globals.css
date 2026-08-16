@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /**
  * Bunchy design tokens.
@@ -476,4 +477,68 @@ body {
   .idle-pulse {
     animation: bunchy-idle 2.8s ease-in-out infinite;
   }
+}
+
+/* --- Long-form prose --------------------------------------------------------
+ *
+ * The typography plugin owns the rhythm — line height, the space between a
+ * heading and the paragraph beneath it, the measure — and these own the colour,
+ * which is the one thing it must not decide. `--tw-prose-body` defaults to a
+ * grey that does not clear AA on cream, and body text is the entire point of a
+ * document page.
+ *
+ * Two classes rather than one plus the plugin's `prose-invert`. Both are single
+ * class selectors, so whichever is written later in this file wins the cascade —
+ * which meant `prose-letter` silently put #3d4759 body text back on top of a
+ * navy band, and an axe pass caught it. A light set and a dark set that each
+ * state their own colours cannot collide that way.
+ *
+ * Values are literal rather than tokens on purpose: these are for the *pinned*
+ * compositions, the bands that stay cream and navy whatever the reader's theme
+ * says. A token would flip under a dark OS while the band beneath it did not.
+ *
+ * Contrast on #FFF9F3: body 9.3:1, headings 15.1:1, links 5.4:1, captions
+ * 5.1:1. On #0A0E1A: body 11.2:1, links 6.3:1.
+ */
+.prose-letter {
+  --tw-prose-body: #3d4759;
+  --tw-prose-headings: #172033;
+  --tw-prose-lead: #3d4759;
+  --tw-prose-links: #c42a40;
+  --tw-prose-bold: #172033;
+  --tw-prose-counters: #646977;
+  --tw-prose-bullets: #efe6da;
+  --tw-prose-hr: #efe6da;
+  --tw-prose-quotes: #172033;
+  --tw-prose-quote-borders: #ff5c6c;
+  --tw-prose-captions: #646977;
+  --tw-prose-th-borders: #efe6da;
+  --tw-prose-td-borders: #efe6da;
+}
+
+/* The same document on navy. A warm off-white for the body rather than pure
+   white, which is harsh over this many paragraphs, with full white kept for the
+   words the copy itself emphasises. */
+.prose-letter-dark {
+  --tw-prose-body: rgb(255 255 255 / 0.78);
+  --tw-prose-headings: #ffffff;
+  --tw-prose-lead: rgb(255 255 255 / 0.78);
+  --tw-prose-links: #ff5c6c;
+  --tw-prose-bold: #ffffff;
+  --tw-prose-counters: rgb(255 255 255 / 0.6);
+  --tw-prose-bullets: rgb(255 255 255 / 0.2);
+  --tw-prose-hr: rgb(255 255 255 / 0.12);
+  --tw-prose-quotes: #ffffff;
+  --tw-prose-quote-borders: #ff5c6c;
+  --tw-prose-captions: rgb(255 255 255 / 0.6);
+  --tw-prose-th-borders: rgb(255 255 255 / 0.12);
+  --tw-prose-td-borders: rgb(255 255 255 / 0.12);
+}
+
+/* Underlined, not merely coloured: a link is read inside a sentence, and colour
+   on its own is not a signal to a reader who cannot see it. */
+.prose-letter :where(a):not(:where([class~="not-prose"] *)),
+.prose-letter-dark :where(a):not(:where([class~="not-prose"] *)) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
