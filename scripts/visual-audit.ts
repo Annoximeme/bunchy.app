@@ -32,6 +32,9 @@ const PASSWORD = process.env.DEMO_PASSWORD ?? "bunchydemo1234";
 
 /** The pages a member actually passes through, in roughly that order. */
 const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
+  // The one page a first-time visitor sees before deciding whether to stay, and
+  // for a long time the only one this script did not look at.
+  { path: "/", name: "landing", signedOut: true },
   { path: "/discover", name: "discover" },
   { path: "/profile", name: "profile-own" },
   { path: "/u/milan", name: "profile-public" },

@@ -178,7 +178,7 @@ export default async function LandingPage() {
                 </Link>
                 <Link
                   href="/signup?start=surprise"
-                  className="inline-flex items-center gap-2 rounded-full border border-purple-ai bg-purple-ai/20 px-6 py-4 text-base font-semibold text-white shadow-[0_0_36px_-10px_#7657FF] transition-colors hover:bg-purple-ai/30"
+                  className="inline-flex items-center gap-2 rounded-full border border-purple-ai bg-transparent px-6 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-purple-ai/15 hover:shadow-[0_0_40px_-8px_#7657FF]"
                 >
                   <Sparkles size={18} aria-hidden />
                   Surprise me
@@ -221,72 +221,148 @@ export default async function LandingPage() {
               answer the group chat.
             </h2>
 
-            <div className="reveal mt-12 grid items-stretch gap-6 md:grid-cols-2">
-              {/* Everywhere else */}
-              <div className="rounded-3xl border border-[#172033]/10 bg-white/60 p-8">
-                <p className="text-xs font-semibold tracking-widest text-[#6B7280]">
+            {/*
+              The two sides are deliberately not the same kind of object.
+              Everywhere else is a rectangle: bordered, flat, tidy, a count in a
+              box. Bunchy is a cluster with no box around it at all. The section
+              used to draw both as the same rounded card, which meant the
+              argument was carried entirely by the words inside them and the
+              picture said the two things were equivalent.
+
+              `items-center` rather than `items-stretch` for the same reason —
+              matching the cluster's height to the card would put it back in an
+              invisible box.
+            */}
+            <div className="reveal mt-14 grid items-center gap-12 md:grid-cols-2 md:gap-10">
+              {/* Everywhere else. Sterile on purpose. */}
+              <div className="rounded-2xl border border-[#172033]/12 bg-[#F3EFE9] p-8">
+                <p className="text-xs font-semibold tracking-widest text-[#5F6470]">
                   EVERYWHERE ELSE
                 </p>
                 <div className="mt-6 space-y-3">
-                  <p className="text-3xl font-bold text-[#6B7280]">
+                  <p className="text-3xl font-bold text-[#5F6470]">
                     1,284 followers
                   </p>
-                  <p className="flex items-center gap-2 text-[#6B7280]">
+                  <p className="flex items-center gap-2 text-[#5F6470]">
                     <Heart size={18} aria-hidden />
                     17 likes
                   </p>
-                  <p className="flex items-center gap-2 text-[#6B7280]">
+                  <p className="flex items-center gap-2 text-[#5F6470]">
                     <MessageCircle size={18} aria-hidden />3 comments
                   </p>
                 </div>
-                <p className="mt-8 border-t border-[#172033]/10 pt-5 text-[#6B7280]">
+                <p className="mt-8 border-t border-[#172033]/12 pt-5 text-[#5F6470]">
                   Still nobody to go out with.
                 </p>
               </div>
 
-              {/* Here */}
-              <div className="relative overflow-hidden rounded-3xl border border-[#172033]/10 bg-white p-8 shadow-[0_24px_60px_-34px_rgba(23,32,51,0.5)]">
-                <p className="text-xs font-semibold tracking-widest text-[#CE2F45]">
+              {/* Here. No card, no border, no box. */}
+              <div className="relative px-2 py-4">
+                {/* Organic ground. Three soft blobs at low opacity doing the job
+                    a card border used to do — holding the group together —
+                    without drawing a container around people. */}
+                {/* `z-0` and not `-z-10`: a negative index puts these behind the
+                    section's own background, which is where they spent their
+                    first draft — invisible. */}
+                {/*
+                  Faint, and centred on the avatars rather than on the words.
+                  The first version ran these at 20–28% and put a coral one
+                  under the eyebrow and the activity pills: an axe pass came
+                  back with two contrast failures, because #CE2F45 and #8a5e00
+                  are measured against cream and had no headroom left once cream
+                  had been tinted pink. The token block upstairs already says
+                  this — the ambient washes are 0.07 on light "because the same
+                  gesture at the same strength would read as a stain on cream".
+                */}
+                <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+                  <div
+                    className="float absolute left-2 top-6 size-56 rounded-full bg-coral-primary/12 blur-3xl"
+                    style={{
+                      ["--float-distance" as string]: "16px",
+                      ["--float-duration" as string]: "9s",
+                    }}
+                  />
+                  <div
+                    className="float absolute left-40 top-2 size-52 rounded-full bg-purple-ai/10 blur-3xl"
+                    style={{
+                      ["--float-distance" as string]: "12px",
+                      ["--float-duration" as string]: "11s",
+                      ["--float-delay" as string]: "1.2s",
+                    }}
+                  />
+                  <div
+                    className="float absolute left-24 top-24 size-48 rounded-full bg-mint-status/12 blur-3xl"
+                    style={{
+                      ["--float-distance" as string]: "14px",
+                      ["--float-duration" as string]: "10s",
+                      ["--float-delay" as string]: "0.6s",
+                    }}
+                  />
+                </div>
+
+                <p className="relative z-10 text-xs font-semibold tracking-widest text-[#C42A40]">
                   ON {brand.name.toUpperCase()}
                 </p>
 
-                <div className="mt-6 flex -space-x-3">
-                  {[
-                    { i: "S", c: "#FF5C6C" },
-                    { i: "M", c: "#7657FF" },
-                    { i: "E", c: "#55D6BE" },
-                    { i: "T", c: "#FFC857" },
-                  ].map((a) => (
+                {/* Bigger than the old avatars and overlapping harder. Each one
+                    floats on its own clock so the group reads as four people
+                    rather than one graphic. */}
+                <div className="relative z-10 mt-6 flex -space-x-5">
+                  {CONTRAST_BUNCH.map((a, i) => (
                     <span
                       key={a.i}
-                      className="flex size-12 items-center justify-center rounded-full text-base font-bold text-white ring-4 ring-white"
-                      style={{ background: a.c }}
+                      className="float flex size-20 items-center justify-center rounded-full text-xl font-bold text-white ring-4 ring-cream-bg"
+                      style={{
+                        background: a.c,
+                        ["--float-distance" as string]: "7px",
+                        ["--float-duration" as string]: `${4.4 + i * 0.5}s`,
+                        ["--float-delay" as string]: `${i * 0.35}s`,
+                        zIndex: CONTRAST_BUNCH.length - i,
+                      }}
                     >
                       {a.i}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-6 flex flex-wrap gap-2">
-                  <Pill>🎮 Gaming</Pill>
-                  <Pill>🍜 Food</Pill>
-                  <Pill>🥾 Hiking</Pill>
+                {/* Attached to the group rather than listed under it. */}
+                <div className="relative z-10 mt-7 flex flex-wrap items-center gap-2.5">
+                  <span className="-rotate-2">
+                    <Pill>🎮 Gaming</Pill>
+                  </span>
+                  <span className="rotate-1">
+                    <Pill>🍜 Food</Pill>
+                  </span>
+                  <span className="-rotate-1">
+                    <Pill>🥾 Hiking</Pill>
+                  </span>
                 </div>
 
-                <div className="mt-8 space-y-2.5 border-t border-[#172033]/10 pt-5">
-                  <Exchange
-                    tone="#0e7a69"
-                    where="Online"
-                    said="&ldquo;Anyone up for co-op?&rdquo;"
-                    back="&ldquo;Yep, 9pm.&rdquo;"
-                  />
-                  <Exchange
-                    tone="#8a5e00"
-                    where="In person"
-                    said="&ldquo;Coffee Saturday?&rdquo;"
-                    back="&ldquo;I&rsquo;m in.&rdquo;"
-                  />
+                {/* One exchange, kept from the table this section used to be:
+                    the argument is against followers, not against screens, so
+                    the online plan stays visible. */}
+                <div
+                  className="float relative z-10 mt-7 inline-flex max-w-full flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-3xl rounded-bl-lg bg-white px-5 py-3.5 shadow-[0_18px_40px_-28px_rgba(23,32,51,0.55)]"
+                  style={{
+                    ["--float-distance" as string]: "5px",
+                    ["--float-duration" as string]: "6.1s",
+                    ["--float-delay" as string]: "0.9s",
+                  }}
+                >
+                  <span className="text-[11px] font-bold tracking-widest text-[#0e7a69]">
+                    ONLINE
+                  </span>
+                  <span className="font-semibold text-[#172033]">
+                    &ldquo;Anyone up for co-op?&rdquo;
+                  </span>
+                  <span className="text-[#3d4759]">&ldquo;Yep, 9pm.&rdquo;</span>
                 </div>
+
+                {/* The payoff, in the same position as "Still nobody to go out
+                    with." on the left. The two lines are the whole section. */}
+                <p className="relative z-10 mt-8 text-2xl font-extrabold tracking-tight text-[#172033]">
+                  We&rsquo;re going Saturday.
+                </p>
               </div>
             </div>
 
@@ -338,31 +414,66 @@ export default async function LandingPage() {
                 first and last centre is four columns plus four gaps — not the
                 full width, which ran the line a whole column past Together.
               */}
-              <div
+              {/*
+                A ribbon rather than a rule. The connector was a 1px straight
+                line between five small dots, which is the drawing you make when
+                the five things are rows in a pipeline — and this is meant to be
+                an evening, not a funnel. Same anchor points, same arithmetic:
+                the dots sit at the left edge of five equal columns, so the span
+                between the first and last centre is four columns plus four
+                gaps. The curve just takes a longer route between them.
+
+                `vector-effect` keeps the stroke an even weight, since
+                `preserveAspectRatio="none"` stretches the box horizontally.
+              */}
+              <svg
                 aria-hidden
-                className="absolute left-3 top-3 hidden h-px w-[calc(80%+0.8rem)] bg-gradient-to-r from-[#FF5C6C] via-[#7657FF] to-[#55D6BE] md:block"
-              />
+                viewBox="0 0 1000 100"
+                preserveAspectRatio="none"
+                className="absolute left-[1.125rem] top-0 hidden h-9 w-[calc(80%+0.8rem)] md:block"
+              >
+                <defs>
+                  <linearGradient id="stage-flow" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#FF5C6C" />
+                    <stop offset="50%" stopColor="#7657FF" />
+                    <stop offset="100%" stopColor="#55D6BE" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,50 C60,10 190,10 250,50 C310,90 440,90 500,50 C560,10 690,10 750,50 C810,90 940,90 1000,50"
+                  fill="none"
+                  stroke="url(#stage-flow)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
               <Stage
+                index={0}
                 colour="#FF5C6C"
                 name="Discover"
                 body="People, bunches and activities, online or nearby, each with a plain-English reason it was shown."
               />
               <Stage
+                index={1}
                 colour="#9250FF"
                 name="Match"
                 body="Eight weighted signals, not a tag intersection. Including the ones you're curious about but haven't done."
               />
               <Stage
+                index={2}
                 colour="#7657FF"
                 name="Bunch"
                 body="Four to six people come together. Small enough that everyone speaks."
               />
               <Stage
+                index={3}
                 colour="#22A08B"
                 name="Plan"
                 body="Somebody suggests Thursday. The bunch agrees on something real."
               />
               <Stage
+                index={4}
                 colour="#55D6BE"
                 name="Together"
                 body="A voice channel on Thursday, a table on Saturday. Both count. This is the only stage that does."
@@ -476,8 +587,16 @@ export default async function LandingPage() {
               real ones to show.
             </p>
 
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {/*
+              Masonry rather than a grid. Six equal rectangles in three columns
+              is a table of plans; letting each card end where its own copy ends
+              is a wall of them. The blobs behind sit in a different corner on
+              each card and drift on their own clock, so the ground moves
+              slightly and no two cards are the same shape of dark.
+            */}
+            <div className="mt-12 gap-5 sm:columns-2 lg:columns-3">
               <Moment
+                index={0}
                 shape="#55D6BE"
                 tag="Online"
                 title="Co-op night, six going"
@@ -485,6 +604,7 @@ export default async function LandingPage() {
                 people={["M", "W", "S", "P"]}
               />
               <Moment
+                index={1}
                 shape="#55D6BE"
                 tag="Online"
                 title="Focus session, 9am Tuesday"
@@ -492,6 +612,7 @@ export default async function LandingPage() {
                 people={["E", "T", "M"]}
               />
               <Moment
+                index={2}
                 shape="#55D6BE"
                 tag="Online"
                 title="Watch party, 20:00"
@@ -499,6 +620,7 @@ export default async function LandingPage() {
                 people={["S", "P", "W", "T"]}
               />
               <Moment
+                index={3}
                 shape="#FFC857"
                 tag="In person"
                 title="Saturday coffee, no agenda"
@@ -506,6 +628,7 @@ export default async function LandingPage() {
                 people={["E", "T", "M"]}
               />
               <Moment
+                index={4}
                 shape="#FFC857"
                 tag="In person"
                 title="Sunday walk, whoever is free"
@@ -513,6 +636,7 @@ export default async function LandingPage() {
                 people={["T", "S", "E", "W"]}
               />
               <Moment
+                index={5}
                 shape="#9B85FF"
                 tag="Either"
                 title="Board games, table or tabletop"
@@ -699,6 +823,14 @@ export default async function LandingPage() {
  * card on the cream band, and #FFC857 on white is about 1.7:1 — a colour that
  * works as a fill and not at all as text.
  */
+/** The four in the contrast cluster. One of each brand accent. */
+const CONTRAST_BUNCH = [
+  { i: "S", c: "#FF5C6C" },
+  { i: "M", c: "#7657FF" },
+  { i: "E", c: "#55D6BE" },
+  { i: "T", c: "#FFC857" },
+] as const;
+
 function Pill({ children }: { children: ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-[#8a5e00]/20 bg-yellow-fun/20 px-3.5 py-1.5 text-sm font-semibold text-[#8a5e00]">
@@ -707,37 +839,6 @@ function Pill({ children }: { children: ReactNode }) {
   );
 }
 
-/**
- * A two-line exchange, labelled by where it happens.
- *
- * Both appear, and they are drawn identically, because the section's argument
- * is against followers rather than against screens. Showing only the coffee
- * would quietly say the co-op night was the lesser outcome.
- */
-function Exchange({
-  tone,
-  where,
-  said,
-  back,
-}: {
-  tone: string;
-  where: string;
-  said: string;
-  back: string;
-}) {
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-      <span
-        className="text-[11px] font-bold tracking-widest"
-        style={{ color: tone }}
-      >
-        {where.toUpperCase()}
-      </span>
-      <span className="font-semibold text-[#172033]">{said}</span>
-      <span className="text-[#3d4759]">{back}</span>
-    </div>
-  );
-}
 
 /**
  * One position in the Discover → Match → Bunch → Plan → Together sequence.
@@ -750,23 +851,38 @@ function Stage({
   colour,
   name,
   body,
+  index,
   emphasis = false,
 }: {
   colour: string;
   name: string;
   body: string;
+  /** Position in the sequence, used only to put the floats out of phase. */
+  index: number;
   emphasis?: boolean;
 }) {
   return (
     <li className="relative">
+      {/*
+        The node sits on top of the ribbon and hides the piece of it that would
+        otherwise run underneath — hence the ring in the band's own colour.
+        Together is drawn larger and haloed: the copy says it is the only stage
+        that counts, and five identical dots quietly said the opposite.
+      */}
       <span
-        className="flex size-6 items-center justify-center rounded-full ring-4 ring-cream-bg"
-        style={{ background: colour }}
+        className="float relative flex size-9 items-center justify-center rounded-full ring-4 ring-cream-bg"
+        style={{
+          background: colour,
+          boxShadow: emphasis ? `0 0 0 8px ${colour}33` : undefined,
+          ["--float-distance" as string]: "5px",
+          ["--float-duration" as string]: `${4.6 + index * 0.4}s`,
+          ["--float-delay" as string]: `${index * 0.3}s`,
+        }}
       >
-        {emphasis && <span className="size-2 rounded-full bg-white" />}
+        {emphasis && <span className="size-3 rounded-full bg-white" />}
       </span>
       <h3
-        className={`mt-4 text-lg font-extrabold tracking-tight ${
+        className={`mt-5 text-lg font-extrabold tracking-tight ${
           emphasis ? "text-[#0e7a69]" : ""
         }`}
       >
@@ -843,12 +959,23 @@ function Feature({
   );
 }
 
+/** Where each card's blob sits, so the six do not share one silhouette. */
+const BLOB_POSITIONS = [
+  "-right-16 -top-16 size-56",
+  "-left-20 -bottom-16 size-64",
+  "-right-20 bottom-0 size-52",
+  "-left-16 -top-20 size-60",
+  "right-0 -bottom-20 size-56",
+  "-left-24 top-10 size-64",
+] as const;
+
 function Moment({
   shape,
   tag,
   title,
   detail,
   people,
+  index = 0,
   className = "",
 }: {
   shape: string;
@@ -856,18 +983,28 @@ function Moment({
   title: string;
   detail: string;
   people: string[];
+  /** Position in the wall, used for the blob placement and the drift phase. */
+  index?: number;
   className?: string;
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 ${className}`}
+      className={`relative mb-5 break-inside-avoid overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 ${className}`}
     >
       {/* The organic shape the brief asks for — behind the content, rather than
           decorating an empty corner. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full blur-2xl"
-        style={{ background: shape, opacity: 0.22 }}
+        className={`float pointer-events-none absolute rounded-full blur-2xl ${
+          BLOB_POSITIONS[index % BLOB_POSITIONS.length]
+        }`}
+        style={{
+          background: shape,
+          opacity: 0.22,
+          ["--float-distance" as string]: "14px",
+          ["--float-duration" as string]: `${7 + (index % 3) * 1.5}s`,
+          ["--float-delay" as string]: `${index * 0.6}s`,
+        }}
       />
       <div className="relative">
         {/*
