@@ -37,6 +37,17 @@ const PARAMS = {
 // 128 * N * r bytes are needed; Node's 32 MB default is not enough at N=32768.
 const MAX_MEM = 128 * PARAMS.N * PARAMS.r * 2;
 
+/**
+ * The most expensive hash this will agree to verify.
+ *
+ * scrypt needs `128 * N * r` bytes, so the ceiling that matters is on the
+ * product rather than on either factor. 256MB is eight times what PARAMS costs
+ * today, which leaves room to raise the real cost several times over before
+ * this needs revisiting, and is still an allocation the container can survive.
+ */
+const MAX_ACCEPTED_MEM = 256 * 1024 * 1024;
+const MAX_ACCEPTED_P = 16;
+
 const PREFIX = "scrypt";
 
 async function derive(
@@ -102,6 +113,18 @@ export async function verifyPassword(
   if (!Number.isInteger(N) || !Number.isInteger(r) || !Number.isInteger(p)) {
     return false;
   }
+
+  // The cost parameters come out of the stored string, which means the work
+  // this function does is described by data rather than by code. That is the
+  // point — it is what lets the parameters be raised without invalidating
+  // every existing password — but it must have a ceiling. A single row reading
+  // `scrypt$1073741824$8$1$...` would otherwise ask for gigabytes on the next
+  // login attempt against that account, and a hash is not a trustworthy input
+  // once anything can write one.
+  //
+  if (N < 2 || r < 1 || p < 1) return false;
+  if (p > MAX_ACCEPTED_P) return false;
+  if (128 * N * r > MAX_ACCEPTED_MEM) return false;
 
   let expected: Buffer;
   let actual: Buffer;
