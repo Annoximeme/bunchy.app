@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
+import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { brand, BUNCH_NOUN } from "@/lib/brand";
 import { LEGAL } from "@/lib/legal";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
-import { SiteNav } from "@/components/site-links";
+import { SITE_LINKS } from "@/components/site-links";
+import { getViewer } from "@/server/auth/current-user";
 
 export const metadata: Metadata = {
   title: `About ${brand.name}`,
@@ -20,37 +23,127 @@ export const metadata: Metadata = {
  * testimonials and no "trusted by" row, because Bunchy has not launched and
  * every one of those would have to be invented.
  *
- * It is a long read, so it follows the reader's theme rather than being pinned
- * dark like the landing page. The landing page is a poster; this is a document.
+ * ## Why it is a composition rather than a themed document
+ *
+ * It used to follow the reader's theme, on the reasoning that the landing page
+ * is a poster and this is a document. It is now banded — navy where Bunchy is
+ * making a claim, cream where it is explaining itself — because the argument
+ * has a shape: statement, reasoning, refusal, the person responsible, the
+ * offer. Alternating grounds are what let a reader feel that shape while
+ * scrolling rather than having to parse fourteen headings to find it.
+ *
+ * The cost of pinning is that every colour has to be written literally, since
+ * the tokens flip under a dark OS and a half-inverted composition is worse
+ * than either. Same discipline as the landing page, same reason.
+ *
+ * ## Motion
+ *
+ * `.reveal` is a scroll-driven CSS animation, not a library. It is guarded
+ * twice — unsupported browsers never see the rule, and anyone who asked for
+ * less motion is excluded before that — so the content is plainly visible in
+ * both cases. This page is read, not watched.
  */
 
-export default function AboutPage() {
+/** Body and headings. Self-hosted through next/font; the CSP blocks Google's CDN. */
+const display = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+/**
+ * Pull-quotes only.
+ *
+ * One high-contrast serif against the geometric sans is the whole editorial
+ * gesture here: it marks the four or five sentences that carry the argument as
+ * *said* rather than merely written. One weight, because it is never used for
+ * anything a reader has to get through.
+ */
+const editorial = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+/** Pinned to the composition, not to the reader's theme. See the note above. */
+const CREAM = "#FFF9F3";
+const CREAM_WARM = "#F9F0E6";
+const INK = "#172033";
+const INK_SOFT = "#3d4759";
+const CORAL = "#FF5C6C";
+const CORAL_INK = "#C42A40";
+const LINE = "#EFE6DA";
+
+export default async function AboutPage() {
+  const viewer = await getViewer();
+  // A signed-in member can actually start one. Sending them to signup would be
+  // a door they have already walked through.
+  const startHref = viewer ? "/start" : "/signup";
+
   return (
-    <div className="min-h-dvh">
-      <header className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-5 py-6">
-        <Link href="/" aria-label={brand.name}>
-          <BunchyLogo height={20} color="var(--color-ink)" />
-        </Link>
-        <SiteNav current="/about" />
-      </header>
+    <div className={`${display.className} min-h-dvh bg-cream-bg`} style={{ color: INK }}>
+      {/* ---------------------------------------------------------------- 1 */}
+      <section className="relative overflow-hidden bg-navy-base text-white">
+        {/* The ambient wash from the landing hero, at the strength navy can
+            carry. Decorative and behind everything, so it never sits between a
+            reader and a word. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(60% 55% at 15% 0%, rgba(255,92,108,0.16), transparent 60%), radial-gradient(50% 50% at 90% 20%, rgba(118,87,255,0.16), transparent 60%)",
+          }}
+        />
 
-      <main id="main" className="mx-auto max-w-3xl px-5 pb-24 pt-6">
-        <p className="text-sm font-bold uppercase tracking-widest text-accent-ink">
-          About
-        </p>
-        <h1 className="mt-3 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-          You don&rsquo;t need more followers. You need a {BUNCH_NOUN.singular}.
-        </h1>
-        <p className="mt-5 text-lg leading-relaxed text-ink-soft">
-          {brand.name} exists to get four or five people who are into the same
-          things into the same room, or the same voice channel, on a day they
-          are all actually free — and then to get out of the way. It is built by
-          one person, in the open, and this page explains what it is, what it
-          refuses to be, and who is behind it.
-        </p>
+        <header className="relative mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-6">
+          <Link href="/" aria-label={brand.name}>
+            <BunchyLogo height={20} color="#ffffff" />
+          </Link>
+          {/* The shared nav reads from theme tokens, which are wrong on a
+              pinned ground. Same list, styled for navy. */}
+          <nav aria-label={`About ${brand.name}`} className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+            {SITE_LINKS.filter((link) => link.href !== "/about").map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-white/60 transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </header>
 
-        <div className="mt-14 space-y-14">
-          <Section eyebrow="The problem" title="Making friends as an adult is absurdly hard">
+        <div className="relative mx-auto max-w-5xl px-5 pb-28 pt-16 md:pb-36 md:pt-24">
+          <p
+            className="text-sm font-bold uppercase tracking-[0.18em]"
+            style={{ color: CORAL }}
+          >
+            About {brand.name}
+          </p>
+          <h1 className="mt-6 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            You don&rsquo;t need more followers.
+            <br className="hidden sm:block" />{" "}
+            <span style={{ color: CORAL }}>You need a {BUNCH_NOUN.singular}.</span>
+          </h1>
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-white/75 md:text-xl md:leading-relaxed">
+            {brand.name} exists to get four or five people who are into the same
+            things into the same room, or the same voice channel, on a day they
+            are all actually free — and then to get out of the way. It is built
+            by one person, in the open, and this page explains what it is, what
+            it refuses to be, and who is behind it.
+          </p>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- 2 */}
+      <Band>
+        <Column>
+          <Eyebrow tone="coral">The problem</Eyebrow>
+          <Heading>Making friends as an adult is absurdly hard</Heading>
+          <Prose>
             <p>
               Not because people are unfriendly. Because the structures that
               used to do it for you — school, a course, a job with a canteen —
@@ -58,12 +151,21 @@ export default function AboutPage() {
               you let it, is an app that shows you a thousand people you will
               never meet and calls that a social life.
             </p>
+          </Prose>
+        </Column>
+
+        <PullQuote>
+          The tools we have are good at <em>audience</em> and bad at{" "}
+          <em>company</em>.
+        </PullQuote>
+
+        <Column>
+          <Prose>
             <p>
-              The tools we have are good at <em>audience</em> and bad at{" "}
-              <em>company</em>. A follower count goes up while the number of
-              people who would answer a group chat on a Tuesday stays at zero.
-              Most social products are optimised for the first number, because
-              the first number is the one that can be sold.
+              A follower count goes up while the number of people who would
+              answer a group chat on a Tuesday stays at zero. Most social
+              products are optimised for the first number, because the first
+              number is the one that can be sold.
             </p>
             <p>
               <strong>
@@ -74,9 +176,13 @@ export default function AboutPage() {
               friendship is the same handful of people showing up again without
               anybody having to organise it from scratch each time.
             </p>
-          </Section>
+          </Prose>
 
-          <Section eyebrow="The idea" title={`A ${BUNCH_NOUN.singular}, not a network`}>
+          <Rule />
+
+          <Eyebrow tone="purple">The idea</Eyebrow>
+          <Heading>A {BUNCH_NOUN.singular}, not a network</Heading>
+          <Prose>
             <p>
               The unit of this product is a {BUNCH_NOUN.singular}: four to six
               people with real overlap in what they want to do and when they are
@@ -99,53 +205,18 @@ export default function AboutPage() {
               nice sentence: spending the whole budget on identical tags would
               make that pairing impossible to find.
             </p>
-          </Section>
+          </Prose>
+        </Column>
+      </Band>
 
-          <Section eyebrow="What it refuses" title="The things that are missing on purpose">
-            <p>
-              Most of the design work here has gone into what is <em>not</em>{" "}
-              in the product. Each of these is a decision with a reason, not an
-              unbuilt feature:
-            </p>
-            <Refusals
-              items={[
-                [
-                  "No feed",
-                  "There is nothing to scroll. A feed is a machine for turning the time you were going to spend with people into time spent looking at people.",
-                ],
-                [
-                  "No follower counts",
-                  "Nothing here ranks members by popularity, because the moment a number like that exists, people optimise for it instead of for company.",
-                ],
-                [
-                  "No swiping, and nothing that ranks people by looks",
-                  "This is not a dating product and it is not built like one. Compatibility is about what you want to do, not who is most photogenic.",
-                ],
-                [
-                  "No notifications designed to pull you back",
-                  "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide.",
-                ],
-                [
-                  "No streaks, no rota, no attendance score",
-                  "Nothing counts how often you show up. A product that scores your presence has made showing up into homework.",
-                ],
-                [
-                  "No advertising, and no selling anything about you",
-                  "There is no ad network, no tracking pixel, and no third-party analytics. Even the emails carry no tracking image — the design is built out of background colours and text partly for that reason.",
-                ],
-              ]}
-            />
-            <p>
-              The test of all of it is simple and slightly hostile to our own
-              metrics:{" "}
-              <strong>
-                a good session ends with you closing the tab, because you have
-                somebody to talk to.
-              </strong>
-            </p>
-          </Section>
-
-          <Section eyebrow="Online counts too" title="A voice channel is not a lesser outcome">
+      {/* ------------------------------------------------- 3 · dark interlude */}
+      <section className="bg-navy-base px-5 py-24 text-white md:py-32">
+        <div className="reveal mx-auto max-w-3xl">
+          <Eyebrow tone="mint" on="navy">Online counts too</Eyebrow>
+          <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
+            A voice channel is not a lesser outcome
+          </h2>
+          <div className="prose prose-lg prose-letter-dark mt-6">
             <p>
               {brand.name} is not trying to get you off your screen, and it is
               not trying to keep you on it. Half of what a {BUNCH_NOUN.singular}{" "}
@@ -160,227 +231,551 @@ export default function AboutPage() {
               space treats the in-person meeting as the real thing and the
               online one as a consolation.
             </p>
-          </Section>
-
-          <Section eyebrow="Who builds it" title={`One person: ${LEGAL.operator}`}>
-            <p>
-              {brand.name} is written, designed, run and paid for by{" "}
-              <strong>{LEGAL.operator}</strong> — {LEGAL.operatorDescription},
-              based in {LEGAL.jurisdiction}. Not a startup, not a team, not a
-              company with a landing page and three founders. One person, who
-              wanted this to exist and could not find it.
-            </p>
-            <p>
-              The motivation is not complicated: bringing people together and
-              having a genuinely good time doing it. Not growth, not an exit,
-              not a market opportunity in the loneliness epidemic. If it helps a
-              few dozen people find four others to spend Thursday evenings with,
-              it will have done the thing it was built to do.
-            </p>
-            <p>
-              There are no investors. Nobody is asking for engagement metrics,
-              nobody needs a hockey stick by Q3, and there is no board to explain
-              a flat month to. That is precisely why there is no feed — nothing
-              in here needs your attention for its own sake, because nobody is
-              being paid when it gets it.
-            </p>
-            <p>
-              <strong>Being honest about the downsides of that:</strong> one
-              person is a single point of failure. Replies to support email come
-              from a human who also has to sleep, features arrive slower than
-              they would with a team, and if that person is ill for a fortnight
-              it shows. An independent project is not automatically better than
-              a funded one — it is differently constrained, and you should know
-              which constraints you are choosing.
-            </p>
-          </Section>
-
-          <Section eyebrow="Money" title="There isn't any, and here is the plan">
-            <p>
-              {brand.name} currently earns nothing. It is free, there is no paid
-              tier, and there is no revenue to report.
-            </p>
-            <p>
-              The commitments that follow from that are written down where they
-              can be held against us. If {brand.name} ever does earn money,{" "}
-              <Link href="/moderators">paying the volunteers</Link> who kept it
-              safe is the first thing that money should do — before features,
-              before marketing, before anyone takes a salary out of it. That is
-              an intention rather than a contract, and it is published as one on
-              purpose.
-            </p>
-            <p>
-              What will not happen: selling what we know about you, running ads
-              against your interests, or introducing a tier that makes the
-              matching better for people who pay. The matching engine deciding
-              who you meet based on who paid would break the only thing this
-              product is for.
-            </p>
-          </Section>
-
-          <Section eyebrow="Safety and power" title="Who can do what, and who watches">
-            <p>
-              Members can report profiles, messages, {BUNCH_NOUN.plural} and
-              activities. Those reports go to volunteer moderators, who can act
-              on content and suspend accounts —{" "}
-              <Link href="/moderators">that role is described in full</Link>,
-              including the unglamorous parts, and applications are open.
-            </p>
-            <p>
-              Moderators cannot ban accounts, change anybody&rsquo;s role, or
-              take the site offline. They cannot see your email address; it is
-              withheld before it leaves the server rather than merely hidden on
-              the page. Nobody at any level can see your password, because only
-              a hash of it is ever stored.
-            </p>
-            <p>
-              <strong>Every staff action is written to an audit trail before it
-              takes effect</strong>, including the operator&rsquo;s own. Power
-              without a record is how a platform quietly becomes unaccountable.
-            </p>
-            <p>
-              On location: {brand.name} never stores a street address or precise
-              coordinates. Positions are snapped to a coarse grid, and the
-              product speaks in areas — &ldquo;Antwerp region&rdquo; — never in
-              addresses. <Link href="/safety">The safety page</Link> covers
-              meeting people in person, and{" "}
-              <Link href="/privacy">the privacy policy</Link> covers what is
-              held and for how long.
-            </p>
-          </Section>
-
-          <Section eyebrow="Your data" title="What you can do about it, today">
-            <p>
-              You can download everything {brand.name} holds about you, and you
-              can delete your account from your own profile page. No form, no
-              waiting period, no retention email asking whether you are sure
-              three times.
-            </p>
-            <p>
-              What is stored is deliberately thin. The schema keeps everything
-              that identifies a real human apart from everything another member
-              can see, and there is exactly one sanctioned path from a database
-              row to a public payload — which is what makes that separation hold
-              rather than being an intention in a document.
-            </p>
-          </Section>
-
-          <Section eyebrow="Where it is now" title="Early, and honest about it">
-            <p>
-              {brand.name} has not properly launched. There are no member
-              numbers to quote, no testimonials, and the example faces you see
-              on the marketing pages are examples rather than members — labelled
-              as such, because inventing them on a page whose promise is meeting
-              real people would be an odd way to start.
-            </p>
-            <p>
-              Matching works better as more people join, and there is no way
-              around that: introductions stay thin until there is a certain
-              density of people nearby. If you are here early, starting a{" "}
-              {BUNCH_NOUN.singular} is genuinely the most useful thing you can
-              do, because it gives whoever joins next somewhere to land.
-            </p>
-          </Section>
-
-          <Section eyebrow="Get in touch" title="A real person reads these">
-            <p>
-              General questions, ideas, complaints and bug reports:{" "}
-              <a href={`mailto:${LEGAL.supportContact}`}>
-                {LEGAL.supportContact}
-              </a>
-              . Anything about your data specifically:{" "}
-              <a href={`mailto:${LEGAL.privacyContact}`}>
-                {LEGAL.privacyContact}
-              </a>
-              .
-            </p>
-            <p>
-              If something here reads as marketing rather than as true, that is
-              a bug worth reporting too.
-            </p>
-          </Section>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-16 flex flex-col items-center gap-4 rounded-[var(--radius-card)] border border-line bg-surface p-8 text-center">
-          <BunchyMark size={40} />
-          <p className="text-lg font-semibold tracking-tight">
-            {brand.tagline}
-          </p>
-          <p className="max-w-md text-sm text-ink-soft">
-            Three minutes to say what you are into and when you are free. The
-            next step is an actual evening with actual people.
-          </p>
-          <Link
-            href="/signup"
-            className="mt-1 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[var(--color-on-accent)]"
+      {/* ---------------------------------------------------------------- 4 */}
+      <Band>
+        <div className="reveal mx-auto max-w-3xl text-center">
+          <Eyebrow tone="coral" centered>
+            What it refuses
+          </Eyebrow>
+          <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+            The things that are missing on purpose
+          </h2>
+          <p
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed"
+            style={{ color: INK_SOFT }}
           >
-            Find my {BUNCH_NOUN.singular}
-          </Link>
+            Most of the design work here has gone into what is <em>not</em> in
+            the product. Each of these is a decision with a reason, not an
+            unbuilt feature:
+          </p>
         </div>
 
-        <footer className="mt-12 border-t border-line pt-8 text-sm text-muted">
-          <Link href="/" className="transition-colors hover:text-ink">
-            ← Back to {brand.name}
-          </Link>
+        <ul className="reveal mx-auto mt-14 grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {REFUSALS.map(([what, why]) => (
+            <li
+              key={what}
+              className="rounded-2xl bg-white p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
+              style={{ border: `1px solid ${LINE}` }}
+            >
+              {/* A filled coral disc rather than a bare glyph. The palette's own
+                  rule is that coral carries a navy label, never a light one, and
+                  a solid disc reads as a stamp — more emphatic than a thin mark
+                  in a colour that is 2.9:1 against white. Hidden from screen
+                  readers, which would otherwise announce "multiplication sign"
+                  before every heading in the list. */}
+              <span
+                aria-hidden
+                className="flex h-11 w-11 items-center justify-center rounded-full text-xl font-black"
+                style={{ backgroundColor: CORAL, color: INK }}
+              >
+                ✕
+              </span>
+              <p
+                className="mt-5 text-lg font-bold leading-snug md:min-h-[3.5rem]"
+                style={{ color: INK }}
+              >
+                {what}
+              </p>
+              <p
+                className="mt-3 text-[15px] leading-relaxed"
+                style={{ color: INK_SOFT }}
+              >
+                {why}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="reveal mx-auto mt-16 max-w-3xl text-center">
+          <p className="text-lg" style={{ color: INK_SOFT }}>
+            The test of all of it is simple and slightly hostile to our own
+            metrics:
+          </p>
+          <p
+            className={`${editorial.className} mt-5 text-balance text-3xl leading-[1.25] sm:text-4xl md:text-[2.75rem]`}
+            style={{ color: INK }}
+          >
+            &ldquo;A good session ends with you closing the tab, because you
+            have somebody to talk to.&rdquo;
+          </p>
+        </div>
+      </Band>
+
+      {/* ---------------------------------------------------------------- 5 */}
+      <section className="px-5 py-24 md:py-32" style={{ backgroundColor: CREAM_WARM }}>
+        <div className="reveal mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
+          <figure className="mx-auto w-full max-w-sm lg:mx-0">
+            <div className="relative">
+              {/* The frame behind, offset and counter-rotated. Two brand colours
+                  at low opacity rather than a border, so it reads as a print
+                  laid on a desk rather than as a UI card. */}
+              <div
+                aria-hidden
+                className="absolute inset-0 -rotate-3 rounded-[1.75rem]"
+                style={{
+                  background: `linear-gradient(135deg, ${CORAL} 0%, #7657FF 100%)`,
+                  opacity: 0.22,
+                }}
+              />
+              <div
+                className="relative aspect-square rotate-2 overflow-hidden rounded-[1.75rem]"
+                style={{
+                  backgroundColor: "#ffffff",
+                  border: `1px solid ${LINE}`,
+                  boxShadow: "0 18px 40px -24px rgb(23 32 51 / 0.45)",
+                }}
+              >
+                {/* A placeholder, and labelled as one. Inventing a photograph on
+                    a page whose whole claim is that nothing here is invented
+                    would be a strange place to start. */}
+                <div
+                  className="flex h-full w-full flex-col items-center justify-center gap-4"
+                  style={{
+                    background:
+                      "radial-gradient(80% 80% at 30% 20%, rgba(255,92,108,0.10), transparent 70%), radial-gradient(70% 70% at 80% 90%, rgba(118,87,255,0.10), transparent 70%)",
+                  }}
+                >
+                  <BunchyMark size={56} />
+                  <p
+                    className="px-8 text-center text-sm leading-relaxed"
+                    style={{ color: INK_SOFT }}
+                  >
+                    A photo goes here, once there is one worth putting up.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <figcaption className="mt-8 text-center lg:text-left">
+              <p className="text-lg font-bold" style={{ color: INK }}>
+                {LEGAL.operator}
+              </p>
+              <p
+                className="mt-1 text-sm font-semibold uppercase tracking-[0.14em]"
+                style={{ color: CORAL_INK }}
+              >
+                Founder
+              </p>
+            </figcaption>
+          </figure>
+
+          <div>
+            <Eyebrow tone="coral">Who builds it</Eyebrow>
+            <Heading>One person: {LEGAL.operator}</Heading>
+            <Prose>
+              <p>
+                {brand.name} is written, designed, run and paid for by{" "}
+                <strong>{LEGAL.operator}</strong> — {LEGAL.operatorDescription},
+                based in {LEGAL.jurisdiction}. Not a startup, not a team, not a
+                company with a landing page and three founders. One person, who
+                wanted this to exist and could not find it.
+              </p>
+              <p>
+                The motivation is not complicated: bringing people together and
+                having a genuinely good time doing it. Not growth, not an exit,
+                not a market opportunity in the loneliness epidemic. If it helps
+                a few dozen people find four others to spend Thursday evenings
+                with, it will have done the thing it was built to do.
+              </p>
+            </Prose>
+
+            <blockquote
+              className="my-10 border-l-2 py-1 pl-6"
+              style={{ borderColor: CORAL }}
+            >
+              <p
+                className={`${editorial.className} text-2xl leading-snug sm:text-[1.75rem]`}
+                style={{ color: INK }}
+              >
+                There are no investors. Nobody is asking for engagement metrics,
+                nobody needs a hockey stick by Q3, and there is no board to
+                explain a flat month to.
+              </p>
+            </blockquote>
+
+            <Prose>
+              <p>
+                That is precisely why there is no feed — nothing in here needs
+                your attention for its own sake, because nobody is being paid
+                when it gets it.
+              </p>
+              <p>
+                <strong>Being honest about the downsides of that:</strong> one
+                person is a single point of failure. Replies to support email
+                come from a human who also has to sleep, features arrive slower
+                than they would with a team, and if that person is ill for a
+                fortnight it shows. An independent project is not automatically
+                better than a funded one — it is differently constrained, and
+                you should know which constraints you are choosing.
+              </p>
+            </Prose>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- 6 */}
+      <Band>
+        <div className="reveal mx-auto grid max-w-6xl gap-x-12 gap-y-14 lg:grid-cols-3">
+          <article>
+            <Eyebrow tone="coral">Money</Eyebrow>
+            <ColumnHeading>There isn&rsquo;t any, and here is the plan</ColumnHeading>
+            <Prose size="sm">
+              <p>
+                {brand.name} currently earns nothing. It is free, there is no
+                paid tier, and there is no revenue to report.
+              </p>
+              <p>
+                The commitments that follow from that are written down where
+                they can be held against us. If {brand.name} ever does earn
+                money, <Link href="/moderators">paying the volunteers</Link> who
+                kept it safe is the first thing that money should do — before
+                features, before marketing, before anyone takes a salary out of
+                it. That is an intention rather than a contract, and it is
+                published as one on purpose.
+              </p>
+              <p>
+                What will not happen: selling what we know about you, running
+                ads against your interests, or introducing a tier that makes the
+                matching better for people who pay. The matching engine deciding
+                who you meet based on who paid would break the only thing this
+                product is for.
+              </p>
+            </Prose>
+          </article>
+
+          <article>
+            <Eyebrow tone="purple">Safety and power</Eyebrow>
+            <ColumnHeading>Who can do what, and who watches</ColumnHeading>
+            <Prose size="sm">
+              <p>
+                Members can report profiles, messages, {BUNCH_NOUN.plural} and
+                activities. Those reports go to volunteer moderators, who can
+                act on content and suspend accounts —{" "}
+                <Link href="/moderators">that role is described in full</Link>,
+                including the unglamorous parts, and applications are open.
+              </p>
+              <p>
+                Moderators cannot ban accounts, change anybody&rsquo;s role, or
+                take the site offline. They cannot see your email address; it is
+                withheld before it leaves the server rather than merely hidden
+                on the page. Nobody at any level can see your password, because
+                only a hash of it is ever stored.
+              </p>
+              <p>
+                On location: {brand.name} never stores a street address or
+                precise coordinates. Positions are snapped to a coarse grid, and
+                the product speaks in areas — &ldquo;Antwerp region&rdquo; —
+                never in addresses. <Link href="/safety">The safety page</Link>{" "}
+                covers meeting people in person, and{" "}
+                <Link href="/privacy">the privacy policy</Link> covers what is
+                held and for how long.
+              </p>
+            </Prose>
+          </article>
+
+          <article>
+            <Eyebrow tone="mint">Your data</Eyebrow>
+            <ColumnHeading>What you can do about it, today</ColumnHeading>
+            <Prose size="sm">
+              <p>
+                You can download everything {brand.name} holds about you, and
+                you can delete your account from your own profile page. No form,
+                no waiting period, no retention email asking whether you are
+                sure three times.
+              </p>
+              <p>
+                What is stored is deliberately thin. The schema keeps everything
+                that identifies a real human apart from everything another
+                member can see, and there is exactly one sanctioned path from a
+                database row to a public payload — which is what makes that
+                separation hold rather than being an intention in a document.
+              </p>
+            </Prose>
+          </article>
+        </div>
+
+        {/* The one promise on this page that constrains the operator rather than
+            the member, so it is the one pulled out of the column it lived in. */}
+        <div
+          className="reveal mx-auto mt-16 max-w-4xl rounded-2xl px-8 py-10 text-center sm:px-12"
+          style={{ backgroundColor: INK }}
+        >
+          <p
+            className={`${editorial.className} text-balance text-2xl leading-snug text-white sm:text-3xl md:text-[2.125rem]`}
+          >
+            Every staff action is written to an audit trail before it takes
+            effect, including the operator&rsquo;s own.
+          </p>
+          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70">
+            Power without a record is how a platform quietly becomes
+            unaccountable.
+          </p>
+        </div>
+      </Band>
+
+      {/* ---------------------------------------------------------------- 7 */}
+      <section className="relative overflow-hidden bg-navy-base px-5 py-24 text-white md:py-32">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(55% 60% at 50% 100%, rgba(255,92,108,0.18), transparent 65%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-3xl">
+          <div className="reveal">
+            <Eyebrow tone="coral" on="navy">Where it is now</Eyebrow>
+            <h2 className="mt-3 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Early, and honest about it
+            </h2>
+            <div className="prose prose-lg prose-letter-dark mt-6">
+              <p>
+                {brand.name} has not properly launched. There are no member
+                numbers to quote, no testimonials, and the example faces you see
+                on the marketing pages are examples rather than members —
+                labelled as such, because inventing them on a page whose promise
+                is meeting real people would be an odd way to start.
+              </p>
+              <p>
+                Matching works better as more people join, and there is no way
+                around that: introductions stay thin until there is a certain
+                density of people nearby.{" "}
+                <strong>
+                  If you are here early, starting a {BUNCH_NOUN.singular} is
+                  genuinely the most useful thing you can do, because it gives
+                  whoever joins next somewhere to land.
+                </strong>
+              </p>
+            </div>
+
+            <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+              <Link
+                href={startHref}
+                className="inline-flex items-center rounded-full px-8 py-4 text-base font-bold tracking-wide transition-transform duration-200 hover:scale-[1.03]"
+                style={{
+                  backgroundColor: CORAL,
+                  color: INK,
+                  boxShadow: "0 18px 40px -18px #FF5C6C",
+                }}
+              >
+                Start a {BUNCH_NOUN.singular} in your city
+              </Link>
+              <p className="max-w-sm text-sm text-white/60">
+                Three minutes to say what you are into and when you are free.
+                The next step is an actual evening with actual people.
+              </p>
+            </div>
+          </div>
+
+          <hr className="my-16 border-0 border-t" style={{ borderColor: "rgb(255 255 255 / 0.10)" }} />
+
+          <div className="reveal">
+            <Eyebrow tone="coral" on="navy">Get in touch</Eyebrow>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+              A real person reads these
+            </h2>
+            <div className="prose prose-letter-dark mt-5">
+              <p>
+                General questions, ideas, complaints and bug reports:{" "}
+                <a href={`mailto:${LEGAL.supportContact}`}>
+                  {LEGAL.supportContact}
+                </a>
+                . Anything about your data specifically:{" "}
+                <a href={`mailto:${LEGAL.privacyContact}`}>
+                  {LEGAL.privacyContact}
+                </a>
+                .
+              </p>
+              <p>
+                If something here reads as marketing rather than as true, that
+                is a bug worth reporting too.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <footer className="relative mx-auto mt-20 max-w-3xl border-t pt-8 text-sm" style={{ borderColor: "rgb(255 255 255 / 0.10)" }}>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+            <p className="text-white/60">
+              {brand.name}. {brand.tagline}
+            </p>
+            <nav aria-label={`About ${brand.name}`}>
+              <ul className="flex flex-wrap gap-x-5 gap-y-2">
+                {SITE_LINKS.filter((link) => link.href !== "/about").map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-white/60 transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/" className="text-white/60 transition-colors hover:text-white">
+                    Home
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </footer>
-      </main>
+      </section>
+    </div>
+  );
+}
+
+/** The refusals, each carrying the reason it is a decision rather than a gap. */
+const REFUSALS: ReadonlyArray<readonly [string, string]> = [
+  [
+    "No feed",
+    "There is nothing to scroll. A feed is a machine for turning the time you were going to spend with people into time spent looking at people.",
+  ],
+  [
+    "No follower counts",
+    "Nothing here ranks members by popularity, because the moment a number like that exists, people optimise for it instead of for company.",
+  ],
+  [
+    "No swiping, and nothing that ranks people by looks",
+    "This is not a dating product and it is not built like one. Compatibility is about what you want to do, not who is most photogenic.",
+  ],
+  [
+    "No notifications designed to pull you back",
+    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide.",
+  ],
+  [
+    "No streaks, no rota, no attendance score",
+    "Nothing counts how often you show up. A product that scores your presence has made showing up into homework.",
+  ],
+  [
+    "No advertising, and no selling anything about you",
+    "There is no ad network, no tracking pixel, and no third-party analytics. Even the emails carry no tracking image — the design is built out of background colours and text partly for that reason.",
+  ],
+] as const;
+
+/** A full-width band of the composition. Cream is the reading ground. */
+function Band({ children }: { children: ReactNode }) {
+  return (
+    <section className="px-5 py-24 md:py-32" style={{ backgroundColor: CREAM }}>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * The reading column.
+ *
+ * Narrow on purpose. The measure is the single biggest lever on whether a
+ * document this long gets finished, and a container that is merely "centred"
+ * lets the line length follow the viewport instead.
+ */
+function Column({ children }: { children: ReactNode }) {
+  return <div className="reveal mx-auto max-w-[42rem]">{children}</div>;
+}
+
+function Prose({
+  children,
+  size = "lg",
+}: {
+  children: ReactNode;
+  size?: "sm" | "lg";
+}) {
+  return (
+    <div
+      className={`prose prose-letter mt-5 ${size === "lg" ? "prose-lg" : "prose-base"}`}
+    >
+      {children}
     </div>
   );
 }
 
 /**
- * A section of the argument.
+ * The small capitalised label above each heading.
  *
- * Same measure discipline as the policy pages: the prose is capped at 62ch of
- * the "0" glyph — roughly 71 real characters — rather than letting the
- * container's width set the line length. This page is long, and a document
- * that claims to be written to be read has to actually be readable.
+ * Two palettes, and the `on` prop is not decoration. The `-ink` variants are
+ * the accents darkened until they are legible *on cream*, which makes them
+ * close to unreadable on navy — mint-ink on #0A0E1A is 1.6:1, and an axe pass
+ * over the first draft of this page caught exactly that. The dark band gets the
+ * bright variants instead: coral 6.3:1, purple 6.7:1, mint 10.6:1.
  */
-function Section({
-  eyebrow,
-  title,
+const EYEBROW_COLORS = {
+  cream: { coral: CORAL_INK, purple: "#6A47F5", mint: "#0E7A69" },
+  navy: { coral: "#FF5C6C", purple: "#9B85FF", mint: "#55D6BE" },
+} as const;
+
+function Eyebrow({
   children,
+  tone,
+  on = "cream",
+  centered,
 }: {
-  eyebrow: string;
-  title: string;
-  children: React.ReactNode;
+  children: ReactNode;
+  tone: "coral" | "purple" | "mint";
+  on?: "cream" | "navy";
+  centered?: boolean;
 }) {
   return (
-    <section>
-      <p className="text-xs font-bold uppercase tracking-widest text-purple-ink">
-        {eyebrow}
-      </p>
-      <h2 className="mt-2 text-balance text-2xl font-semibold tracking-tight md:text-3xl">
-        {title}
-      </h2>
-      <div className="mt-4 space-y-4 text-base leading-relaxed text-ink-soft [&>p]:max-w-[62ch] [&_a]:text-accent-ink [&_a]:underline [&_a]:underline-offset-2 [&_em]:italic [&_strong]:font-semibold [&_strong]:text-ink">
-        {children}
-      </div>
-    </section>
+    <p
+      className={`text-xs font-bold uppercase tracking-[0.18em] ${centered ? "text-center" : ""}`}
+      style={{ color: EYEBROW_COLORS[on][tone] }}
+    >
+      {children}
+    </p>
   );
 }
 
-/** The refusals, as a list where each one carries its reason. */
-function Refusals({ items }: { items: Array<[string, string]> }) {
+/** A column head in the three-up band. One step down from a section heading. */
+function ColumnHeading({ children }: { children: ReactNode }) {
   return (
-    <ul className="!max-w-none space-y-3">
-      {items.map(([what, why]) => (
-        <li
-          key={what}
-          className="rounded-[var(--radius-card)] border border-line bg-surface p-4"
-        >
-          <p className="flex items-start gap-2.5 font-semibold text-ink">
-            {/* A cross, because each of these is an absence. Hidden from a
-                screen reader, which would otherwise read "multiplication
-                sign" before every heading in the list. */}
-            <span aria-hidden className="mt-0.5 text-danger">
-              ✕
-            </span>
-            {what}
-          </p>
-          <p className="mt-1.5 pl-[1.6rem] text-[15px] leading-relaxed">{why}</p>
-        </li>
-      ))}
-    </ul>
+    <h2
+      className="mt-2 text-balance text-xl font-bold leading-snug tracking-tight"
+      style={{ color: INK }}
+    >
+      {children}
+    </h2>
   );
+}
+
+function Heading({ children }: { children: ReactNode }) {
+  return (
+    <h2
+      className="mt-3 text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl"
+      style={{ color: INK }}
+    >
+      {children}
+    </h2>
+  );
+}
+
+/**
+ * The pull-quote, set wider than the column it interrupts.
+ *
+ * Breaking the margin is the point: it is the one element allowed to be wider
+ * than the measure, which is what makes it read as a held-up sentence rather
+ * than as a paragraph in a bigger font.
+ */
+function PullQuote({ children }: { children: ReactNode }) {
+  return (
+    <figure className="reveal mx-auto my-16 max-w-4xl px-2 md:my-20">
+      <div className="flex flex-col items-center gap-6 text-center">
+        <span aria-hidden className="block h-px w-16" style={{ backgroundColor: CORAL }} />
+        <blockquote
+          className={`${editorial.className} text-balance text-3xl leading-[1.2] sm:text-5xl md:text-6xl`}
+          style={{ color: INK }}
+        >
+          {children}
+        </blockquote>
+        <span aria-hidden className="block h-px w-16" style={{ backgroundColor: CORAL }} />
+      </div>
+    </figure>
+  );
+}
+
+/** A quiet divider between two movements of the same band. */
+function Rule() {
+  return <hr className="my-14 border-0 border-t" style={{ borderColor: LINE }} />;
 }

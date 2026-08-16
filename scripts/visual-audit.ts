@@ -132,6 +132,23 @@ async function signInOnce(browser: Browser) {
   return state;
 }
 
+/**
+ * Every context asks for reduced motion, and that is load-bearing rather than
+ * polite.
+ *
+ * The scroll reveals in globals.css are driven by `animation-timeline: view()`,
+ * so an element's opacity is a function of where the page is scrolled. A
+ * full-page screenshot does not scroll: it resizes and captures, which left the
+ * About page as a correct hero above eight thousand pixels of blank cream, and
+ * had axe reporting contrast failures against text that was mid-fade rather
+ * than against any colour anybody chose.
+ *
+ * `prefers-reduced-motion: reduce` is the switch those rules are already
+ * guarded by, so asking for it gives the settled page — which is the state a
+ * reader does their reading in, and the only state in which "is this legible"
+ * is a meaningful question. It is also a real user preference, so this is the
+ * page as some people always see it.
+ */
 async function main() {
   mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
@@ -144,6 +161,7 @@ async function main() {
         colorScheme: theme,
         deviceScaleFactor: 1,
         storageState,
+        reducedMotion: "reduce",
       });
       // A second, signed-out window at the same size and theme. The public
       // pages are marked `signedOut` because that is who reads them, and
@@ -153,6 +171,7 @@ async function main() {
         viewport: { width: viewport.width, height: viewport.height },
         colorScheme: theme,
         deviceScaleFactor: 1,
+        reducedMotion: "reduce",
       });
 
       // Surface anything the app logs as broken; a console error is often the
