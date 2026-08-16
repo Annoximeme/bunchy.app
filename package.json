@@ -26,6 +26,7 @@
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "verify:all": "npm run verify && npm run test:components && npm run test:integration",
     "jobs": "node --env-file=.env node_modules/.bin/tsx scripts/run-jobs.ts",
+    "announce": "node --env-file=.env node_modules/.bin/tsx scripts/announce-launch.ts",
     "test:components": "vitest run --config vitest.components.config.mts",
     "measure": "node --env-file=.env node_modules/.bin/tsx scripts/measure.ts"
   },
