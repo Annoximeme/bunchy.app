@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { bunchyNow, type BunchyNowBoard } from "@/server/modules/discovery/bunchy-now";
 import type { Horizon } from "@/server/modules/availability/service";
+import type { Relaxation } from "@/server/modules/discovery/find-people";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { Card, Chip, EmptyState, LinkButton } from "@/components/ui";
 import { Avatar } from "@/components/ui";
@@ -18,6 +19,20 @@ const START_QUERY: Record<Horizon | "all", string> = {
   tonight: "something to do tonight",
   weekend: "something to do this weekend",
   all: "something to do with people nearby",
+};
+
+/**
+ * Human names for the filters a search can drop.
+ *
+ * The relaxation's `constraint` is an internal key, and printing it raw put
+ * "Try dropping: availableNow." on the page in front of members.
+ */
+const RELAXATION_LABELS: Record<Relaxation["constraint"], string> = {
+  interests: "shared interests",
+  time: "the time you picked",
+  distance: "how close they are",
+  goals: "what they are looking for",
+  availableNow: "only people free now",
 };
 
 const HORIZONS: Array<{ value: Horizon | "all"; label: string }> = [
@@ -142,21 +157,7 @@ export default async function BunchyNowPage({
                     <LinkButton href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}>
                       Start something
                     </LinkButton>
-                    {board.people.people.length > 0 && (
-              <div className="mt-8 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3.5 text-sm">
-                <span className="text-ink-soft">
-                  Seen someone worth an evening?{" "}
-                </span>
-                <Link
-                  href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}
-                  className="font-medium text-accent-ink underline underline-offset-2"
-                >
-                  Start something and invite them
-                </Link>
-              </div>
-            )}
-
-            {board.people.relaxations.length > 0 && (
+                    {board.people.relaxations.length > 0 && (
                       <LinkButton href="/now" variant="secondary">
                         Clear filters
                       </LinkButton>
@@ -172,12 +173,26 @@ export default async function BunchyNowPage({
               </div>
             )}
 
+            {/* Sits with the list of people, not inside the empty state: it is
+                an invitation to act on somebody you just saw. */}
+            {board.people.people.length > 0 && (
+              <div className="mt-8 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3.5 text-sm">
+                <span className="text-ink-soft">Seen someone worth an evening? </span>
+                <Link
+                  href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}
+                  className="font-medium text-accent-ink underline underline-offset-2"
+                >
+                  Start something and invite them
+                </Link>
+              </div>
+            )}
+
             {board.people.relaxations.length > 0 &&
               board.people.people.length === 0 && (
                 <p className="mt-6 text-sm text-muted">
                   Try dropping:{" "}
-                  {board.people.relaxations.map((r) => r.constraint).join(", ")}.{" "}
-                  <Link href="/find" className="text-accent-ink underline underline-offset-2">
+                  {board.people.relaxations.map((r) => RELAXATION_LABELS[r.constraint]).join(", ")}.{" "}
+                  <Link href="/assistant" className="text-accent-ink underline underline-offset-2">
                     Search with your own words
                   </Link>
                 </p>

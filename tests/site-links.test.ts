@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { SITE_LINKS } from "@/components/site-links";
 
@@ -71,5 +71,80 @@ describe("reachability", () => {
   it("is mounted in the landing footer", () => {
     const landing = readFileSync(`${ROOT}page.tsx`, "utf8");
     expect(landing).toContain("SITE_LINKS");
+  });
+});
+
+/**
+ * Every internal link in the app points at a route that exists.
+ *
+ * Written after Bunchy Now offered "Search with your own words" behind a link
+ * to `/find`, a page that has never existed. Nothing caught it: the build is
+ * happy — `next/link` takes any string — and the only visible symptom was a
+ * 404 for whoever clicked, plus a prefetch that hung and made the page look
+ * slow. A dead link is not a typo, it is a promise the interface breaks.
+ *
+ * Static hrefs only. A template literal is a runtime value and this is a file
+ * scan, so `/start?q=${...}` is checked as `/start` and dynamic segments match
+ * by shape.
+ */
+describe("every internal link", () => {
+  function sourceFiles(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const full = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) return sourceFiles(full);
+      return /\.tsx?$/.test(entry.name) ? [full] : [];
+    });
+  }
+
+  /**
+   * `src/app/(app)/u/[username]/page.tsx` → `/u/[username]`.
+   *
+   * Metadata routes count too: `opengraph-image.tsx` is a real URL that
+   * answers with an image, and the brand page links to it on purpose.
+   */
+  const ROUTE_FILE = /\/(page|opengraph-image|twitter-image|icon|apple-icon|sitemap|robots|manifest)\.tsx?$/;
+
+  function routePatterns(): string[][] {
+    return sourceFiles(ROOT)
+      .filter((file) => ROUTE_FILE.test(file))
+      .map((file) =>
+        file
+          .slice(ROOT.length)
+          .replace(/\/page\.tsx$/, "")
+          .replace(/\.tsx?$/, "")
+          .split("/")
+          .filter((segment) => segment !== "" && !segment.startsWith("(")),
+      );
+  }
+
+  function matches(pattern: string[], segments: string[]): boolean {
+    if (pattern.some((s) => s.startsWith("[..."))) {
+      const fixed = pattern.slice(0, pattern.indexOf(pattern.find((s) => s.startsWith("[..."))!));
+      return segments.length >= fixed.length;
+    }
+    if (pattern.length !== segments.length) return false;
+    return pattern.every((s, i) => s.startsWith("[") || s === segments[i]);
+  }
+
+  it("points at a page that exists", () => {
+    const patterns = routePatterns();
+    const dead: string[] = [];
+
+    for (const file of sourceFiles(new URL("../src/", import.meta.url).pathname)) {
+      const source = readFileSync(file, "utf8");
+      for (const [, href] of source.matchAll(/href="(\/[^"{}]*)"/g)) {
+        const path = href.split(/[?#]/)[0].replace(/\/$/, "");
+        // The landing page, the API, and the files served from /public are not
+        // App Router pages and have no page.tsx to find.
+        if (path === "" || path.startsWith("/api/") || /\.[a-z0-9]+$/i.test(path)) continue;
+
+        const segments = path.split("/").filter(Boolean);
+        if (!patterns.some((pattern) => matches(pattern, segments))) {
+          dead.push(`${href} (${file.slice(file.indexOf("/src/") + 1)})`);
+        }
+      }
+    }
+
+    expect(dead, `links to pages that do not exist:\n  ${dead.join("\n  ")}`).toEqual([]);
   });
 });
