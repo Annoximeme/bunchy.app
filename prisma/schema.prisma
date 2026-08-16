@@ -1374,10 +1374,15 @@ model BunchChallenge {
 /// coming-soon page says as much in plain words, and this model is what makes
 /// that promise checkable rather than a claim.
 model WaitlistSignup {
-  id        String   @id @default(cuid())
+  id         String    @id @default(cuid())
   /// Lowercased on write, so one person cannot occupy three rows.
-  email     String   @unique
-  createdAt DateTime @default(now())
+  email      String    @unique
+  createdAt  DateTime  @default(now())
+  /// When the launch announcement went out. The launch script sends only to
+  /// rows where this is null, which is what makes an interrupted run safe to
+  /// restart without writing to the same person twice.
+  notifiedAt DateTime?
 
   @@index([createdAt])
+  @@index([notifiedAt])
 }
