@@ -30,6 +30,13 @@ const schema = z.object({
    * Unset means the dashboard refuses to turn the gate on at all.
    */
   PREVIEW_TOKEN: z.string().optional(),
+  /**
+   * Signing secret for the provider's bounce/complaint webhook, as
+   * `whsec_...`. Unset means the endpoint refuses every request rather than
+   * trusting unsigned ones — an unauthenticated endpoint that suppresses
+   * addresses is a way for anybody to stop somebody else's password reset.
+   */
+  RESEND_WEBHOOK_SECRET: z.string().optional(),
 });
 
 /**
@@ -82,6 +89,21 @@ let cached: ReturnType<typeof load> | undefined;
 export function env() {
   cached ??= load();
   return cached;
+}
+
+/**
+ * Test seam. Drops the memoised environment so the next `env()` re-reads
+ * `process.env`.
+ *
+ * The cache is process-wide and deliberately so — the environment does not
+ * change under a running server, and re-validating on every access would be
+ * waste. That makes any test asserting on a *different* configuration depend
+ * on being the first to call `env()`, which is a test that passes until
+ * somebody adds a case above it. Calling this in `beforeEach` removes the
+ * ordering dependency.
+ */
+export function resetEnv(): void {
+  cached = undefined;
 }
 
 /**

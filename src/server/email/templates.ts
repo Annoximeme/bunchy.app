@@ -1,5 +1,10 @@
 import { brand } from "@/lib/brand";
 import { renderEmail } from "@/server/email/layout";
+import {
+  unsubscribeLink,
+  unsubscribeOneClick,
+  type UnsubscribeTarget,
+} from "@/server/email/unsubscribe";
 import type { EmailMessage } from "@/server/email";
 
 /**
@@ -18,9 +23,31 @@ import type { EmailMessage } from "@/server/email";
 
 type Body = Omit<EmailMessage, "to">;
 
-function message(subject: string, content: Parameters<typeof renderEmail>[0]): Body {
-  const { html, text } = renderEmail(content);
-  return { subject, text, html };
+/**
+ * A template names *who* is unsubscribing, never the URLs.
+ *
+ * There are two, they are different endpoints, and they must appear together
+ * or not at all: the visible link in the footer, and the one-click URL in the
+ * header. Deriving both from one target is what stops a template showing a
+ * footer link with no header — invisible to Gmail's button — or the reverse,
+ * which is worse: a one-click header on a message whose body never mentions
+ * that unsubscribing is possible.
+ */
+function message(
+  subject: string,
+  content: Parameters<typeof renderEmail>[0],
+  unsubscribe?: UnsubscribeTarget,
+): Body {
+  const { html, text } = renderEmail({
+    ...content,
+    unsubscribeUrl: unsubscribe ? unsubscribeLink(unsubscribe) : undefined,
+  });
+  return {
+    subject,
+    text,
+    html,
+    unsubscribeUrl: unsubscribe ? unsubscribeOneClick(unsubscribe) : undefined,
+  };
 }
 
 /**
@@ -87,6 +114,8 @@ export function notificationEmail(input: {
   link?: string;
   /** Absolute URL of the settings screen. */
   settingsUrl: string;
+  /** Who to turn every notification email off for, in one click. */
+  unsubscribe?: UnsubscribeTarget;
 }): Body {
   return message(input.title, {
     preheader: input.body ?? input.title,
@@ -97,18 +126,20 @@ export function notificationEmail(input: {
       ? [`If the button does not work, paste this into your browser: ${input.link}`]
       : [],
     footnote: `${brand.name} only emails you about something a person did that involves you. Change what you hear about at ${input.settingsUrl}`,
-  });
+  }, input.unsubscribe);
 }
 
 /**
  * The one message the waiting list was collected for.
  *
- * Not wired to a sender yet — launch day is a deliberate act, not a job that
- * fires itself. It lives here so the promise the coming-soon page makes ("one
- * message, on launch day") has an actual message behind it, and so it can be
- * read and previewed alongside the rest.
+ * Sent by `scripts/announce-launch.ts`, by hand, once. Launch day is a
+ * deliberate act rather than a job that fires itself, so nothing in the
+ * running system ever reaches this template on its own.
  */
-export function waitlistLaunchEmail(signupUrl: string): Body {
+export function waitlistLaunchEmail(
+  signupUrl: string,
+  unsubscribe?: UnsubscribeTarget,
+): Body {
   return message(`${brand.name} is open`, {
     preheader: "You asked to hear about this. This is the one message.",
     heading: `${brand.name} is open`,
@@ -118,8 +149,8 @@ export function waitlistLaunchEmail(signupUrl: string): Body {
     ],
     action: { label: "Have a look", href: signupUrl },
     fine: [
-      "This is the only email the waiting list was for. You are not subscribed to anything.",
+      "This is the only email the waiting list was for. Unsubscribing takes your address off it — there is no other list to be on.",
     ],
     footnote: `You are getting this because you asked to be told when ${brand.name} opened.`,
-  });
+  }, unsubscribe);
 }

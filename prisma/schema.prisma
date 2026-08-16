@@ -1373,6 +1373,33 @@ model BunchChallenge {
 /// that gets stored: no name, no IP, no referrer, no marketing profile. The
 /// coming-soon page says as much in plain words, and this model is what makes
 /// that promise checkable rather than a claim.
+/// An address we have been told to stop writing to.
+///
+/// Fed by the provider's bounce and complaint webhook, and consulted before
+/// every send. A hard bounce means the mailbox does not exist and never will,
+/// and continuing to write to it is how a sending domain acquires a reputation
+/// for writing to addresses that do not exist. A complaint is somebody
+/// pressing "report spam", which is a stronger instruction than any preference
+/// screen and is honoured as one.
+model EmailSuppression {
+  id        String              @id @default(cuid())
+  /// Lowercased on write, matching how addresses are stored everywhere else.
+  email     String              @unique
+  reason    EmailSuppressionReason
+  /// The provider's own description, for working out what happened later.
+  detail    String?
+  createdAt DateTime            @default(now())
+
+  @@index([createdAt])
+}
+
+enum EmailSuppressionReason {
+  /// The mailbox does not exist, or the domain refuses us permanently.
+  BOUNCE
+  /// The recipient pressed "report spam".
+  COMPLAINT
+}
+
 model WaitlistSignup {
   id         String    @id @default(cuid())
   /// Lowercased on write, so one person cannot occupy three rows.

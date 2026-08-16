@@ -118,7 +118,7 @@ export async function announceLaunch(
   });
 
   const appUrl = env().APP_URL.replace(/\/$/, "");
-  const message = waitlistLaunchEmail(`${appUrl}/signup`);
+  const signupUrl = `${appUrl}/signup`;
 
   const result: AnnounceResult = {
     pending: signups.length,
@@ -160,7 +160,16 @@ export async function announceLaunch(
     }
 
     try {
-      await sendEmail({ to: signup.email, ...message });
+      // Rendered per recipient rather than once outside the loop: the
+      // unsubscribe link is signed for this address, and a shared one would
+      // let the first person who pressed it remove somebody else.
+      await sendEmail({
+        to: signup.email,
+        ...waitlistLaunchEmail(signupUrl, {
+          kind: "waitlist",
+          email: signup.email,
+        }),
+      });
       // Only now. See the note on at-least-once above.
       await markNotified(signup.id);
       result.sent += 1;

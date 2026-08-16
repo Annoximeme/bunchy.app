@@ -50,6 +50,42 @@ async function send() {
   return settled;
 }
 
+describe("unsubscribe headers", () => {
+  /** Same helper, but for a message that carries an unsubscribe URL. */
+  async function sendBulk(unsubscribeUrl?: string) {
+    const promise = new SmtpEmailTransport().send({ ...message, unsubscribeUrl });
+    const settled = promise.then(
+      () => "ok" as const,
+      (e) => e as Error,
+    );
+    await vi.runAllTimersAsync();
+    return settled;
+  }
+
+  it("sets both one-click headers, or the button never appears", async () => {
+    // `List-Unsubscribe` on its own tells Gmail a way off the list exists but
+    // not that it can be taken without a round trip, so the button stays
+    // hidden and the reader's only visible option is still "report spam".
+    sendMail.mockResolvedValue({});
+    await sendBulk("https://bunchy.app/api/unsubscribe?token=abc");
+
+    expect(sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        headers: {
+          "List-Unsubscribe": "<https://bunchy.app/api/unsubscribe?token=abc>",
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        },
+      }),
+    );
+  });
+
+  it("sets neither on transactional mail", async () => {
+    sendMail.mockResolvedValue({});
+    await sendBulk(undefined);
+    expect(sendMail.mock.calls[0]![0]).not.toHaveProperty("headers");
+  });
+});
+
 describe("sending", () => {
   it("sends once when the server accepts it", async () => {
     sendMail.mockResolvedValue({});

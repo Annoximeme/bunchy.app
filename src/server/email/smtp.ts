@@ -87,6 +87,19 @@ export class SmtpEmailTransport implements EmailTransport {
           // what the spec asks for and what the filters expect.
           text: message.text,
           html: message.html,
+          // RFC 8058 one-click. Both headers or neither: `List-Unsubscribe`
+          // alone tells Gmail there is a way off the list but not that it can
+          // be taken without a round trip, so the button stays hidden and the
+          // reader's only visible option is still "report spam". The POST body
+          // Gmail sends is `List-Unsubscribe=One-Click`.
+          ...(message.unsubscribeUrl
+            ? {
+                headers: {
+                  "List-Unsubscribe": `<${message.unsubscribeUrl}>`,
+                  "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+                },
+              }
+            : {}),
         });
         return;
       } catch (error) {

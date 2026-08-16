@@ -1,5 +1,6 @@
 import { env } from "@/server/env";
 import { SmtpEmailTransport } from "@/server/email/smtp";
+import { isSuppressed } from "@/server/email/suppression";
 
 /**
  * Outbound email behind an adapter.
@@ -24,6 +25,16 @@ export interface EmailMessage {
   text: string;
   /** The branded part. Absent for anything sent outside the templates. */
   html?: string;
+  /**
+   * Where this person goes to make it stop.
+   *
+   * Set on bulk and notification mail, and deliberately *not* on verification
+   * or password-reset mail: those are not a subscription, there is nothing to
+   * unsubscribe from, and offering it on a password reset invites somebody
+   * locked out of their account to opt out of the only message that can let
+   * them back in. Present, it becomes the `List-Unsubscribe` headers.
+   */
+  unsubscribeUrl?: string;
 }
 
 export interface EmailTransport {
@@ -68,6 +79,24 @@ export function transport(): EmailTransport {
     : new ConsoleEmailTransport();
 }
 
+/**
+ * The one door out.
+ *
+ * The suppression check lives here rather than in each caller, because "each
+ * caller" is the arrangement where the next feature to send an email forgets.
+ * It is a single indexed lookup on an address we already have in hand.
+ *
+ * It is *not* wrapped in a try/catch that sends anyway. If the database is
+ * unreachable the correct behaviour is to fail this send — the caller for a
+ * notification already swallows the error, and the caller for a password reset
+ * already surfaces it. Sending to an address we cannot check is how a
+ * suppression list quietly stops meaning anything.
+ */
 export async function sendEmail(message: EmailMessage): Promise<void> {
+  if (await isSuppressed(message.to)) {
+    // Not an error. The address is genuinely undeliverable, the caller did
+    // nothing wrong, and there is nothing for it to do about it.
+    return;
+  }
   await transport().send(message);
 }

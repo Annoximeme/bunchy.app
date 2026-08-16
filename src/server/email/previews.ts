@@ -55,6 +55,7 @@ export const EMAIL_PREVIEWS: readonly EmailPreview[] = [
       body: "“Works for me — I can be on at eight. Anyone else?”",
       link: `${EXAMPLE_ORIGIN}/bunches/thursday-co-op`,
       settingsUrl: `${EXAMPLE_ORIGIN}/profile`,
+      unsubscribe: { kind: "notifications", profileId: "example-profile" },
     }),
   },
   {
@@ -64,13 +65,17 @@ export const EMAIL_PREVIEWS: readonly EmailPreview[] = [
     message: notificationEmail({
       title: "Your profile is ready",
       settingsUrl: `${EXAMPLE_ORIGIN}/profile`,
+      unsubscribe: { kind: "notifications", profileId: "example-profile" },
     }),
   },
   {
     slug: "waitlist-launch",
     label: "Bunchy is open",
     when: "Once, to the waiting list, on launch day. Sent by hand — nothing fires this automatically.",
-    message: waitlistLaunchEmail(`${EXAMPLE_ORIGIN}/signup`),
+    message: waitlistLaunchEmail(`${EXAMPLE_ORIGIN}/signup`, {
+      kind: "waitlist",
+      email: "someone@example.com",
+    }),
   },
 ] as const;
 
