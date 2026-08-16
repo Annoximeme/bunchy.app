@@ -12,8 +12,27 @@
 
 name: bunchy
 
+# Resource ceilings, so no one service can take the machine down with it.
+#
+# One host runs all of this, and until now nothing bounded any of it: a memory
+# spike in the web process — a burst of password hashing, a query that returns
+# more than expected — was free to consume everything, and the first thing the
+# kernel's OOM killer reaches for is not necessarily the process at fault. It
+# might be Postgres, which is the one process here holding data.
+#
+# The numbers are deliberately generous for an 8GB machine with no traffic yet.
+# They exist to bound a runaway, not to pack the box: each service should sit
+# far below its limit in normal operation, and a container that starts getting
+# killed is telling you something real rather than being squeezed.
+
 services:
   db:
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+        reservations:
+          memory: 512m
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -59,6 +78,12 @@ services:
     networks: [backend]
 
   app:
+    deploy:
+      resources:
+        limits:
+          memory: 1500m
+        reservations:
+          memory: 384m
     build:
       context: .
       target: runner
@@ -107,6 +132,12 @@ services:
     networks: [backend, egress]
 
   jobs:
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+        reservations:
+          memory: 128m
     build:
       context: .
       target: jobs
@@ -135,6 +166,12 @@ services:
     networks: [backend, egress]
 
   caddy:
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+        reservations:
+          memory: 64m
     image: caddy:2-alpine
     restart: unless-stopped
     ports:
