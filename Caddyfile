@@ -90,7 +90,11 @@ www.{$DOMAIN} {
 		# coming-soon page does not already say out loud.
 		# Next's own asset paths have to reach the app, or the page the gate
 		# serves arrives without its stylesheet.
-		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /_next/* /api/waitlist
+		# Unsubscribing has to work while the gate is up. A link in an email
+		# that was already sent must not answer with the coming-soon page: to
+		# the reader that is a broken unsubscribe, and the next lever they
+		# reach for is the spam button.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /_next/* /api/waitlist /api/unsubscribe /unsubscribe /api/webhooks/*
 	}
 	handle @soon {
 		# Rewritten to the real page rather than a static file. The coming-soon

@@ -96,6 +96,7 @@ export async function notify(input: NotifyInput): Promise<void> {
           body: input.body,
           link: input.linkPath ? `${appUrl}${input.linkPath}` : undefined,
           settingsUrl: `${appUrl}/profile`,
+          unsubscribe: { kind: "notifications", profileId: input.profileId },
         }),
       }).catch((error) => {
         // A failed notification email must never fail the action that caused it.

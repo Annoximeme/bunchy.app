@@ -76,6 +76,16 @@ export interface EmailContent {
   fine?: string[];
   /** The last line: why this person is receiving this at all. */
   footnote: string;
+  /**
+   * Renders a visible unsubscribe link in the footer.
+   *
+   * The `List-Unsubscribe` header is not a substitute for this one. The header
+   * is honoured by Gmail, Yahoo and Outlook.com and by very little else, so in
+   * every other client the only way off the list is what is written in the
+   * message — and a bulk email with no visible way out is the definition of
+   * the thing the spam button exists for.
+   */
+  unsubscribeUrl?: string;
 }
 
 export interface RenderedEmail {
@@ -215,6 +225,9 @@ export function renderEmail(content: EmailContent): RenderedEmail {
     // Footer, outside the white card.
     `<tr><td style="background-color:${SURFACE};border-radius:0 0 20px 20px;border-top:1px solid ${HAIRLINE};padding:20px 32px 24px;">`,
     `<p style="margin:0;font-family:${FONT};font-size:13px;line-height:20px;color:${INK_SOFT};">${escapeHtml(content.footnote)}</p>`,
+    content.unsubscribeUrl
+      ? `<p style="margin:10px 0 0;font-family:${FONT};font-size:13px;line-height:20px;color:${INK_SOFT};"><a href="${escapeHtml(content.unsubscribeUrl)}" style="color:${INK_SOFT};text-decoration:underline;">Unsubscribe</a></p>`
+      : "",
     "</td></tr>",
     `<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:12px;line-height:18px;color:${INK_SOFT};">${escapeHtml(`${brand.name}. ${brand.tagline}`)}</td></tr>`,
 
@@ -229,6 +242,9 @@ export function renderEmail(content: EmailContent): RenderedEmail {
     ...(content.action ? [content.action.label, content.action.href, ""] : []),
     ...(fine.length ? [...fine, ""] : []),
     content.footnote,
+    ...(content.unsubscribeUrl
+      ? ["", `Unsubscribe: ${content.unsubscribeUrl}`]
+      : []),
     "",
     `— ${brand.name}. ${brand.tagline}`,
   ].join("\n");
