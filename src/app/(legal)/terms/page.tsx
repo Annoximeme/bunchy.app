@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <LegalPage
+      path="/terms"
       title="Terms"
       contact={LEGAL.supportContact}
       summary={`The agreement between you and ${brand.name}. Written to be read. If a clause here is unclear, that is our problem to fix, not yours to decipher.`}

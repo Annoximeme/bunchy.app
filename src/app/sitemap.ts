@@ -16,6 +16,7 @@ const PUBLIC_PATHS = [
   { path: "/login", changeFrequency: "monthly" as const, priority: 0.5 },
   // Ahead of the policies: it is the page a cautious person is looking for.
   { path: "/safety", changeFrequency: "yearly" as const, priority: 0.4 },
+  { path: "/about", changeFrequency: "monthly" as const, priority: 0.6 },
   { path: "/moderators", changeFrequency: "monthly" as const, priority: 0.4 },
   { path: "/privacy", changeFrequency: "yearly" as const, priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly" as const, priority: 0.3 },

@@ -35,6 +35,7 @@ export default async function ModeratorsPage() {
 
   return (
     <LegalPage
+      path="/moderators"
       title="Volunteer moderators"
       contact={LEGAL.supportContact}
       summary={`${brand.name} needs a few people to read the report queue and decide what happens. It is unpaid right now, because the platform earns nothing, and this page explains exactly what the work is, what we will and will not promise you, and how to stop.`}

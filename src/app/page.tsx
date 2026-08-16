@@ -11,6 +11,7 @@ import { brand } from "@/lib/brand";
 import { person } from "@/lib/example-people";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SITE_LINKS } from "@/components/site-links";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
 import { BunchMoment } from "@/components/landing/bunch-moment";
 import { UpFor } from "@/components/landing/up-for";
@@ -669,21 +670,18 @@ export default async function LandingPage() {
             <Link href="/login" className="transition-colors hover:text-white">
               Sign in
             </Link>
-            <Link href="/safety" className="transition-colors hover:text-white">
-              Safety
-            </Link>
-            <Link
-              href="/moderators"
-              className="transition-colors hover:text-white"
-            >
-              Volunteer
-            </Link>
-            <Link href="/privacy" className="transition-colors hover:text-white">
-              Privacy
-            </Link>
-            <Link href="/terms" className="transition-colors hover:text-white">
-              Terms
-            </Link>
+            {/* One list, shared with the signed-in footer and the policy
+                pages, so a page added there appears in all three rather than
+                in whichever one somebody remembered. */}
+            {SITE_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
             {/* This page is a fixed composition, but the control belongs
                 somewhere reachable for the pages that are not. */}
             <ThemeToggle className="text-white/50 hover:bg-white/10 hover:text-white" />

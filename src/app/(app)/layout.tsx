@@ -3,6 +3,7 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { db } from "@/server/db/client";
 import { AppNav } from "@/components/nav";
+import { SiteFooter } from "@/components/site-links";
 import { isStaff } from "@/server/modules/admin/guard";
 import { unreadCount } from "@/server/modules/notifications/service";
 
@@ -69,6 +70,14 @@ export default async function AppLayout({
       />
       <main id="main" className="pb-24 md:pb-10">
         {children}
+        {/*
+          The only route from inside the product to the pages that explain it.
+          Without this, signing in made About, Safety, Volunteer, Privacy and
+          Terms unreachable — they were linked from the landing page footer
+          alone, and a signed-in visitor to the landing page is redirected to
+          Discover before they ever see it.
+        */}
+        <SiteFooter />
       </main>
     </div>
   );
