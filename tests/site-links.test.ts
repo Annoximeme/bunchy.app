@@ -132,8 +132,9 @@ describe("every internal link", () => {
 
     for (const file of sourceFiles(new URL("../src/", import.meta.url).pathname)) {
       const source = readFileSync(file, "utf8");
-      for (const [, href] of source.matchAll(/href="(\/[^"{}]*)"/g)) {
-        const path = href.split(/[?#]/)[0].replace(/\/$/, "");
+      for (const match of source.matchAll(/href="(\/[^"{}]*)"/g)) {
+        const href = match[1] ?? "";
+        const path = (href.split(/[?#]/)[0] ?? "").replace(/\/$/, "");
         // The landing page, the API, and the files served from /public are not
         // App Router pages and have no page.tsx to find.
         if (path === "" || path.startsWith("/api/") || /\.[a-z0-9]+$/i.test(path)) continue;
