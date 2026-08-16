@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
+import { SiteNav } from "@/components/site-links";
 
 /**
  * Shared furniture for the policy pages.
@@ -15,12 +16,15 @@ export function LegalPage({
   title,
   summary,
   contact,
+  path,
   children,
 }: {
   title: string;
   summary: string;
   /** Where questions about *this* document go. Terms and privacy differ. */
   contact: string;
+  /** This page's own route, so the nav does not link back to itself. */
+  path?: string;
   children: ReactNode;
 }) {
   return (
@@ -29,14 +33,12 @@ export function LegalPage({
         <Link href="/" aria-label={brand.name}>
           <BunchyLogo height={20} color="var(--color-ink)" />
         </Link>
-        <nav className="flex gap-5 text-sm text-muted">
-          <Link href="/privacy" className="transition-colors hover:text-ink">
-            Privacy
-          </Link>
-          <Link href="/terms" className="transition-colors hover:text-ink">
-            Terms
-          </Link>
-        </nav>
+        {/*
+          Was Privacy and Terms only, which made every policy page a dead end
+          for the two that matter most to somebody reading them: Safety, and
+          the volunteer page that asks for an account.
+        */}
+        <SiteNav current={path} />
       </header>
 
       <main id="main" className="mx-auto max-w-3xl px-5 pb-24 pt-6">

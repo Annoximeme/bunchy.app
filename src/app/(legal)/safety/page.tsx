@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 export default function SafetyPage() {
   return (
     <LegalPage
+      path="/safety"
       title="Meeting safely"
       contact={LEGAL.supportContact}
       summary={`Plenty of ${brand.name} happens online, where the worst case is blocking someone. This page is about the other half, meeting in person, which is worth doing carefully. Here is what we recommend, what we do on our side, and what to do when something is wrong.`}
