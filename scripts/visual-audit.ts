@@ -8,10 +8,12 @@ import { chromium, type Browser, type Page } from "playwright";
  * the pages a member actually sees, writes a PNG of each at phone and desktop
  * width in both themes, and runs axe-core over every one of them.
  *
- *   docker run --rm --network bunchy_backend -v "$PWD":/app -w /app \
- *     -e BASE_URL=http://bunchy-preview:3000 \
- *     mcr.microsoft.com/playwright:v1.62.1-noble \
- *     node_modules/.bin/tsx scripts/visual-audit.ts
+ *   ./scripts/visual-audit.sh [output-directory]
+ *
+ * That wrapper is the supported way in: it brings a preview container up with
+ * a generated session secret, points this at it, and removes it afterwards.
+ * Running this file directly against a long-lived instance is what left one
+ * sitting on the host holding database credentials.
  *
  * It exists because the alternative was shipping design changes I could not
  * see. A build that compiles and a test that passes say nothing about whether
