@@ -24,6 +24,26 @@ export const RULES = {
   signup: { limit: 5, windowMs: 60 * 60 * 1000 },
   login: { limit: 10, windowMs: 15 * 60 * 1000 },
   passwordReset: { limit: 5, windowMs: 60 * 60 * 1000 },
+  // Asking us to send the confirmation mail again.
+  //
+  // Every other route that puts a message on the wire is already bounded —
+  // signup, password reset, and everything behind `notify`, which a member can
+  // switch off. This one was not, and being signed in is not a reason to trust
+  // it: an account holding the button down is an outbound mail flood from our
+  // domain to an address of their choosing. The cost lands on the domain's
+  // sending reputation, and the people it hurts are whoever needs a password
+  // reset to arrive afterwards.
+  //
+  // Five an hour is more than anybody clicks in earnest.
+  emailVerification: { limit: 5, windowMs: 60 * 60 * 1000 },
+  // Submitting an emailed token — a reset link or a confirmation link.
+  //
+  // The tokens are 256 bits of randomness, so this is not what stops them
+  // being guessed; nothing needs to, at that size. It is here so that an
+  // unauthenticated endpoint cannot be held open indefinitely by a script, and
+  // so a burst of failures against it is visible as a refusal rather than as
+  // load nobody attributed.
+  tokenSubmission: { limit: 20, windowMs: 60 * 60 * 1000 },
   connectionRequest: { limit: 30, windowMs: 24 * 60 * 60 * 1000 },
   message: { limit: 60, windowMs: 60 * 1000 },
   bunchCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },

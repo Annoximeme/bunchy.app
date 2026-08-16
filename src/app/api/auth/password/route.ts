@@ -32,6 +32,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   return handle(async () => {
     const input = await parseJson(request, resetSchema);
+    await consume("tokenSubmission", await requestFingerprint());
     await resetPassword(input.token, input.password);
     return { ok: true };
   });
