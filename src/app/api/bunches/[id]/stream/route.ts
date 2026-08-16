@@ -22,6 +22,37 @@ const POLL_INTERVAL_MS = 2000;
 /** Connections are recycled well before typical proxy idle timeouts. */
 const MAX_CONNECTION_MS = 5 * 60 * 1000;
 
+/**
+ * Open streams one member may hold at once, per instance.
+ *
+ * Every connection is a database query every two seconds for up to five
+ * minutes, and nothing else here bounds how many a single account can open —
+ * the rate limiter counts requests, and this endpoint's cost is in how long
+ * one request lasts. Two hundred streams from one script is a hundred queries
+ * a second that no one would attribute to a member reading a chat.
+ *
+ * A generous ceiling on purpose: a real person has a handful of bunches open
+ * across a laptop and a phone, and a reconnect can briefly double that while
+ * the old connection is still closing. Counted in this process rather than in
+ * the database, because the resource being protected is this process.
+ */
+const MAX_STREAMS_PER_MEMBER = 12;
+
+const openStreams = new Map<string, number>();
+
+function openStream(profileId: string): boolean {
+  const current = openStreams.get(profileId) ?? 0;
+  if (current >= MAX_STREAMS_PER_MEMBER) return false;
+  openStreams.set(profileId, current + 1);
+  return true;
+}
+
+function closeStream(profileId: string): void {
+  const current = openStreams.get(profileId) ?? 0;
+  if (current <= 1) openStreams.delete(profileId);
+  else openStreams.set(profileId, current - 1);
+}
+
 export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> },
@@ -33,17 +64,32 @@ export async function GET(
     // Membership is checked here, and again on every tick by listMessages.
     await listMessages(bunchId, viewer.profileId, { limit: 1 });
 
+    if (!openStream(viewer.profileId)) {
+      // 429 rather than an error page: the client already reconnects on its
+      // own, and this is a "not right now", not a refusal of the chat.
+      return new Response("Too many open connections.", {
+        status: 429,
+        headers: { "retry-after": "30" },
+      });
+    }
+
     const encoder = new TextEncoder();
     let cursor = new Date().toISOString();
     let timer: ReturnType<typeof setInterval> | undefined;
+    // Hoisted so `cancel` releases the slot too. A consumer that cancels the
+    // stream without the request aborting would otherwise leave the member's
+    // count incremented forever, and enough of those would lock them out of
+    // their own chat.
+    let stop = () => {};
 
     const stream = new ReadableStream({
       start(controller) {
         let closed = false;
 
-        const stop = () => {
+        stop = () => {
           if (closed) return;
           closed = true;
+          closeStream(viewer.profileId);
           if (timer) clearInterval(timer);
           try {
             controller.close();
@@ -90,7 +136,7 @@ export async function GET(
       },
 
       cancel() {
-        if (timer) clearInterval(timer);
+        stop();
       },
     });
 
