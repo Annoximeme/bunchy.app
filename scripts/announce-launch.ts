@@ -7,10 +7,25 @@ import {
 /**
  * Tell the waiting list that Bunchy is open.
  *
+ * Locally:
+ *
  *   npm run announce                  # rehearsal: says what it would do
  *   npm run announce -- --limit 5     # rehearse the first five
  *   npm run announce -- --send --limit 5   # actually write to five people
  *   npm run announce -- --send        # the rest of the list
+ *
+ * On the server it is the `jobs` container, and the invocation is fussier in
+ * two ways that are both easy to trip over at the wrong moment:
+ *
+ *   docker compose exec jobs /usr/local/bin/entrypoint.sh \
+ *     node node_modules/.bin/tsx scripts/announce-launch.ts --send
+ *
+ * `jobs` rather than `app`, because the app image is a standalone Next build
+ * with no devDependencies — no tsx, so no way to run any of this. And the
+ * entrypoint by name, because `docker compose exec` skips a container's
+ * ENTRYPOINT, and that is where DATABASE_URL gets assembled from its parts.
+ * Without it the script dies on "DATABASE_URL: expected string, received
+ * undefined", which reads like a broken .env rather than a missing wrapper.
  *
  * Run by hand, once, by a person who has decided that today is the day. Not a
  * job, not a cron entry, not a step in the deploy: the whole point of a

@@ -155,6 +155,44 @@ Then `docker compose up -d app jobs`. The app refuses to start in production
 with `EMAIL_PROVIDER=smtp` and no `SMTP_HOST`, rather than discovering it when
 somebody is locked out.
 
+To see what any of the mail actually looks like, sign in as staff and open
+**Admin → Brand → Email**. Those previews are rendered by the same templates
+that do the sending, so they cannot show you something the product does not
+send.
+
+### Launch day: telling the waiting list
+
+The coming-soon page promises everyone on the list exactly one message, on the
+day it opens. This sends it. Run by hand, when you have decided that today is
+the day — nothing schedules it.
+
+```
+# Rehearsal. Sends nothing, reports what it would do.
+docker compose exec jobs /usr/local/bin/entrypoint.sh \
+  node node_modules/.bin/tsx scripts/announce-launch.ts
+
+# The first five, for real. Read them in a real inbox before the rest.
+docker compose exec jobs /usr/local/bin/entrypoint.sh \
+  node node_modules/.bin/tsx scripts/announce-launch.ts --send --limit 5
+
+# The rest.
+docker compose exec jobs /usr/local/bin/entrypoint.sh \
+  node node_modules/.bin/tsx scripts/announce-launch.ts --send
+```
+
+Two details in that command are load-bearing. It is the **`jobs`** container,
+not `app`: the app image is a standalone Next build with no devDependencies, so
+there is no `tsx` in it. And the entrypoint is named **explicitly**, because
+`docker compose exec` skips a container's ENTRYPOINT and that is where
+`DATABASE_URL` is assembled — without it the script fails with
+`DATABASE_URL: expected string, received undefined`, which looks like a broken
+`.env` and is not.
+
+Interrupting it is safe. Progress is a `notifiedAt` timestamp per address, so
+running it again picks up exactly the people it did not finish, and a failed
+address is left unmarked to be retried. It will refuse to send at all while
+`EMAIL_PROVIDER` is `console`.
+
 ## When something is wrong
 
 **The app will not start.** `docker compose logs app`. The environment is
