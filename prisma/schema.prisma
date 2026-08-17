@@ -86,6 +86,7 @@ model User {
   oauthAccounts      OAuthAccount[]
   verificationTokens VerificationToken[]
   moderationActions  ModerationEvent[]   @relation("ModerationActor")
+  supporter Supporter?
 
   @@index([status])
   @@index([role])
@@ -1562,4 +1563,51 @@ model AnnouncementRead {
 
   @@id([announcementId, profileId])
   @@index([profileId])
+}
+
+/// Where a supporter's subscription is, as Stripe last told us.
+enum SupporterStatus {
+  ACTIVE
+  /// Payment failed and Stripe is retrying. Still a supporter, for now.
+  PAST_DUE
+  /// Cancelled, or the retries ran out. Kept as a row: somebody who supported
+  /// this for a year and stopped is not the same as somebody who never did.
+  ENDED
+}
+
+/// Somebody paying to keep Bunchy running.
+///
+/// What this row grants is exhaustively cosmetic: a badge, a ring on an avatar,
+/// a choice of app icon. Nothing here is read by the matching engine, by
+/// notifications, by rate limits or by moderation, and the /about page promises
+/// in as many words that a tier making the matching better for people who pay
+/// would break the only thing this product is for.
+///
+/// Stripe holds the money and the truth about it. This table holds only what
+/// the product needs to draw a badge and to send somebody to the right billing
+/// page, which is why there is no card data, no amount and no invoice here.
+model Supporter {
+  userId String @id
+
+  /// Stripe's customer, so the billing portal opens on the right account.
+  stripeCustomerId     String  @unique
+  stripeSubscriptionId String? @unique
+
+  status SupporterStatus @default(ENDED)
+
+  /// When the paid-up period runs out. A cancelled subscription keeps its
+  /// cosmetics until this passes, because they were paid for.
+  currentPeriodEnd DateTime?
+  /// Cancelled, but still inside the period they paid for.
+  cancelAtPeriodEnd Boolean @default(false)
+
+  /// The first time they ever supported. Never reset by a cancellation.
+  since DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
 }

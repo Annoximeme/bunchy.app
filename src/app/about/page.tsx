@@ -442,8 +442,15 @@ export default async function AboutPage() {
             <ColumnHeading>There isn&rsquo;t any, and here is the plan</ColumnHeading>
             <Prose size="sm">
               <p>
-                {brand.name} currently earns nothing. It is free, there is no
-                paid tier, and there is no revenue to report.
+                {brand.name} earns nothing so far. The whole product is free
+                and stays free — matching, bunches, messages, activities, all of
+                it, for everybody. There is a{" "}
+                <Link href="/supporter">tip jar</Link>: a few euros a month, if
+                you want to, in exchange for a badge, a ring on your avatar and
+                a choice of app icon. It buys nothing else, and it is switched
+                off until Bunchy has actually launched, because taking money for
+                something nobody is using yet would be taking it under false
+                pretences.
               </p>
               <p>
                 The commitments that follow from that are written down where
@@ -459,7 +466,8 @@ export default async function AboutPage() {
                 ads against your interests, or introducing a tier that makes the
                 matching better for people who pay. The matching engine deciding
                 who you meet based on who paid would break the only thing this
-                product is for.
+                product is for — which is why what the tip jar buys is a badge,
+                a ring and an icon, and why that list is short enough to check.
               </p>
             </Prose>
           </article>

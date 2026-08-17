@@ -219,7 +219,44 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={13} title="Law and disputes">
+      <Clause n={13} title="Supporting Bunchy">
+        <p>
+          Supporting {brand.name} is optional and buys nothing functional. The
+          whole product — matching, bunches, messages, activities — is free for
+          everyone and stays that way. What a supporter gets is cosmetic: a
+          badge, a ring around their avatar, and a choice of app icon. Nothing
+          you pay for changes who you meet, how often you are shown to anyone,
+          or what you are allowed to do.
+        </p>
+        <p>
+          Payments are taken by Stripe, who process the card. We never see or
+          store your card details. A subscription renews automatically at the
+          price shown when you started it, until you stop it.
+        </p>
+        <p>
+          <strong>Cancelling takes one click</strong>, from Manage billing in
+          your settings, at any time and without contacting anybody. Cancelling
+          stops the next payment; it does not end the period you have already
+          paid for, and the cosmetics stay until that period runs out.
+        </p>
+        <p>
+          If you are a consumer in the EU you have a fourteen-day right of
+          withdrawal on a digital service. Starting a subscription asks you to
+          begin the service immediately, which ordinarily ends that right — so
+          independently of it, if you change your mind within fourteen days of a
+          payment, write to{" "}
+          <a href={`mailto:${LEGAL.supportContact}`}>{LEGAL.supportContact}</a>{" "}
+          and it will be refunded. No reason required.
+        </p>
+        <p>
+          If a payment fails, Stripe retries it. If the retries run out the
+          subscription ends and the cosmetics stop. Nothing else about your
+          account is affected, ever — a failed payment is not a moderation
+          matter.
+        </p>
+      </Clause>
+
+      <Clause n={14} title="Law and disputes">
         <p>
           These terms are governed by the law of {LEGAL.jurisdiction}, and its
           courts have jurisdiction. If you are a consumer resident elsewhere,
@@ -228,7 +265,7 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={14} title="Changes">
+      <Clause n={15} title="Changes">
         <p>
           We may update these terms. If a change materially affects your rights,
           we will tell you in the product before it takes effect and give you a
