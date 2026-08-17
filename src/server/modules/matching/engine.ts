@@ -34,6 +34,9 @@ export interface RecommendedPerson extends PersonMatch {
   age: number | null;
   locationLabel: string | null;
   goals: string[];
+  /** Decoration only. Nothing in the ranking reads either of these. */
+  staff: boolean;
+  supporter: boolean;
 }
 
 export interface RecommendPeopleOptions {
@@ -173,6 +176,21 @@ async function decorate(
       cityLabel: true,
       regionLabel: true,
       privacy: { select: { showApproxLocation: true, showExactAge: true } },
+      /*
+       * The two marks that sit beside a name.
+       *
+       * Read straight from the role and the subscription row rather than
+       * through the supporter module, which this file is forbidden from
+       * importing — a guard test enforces it, because code that decides who you
+       * meet must not be able to see who paid. These two booleans leave this
+       * function as decoration and are never read by anything above.
+       */
+      user: {
+        select: {
+          role: true,
+          supporter: { select: { status: true, currentPeriodEnd: true } },
+        },
+      },
     },
   });
   const profileById = new Map(profiles.map((p) => [p.id, p] as const));
@@ -195,6 +213,12 @@ async function decorate(
             ? null
             : (profile.cityLabel ?? profile.regionLabel),
         goals: candidate.goals.map((g) => GOAL_LABELS[g] ?? g),
+        staff: profile.user.role !== "MEMBER",
+        supporter:
+          profile.user.role !== "MEMBER" ||
+          profile.user.supporter?.status === "ACTIVE" ||
+          profile.user.supporter?.status === "PAST_DUE" ||
+          (profile.user.supporter?.currentPeriodEnd ?? new Date(0)) > new Date(),
       },
     ];
   });

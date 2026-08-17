@@ -67,14 +67,13 @@ describe("what a supporter buys", () => {
   });
 
   it("is three cosmetics and nothing else", async () => {
-    const { supporterCosmetics } = await import(
+    const { NO_COSMETICS } = await import(
       "@/server/modules/supporter/service"
     );
-    // With Stripe unconfigured this returns the empty shape, which is all this
-    // assertion needs: the *shape* is the contract. A fourth key here would be
-    // a fourth thing money can buy, and it would have to be argued for.
-    const shape = await supporterCosmetics("nobody");
-    expect(Object.keys(shape).sort()).toEqual([
+    // The *shape* is the contract, and asserting it needs no database — which
+    // matters now that `supporterCosmetics` reads the role, because staff get
+    // the cosmetics complimentary and that must not depend on a Stripe key.
+    expect(Object.keys(NO_COSMETICS).sort()).toEqual([
       "appIcons",
       "badge",
       "ring",

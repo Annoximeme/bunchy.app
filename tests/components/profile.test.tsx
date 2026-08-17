@@ -24,7 +24,7 @@ const BASE = {
   age: null,
   ageBand: null,
   locationLabel: null,
-  staff: false,
+  staff: false, supporter: false,
   title: null,
   foundingMember: false,
 };
@@ -55,14 +55,14 @@ describe("the identity header", () => {
 
   it("renders nothing at all when a member holds no badges", () => {
     const { container } = render(
-      <ProfileBadges staff={false} title={null} foundingMember={false} />,
+      <ProfileBadges staff={false} supporter={false} title={null} foundingMember={false} />,
     );
     expect(container).toBeEmptyDOMElement();
   });
 
   it("draws the badges a member does hold", () => {
     render(
-      <ProfileBadges staff title="Founder" foundingMember />,
+      <ProfileBadges staff supporter title="Founder" foundingMember />,
     );
     expect(screen.getByText("Staff")).toBeInTheDocument();
     expect(screen.getByText("Founder")).toBeInTheDocument();
