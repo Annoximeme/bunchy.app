@@ -93,7 +93,7 @@ export default async function LandingPage() {
   const jsonLd = structuredData(env().APP_URL.replace(/\/$/, ""));
 
   return (
-    <div className={`${display.className} min-h-dvh bg-navy-base text-white`}>
+    <div className={`${display.className} min-h-dvh bg-band-deep text-white`}>
       <script
         type="application/ld+json"
         nonce={nonce}
@@ -112,7 +112,7 @@ export default async function LandingPage() {
             </Link>
             <Link
               href="/signup"
-              className="rounded-full bg-coral-primary px-5 py-2.5 text-sm font-semibold text-[#172033] transition-transform duration-200 hover:scale-[1.03]"
+              className="rounded-full bg-coral-primary px-5 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
             >
               Join {brand.name}
             </Link>
@@ -171,7 +171,7 @@ export default async function LandingPage() {
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-8 py-4 text-base font-bold tracking-wide text-[#172033] shadow-[0_18px_40px_-18px_#FF5C6C] transition-transform duration-200 hover:scale-[1.04]"
+                  className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-8 py-4 text-base font-bold tracking-wide text-[var(--color-on-accent)] shadow-[0_18px_40px_-18px_#FF5C6C] transition-transform duration-200 hover:scale-[1.04]"
                 >
                   Find my bunch
                   <ArrowRight size={18} aria-hidden />
@@ -211,9 +211,9 @@ export default async function LandingPage() {
         <HappeningNow />
 
         {/* 3 — The contrast, in daylight */}
-        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
+        <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
-            <p className="reveal text-sm font-bold tracking-widest text-[#CE2F45]">
+            <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
               THE PROBLEM
             </p>
             <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
@@ -235,23 +235,23 @@ export default async function LandingPage() {
             */}
             <div className="reveal mt-14 grid items-center gap-12 md:grid-cols-2 md:gap-10">
               {/* Everywhere else. Sterile on purpose. */}
-              <div className="rounded-2xl border border-[#172033]/12 bg-[#F3EFE9] p-8">
-                <p className="text-xs font-semibold tracking-widest text-[#5F6470]">
+              <div className="rounded-2xl border border-line bg-band-warm p-8">
+                <p className="text-xs font-semibold tracking-widest text-muted">
                   EVERYWHERE ELSE
                 </p>
                 <div className="mt-6 space-y-3">
-                  <p className="text-3xl font-bold text-[#5F6470]">
+                  <p className="text-3xl font-bold text-muted">
                     1,284 followers
                   </p>
-                  <p className="flex items-center gap-2 text-[#5F6470]">
+                  <p className="flex items-center gap-2 text-muted">
                     <Heart size={18} aria-hidden />
                     17 likes
                   </p>
-                  <p className="flex items-center gap-2 text-[#5F6470]">
+                  <p className="flex items-center gap-2 text-muted">
                     <MessageCircle size={18} aria-hidden />3 comments
                   </p>
                 </div>
-                <p className="mt-8 border-t border-[#172033]/12 pt-5 text-[#5F6470]">
+                <p className="mt-8 border-t border-line pt-5 text-muted">
                   Still nobody to go out with.
                 </p>
               </div>
@@ -300,7 +300,7 @@ export default async function LandingPage() {
                   />
                 </div>
 
-                <p className="relative z-10 text-xs font-semibold tracking-widest text-[#C42A40]">
+                <p className="relative z-10 text-xs font-semibold tracking-widest text-accent-ink">
                   ON {brand.name.toUpperCase()}
                 </p>
 
@@ -311,7 +311,7 @@ export default async function LandingPage() {
                   {CONTRAST_BUNCH.map((a, i) => (
                     <span
                       key={a.i}
-                      className="float flex size-20 items-center justify-center rounded-full text-xl font-bold text-white ring-4 ring-cream-bg"
+                      className="float flex size-20 items-center justify-center rounded-full text-xl font-bold text-white ring-4 ring-band-soft"
                       style={{
                         background: a.c,
                         ["--float-distance" as string]: "7px",
@@ -342,31 +342,31 @@ export default async function LandingPage() {
                     the argument is against followers, not against screens, so
                     the online plan stays visible. */}
                 <div
-                  className="float relative z-10 mt-7 inline-flex max-w-full flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-3xl rounded-bl-lg bg-white px-5 py-3.5 shadow-[0_18px_40px_-28px_rgba(23,32,51,0.55)]"
+                  className="float relative z-10 mt-7 inline-flex max-w-full flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-3xl rounded-bl-lg bg-surface px-5 py-3.5 shadow-[0_18px_40px_-28px_rgba(23,32,51,0.55)]"
                   style={{
                     ["--float-distance" as string]: "5px",
                     ["--float-duration" as string]: "6.1s",
                     ["--float-delay" as string]: "0.9s",
                   }}
                 >
-                  <span className="text-[11px] font-bold tracking-widest text-[#0e7a69]">
+                  <span className="text-[11px] font-bold tracking-widest text-mint-ink">
                     ONLINE
                   </span>
-                  <span className="font-semibold text-[#172033]">
+                  <span className="font-semibold text-ink">
                     &ldquo;Anyone up for co-op?&rdquo;
                   </span>
-                  <span className="text-[#3d4759]">&ldquo;Yep, 9pm.&rdquo;</span>
+                  <span className="text-ink-soft">&ldquo;Yep, 9pm.&rdquo;</span>
                 </div>
 
                 {/* The payoff, in the same position as "Still nobody to go out
                     with." on the left. The two lines are the whole section. */}
-                <p className="relative z-10 mt-8 text-2xl font-extrabold tracking-tight text-[#172033]">
+                <p className="relative z-10 mt-8 text-2xl font-extrabold tracking-tight text-ink">
                   We&rsquo;re going Saturday.
                 </p>
               </div>
             </div>
 
-            <p className="reveal mx-auto mt-10 max-w-2xl text-balance text-center text-lg text-[#3d4759]">
+            <p className="reveal mx-auto mt-10 max-w-2xl text-balance text-center text-lg text-ink-soft">
               An audience is not a social life. The number that matters is the
               one you could text tonight.
             </p>
@@ -394,9 +394,9 @@ export default async function LandingPage() {
         </section>
 
         {/* 6 — How it works, in daylight */}
-        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
+        <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
-            <p className="reveal text-sm font-bold tracking-widest text-[#CE2F45]">
+            <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
               HOW {brand.name.toUpperCase()} WORKS
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -481,7 +481,7 @@ export default async function LandingPage() {
               />
             </ol>
 
-            <p className="reveal mt-12 max-w-2xl text-lg text-[#3d4759]">
+            <p className="reveal mt-12 max-w-2xl text-lg text-ink-soft">
               Most social products are built to keep you at stage one. Bunchy is
               built to get you to stage five and then leave you alone.
             </p>
@@ -697,12 +697,12 @@ export default async function LandingPage() {
         </section>
 
         {/* Objections — kept from the previous page, because they convert */}
-        <section className="bg-cream-bg px-5 py-24 text-[#172033]">
+        <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="reveal mx-auto max-w-3xl">
             <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
               Before you sign up.
             </h2>
-            <dl className="mt-10 divide-y divide-[#172033]/10 border-y border-[#172033]/10">
+            <dl className="mt-10 divide-y divide-line border-y border-line">
               <Question q="Is this a dating app?">
                 No, and it is not one with the labels changed either. No swiping,
                 no romantic intent field, nothing that ranks people by
@@ -770,7 +770,7 @@ export default async function LandingPage() {
             </p>
             <Link
               href="/signup"
-              className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[#172033] transition-transform duration-200 hover:scale-[1.04]"
+              className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.04]"
             >
               Find my bunch
               <ArrowRight size={18} aria-hidden />
@@ -833,7 +833,7 @@ const CONTRAST_BUNCH = [
 
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#8a5e00]/20 bg-yellow-fun/20 px-3.5 py-1.5 text-sm font-semibold text-[#8a5e00]">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-ink/25 bg-yellow-fun/20 px-3.5 py-1.5 text-sm font-semibold text-yellow-ink">
       {children}
     </span>
   );
@@ -870,7 +870,7 @@ function Stage({
         that counts, and five identical dots quietly said the opposite.
       */}
       <span
-        className="float relative flex size-9 items-center justify-center rounded-full ring-4 ring-cream-bg"
+        className="float relative flex size-9 items-center justify-center rounded-full ring-4 ring-band-soft"
         style={{
           background: colour,
           boxShadow: emphasis ? `0 0 0 8px ${colour}33` : undefined,
@@ -883,12 +883,12 @@ function Stage({
       </span>
       <h3
         className={`mt-5 text-lg font-extrabold tracking-tight ${
-          emphasis ? "text-[#0e7a69]" : ""
+          emphasis ? "text-mint-ink" : ""
         }`}
       >
         {name}
       </h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-[#3d4759]">{body}</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{body}</p>
     </li>
   );
 }
@@ -1028,7 +1028,7 @@ function Moment({
           {people.map((initial, i) => (
             <span
               key={`${initial}-${i}`}
-              className="flex size-9 items-center justify-center rounded-full text-xs font-bold ring-4 ring-navy-base"
+              className="flex size-9 items-center justify-center rounded-full text-xs font-bold ring-4 ring-band-deep"
               // Colour and label both come from who they are — the fill is too
               // bright to carry white on yellow or mint. See lib/palette.ts.
               style={{
@@ -1049,7 +1049,7 @@ function Question({ q, children }: { q: string; children: ReactNode }) {
   return (
     <div className="py-5">
       <dt className="font-bold tracking-tight">{q}</dt>
-      <dd className="mt-1.5 leading-relaxed text-[#3d4759]">{children}</dd>
+      <dd className="mt-1.5 leading-relaxed text-ink-soft">{children}</dd>
     </div>
   );
 }

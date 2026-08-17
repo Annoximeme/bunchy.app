@@ -11,27 +11,33 @@ const OPTIONS: Array<{
   mode: Mode;
   label: string;
   blurb: string;
+  /**
+   * The mode's colour, as a token rather than a hex. These are the `-ink`
+   * variants — the ones darkened to be legible as *text* — and they land on a
+   * themed admin panel, so they have to move with it. Written literally they
+   * were a dark green and a dark purple sitting on a dark panel at night.
+   */
   tone: string;
 }> = [
   {
     mode: "OFF",
     label: "Public",
     blurb: "Anyone can reach the site. This is the normal state.",
-    tone: "#0e7a69",
+    tone: "var(--color-mint-ink)",
   },
   {
     mode: "SOON",
     label: "Coming soon",
     blurb:
       "For before launch. The public gets the coming-soon page and search engines are told to come back tomorrow.",
-    tone: "#6a47f5",
+    tone: "var(--color-purple-ink)",
   },
   {
     mode: "MAINTENANCE",
     label: "Maintenance",
     blurb:
       "For deliberate downtime. The public gets the maintenance page, which says the site is back shortly. So do not leave it on for days.",
-    tone: "#8a5e00",
+    tone: "var(--color-yellow-ink)",
   },
 ];
 

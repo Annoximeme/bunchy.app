@@ -66,14 +66,18 @@ const editorial = Instrument_Serif({
   display: "swap",
 });
 
-/** Pinned to the composition, not to the reader's theme. See the note above. */
-const CREAM = "#FFF9F3";
-const CREAM_WARM = "#F9F0E6";
-const INK = "#172033";
-const INK_SOFT = "#3d4759";
+/**
+ * The two colours still written literally, and the reason is the same for both:
+ * they only ever appear on `band-deep`, which is the same navy in whichever
+ * theme the reader is in. A token in those positions would move a colour whose
+ * ground stayed put — which is the mistake this page shipped with, and the one
+ * the band tokens exist to stop.
+ *
+ * Everything on `band-soft` reads from the tokens, because that ground moves.
+ */
 const CORAL = "#FF5C6C";
-const CORAL_INK = "#C42A40";
-const LINE = "#EFE6DA";
+/** The label on a coral fill. Deliberately fixed in both themes; see globals. */
+const ON_CORAL = "var(--color-on-accent)";
 
 export default async function AboutPage() {
   const viewer = await getViewer();
@@ -82,9 +86,9 @@ export default async function AboutPage() {
   const startHref = viewer ? "/start" : "/signup";
 
   return (
-    <div className={`${display.className} min-h-dvh bg-cream-bg`} style={{ color: INK }}>
+    <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
       {/* ---------------------------------------------------------------- 1 */}
-      <section className="relative overflow-hidden bg-navy-base text-white">
+      <section className="relative overflow-hidden bg-band-deep text-white">
         {/* The ambient wash from the landing hero, at the strength navy can
             carry. Decorative and behind everything, so it never sits between a
             reader and a word. */}
@@ -210,13 +214,13 @@ export default async function AboutPage() {
       </Band>
 
       {/* ------------------------------------------------- 3 · dark interlude */}
-      <section className="bg-navy-base px-5 py-24 text-white md:py-32">
+      <section className="bg-band-deep px-5 py-24 text-white md:py-32">
         <div className="reveal mx-auto max-w-3xl">
-          <Eyebrow tone="mint" on="navy">Online counts too</Eyebrow>
+          <Eyebrow tone="mint" on="deep">Online counts too</Eyebrow>
           <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
             A voice channel is not a lesser outcome
           </h2>
-          <div className="prose prose-lg prose-letter-dark mt-6">
+          <div className="prose prose-lg prose-band-deep mt-6">
             <p>
               {brand.name} is not trying to get you off your screen, and it is
               not trying to keep you on it. Half of what a {BUNCH_NOUN.singular}{" "}
@@ -245,8 +249,7 @@ export default async function AboutPage() {
             The things that are missing on purpose
           </h2>
           <p
-            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed"
-            style={{ color: INK_SOFT }}
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft"
           >
             Most of the design work here has gone into what is <em>not</em> in
             the product. Each of these is a decision with a reason, not an
@@ -258,8 +261,7 @@ export default async function AboutPage() {
           {REFUSALS.map(([what, why]) => (
             <li
               key={what}
-              className="rounded-2xl bg-white p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
-              style={{ border: `1px solid ${LINE}` }}
+              className="rounded-2xl border border-line bg-surface p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
             >
               {/* A filled coral disc rather than a bare glyph. The palette's own
                   rule is that coral carries a navy label, never a light one, and
@@ -270,19 +272,17 @@ export default async function AboutPage() {
               <span
                 aria-hidden
                 className="flex h-11 w-11 items-center justify-center rounded-full text-xl font-black"
-                style={{ backgroundColor: CORAL, color: INK }}
+                style={{ backgroundColor: CORAL, color: ON_CORAL }}
               >
                 ✕
               </span>
               <p
-                className="mt-5 text-lg font-bold leading-snug md:min-h-[3.5rem]"
-                style={{ color: INK }}
+                className="mt-5 text-lg font-bold leading-snug text-ink md:min-h-[3.5rem]"
               >
                 {what}
               </p>
               <p
-                className="mt-3 text-[15px] leading-relaxed"
-                style={{ color: INK_SOFT }}
+                className="mt-3 text-[15px] leading-relaxed text-ink-soft"
               >
                 {why}
               </p>
@@ -291,13 +291,12 @@ export default async function AboutPage() {
         </ul>
 
         <div className="reveal mx-auto mt-16 max-w-3xl text-center">
-          <p className="text-lg" style={{ color: INK_SOFT }}>
+          <p className="text-lg text-ink-soft">
             The test of all of it is simple and slightly hostile to our own
             metrics:
           </p>
           <p
-            className={`${editorial.className} mt-5 text-balance text-3xl leading-[1.25] sm:text-4xl md:text-[2.75rem]`}
-            style={{ color: INK }}
+            className={`${editorial.className} mt-5 text-balance text-3xl leading-[1.25] text-ink sm:text-4xl md:text-[2.75rem]`}
           >
             &ldquo;A good session ends with you closing the tab, because you
             have somebody to talk to.&rdquo;
@@ -306,7 +305,7 @@ export default async function AboutPage() {
       </Band>
 
       {/* ---------------------------------------------------------------- 5 */}
-      <section className="px-5 py-24 md:py-32" style={{ backgroundColor: CREAM_WARM }}>
+      <section className="bg-band-warm px-5 py-24 md:py-32">
         <div className="reveal mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
           <figure className="mx-auto w-full max-w-sm lg:mx-0">
             <div className="relative">
@@ -325,7 +324,7 @@ export default async function AboutPage() {
                 className="relative aspect-square rotate-2 overflow-hidden rounded-[1.75rem]"
                 style={{
                   backgroundColor: "#ffffff",
-                  border: `1px solid ${LINE}`,
+                  border: "1px solid var(--color-line)",
                   boxShadow: "0 18px 40px -24px rgb(23 32 51 / 0.45)",
                 }}
               >
@@ -341,8 +340,7 @@ export default async function AboutPage() {
                 >
                   <BunchyMark size={56} />
                   <p
-                    className="px-8 text-center text-sm leading-relaxed"
-                    style={{ color: INK_SOFT }}
+                    className="px-8 text-center text-sm leading-relaxed text-ink-soft"
                   >
                     A photo goes here, once there is one worth putting up.
                   </p>
@@ -350,12 +348,11 @@ export default async function AboutPage() {
               </div>
             </div>
             <figcaption className="mt-8 text-center lg:text-left">
-              <p className="text-lg font-bold" style={{ color: INK }}>
+              <p className="text-lg font-bold text-ink">
                 {LEGAL.operator}
               </p>
               <p
-                className="mt-1 text-sm font-semibold uppercase tracking-[0.14em]"
-                style={{ color: CORAL_INK }}
+                className="mt-1 text-sm font-semibold uppercase tracking-[0.14em] text-accent-ink"
               >
                 Founder
               </p>
@@ -387,8 +384,7 @@ export default async function AboutPage() {
               style={{ borderColor: CORAL }}
             >
               <p
-                className={`${editorial.className} text-2xl leading-snug sm:text-[1.75rem]`}
-                style={{ color: INK }}
+                className={`${editorial.className} text-2xl leading-snug text-ink sm:text-[1.75rem]`}
               >
                 There are no investors. Nobody is asking for engagement metrics,
                 nobody needs a hockey stick by Q3, and there is no board to
@@ -500,8 +496,7 @@ export default async function AboutPage() {
         {/* The one promise on this page that constrains the operator rather than
             the member, so it is the one pulled out of the column it lived in. */}
         <div
-          className="reveal mx-auto mt-16 max-w-4xl rounded-2xl px-8 py-10 text-center sm:px-12"
-          style={{ backgroundColor: INK }}
+          className="reveal mx-auto mt-16 max-w-4xl rounded-2xl bg-band-deep px-8 py-10 text-center sm:px-12"
         >
           <p
             className={`${editorial.className} text-balance text-2xl leading-snug text-white sm:text-3xl md:text-[2.125rem]`}
@@ -517,7 +512,7 @@ export default async function AboutPage() {
       </Band>
 
       {/* ---------------------------------------------------------------- 7 */}
-      <section className="relative overflow-hidden bg-navy-base px-5 py-24 text-white md:py-32">
+      <section className="relative overflow-hidden bg-band-deep px-5 py-24 text-white md:py-32">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -528,11 +523,11 @@ export default async function AboutPage() {
         />
         <div className="relative mx-auto max-w-3xl">
           <div className="reveal">
-            <Eyebrow tone="coral" on="navy">Where it is now</Eyebrow>
+            <Eyebrow tone="coral" on="deep">Where it is now</Eyebrow>
             <h2 className="mt-3 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl">
               Early, and honest about it
             </h2>
-            <div className="prose prose-lg prose-letter-dark mt-6">
+            <div className="prose prose-lg prose-band-deep mt-6">
               <p>
                 {brand.name} has not properly launched. There are no member
                 numbers to quote, no testimonials, and the example faces you see
@@ -558,7 +553,7 @@ export default async function AboutPage() {
                 className="inline-flex items-center rounded-full px-8 py-4 text-base font-bold tracking-wide transition-transform duration-200 hover:scale-[1.03]"
                 style={{
                   backgroundColor: CORAL,
-                  color: INK,
+                  color: ON_CORAL,
                   boxShadow: "0 18px 40px -18px #FF5C6C",
                 }}
               >
@@ -574,11 +569,11 @@ export default async function AboutPage() {
           <hr className="my-16 border-0 border-t" style={{ borderColor: "rgb(255 255 255 / 0.10)" }} />
 
           <div className="reveal">
-            <Eyebrow tone="coral" on="navy">Get in touch</Eyebrow>
+            <Eyebrow tone="coral" on="deep">Get in touch</Eyebrow>
             <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
               A real person reads these
             </h2>
-            <div className="prose prose-letter-dark mt-5">
+            <div className="prose prose-band-deep mt-5">
               <p>
                 General questions, ideas, complaints and bug reports:{" "}
                 <a href={`mailto:${LEGAL.supportContact}`}>
@@ -660,7 +655,7 @@ const REFUSALS: ReadonlyArray<readonly [string, string]> = [
 /** A full-width band of the composition. Cream is the reading ground. */
 function Band({ children }: { children: ReactNode }) {
   return (
-    <section className="px-5 py-24 md:py-32" style={{ backgroundColor: CREAM }}>
+    <section className="bg-band-soft px-5 py-24 md:py-32">
       {children}
     </section>
   );
@@ -686,7 +681,7 @@ function Prose({
 }) {
   return (
     <div
-      className={`prose prose-letter mt-5 ${size === "lg" ? "prose-lg" : "prose-base"}`}
+      className={`prose prose-band mt-5 ${size === "lg" ? "prose-lg" : "prose-base"}`}
     >
       {children}
     </div>
@@ -696,26 +691,33 @@ function Prose({
 /**
  * The small capitalised label above each heading.
  *
- * Two palettes, and the `on` prop is not decoration. The `-ink` variants are
- * the accents darkened until they are legible *on cream*, which makes them
- * close to unreadable on navy — mint-ink on #0A0E1A is 1.6:1, and an axe pass
- * over the first draft of this page caught exactly that. The dark band gets the
- * bright variants instead: coral 6.3:1, purple 6.7:1, mint 10.6:1.
+ * Two palettes, and the `on` prop is not decoration. The `-ink` tokens are the
+ * accents darkened until they are legible on the soft band, which makes them
+ * close to unreadable on the deep one — mint-ink on #0A0E1A is 1.6:1, and an
+ * axe pass over the first draft of this page caught exactly that. The deep band
+ * gets the bright variants instead: coral 6.3:1, purple 6.7:1, mint 10.6:1.
+ *
+ * The soft set is tokens and the deep set is literals, for the usual reason:
+ * one of those grounds moves with the theme and the other does not.
  */
 const EYEBROW_COLORS = {
-  cream: { coral: CORAL_INK, purple: "#6A47F5", mint: "#0E7A69" },
-  navy: { coral: "#FF5C6C", purple: "#9B85FF", mint: "#55D6BE" },
+  soft: {
+    coral: "var(--color-accent-ink)",
+    purple: "var(--color-purple-ink)",
+    mint: "var(--color-mint-ink)",
+  },
+  deep: { coral: "#FF5C6C", purple: "#9B85FF", mint: "#55D6BE" },
 } as const;
 
 function Eyebrow({
   children,
   tone,
-  on = "cream",
+  on = "soft",
   centered,
 }: {
   children: ReactNode;
   tone: "coral" | "purple" | "mint";
-  on?: "cream" | "navy";
+  on?: "soft" | "deep";
   centered?: boolean;
 }) {
   return (
@@ -732,8 +734,7 @@ function Eyebrow({
 function ColumnHeading({ children }: { children: ReactNode }) {
   return (
     <h2
-      className="mt-2 text-balance text-xl font-bold leading-snug tracking-tight"
-      style={{ color: INK }}
+      className="mt-2 text-balance text-xl font-bold leading-snug tracking-tight text-ink"
     >
       {children}
     </h2>
@@ -743,8 +744,7 @@ function ColumnHeading({ children }: { children: ReactNode }) {
 function Heading({ children }: { children: ReactNode }) {
   return (
     <h2
-      className="mt-3 text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl"
-      style={{ color: INK }}
+      className="mt-3 text-balance text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl"
     >
       {children}
     </h2>
@@ -764,8 +764,7 @@ function PullQuote({ children }: { children: ReactNode }) {
       <div className="flex flex-col items-center gap-6 text-center">
         <span aria-hidden className="block h-px w-16" style={{ backgroundColor: CORAL }} />
         <blockquote
-          className={`${editorial.className} text-balance text-3xl leading-[1.2] sm:text-5xl md:text-6xl`}
-          style={{ color: INK }}
+          className={`${editorial.className} text-balance text-3xl leading-[1.2] text-ink sm:text-5xl md:text-6xl`}
         >
           {children}
         </blockquote>
@@ -777,5 +776,5 @@ function PullQuote({ children }: { children: ReactNode }) {
 
 /** A quiet divider between two movements of the same band. */
 function Rule() {
-  return <hr className="my-14 border-0 border-t" style={{ borderColor: LINE }} />;
+  return <hr className="my-14 border-0 border-t border-line" />;
 }

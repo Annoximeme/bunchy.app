@@ -110,7 +110,7 @@ export function BunchMoment() {
             }}
           >
             <span
-              className="flex size-16 items-center justify-center rounded-full text-lg font-bold text-white ring-4 ring-navy-base"
+              className="flex size-16 items-center justify-center rounded-full text-lg font-bold text-white ring-4 ring-band-deep"
               style={{ background: match.colour }}
             >
               {match.initial}
