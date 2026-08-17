@@ -206,6 +206,25 @@ async function main() {
           await page
             .waitForLoadState("networkidle", { timeout: 10_000 })
             .catch(() => console.warn(`    (network never went idle on ${target.path})`));
+          // Force the lazy images in. `next/image` defers anything below the
+          // fold, and a full-page screenshot resizes rather than scrolls — so
+          // an image far down the page never enters a viewport, never loads,
+          // and is captured as its blur placeholder. That is exactly how the
+          // founder photograph on About first appeared to be broken when it was
+          // serving perfectly well. Same shape of blind spot as the scroll
+          // reveals above, same fix: render the page as a reader eventually
+          // sees it, not as it looks in the first instant.
+          await page.evaluate(async () => {
+            for (const img of Array.from(document.images)) {
+              if (img.loading === "lazy") img.loading = "eager";
+            }
+            await Promise.all(
+              Array.from(document.images)
+                .filter((img) => !img.complete)
+                .map((img) => img.decode().catch(() => undefined)),
+            );
+          });
+
           // Let the reveal animations settle so screenshots are not caught
           // mid-transition, which reads as a broken layout.
           await page.waitForTimeout(700);
