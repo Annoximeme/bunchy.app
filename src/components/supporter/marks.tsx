@@ -130,8 +130,15 @@ export function NameMarks({
 /**
  * The ring around a supporter's or staff member's avatar.
  *
- * A wrapper rather than a prop on `Avatar`, because the avatar is drawn in a
- * dozen places and none of them should have to know that money exists.
+ * Padding, not an absolutely positioned halo. The first version placed a
+ * gradient at `-inset-[3px]` of whatever it wrapped, which is correct only when
+ * the child is a circle. On your own profile the child is the upload control:
+ * an avatar with two buttons stacked underneath it, so the gradient traced a
+ * tall rounded column and read as a smudge behind the head.
+ *
+ * A padded flex box hugs its child whatever shape the child is, so the ring is
+ * a ring or it is nothing. `size` matches the avatar it wraps so the gradient
+ * ends where the picture ends.
  */
 export function SupporterRing({
   children,
@@ -145,16 +152,15 @@ export function SupporterRing({
   if (!active) return <>{children}</>;
 
   return (
-    <span className={cn("relative inline-flex rounded-full", className)}>
-      <span
-        aria-hidden
-        // Behind and slightly outside, so the avatar is never resized or
-        // cropped by the decoration.
-        className="absolute -inset-[3px] rounded-full bg-gradient-to-r from-[#FF5C6C] to-[#7657FF]"
-      />
-      {/* A ring of the page's own ground between gradient and avatar, so the
+    <span
+      className={cn(
+        "inline-flex rounded-full bg-gradient-to-br from-[#FF5C6C] to-[#7657FF] p-[3px]",
+        className,
+      )}
+    >
+      {/* A ring of the card's own ground between gradient and picture, so the
           two never touch and it reads as a ring rather than a glow. */}
-      <span className="relative inline-flex rounded-full ring-2 ring-surface">
+      <span className="inline-flex rounded-full bg-surface p-[2px]">
         {children}
       </span>
     </span>

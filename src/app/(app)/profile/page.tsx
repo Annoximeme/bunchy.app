@@ -67,6 +67,7 @@ export default async function ProfilePage() {
               <AvatarUpload
                 displayName={profile.displayName}
                 avatarUrl={profile.avatarUrl}
+                supporter={profile.supporter}
               />
             }
           />

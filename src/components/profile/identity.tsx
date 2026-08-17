@@ -135,41 +135,44 @@ export function ProfileHero({
       */}
       <div
         aria-hidden
-        className="h-20 sm:h-24"
+        className="h-28 sm:h-32"
         style={{
           // `color-mix` against the surface rather than a fixed opacity: the
           // band has to stay a tint of the page in both themes, and an alpha
           // over a dark surface goes muddy rather than dark.
           background:
-            "linear-gradient(160deg, color-mix(in oklab, var(--profile-tint) 34%, var(--color-surface)), var(--color-surface))",
+            "radial-gradient(120% 140% at 12% 0%, color-mix(in oklab, var(--profile-tint) 42%, var(--color-surface)), transparent 70%), linear-gradient(160deg, color-mix(in oklab, var(--profile-tint) 26%, var(--color-surface)), var(--color-surface))",
         }}
       />
 
-      <div className="px-5 pb-5">
-        {/* Pulled up over the band, so the head sits on the seam. */}
-        <div className="-mt-12 flex flex-wrap items-end gap-5 sm:-mt-14">
-          {/* The ring is the cosmetic staff and supporters get. It wraps the
-              avatar rather than being a prop on it, so `Avatar` never has to
-              know that money exists. */}
-          {/* Gradient inside the card's own white ring rather than outside it:
-              stacked the other way the two rings competed and the gradient read
-              as a smudge behind the head. */}
-          <div className="rounded-full ring-4 ring-surface">
+      <div className="px-5 pb-6 sm:px-7">
+        {/*
+          One left edge for the whole identity.
+          
+          The previous hero set the name beside the avatar and everything else
+          beneath it, so the name began about 110px to the right of the badges,
+          the bio and the actions: four left edges in a block six lines tall.
+          The picture now sits above the name rather than beside it, which costs
+          one row of height and buys an identity that reads as a single column
+          at every width.
+        */}
+        <div className="-mt-14 w-fit rounded-full ring-4 ring-surface sm:-mt-16">
+          {avatarSlot ?? (
             <SupporterRing active={profile.supporter}>
-              {avatarSlot ?? (
-                <Avatar
-                  name={profile.displayName}
-                  src={profile.avatarUrl}
-                  size="xl"
-                />
-              )}
+              <Avatar
+                name={profile.displayName}
+                src={profile.avatarUrl}
+                size="xl"
+              />
             </SupporterRing>
-          </div>
+          )}
+        </div>
 
-          <div className="min-w-0 flex-1 pb-1">
-            <h1 className="flex min-w-0 items-center gap-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              <span className="truncate">{profile.displayName}</span>
-              {/* Beside the name and not only in the badge row below it: a
+        <div className="mt-5 flex flex-wrap items-start justify-between gap-x-6 gap-y-4">
+          <div className="min-w-0">
+            <h1 className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+              <span className="min-w-0 truncate">{profile.displayName}</span>
+              {/* Beside the name rather than only in the badge row, because a
                   member scanning a page reads the name, and a mark that lives
                   somewhere else is a mark they have to go looking for. */}
               <NameMarks
@@ -178,8 +181,12 @@ export function ProfileHero({
                 size={20}
               />
             </h1>
-            <p className="mt-0.5 text-muted">{factsFor(profile).join(" · ")}</p>
+            <p className="mt-1 text-muted">{factsFor(profile).join(" · ")}</p>
           </div>
+
+          {/* The action sits with the name it acts on, rather than at the
+              bottom of the card where it used to read as a footnote. */}
+          {children && <div className="shrink-0">{children}</div>}
         </div>
 
         <ProfileBadges
@@ -187,16 +194,14 @@ export function ProfileHero({
           supporter={profile.supporter}
           title={profile.title}
           foundingMember={profile.foundingMember}
-          className="mt-4"
+          className="mt-5"
         />
 
         {profile.bio && (
-          <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-[58ch] text-[17px] leading-relaxed text-ink-soft">
             {profile.bio}
           </p>
         )}
-
-        {children && <div className="mt-5">{children}</div>}
       </div>
     </section>
   );
