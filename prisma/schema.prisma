@@ -320,7 +320,6 @@ model Profile {
   matchFeedbackGiven      MatchFeedback[]       @relation("FeedbackAuthor")
   matchFeedbackReceived   MatchFeedback[]       @relation("FeedbackSubject")
   analyticsEvents         AnalyticsEvent[]
-  buzzSignals BuzzSignal[]
   announcementReads AnnouncementRead[]
 
   @@index([cityLabel])
@@ -1243,7 +1242,6 @@ model BunchChemistry {
   @@index([computedAt])
 }
 
-
 // ---------------------------------------------------------------------------
 // Social plans, icebreakers and challenges
 // ---------------------------------------------------------------------------
@@ -1422,80 +1420,6 @@ model WaitlistSignup {
   @@index([notifiedAt])
 }
 
-/// Where a Buzz post sits on the board. `TRENDING` and `PICKS` are deliberately
-/// absent: the first is an ordering and the second is a flag, and modelling
-/// either as a category would let a post be filed under a view rather than a
-/// subject.
-enum BuzzCategory {
-  GAMING
-  SCREEN
-  MUSIC
-  TECH
-  LOCAL
-}
-
-/// A thing worth talking about, published so that somebody does it with somebody.
-///
-/// Not a blog. Every row carries the action it exists to produce — the label on
-/// its button and the words that button drops into the start-a-bunch box — and a
-/// post without one is a post with no reason to be here. That is enforced by the
-/// columns being non-null rather than by an editorial guideline.
-model BuzzPost {
-  id       String  @id @default(cuid())
-  slug     String  @unique
-  /// The small label above the headline, e.g. "New game tonight".
-  eyebrow  String
-  headline String
-  /// One or two sentences, shown on the card and under the headline.
-  standfirst String
-  category BuzzCategory
-  /// Editorial curation. An opinion held by the people who run this, which is
-  /// why it is a boolean and not a score: nothing here ranks posts by traffic.
-  isPick   Boolean @default(false)
-
-  /// The button, and what it starts.
-  actionLabel String
-  /// Dropped into /start, so the box is already filled in.
-  actionQuery String
-
-  /// What the post is about, by interest slug. Used to say how many members
-  /// here are into the same thing — a real count, or nothing.
-  interestSlugs String[] @default([])
-
-  /// Body blocks. A small tagged union rather than markdown: this renders to
-  /// React elements and never to HTML, so a post cannot carry a script tag no
-  /// matter who writes it.
-  body Json
-
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  signals BuzzSignal[]
-
-  @@index([category, publishedAt])
-  @@index([publishedAt])
-  @@index([isPick, publishedAt])
-}
-
-/// "I'm in" on a post.
-///
-/// The only number this section reports about itself, and it is a count of real
-/// members pressing a real button. It starts at zero, and the card shows nothing
-/// until there is something true to show — the same rule the waiting-list count
-/// follows.
-model BuzzSignal {
-  postId    String
-  profileId String
-  createdAt DateTime @default(now())
-
-  post    BuzzPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  profile Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@id([postId, profileId])
-  @@index([profileId])
-}
-
 /// How far an announcement reaches. The tier picks the route, in code — see
 /// `DELIVERY` in the announcements service — so nobody can push a feature note
 /// to everybody by ticking the wrong box.
@@ -1528,8 +1452,8 @@ model Announcement {
   title   String
   /// What changed, in one or two sentences, in plain words.
   summary String
-  /// Body blocks, same tagged union the Buzz posts use. Rendered to React
-  /// elements, never to HTML.
+  /// Body blocks: a small tagged union, rendered to React elements and never
+  /// to HTML, so an announcement cannot carry markup however it was written.
   body    Json
 
   tier AnnouncementTier

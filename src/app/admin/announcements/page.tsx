@@ -49,7 +49,7 @@ export default async function AdminAnnouncementsPage() {
               [
                 "New",
                 "NOTABLE",
-                "On What's new and on the Buzz board. Pushes nothing.",
+                "On What's new, with an unread mark in the nav. Pushes nothing.",
               ],
               ["Noted", "NOTED", "On the record. Findable, never shown."],
             ] as const

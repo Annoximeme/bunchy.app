@@ -66,17 +66,12 @@ export function LegalPage({
 }) {
   return (
     <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
-      {/* The masthead, on the band that is navy in both themes. */}
-      <section className="relative overflow-hidden bg-band-deep text-white">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 55% at 12% 0%, rgba(255,92,108,0.14), transparent 60%), radial-gradient(50% 50% at 88% 15%, rgba(118,87,255,0.14), transparent 60%)",
-          }}
-        />
-
+      {/*
+        A `div` rather than a `section` so the `<header>` inside it keeps its
+        banner role — inside a section it is demoted, and the logo and the skip
+        link end up in no landmark at all.
+      */}
+      <div className="bg-band-deep text-white">
         <header className="relative mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-4 px-5 py-6">
           <Link href="/" aria-label={brand.name}>
             <BunchyLogo height={20} color="#ffffff" />
@@ -89,7 +84,7 @@ export function LegalPage({
             so this is the same list drawn for navy.
           */}
           <nav
-            aria-label={`About ${brand.name}`}
+            aria-label={`${brand.name} pages`}
             className="flex flex-wrap gap-x-5 gap-y-1 text-sm"
           >
             {SITE_LINKS.filter((link) => link.href !== path).map((link) => (
@@ -103,8 +98,22 @@ export function LegalPage({
             ))}
           </nav>
         </header>
+      </div>
 
-        <div className="relative mx-auto max-w-3xl px-5 pb-20 pt-10 md:pb-24 md:pt-14">
+      {/* The title and summary are the document, so they start `main` rather
+          than sitting beside it in the masthead. */}
+      <main id="main">
+        <section className="relative overflow-hidden bg-band-deep text-white">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(60% 55% at 12% 0%, rgba(255,92,108,0.14), transparent 60%), radial-gradient(50% 50% at 88% 15%, rgba(118,87,255,0.14), transparent 60%)",
+            }}
+          />
+
+          <div className="relative mx-auto max-w-3xl px-5 pb-20 pt-6 md:pb-24 md:pt-10">
           {/* The brand over the document title, the way a masthead sits over a
               headline. It is the one label here that cannot go out of date. */}
           <p
@@ -130,11 +139,12 @@ export function LegalPage({
             </a>
             .
           </p>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <main id="main" className="px-5 py-20 md:py-28">
-        <div className="mx-auto max-w-3xl space-y-14">{children}</div>
+        <div className="px-5 py-20 md:py-28">
+          <div className="mx-auto max-w-3xl space-y-14">{children}</div>
+        </div>
       </main>
 
       <footer className="bg-band-deep px-5 py-10 text-sm text-white/60">
@@ -142,7 +152,7 @@ export function LegalPage({
           <p>
             {brand.name}. {brand.tagline}
           </p>
-          <nav aria-label={`About ${brand.name}`}>
+          <nav aria-label={`More about ${brand.name}`}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {SITE_LINKS.filter((link) => link.href !== path).map((link) => (
                 <li key={link.href}>

@@ -89,27 +89,21 @@ export default async function AboutPage() {
 
   return (
     <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
-      {/* ---------------------------------------------------------------- 1 */}
-      <section className="relative overflow-hidden bg-band-deep text-white">
-        {/* The ambient wash from the landing hero, at the strength navy can
-            carry. Decorative and behind everything, so it never sits between a
-            reader and a word. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 55% at 15% 0%, rgba(255,92,108,0.16), transparent 60%), radial-gradient(50% 50% at 90% 20%, rgba(118,87,255,0.16), transparent 60%)",
-          }}
-        />
-
+      {/* ----------------------------------------------------------------- 1
+        A `div`, not a `section`. `<header>` only carries the banner role when
+        it is not inside article, aside, main, nav or section — nesting it in a
+        section silently demoted the masthead to a plain group, which put the
+        skip link and the logo outside any landmark at all. An axe pass with the
+        best-practice rules on is what surfaced it.
+      */}
+      <div className="bg-band-deep text-white">
         <header className="relative mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-6">
           <Link href="/" aria-label={brand.name}>
             <BunchyLogo height={20} color="#ffffff" />
           </Link>
           {/* The shared nav reads from theme tokens, which are wrong on a
               pinned ground. Same list, styled for navy. */}
-          <nav aria-label={`About ${brand.name}`} className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          <nav aria-label={`${brand.name} pages`} className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
             {SITE_LINKS.filter((link) => link.href !== "/about").map((link) => (
               <Link
                 key={link.href}
@@ -121,8 +115,23 @@ export default async function AboutPage() {
             ))}
           </nav>
         </header>
+      </div>
 
-        <div className="relative mx-auto max-w-5xl px-5 pb-28 pt-16 md:pb-36 md:pt-24">
+      <main id="main">
+        <section className="relative overflow-hidden bg-band-deep text-white">
+          {/* The ambient wash from the landing hero, at the strength navy can
+              carry. Decorative and behind everything, so it never sits between
+              a reader and a word. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(60% 55% at 15% 0%, rgba(255,92,108,0.16), transparent 60%), radial-gradient(50% 50% at 90% 20%, rgba(118,87,255,0.16), transparent 60%)",
+            }}
+          />
+
+          <div className="relative mx-auto max-w-5xl px-5 pb-28 pt-10 md:pb-36 md:pt-16">
           <p
             className="text-sm font-bold uppercase tracking-[0.18em]"
             style={{ color: CORAL }}
@@ -141,8 +150,8 @@ export default async function AboutPage() {
             by one person, in the open, and this page explains what it is, what
             it refuses to be, and who is behind it.
           </p>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* ---------------------------------------------------------------- 2 */}
       <Band>
@@ -633,13 +642,21 @@ export default async function AboutPage() {
             </div>
           </div>
         </div>
+        </section>
+      </main>
 
-        <footer className="relative mx-auto mt-20 max-w-3xl border-t pt-8 text-sm" style={{ borderColor: "rgb(255 255 255 / 0.10)" }}>
+      {/*
+        Outside `main`, and not nested in a section: `<footer>` only carries the
+        contentinfo role at the top level, and inside a section it is just a
+        group — which is how the site links ended up in no landmark at all.
+      */}
+      <footer className="bg-band-deep px-5 pb-14 text-sm text-white">
+        <div className="mx-auto max-w-3xl border-t pt-8" style={{ borderColor: "rgb(255 255 255 / 0.10)" }}>
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
             <p className="text-white/60">
               {brand.name}. {brand.tagline}
             </p>
-            <nav aria-label={`About ${brand.name}`}>
+            <nav aria-label={`More about ${brand.name}`}>
               <ul className="flex flex-wrap gap-x-5 gap-y-2">
                 {SITE_LINKS.filter((link) => link.href !== "/about").map((link) => (
                   <li key={link.href}>
@@ -659,8 +676,8 @@ export default async function AboutPage() {
               </ul>
             </nav>
           </div>
-        </footer>
-      </section>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -34,6 +34,7 @@ export default async function NotificationsPage() {
 
         {notifications.length === 0 ? (
           <EmptyState
+          level={2}
             icon="🔔"
             title="Nothing waiting"
             description="We'll tell you when someone wants to connect, replies to you, or your bunch plans something. Nothing else."

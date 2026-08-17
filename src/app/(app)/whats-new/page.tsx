@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireViewer } from "@/server/auth/current-user";
-import { listAnnouncements } from "@/server/modules/announcements/service";
+import {
+  listAnnouncements,
+  unreadCount,
+} from "@/server/modules/announcements/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { EmptyState } from "@/components/ui";
 import { AnnouncementList } from "@/components/announcements/announcement-list";
@@ -23,7 +26,10 @@ export const dynamic = "force-dynamic";
  */
 export default async function WhatsNewPage() {
   const viewer = await requireViewer();
-  const announcements = await listAnnouncements(viewer.profileId);
+  const [announcements, unread] = await Promise.all([
+    listAnnouncements(viewer.profileId),
+    unreadCount(viewer.profileId),
+  ]);
 
   return (
     <PageShell>
@@ -32,8 +38,19 @@ export default async function WhatsNewPage() {
         subtitle="Everything we have told you, and when. Changes that affect your rights or your data appear here before they take effect."
       />
 
+      {announcements.length > 0 && (
+        <p className="mt-6 text-sm text-muted">
+          {unread === 0
+            ? "You have read all of these."
+            : `${unread} you have not read yet.`}{" "}
+          Nothing is ever removed from this page — withdrawing an announcement
+          takes it off the board and leaves the record alone.
+        </p>
+      )}
+
       {announcements.length === 0 ? (
         <EmptyState
+          level={2}
           icon="📭"
           title="Nothing to report"
           description="When something changes that affects you — what we hold, what the terms say, whether the site is up — it lands here, and the important ones find you rather than waiting to be found."

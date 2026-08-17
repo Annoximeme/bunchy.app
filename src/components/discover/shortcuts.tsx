@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Compass, Dices, Map, Megaphone, Radio } from "lucide-react";
+import { Compass, Dices, Map, Radio } from "lucide-react";
 import { cn } from "@/components/ui";
 
 /**
@@ -56,13 +56,6 @@ const SHORTCUTS: Shortcut[] = [
     description:
       "Someone whose interests do not look like yours, but whose evenings do.",
     icon: Dices,
-    tone: "purple",
-  },
-  {
-    href: "/discover/buzz",
-    label: "Bunchy Buzz",
-    description: "Things worth talking about, each one with a way to go and do it.",
-    icon: Megaphone,
     tone: "purple",
   },
   {
