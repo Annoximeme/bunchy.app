@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/ui";
 import { errorMessage } from "@/lib/api";
+import { SupporterRing } from "@/components/supporter/marks";
 
 /**
  * Picking a profile picture.
@@ -57,9 +58,12 @@ async function compress(file: File): Promise<Blob> {
 export function AvatarUpload({
   displayName,
   avatarUrl,
+  supporter = false,
 }: {
   displayName: string;
   avatarUrl: string | null;
+  /** Draws the gradient ring. Staff and supporters only. */
+  supporter?: boolean;
 }) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
@@ -122,7 +126,11 @@ export function AvatarUpload({
   */
   return (
     <div className="flex w-fit shrink-0 flex-col items-center gap-1.5">
-      <Avatar name={displayName} src={shown} size="xl" />
+      {/* The ring belongs to the picture, not to this column. Wrapping the
+          whole control drew a gradient around the buttons as well. */}
+      <SupporterRing active={supporter}>
+        <Avatar name={displayName} src={shown} size="xl" />
+      </SupporterRing>
 
       <div className="flex items-center gap-1.5 text-xs">
         <button
