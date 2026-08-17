@@ -220,7 +220,21 @@ function NowPerson({
 }) {
   return (
     <Card className="flex items-start gap-4">
-      <Link href={`/u/${person.username}`} className="shrink-0">
+      {/*
+        The avatar is `aria-hidden` — it is a decorative initial, and the name
+        is a link of its own two lines down. Without a label this anchor reached
+        a screen reader as a link with no text at all, which is what an axe pass
+        over a populated board caught. Hidden from the accessibility tree
+        entirely rather than labelled: a second link to the same profile is
+        noise to someone tabbing through, and the visible one already says the
+        name.
+      */}
+      <Link
+        href={`/u/${person.username}`}
+        className="shrink-0"
+        aria-hidden
+        tabIndex={-1}
+      >
         <Avatar name={person.displayName} src={person.avatarUrl} size="lg" />
       </Link>
 

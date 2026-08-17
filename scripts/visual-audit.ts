@@ -36,6 +36,8 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   // for a long time the only one this script did not look at.
   { path: "/", name: "landing", signedOut: true },
   { path: "/discover", name: "discover" },
+  { path: "/discover/buzz", name: "buzz" },
+  { path: "/discover/buzz/co-op-survival-thursday", name: "buzz-post" },
   { path: "/profile", name: "profile-own" },
   { path: "/u/milan", name: "profile-public" },
   { path: "/now", name: "now" },
