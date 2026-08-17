@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { brand, BUNCH_NOUN } from "@/lib/brand";
 import { LEGAL } from "@/lib/legal";
-import { BunchyLogo, BunchyMark } from "@/components/logo";
+import { BunchyLogo } from "@/components/logo";
+import founder from "./gianni.jpg";
 import { SITE_LINKS } from "@/components/site-links";
 import { getViewer } from "@/server/auth/current-user";
 
@@ -257,11 +259,20 @@ export default async function AboutPage() {
           </p>
         </div>
 
-        <ul className="reveal mx-auto mt-14 grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {/*
+          Masonry, not a grid. Six refusals are six independent statements and
+          they are not the same length — the notifications one carries the most
+          because it is the one with an exception attached. In a stretched grid
+          that card set the height of its whole row and left the two beside it
+          as tall boxes with a third of their space empty. Letting each card end
+          where its own copy ends is the fix; the same treatment the plans wall
+          on the landing page uses, for the same reason.
+        */}
+        <ul className="reveal mx-auto mt-14 max-w-6xl gap-5 md:columns-2 lg:columns-3">
           {REFUSALS.map(([what, why]) => (
             <li
               key={what}
-              className="rounded-2xl border border-line bg-surface p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
+              className="mb-5 break-inside-avoid rounded-2xl border border-line bg-surface p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
             >
               {/* A filled coral disc rather than a bare glyph. The palette's own
                   rule is that coral carries a navy label, never a light one, and
@@ -277,7 +288,7 @@ export default async function AboutPage() {
                 ✕
               </span>
               <p
-                className="mt-5 text-lg font-bold leading-snug text-ink md:min-h-[3.5rem]"
+                className="mt-5 text-lg font-bold leading-snug text-ink"
               >
                 {what}
               </p>
@@ -323,28 +334,39 @@ export default async function AboutPage() {
               <div
                 className="relative aspect-square rotate-2 overflow-hidden rounded-[1.75rem]"
                 style={{
-                  backgroundColor: "#ffffff",
+                  // The ground behind the photograph, visible for the instant
+                  // before it decodes. A literal white here gave dark-mode
+                  // readers a white square first.
+                  backgroundColor: "var(--color-surface)",
                   border: "1px solid var(--color-line)",
                   boxShadow: "0 18px 40px -24px rgb(23 32 51 / 0.45)",
                 }}
               >
-                {/* A placeholder, and labelled as one. Inventing a photograph on
-                    a page whose whole claim is that nothing here is invented
-                    would be a strange place to start. */}
-                <div
-                  className="flex h-full w-full flex-col items-center justify-center gap-4"
-                  style={{
-                    background:
-                      "radial-gradient(80% 80% at 30% 20%, rgba(255,92,108,0.10), transparent 70%), radial-gradient(70% 70% at 80% 90%, rgba(118,87,255,0.10), transparent 70%)",
-                  }}
-                >
-                  <BunchyMark size={56} />
-                  <p
-                    className="px-8 text-center text-sm leading-relaxed text-ink-soft"
-                  >
-                    A photo goes here, once there is one worth putting up.
-                  </p>
-                </div>
+                {/*
+                  A static import rather than a file in `public/`, and that is
+                  load-bearing: this project has no `public/` directory and the
+                  Dockerfile's runner stage says so in a comment, because a COPY
+                  of a directory that does not exist fails the build. An
+                  imported asset is emitted into `.next/static`, which the image
+                  already copies — so the photograph ships without touching the
+                  Dockerfile, and cannot 404 in production while looking fine in
+                  development.
+
+                  The static import is also what gives `next/image` the
+                  dimensions and the blur placeholder without a second file to
+                  keep in step.
+
+                  `alt=""` on purpose. The figcaption directly beneath names him
+                  and gives his role, so a description here would be read out
+                  twice by a screen reader for one piece of information.
+                */}
+                <Image
+                  src={founder}
+                  alt=""
+                  sizes="(min-width: 1024px) 22rem, (min-width: 640px) 24rem, 100vw"
+                  placeholder="blur"
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
             <figcaption className="mt-8 text-center lg:text-left">
@@ -459,6 +481,17 @@ export default async function AboutPage() {
                 withheld before it leaves the server rather than merely hidden
                 on the page. Nobody at any level can see your password, because
                 only a hash of it is ever stored.
+              </p>
+              <p>
+                The operator can put a banner in front of every member, and that
+                is the one thing in here allowed to interrupt you. It is for
+                changes to the terms, to what we hold about you, or to whether
+                the site is up — never for a new feature. Which of those may
+                interrupt you is decided in code rather than by whoever writes
+                the announcement, and every one that goes out is signed, dated
+                and in the audit trail. You can read all of them, including the
+                ones you have already dismissed, on{" "}
+                <Link href="/whats-new">What&rsquo;s new</Link>.
               </p>
               <p>
                 On location: {brand.name} never stores a street address or
@@ -640,7 +673,7 @@ const REFUSALS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "No notifications designed to pull you back",
-    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide. The single exception is us telling you something that affects you: a change to the terms, to what we hold about you, or to whether the site is up. Those appear as a banner until you dismiss it, because the privacy policy and the terms both promise you will be told before a change takes effect. Nothing about a new feature is allowed to use it, and which tier may interrupt you is decided in code rather than by whoever writes the announcement.",
+    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide. The one exception is a change to your rights, your data, or whether the site is up.",
   ],
   [
     "No streaks, no rota, no attendance score",
