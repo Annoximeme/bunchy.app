@@ -81,7 +81,11 @@ export interface SupporterCosmetics {
   since: Date | null;
 }
 
-const NOTHING: SupporterCosmetics = {
+/**
+ * The empty shape, exported so the guard test can assert it without a database.
+ * A fourth key here is a fourth thing money can buy and has to be argued for.
+ */
+export const NO_COSMETICS: SupporterCosmetics = {
   badge: false,
   ring: false,
   appIcons: false,
@@ -98,13 +102,36 @@ function isCurrent(status: SupporterStatus, periodEnd: Date | null): boolean {
 export async function supporterCosmetics(
   userId: string,
 ): Promise<SupporterCosmetics> {
-  if (!supporterEnabled()) return NOTHING;
-
-  const row = await db.supporter.findUnique({
-    where: { userId },
-    select: { status: true, currentPeriodEnd: true, since: true },
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      role: true,
+      createdAt: true,
+      supporter: {
+        select: { status: true, currentPeriodEnd: true, since: true },
+      },
+    },
   });
-  if (!row || !isCurrent(row.status, row.currentPeriodEnd)) return NOTHING;
+  if (!user) return NO_COSMETICS;
+
+  /*
+   * Staff get it complimentary, and that is checked before the payment state
+   * and before `supporterEnabled()`. The volunteers read the report queue for
+   * nothing; charging them for a ring while they do it would be a strange way
+   * to say thank you, and a moderator's cosmetics should not switch off because
+   * a Stripe key is missing.
+   *
+   * They still get the *staff* mark rather than the supporter one — see
+   * `NameMarks`. Complimentary means the perks, not the claim.
+   */
+  if (user.role !== "MEMBER") {
+    return { badge: true, ring: true, appIcons: true, since: user.createdAt };
+  }
+
+  if (!supporterEnabled()) return NO_COSMETICS;
+
+  const row = user.supporter;
+  if (!row || !isCurrent(row.status, row.currentPeriodEnd)) return NO_COSMETICS;
 
   return { badge: true, ring: true, appIcons: true, since: row.since };
 }
@@ -113,19 +140,27 @@ export async function supporterCosmetics(
 export async function supporterUserIds(
   userIds: string[],
 ): Promise<Set<string>> {
-  if (!supporterEnabled() || userIds.length === 0) return new Set();
+  if (userIds.length === 0) return new Set();
 
-  const rows = await db.supporter.findMany({
+  const rows = await db.user.findMany({
     where: {
-      userId: { in: userIds },
+      id: { in: userIds },
       OR: [
-        { status: { in: ["ACTIVE", "PAST_DUE"] } },
-        { currentPeriodEnd: { gt: new Date() } },
+        // Staff, complimentary.
+        { role: { not: "MEMBER" } },
+        {
+          supporter: {
+            OR: [
+              { status: { in: ["ACTIVE", "PAST_DUE"] } },
+              { currentPeriodEnd: { gt: new Date() } },
+            ],
+          },
+        },
       ],
     },
-    select: { userId: true },
+    select: { id: true },
   });
-  return new Set(rows.map((r) => r.userId));
+  return new Set(rows.map((r) => r.id));
 }
 
 async function customerFor(

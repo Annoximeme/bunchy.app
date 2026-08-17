@@ -65,6 +65,15 @@ export interface PublicProfile {
    * who can ban whom. The distinction is authorization data and stays private.
    */
   staff: boolean;
+  /**
+   * Chips in, or is staff and gets it complimentary.
+   *
+   * Separate from `staff` rather than folded into it, because the two marks
+   * mean different things and a member should be able to tell them apart: one
+   * says this person paid, the other says this person can suspend your account.
+   * The badge that renders is the staff one when both are true.
+   */
+  supporter: boolean;
 }
 
 export const GOAL_LABELS: Record<string, string> = {
@@ -124,6 +133,19 @@ export function describeTraits(p: PersonalityVector | null): string[] {
   ].filter((t): t is string => t !== null);
 }
 
+/**
+ * Still paid up, including inside a period already cancelled.
+ *
+ * Duplicated from the supporter module rather than imported, and deliberately:
+ * this file is the one sanctioned path from a database row to a public payload,
+ * and it must not grow a dependency on the module that knows about money. Four
+ * lines of logic is a smaller price than that edge.
+ */
+function isCurrentSupport(status: string | null, periodEnd: Date | null): boolean {
+  if (status === "ACTIVE" || status === "PAST_DUE") return true;
+  return periodEnd !== null && periodEnd > new Date();
+}
+
 /** Ten-year band, used when someone hides their exact age. */
 export function ageBandFor(age: number | null): string | null {
   if (age === null) return null;
@@ -143,7 +165,12 @@ export interface SerializeInput {
   createdAt: Date;
   foundingMember: boolean;
   title: string | null;
-  user: { birthYear: number | null; birthMonth: number | null; role: string };
+  user: {
+    birthYear: number | null;
+    birthMonth: number | null;
+    role: string;
+    supporter: { status: string; currentPeriodEnd: Date | null } | null;
+  };
   privacy: { showApproxLocation: boolean; showExactAge: boolean } | null;
   interests: Array<{
     strength: number;
@@ -220,6 +247,15 @@ export function toPublicProfile(
     foundingMember: row.foundingMember,
     title: row.title,
     staff: row.user.role !== "MEMBER",
+    // Staff get the cosmetics complimentary. They are the people the volunteers
+    // and the operator, and asking them to pay for a ring while they work the
+    // report queue would be a strange way to say thank you.
+    supporter:
+      row.user.role !== "MEMBER" ||
+      isCurrentSupport(
+        row.user.supporter?.status ?? null,
+        row.user.supporter?.currentPeriodEnd ?? null,
+      ),
   };
 }
 
@@ -236,7 +272,17 @@ export const PUBLIC_PROFILE_SELECT = {
   createdAt: true,
   foundingMember: true,
   title: true,
-  user: { select: { birthYear: true, birthMonth: true, role: true } },
+  user: {
+    select: {
+      birthYear: true,
+      birthMonth: true,
+      role: true,
+      // Enough to answer "is this current", and nothing about the money. No
+      // amount, no card, no invoice — a public payload has no business
+      // carrying any of it.
+      supporter: { select: { status: true, currentPeriodEnd: true } },
+    },
+  },
   privacy: { select: { showApproxLocation: true, showExactAge: true } },
   interests: {
     select: {

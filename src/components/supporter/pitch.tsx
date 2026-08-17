@@ -1,10 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { Instrument_Serif } from "next/font/google";
 import { HandCoins, ShieldCheck, Server } from "lucide-react";
 import { Avatar } from "@/components/ui";
-import { SupporterBadge, SupporterRing } from "@/components/supporter/supporter-badge";
+import { StaffMark, SupporterMark, SupporterRing } from "@/components/supporter/marks";
 import { SupporterCheckout } from "@/components/supporter/checkout";
+
+/**
+ * Pull-quotes only, the same serif that carries them on About.
+ *
+ * This page and About are the two places Bunchy argues for itself, so they are
+ * set in the same voice: one high-contrast serif against the geometric sans,
+ * used for the four or five sentences that carry the argument and nothing else.
+ */
+const editorial = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 /**
  * The pitch, the proof and the payment, in that order.
@@ -83,11 +98,21 @@ export function SupporterPitch({
 
   return (
     <>
-      <section className="mt-12">
-        <h2 className="text-xl font-extrabold tracking-tight">
-          Where the money goes
+      {/*
+        Banded like About, in the same order and for the same reason: the
+        argument has a shape, and alternating grounds are what let a reader feel
+        it while scrolling. Inside the app shell the bands are rounded panels
+        rather than full-bleed stripes — a stripe that ran under the sidebar
+        would be fighting the chrome rather than using it.
+      */}
+      <section className="mt-12 rounded-[var(--radius-card)] bg-band-warm px-6 py-10 sm:px-10">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-ink">
+          Where it goes
+        </p>
+        <h2 className="mt-3 max-w-[22ch] text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">
+          Three places, in the order we promised
         </h2>
-        <div className="mt-6 grid gap-5 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
           {DESTINATIONS.map(({ icon: Icon, title, body }) => (
             <article
               key={title}
@@ -105,16 +130,37 @@ export function SupporterPitch({
         </div>
       </section>
 
+      {/* The dark interlude. One sentence, in the serif, doing the work a
+          paragraph of reassurance would do worse. */}
+      <section className="mt-8 overflow-hidden rounded-[var(--radius-card)] bg-band-deep px-6 py-14 text-center text-white sm:px-12">
+        <span
+          aria-hidden
+          className="mx-auto block h-px w-16 bg-coral-primary"
+        />
+        <p
+          className={`${editorial.className} mx-auto mt-7 max-w-[26ch] text-balance text-3xl leading-[1.2] sm:text-4xl md:text-[2.75rem]`}
+        >
+          It is meant to be a tip jar rather than a deal.
+        </p>
+        <p className="mx-auto mt-6 max-w-md text-[15px] leading-relaxed text-white/60">
+          Which is why the list below is short enough to check, and why nothing
+          on it changes who you meet.
+        </p>
+      </section>
+
       <section className="mt-14">
-        <h2 className="text-xl font-extrabold tracking-tight">
-          What you get, and what you do not
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-ink">
+          What it buys
+        </p>
+        <h2 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+          Three cosmetic things, and nothing else
         </h2>
-        <p className="mt-2 max-w-[62ch] leading-relaxed text-ink-soft">
-          Three cosmetic things. <strong className="text-ink">You are not
-          buying better matching, more messages, or anything at all that changes
-          who you meet</strong> — the whole app is free for everybody and stays
-          that way. If that makes this a bad deal, it is meant to be a tip jar
-          rather than a deal.
+        <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-soft">
+          <strong className="text-ink">You are not buying better matching, more
+          messages, or anything at all that changes who you meet</strong> — the
+          whole app is free for everybody and stays that way. The code enforces
+          it: the parts of Bunchy that decide anything are forbidden from even
+          importing the module that knows who paid.
         </p>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -133,7 +179,7 @@ export function SupporterPitch({
               <div className="min-w-0">
                 <p className="flex items-center gap-1.5 font-semibold">
                   Sam Okonkwo
-                  {ringOn && <SupporterBadge />}
+                  {ringOn && <SupporterMark />}
                 </p>
                 <button
                   type="button"
@@ -169,6 +215,21 @@ export function SupporterPitch({
               ))}
             </ul>
           </article>
+        </div>
+
+        {/* Staff, said out loud on the page that sells the thing. Somebody who
+            sees a shield beside a name should be able to find out here what it
+            means and that it was not bought. */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[var(--radius-card)] border border-line bg-surface-sunken px-6 py-5">
+          <StaffMark size={18} />
+          <p className="min-w-0 flex-1 text-[15px] leading-relaxed text-ink-soft">
+            <strong className="text-ink">Staff carry a shield, not this mark.</strong>{" "}
+            Moderators and the operator get the cosmetics complimentary — they
+            work the report queue for nothing — but their badge is a different
+            shape on purpose, because &ldquo;this person chipped in&rdquo; and
+            &ldquo;this person can suspend your account&rdquo; are not the same
+            claim. Neither can be typed into a display name.
+          </p>
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { colourFor } from "@/lib/palette";
 import { Avatar, cn } from "@/components/ui";
+import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 
 /**
  * Who somebody is, drawn once.
@@ -25,6 +26,8 @@ import { Avatar, cn } from "@/components/ui";
 
 export interface IdentityBadges {
   staff: boolean;
+  /** Chips in, or is staff and gets it complimentary. */
+  supporter: boolean;
   title: string | null;
   foundingMember: boolean;
 }
@@ -145,19 +148,35 @@ export function ProfileHero({
       <div className="px-5 pb-5">
         {/* Pulled up over the band, so the head sits on the seam. */}
         <div className="-mt-12 flex flex-wrap items-end gap-5 sm:-mt-14">
+          {/* The ring is the cosmetic staff and supporters get. It wraps the
+              avatar rather than being a prop on it, so `Avatar` never has to
+              know that money exists. */}
+          {/* Gradient inside the card's own white ring rather than outside it:
+              stacked the other way the two rings competed and the gradient read
+              as a smudge behind the head. */}
           <div className="rounded-full ring-4 ring-surface">
-            {avatarSlot ?? (
-              <Avatar
-                name={profile.displayName}
-                src={profile.avatarUrl}
-                size="xl"
-              />
-            )}
+            <SupporterRing active={profile.supporter}>
+              {avatarSlot ?? (
+                <Avatar
+                  name={profile.displayName}
+                  src={profile.avatarUrl}
+                  size="xl"
+                />
+              )}
+            </SupporterRing>
           </div>
 
           <div className="min-w-0 flex-1 pb-1">
-            <h1 className="truncate text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              {profile.displayName}
+            <h1 className="flex min-w-0 items-center gap-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+              <span className="truncate">{profile.displayName}</span>
+              {/* Beside the name and not only in the badge row below it: a
+                  member scanning a page reads the name, and a mark that lives
+                  somewhere else is a mark they have to go looking for. */}
+              <NameMarks
+                staff={profile.staff}
+                supporter={profile.supporter}
+                size={20}
+              />
             </h1>
             <p className="mt-0.5 text-muted">{factsFor(profile).join(" · ")}</p>
           </div>
@@ -165,6 +184,7 @@ export function ProfileHero({
 
         <ProfileBadges
           staff={profile.staff}
+          supporter={profile.supporter}
           title={profile.title}
           foundingMember={profile.foundingMember}
           className="mt-4"

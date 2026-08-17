@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { activityWhen } from "@/lib/format";
+import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 import {
   Avatar,
   Button,
@@ -34,6 +35,9 @@ export interface PersonCardData {
   highlights: string[];
   sharedInterests: string[];
   goals: string[];
+  /** Optional: not every producer of this shape carries the marks yet. */
+  staff?: boolean;
+  supporter?: boolean;
 }
 
 export function PersonCard({ person }: { person: PersonCardData }) {
@@ -135,18 +139,23 @@ export function PersonCard({ person }: { person: PersonCardData }) {
           aria-hidden
           tabIndex={-1}
         >
-          <Avatar name={person.displayName} src={person.avatarUrl} size="lg" />
+          <SupporterRing active={Boolean(person.supporter)}>
+            <Avatar name={person.displayName} src={person.avatarUrl} size="lg" />
+          </SupporterRing>
         </Link>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <Link
-                href={`/u/${person.username}`}
-                className="block truncate font-semibold tracking-tight hover:underline"
-              >
-                {person.displayName}
-              </Link>
+              <span className="flex min-w-0 items-center gap-1.5">
+                <Link
+                  href={`/u/${person.username}`}
+                  className="truncate font-semibold tracking-tight hover:underline"
+                >
+                  {person.displayName}
+                </Link>
+                <NameMarks staff={person.staff} supporter={person.supporter} />
+              </span>
               {meta && <p className="truncate text-sm text-muted">{meta}</p>}
             </div>
             <CompatibilityBadge score={person.score} />

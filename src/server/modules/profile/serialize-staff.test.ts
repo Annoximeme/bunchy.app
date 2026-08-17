@@ -16,7 +16,7 @@ const ROW = {
   createdAt: new Date("2026-08-13T00:00:00.000Z"),
   foundingMember: true,
   title: "Founder & Lead Developer of Bunchy",
-  user: { birthYear: 1996, birthMonth: 4, role: "MEMBER" },
+  user: { birthYear: 1996, birthMonth: 4, role: "MEMBER", supporter: null },
   privacy: null,
   interests: [],
   goals: [],
@@ -30,6 +30,49 @@ function serialize(role: string) {
     { connectionState: "NONE" as never },
   );
 }
+
+describe("the supporter mark", () => {
+  it("is complimentary for staff, who never paid for it", () => {
+    // Volunteers work the report queue for nothing. Charging them for a ring
+    // would be a strange way to say thank you.
+    expect(serialize("MODERATOR").supporter).toBe(true);
+    expect(serialize("ADMIN").supporter).toBe(true);
+  });
+
+  it("is off for a member who has not chipped in", () => {
+    expect(serialize("MEMBER").supporter).toBe(false);
+  });
+
+  it("is on for a member inside a period they cancelled", () => {
+    // They bought the month. Cancelling stops the next payment, it does not
+    // repossess what has already been paid for.
+    const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const row = {
+      ...ROW,
+      user: {
+        ...ROW.user,
+        supporter: { status: "ENDED", currentPeriodEnd: future },
+      },
+    };
+    expect(
+      toPublicProfile(row, { connectionState: "NONE" as never }).supporter,
+    ).toBe(true);
+  });
+
+  it("is off once that period has passed", () => {
+    const past = new Date(Date.now() - 1000);
+    const row = {
+      ...ROW,
+      user: {
+        ...ROW.user,
+        supporter: { status: "ENDED", currentPeriodEnd: past },
+      },
+    };
+    expect(
+      toPublicProfile(row, { connectionState: "NONE" as never }).supporter,
+    ).toBe(false);
+  });
+});
 
 describe("staff on a public profile", () => {
   it("flattens both staff roles to one label", () => {
