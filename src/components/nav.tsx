@@ -158,6 +158,12 @@ export function AppNav({
               thing to do — the important ones arrive as a banner rather than
               waiting here to be found. */}
           <Link
+            href="/supporter"
+            className="mb-1 block rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+          >
+            Support Bunchy
+          </Link>
+          <Link
             href="/whats-new"
             className="mb-1 flex items-center justify-between gap-2 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
           >

@@ -24,16 +24,26 @@ function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean):
     "default-src 'self'",
     // 'unsafe-eval' is the price of React Fast Refresh, and it is scoped to
     // development so production never carries it.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    // `strict-dynamic` covers Stripe.js: it is loaded by @stripe/stripe-js from
+    // a script this policy already trusts, and trust propagates. The host is
+    // named anyway for browsers that ignore strict-dynamic.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com${isDev ? " 'unsafe-eval'" : ""}`,
     // Styles stay 'unsafe-inline'. Next inlines critical CSS without a nonce,
     // and a style injection is a defacement rather than the script execution
     // this policy exists to stop.
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    // Same-origin only. The live bunch chat is an EventSource against this
-    // origin, so nothing external needs to be reachable.
-    "connect-src 'self'",
+    // Same-origin, plus Stripe. The live bunch chat is an EventSource against
+    // this origin; the only thing in the product that talks to anybody else is
+    // the card form, which posts card details straight to Stripe rather than
+    // through us — which is the entire reason we never hold them.
+    "connect-src 'self' https://api.stripe.com",
+    // Stripe renders the card fields inside its own frames, on its own origin.
+    // That is the mechanism by which the card number is never in our DOM, so
+    // this is a narrower policy than it looks: two named hosts, and everything
+    // else still falls back to default-src 'self'.
+    "frame-src https://js.stripe.com https://hooks.stripe.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -38,6 +38,8 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/discover", name: "discover" },
   { path: "/discover/buzz", name: "buzz" },
   { path: "/whats-new", name: "whats-new" },
+  { path: "/supporter", name: "supporter" },
+  { path: "/settings/supporter", name: "supporter-settings" },
   { path: "/discover/buzz/co-op-survival-thursday", name: "buzz-post" },
   { path: "/profile", name: "profile-own" },
   { path: "/u/milan", name: "profile-public" },

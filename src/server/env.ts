@@ -37,6 +37,22 @@ const schema = z.object({
    * addresses is a way for anybody to stop somebody else's password reset.
    */
   RESEND_WEBHOOK_SECRET: z.string().optional(),
+
+  /* --- Supporters -------------------------------------------------------
+   *
+   * Every one of these is optional, and the whole programme is off until they
+   * are all present. That is deliberate: a half-configured payment integration
+   * is the one kind of half-configured thing that can take somebody's money and
+   * not know what to do with it. `supporterEnabled()` is the single check, and
+   * the UI, the API routes and the webhook all read it rather than each
+   * deciding for themselves.
+   */
+  STRIPE_SECRET_KEY: z.string().optional(),
+  /** Safe to ship to the browser. Everything else here must never be. */
+  STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  STRIPE_PRICE_MONTHLY: z.string().optional(),
+  STRIPE_PRICE_YEARLY: z.string().optional(),
 });
 
 /**
@@ -104,6 +120,26 @@ export function env() {
  */
 export function resetEnv(): void {
   cached = undefined;
+}
+
+/**
+ * Whether the supporter programme is open.
+ *
+ * All five or none. A deploy holding a secret key but no price ids would render
+ * a checkout that cannot charge, and one holding no webhook secret would take
+ * payments it never hears the confirmation for — a subscription that exists at
+ * Stripe and not here, which is the worst of the failure modes because the
+ * member has paid and the product does not know.
+ */
+export function supporterEnabled(): boolean {
+  const config = env();
+  return Boolean(
+    config.STRIPE_SECRET_KEY &&
+      config.STRIPE_PUBLISHABLE_KEY &&
+      config.STRIPE_WEBHOOK_SECRET &&
+      config.STRIPE_PRICE_MONTHLY &&
+      config.STRIPE_PRICE_YEARLY,
+  );
 }
 
 /**
