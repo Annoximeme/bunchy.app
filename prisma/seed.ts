@@ -924,6 +924,7 @@ async function main() {
 
   await seedAvailability(prisma, profileId);
   await seedBuzz(prisma);
+  await seedAnnouncements(prisma);
 
   console.info("\nDone. Sign in with any of these:");
   for (const person of PEOPLE.slice(0, 4)) {
@@ -1111,4 +1112,83 @@ async function seedAvailability(
     written += 1;
   }
   console.info(`  seeded ${written} availability statuses`);
+}
+
+/**
+ * The announcements, on the demo instance.
+ *
+ * Two of them, and they are the two the whole mechanism exists for: Privacy §14
+ * and Terms §14 both promise a member is told in the product before a change
+ * takes effect, and until this table existed neither promise had a mechanism
+ * behind it.
+ *
+ * The effective dates are in the future on purpose. An announcement whose date
+ * has passed is a changelog entry, and `publishAnnouncement` refuses one — so a
+ * seed that wrote a past date would be seeding something the product would not
+ * accept from a human.
+ */
+async function seedAnnouncements(prisma: PrismaClient) {
+  const days = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000);
+
+  const announcements = [
+    {
+      slug: "privacy-policy-update",
+      title: "We are changing what the privacy policy says about location",
+      summary:
+        "Approximate location is being described more precisely, and the coarse grid it is stored on is being written into the policy rather than only into the code.",
+      tier: "CRITICAL",
+      linkHref: "/privacy",
+      linkLabel: "Read the privacy policy",
+      effectiveAt: days(14),
+      body: [
+        {
+          kind: "paragraph",
+          text: "Nothing about what Bunchy stores is changing. What is changing is the policy's description of it: the coarse grid positions are snapped to has been a property of the code and not of the document, and a promise that only exists in an implementation is not a promise anybody can hold you to.",
+        },
+        {
+          kind: "paragraph",
+          text: "You are being told now because the policy says you will be told before a change takes effect, and not with a quiet edit and a new date at the top. If you would rather not continue under the new wording, your account and everything in it can be exported or deleted from your profile, today, without writing to anybody.",
+        },
+      ],
+    },
+    {
+      slug: "terms-update-moderation",
+      title: "A change to the terms about moderator powers",
+      summary:
+        "The terms are being updated to name exactly what a volunteer moderator can and cannot do, matching what the code has always enforced.",
+      tier: "CRITICAL",
+      linkHref: "/terms",
+      linkLabel: "Read the terms",
+      effectiveAt: days(21),
+      body: [
+        {
+          kind: "paragraph",
+          text: "Volunteer moderators can act on content and suspend accounts. They cannot ban, they cannot change anybody's role, they cannot take the site offline, and they cannot see your email address. All four of those limits are enforced in the code and were not written down in the terms.",
+        },
+        {
+          kind: "paragraph",
+          text: "This changes what the document says, not what the software does. It is here because it materially affects your rights, which is the test the terms set for telling you first.",
+        },
+      ],
+    },
+  ];
+
+  for (const a of announcements) {
+    await prisma.announcement.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: {
+        slug: a.slug,
+        title: a.title,
+        summary: a.summary,
+        body: a.body,
+        tier: a.tier as never,
+        linkHref: a.linkHref,
+        linkLabel: a.linkLabel,
+        effectiveAt: a.effectiveAt,
+        publishedAt: new Date(),
+      },
+    });
+  }
+  console.info(`  seeded ${announcements.length} announcements`);
 }

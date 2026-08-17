@@ -640,7 +640,7 @@ const REFUSALS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "No notifications designed to pull you back",
-    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide.",
+    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide. The single exception is us telling you something that affects you: a change to the terms, to what we hold about you, or to whether the site is up. Those appear as a banner until you dismiss it, because the privacy policy and the terms both promise you will be told before a change takes effect. Nothing about a new feature is allowed to use it, and which tier may interrupt you is decided in code rather than by whoever writes the announcement.",
   ],
   [
     "No streaks, no rota, no attendance score",

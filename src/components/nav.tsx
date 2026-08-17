@@ -57,6 +57,7 @@ export function AppNav({
   unreadMessages,
   pendingRequests,
   unreadNotifications,
+  unreadAnnouncements,
   staff = false,
 }: {
   displayName: string;
@@ -65,6 +66,8 @@ export function AppNav({
   unreadMessages: number;
   pendingRequests: number;
   unreadNotifications: number;
+  /** Published announcements this member has not opened. */
+  unreadAnnouncements: number;
   /** Renders the staff entry. The link is cosmetic — /admin guards itself. */
   staff?: boolean;
 }) {
@@ -150,6 +153,21 @@ export function AppNav({
         </ul>
 
         <div className="space-y-1 border-t border-line pt-4">
+          {/* Below the line with the staff link and the profile, not up among
+              the seven ways to meet people. It is a record to consult, not a
+              thing to do — the important ones arrive as a banner rather than
+              waiting here to be found. */}
+          <Link
+            href="/whats-new"
+            className="mb-1 flex items-center justify-between gap-2 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
+          >
+            What&rsquo;s new
+            {unreadAnnouncements > 0 && (
+              <span className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-[var(--color-on-accent)]">
+                {unreadAnnouncements}
+              </span>
+            )}
+          </Link>
           {staff && (
             <Link
               href="/admin"
