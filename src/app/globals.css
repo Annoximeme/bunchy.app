@@ -102,15 +102,41 @@
 
   /* --- Landing palette (spec names) ---------------------------------------
    *
-   * The landing page is pinned to a fixed light-and-dark composition rather
-   * than following the theme, so it needs colours that do not move. These are
-   * that set. Four of them are the brand tokens' own values written literally;
-   * `navy-base` is deliberately deeper than the app's dark canvas (#101826),
-   * because the page uses it as a stage the cards sit on rather than as a
-   * reading background.
+   * The accent fills from the original landing spec, kept under their spec
+   * names. These are *fills*, not grounds: a coral button is the same coral in
+   * both themes, which is why they are safe to write once. The two grounds that
+   * used to live here — `navy-base` and `cream-bg` — became `band-deep` and
+   * `band-soft` below, because a ground is exactly the thing that has to move
+   * when the reader's theme does.
    */
-  --color-navy-base: #0A0E1A;
-  --color-cream-bg: #FFF9F3;
+
+  /* --- Bands -------------------------------------------------------------
+   *
+   * The public pages are built out of two alternating grounds, and these are
+   * them. They exist because those pages used to write the two colours
+   * literally and therefore ignored the reader's theme entirely — including on
+   * the landing page, which mounts a theme toggle in its own footer that
+   * changed nothing on the page it sat on.
+   *
+   * `band-deep` is the stage the product is shown on. It is dark in both
+   * themes — navy in light, a step darker still at night so it stays clearly
+   * below the reading ground — which means white on it is white on it whatever
+   * the OS says, and nothing drawn on a deep band needs a themed colour.
+   *
+   * `band-soft` is the reading ground, and it is the canvas: the same surface a
+   * signed-in page uses, by alias rather than by a second copy of the hex. That
+   * is the whole point — a reader who has chosen dark should get the same
+   * ground on the privacy policy as on their own profile.
+   *
+   * The two must stay clearly apart at night, or the alternation the public
+   * pages are built out of flattens into one sheet.
+   */
+  --color-band-deep: #0A0E1A;
+  /* Aliases, not copies. The reading ground of a public page and the canvas of
+     a signed-in page are the same surface doing the same job, and writing the
+     hex twice is how they drift apart the first time one of them is tuned. */
+  --color-band-soft: var(--color-canvas);
+  --color-band-warm: var(--color-surface-sunken);
   --color-coral-primary: #FF5C6C;
   --color-purple-ai: #7657FF;
   --color-yellow-fun: #FFC857;
@@ -185,6 +211,12 @@
     --color-danger: #ff8a7d;
     --color-danger-soft: #3a1c19;
 
+    /* The soft and warm bands follow the canvas by alias, so they need nothing
+       here. The deep band goes a step darker than it is in light: it has to
+       stay clearly darker than the reading ground, and the reading ground at
+       night is already navy. */
+    --color-band-deep: #05080F;
+
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
   }
@@ -237,6 +269,12 @@
     --color-positive-soft: #10302b;
     --color-danger: #ff8a7d;
     --color-danger-soft: #3a1c19;
+
+    /* The soft and warm bands follow the canvas by alias, so they need nothing
+       here. The deep band goes a step darker than it is in light: it has to
+       stay clearly darker than the reading ground, and the reading ground at
+       night is already navy. */
+    --color-band-deep: #05080F;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
@@ -487,39 +525,37 @@ body {
  * grey that does not clear AA on cream, and body text is the entire point of a
  * document page.
  *
- * Two classes rather than one plus the plugin's `prose-invert`. Both are single
- * class selectors, so whichever is written later in this file wins the cascade —
- * which meant `prose-letter` silently put #3d4759 body text back on top of a
- * navy band, and an axe pass caught it. A light set and a dark set that each
- * state their own colours cannot collide that way.
+ * One class per band, and which one you want follows from the band you are on
+ * rather than from the theme:
  *
- * Values are literal rather than tokens on purpose: these are for the *pinned*
- * compositions, the bands that stay cream and navy whatever the reader's theme
- * says. A token would flip under a dark OS while the band beneath it did not.
+ *   .prose-band       on `band-soft`. Reads from the tokens, so it flips.
+ *   .prose-band-deep  on `band-deep`. Fixed, because that band never flips.
  *
- * Contrast on #FFF9F3: body 9.3:1, headings 15.1:1, links 5.4:1, captions
- * 5.1:1. On #0A0E1A: body 11.2:1, links 6.3:1.
+ * `prose-band-deep` is the only one written in literals, and that is not an
+ * oversight: the deep band is #0A0E1A in both themes, so text on it is
+ * light-on-dark in both, and a token here would flip a colour whose ground
+ * stayed put. That is the mistake this file has made twice.
  */
-.prose-letter {
-  --tw-prose-body: #3d4759;
-  --tw-prose-headings: #172033;
-  --tw-prose-lead: #3d4759;
-  --tw-prose-links: #c42a40;
-  --tw-prose-bold: #172033;
-  --tw-prose-counters: #646977;
-  --tw-prose-bullets: #efe6da;
-  --tw-prose-hr: #efe6da;
-  --tw-prose-quotes: #172033;
-  --tw-prose-quote-borders: #ff5c6c;
-  --tw-prose-captions: #646977;
-  --tw-prose-th-borders: #efe6da;
-  --tw-prose-td-borders: #efe6da;
+.prose-band {
+  --tw-prose-body: var(--color-ink-soft);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-ink-soft);
+  --tw-prose-links: var(--color-accent-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-line);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-accent);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line);
 }
 
-/* The same document on navy. A warm off-white for the body rather than pure
-   white, which is harsh over this many paragraphs, with full white kept for the
-   words the copy itself emphasises. */
-.prose-letter-dark {
+/* A warm off-white for the body rather than pure white, which is harsh over
+   this many paragraphs, with full white kept for the words the copy itself
+   emphasises. Contrast on #0A0E1A: body 11.2:1, links 6.3:1. */
+.prose-band-deep {
   --tw-prose-body: rgb(255 255 255 / 0.78);
   --tw-prose-headings: #ffffff;
   --tw-prose-lead: rgb(255 255 255 / 0.78);
@@ -537,37 +573,8 @@ body {
 
 /* Underlined, not merely coloured: a link is read inside a sentence, and colour
    on its own is not a signal to a reader who cannot see it. */
-.prose-letter :where(a):not(:where([class~="not-prose"] *)),
-.prose-letter-dark :where(a):not(:where([class~="not-prose"] *)) {
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-
-/* The same document, following the reader's theme.
- *
- * `prose-letter` and `prose-letter-dark` are for the pinned compositions. This
- * one maps onto the tokens instead, so a page that flips with the OS carries
- * prose that flips with it. Used by the policy pages that embed themed
- * controls — a signed-in member filling in the volunteer form should not have
- * the form and the page disagree about what colour they are.
- */
-.prose-doc {
-  --tw-prose-body: var(--color-ink-soft);
-  --tw-prose-headings: var(--color-ink);
-  --tw-prose-lead: var(--color-ink-soft);
-  --tw-prose-links: var(--color-accent-ink);
-  --tw-prose-bold: var(--color-ink);
-  --tw-prose-counters: var(--color-muted);
-  --tw-prose-bullets: var(--color-line);
-  --tw-prose-hr: var(--color-line);
-  --tw-prose-quotes: var(--color-ink);
-  --tw-prose-quote-borders: var(--color-accent);
-  --tw-prose-captions: var(--color-muted);
-  --tw-prose-th-borders: var(--color-line);
-  --tw-prose-td-borders: var(--color-line);
-}
-
-.prose-doc :where(a):not(:where([class~="not-prose"] *)) {
+.prose-band :where(a):not(:where([class~="not-prose"] *)),
+.prose-band-deep :where(a):not(:where([class~="not-prose"] *)) {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }

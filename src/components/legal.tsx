@@ -20,17 +20,17 @@ import { SITE_LINKS } from "@/components/site-links";
  * masthead, the footer, the fonts and the measure are now shared, so the set
  * reads as one publication.
  *
- * ## The one thing that is not shared
+ * ## One code path, both themes
  *
- * The reading ground. About is a pinned composition — cream whatever the
- * reader's theme says — and Terms and Privacy follow it, because they are the
- * same kind of object: a document you read start to finish once.
+ * There used to be two: Terms and Privacy pinned to cream, Safety and the
+ * volunteer page following the tokens, because the volunteer page embeds the
+ * application form and pinning around it would have put a dark form on a cream
+ * sheet. That split is gone. The bands are tokens now, so the reading ground
+ * moves with the reader and the embedded form agrees with the page it is on
+ * without anybody choosing.
  *
- * Safety and the volunteer page stay on the tokens. The volunteer page embeds
- * the application form, which is built from the product's own themed controls;
- * pinning the page around it would leave a member in dark mode filling in a
- * dark form on a cream sheet. The masthead and footer are dark on every one of
- * them either way, so the family still holds together.
+ * The masthead and footer sit on `band-deep`, which is the same navy in both
+ * themes — so the white on them is not a theme decision either.
  */
 
 const display = Plus_Jakarta_Sans({
@@ -46,18 +46,14 @@ const editorial = Instrument_Serif({
   display: "swap",
 });
 
-const CREAM = "#FFF9F3";
+/** On `band-deep`, which is navy in both themes, so this never has to move. */
 const CORAL = "#FF5C6C";
-
-/** Which palette the body of the document is drawn from. */
-export type Ground = "pinned" | "themed";
 
 export function LegalPage({
   title,
   summary,
   contact,
   path,
-  ground = "pinned",
   children,
 }: {
   title: string;
@@ -66,19 +62,12 @@ export function LegalPage({
   contact: string;
   /** This page's own route, so the nav does not link back to itself. */
   path?: string;
-  /** `themed` for pages that embed the product's own controls. */
-  ground?: Ground;
   children: ReactNode;
 }) {
-  const pinned = ground === "pinned";
-
   return (
-    <div
-      className={`${display.className} min-h-dvh ${pinned ? "" : "bg-canvas text-ink"}`}
-      style={pinned ? { backgroundColor: CREAM, color: "#172033" } : undefined}
-    >
-      {/* The masthead. Dark on every policy page, themed or not. */}
-      <section className="relative overflow-hidden bg-navy-base text-white">
+    <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
+      {/* The masthead, on the band that is navy in both themes. */}
+      <section className="relative overflow-hidden bg-band-deep text-white">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -148,7 +137,7 @@ export function LegalPage({
         <div className="mx-auto max-w-3xl space-y-14">{children}</div>
       </main>
 
-      <footer className="bg-navy-base px-5 py-10 text-sm text-white/60">
+      <footer className="bg-band-deep px-5 py-10 text-sm text-white/60">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <p>
             {brand.name}. {brand.tagline}
@@ -192,16 +181,12 @@ export function LegalPage({
 export function Clause({
   n,
   title,
-  ground = "pinned",
   children,
 }: {
   n: number;
   title: string;
-  ground?: Ground;
   children: ReactNode;
 }) {
-  const pinned = ground === "pinned";
-
   return (
     <section id={`clause-${n}`} className="reveal scroll-mt-8">
       <div className="flex items-baseline gap-4">
@@ -210,15 +195,11 @@ export function Clause({
           // A fixed column, so clause 1 and clause 14 put their headings in the
           // same place. Without it the single digits sat a character narrower
           // and every heading in the document shifted as the numbers grew.
-          className={`${editorial.className} w-8 shrink-0 text-right text-4xl leading-none tabular-nums sm:w-10 sm:text-5xl`}
-          style={{ color: pinned ? "#C42A40" : "var(--color-accent-ink)" }}
+          className={`${editorial.className} w-8 shrink-0 text-right text-4xl leading-none tabular-nums text-accent-ink sm:w-10 sm:text-5xl`}
         >
           {n}
         </span>
-        <h2
-          className="text-balance text-2xl font-extrabold tracking-tight"
-          style={pinned ? { color: "#172033" } : undefined}
-        >
+        <h2 className="text-balance text-2xl font-extrabold tracking-tight text-ink">
           {title}
         </h2>
       </div>
@@ -230,9 +211,7 @@ export function Clause({
         either existed, which is a document people bounce off, and this one
         claims to be written to be read.
       */}
-      <div
-        className={`prose mt-4 ${pinned ? "prose-letter" : "prose-doc"} prose-headings:font-bold`}
-      >
+      <div className="prose prose-band mt-4 prose-headings:font-bold">
         {children}
       </div>
     </section>
@@ -240,47 +219,19 @@ export function Clause({
 }
 
 /** A plain list of facts — what we hold, what we don't. */
-export function Facts({
-  items,
-  ground = "pinned",
-}: {
-  items: Array<[string, string]>;
-  ground?: Ground;
-}) {
-  const pinned = ground === "pinned";
-  const line = pinned ? "#EFE6DA" : "var(--color-line)";
-
+export function Facts({ items }: { items: Array<[string, string]> }) {
   return (
     // Outside the prose: the plugin styles `dl` for definition lists in running
     // text, and this is a table wearing a `dl`'s markup. It also wants the full
     // width rather than the 65ch measure.
-    <dl
-      className="not-prose my-6 divide-y overflow-hidden rounded-2xl border"
-      style={{
-        borderColor: line,
-        backgroundColor: pinned ? "#ffffff" : "var(--color-surface)",
-        // `divide-*` needs the colour too, and Tailwind's divide utility only
-        // takes a class, so the border colour is set on the children below.
-      }}
-    >
+    <dl className="not-prose my-6 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
       {items.map(([term, detail]) => (
         <div
           key={term}
           className="grid gap-1 p-4 sm:grid-cols-[13rem_1fr] sm:gap-5"
-          style={{ borderColor: line }}
         >
-          <dt
-            className="font-semibold"
-            style={{ color: pinned ? "#172033" : "var(--color-ink)" }}
-          >
-            {term}
-          </dt>
-          <dd
-            className="text-[15px] leading-relaxed"
-            style={{ color: pinned ? "#3d4759" : "var(--color-ink-soft)" }}
-          >
-            {detail}
-          </dd>
+          <dt className="font-semibold text-ink">{term}</dt>
+          <dd className="text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
         </div>
       ))}
     </dl>

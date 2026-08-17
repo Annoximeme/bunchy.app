@@ -45,7 +45,7 @@ export default async function ComingSoonPage({
 
   return (
     <div
-      className={`${display.className} relative min-h-dvh overflow-hidden bg-navy-base text-white`}
+      className={`${display.className} relative min-h-dvh overflow-hidden bg-band-deep text-white`}
     >
       <div
         aria-hidden
@@ -155,7 +155,7 @@ export default async function ComingSoonPage({
                       />
                       <button
                         type="submit"
-                        className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[#172033] transition-transform duration-200 hover:scale-[1.03]"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
                       >
                         Keep me posted
                         <ArrowRight size={18} aria-hidden />
@@ -298,7 +298,7 @@ export default async function ComingSoonPage({
               {["S", "M", "E", "T", "P"].map((initial) => (
                 <span
                   key={initial}
-                  className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-navy-base"
+                  className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-band-deep"
                   style={{
                     background: person(initial).fill,
                     color: person(initial).ink,
@@ -337,7 +337,7 @@ export default async function ComingSoonPage({
               </p>
               <a
                 href="#waitlist"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[#172033] transition-transform duration-200 hover:scale-[1.03]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
               >
                 Keep me posted
                 <ArrowRight size={18} aria-hidden />

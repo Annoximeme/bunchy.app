@@ -86,7 +86,7 @@ export function UpFor() {
       <div className="mt-9 flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[#172033] transition-transform duration-200 hover:scale-[1.03]"
+          className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
         >
           Find my bunch
           <ArrowRight size={18} aria-hidden />

@@ -29,7 +29,7 @@ export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="relative min-h-dvh bg-navy-base">
+    <div className="relative min-h-dvh bg-band-deep">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -77,7 +77,7 @@ export default function AuthLayout({
                 {CAST.map((initial) => (
                   <span
                     key={initial}
-                    className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-navy-base"
+                    className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-band-deep"
                     style={{
                       background: person(initial).fill,
                       color: person(initial).ink,
