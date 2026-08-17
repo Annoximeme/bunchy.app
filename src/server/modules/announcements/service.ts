@@ -3,7 +3,7 @@ import { notFound, validationFailed } from "@/server/errors";
 import { recordModerationEvent } from "@/server/modules/admin/audit";
 import type { StaffViewer } from "@/server/modules/admin/guard";
 import type { AnnouncementTier } from "@/generated/prisma/enums";
-import type { BuzzBlock } from "@/server/modules/buzz/service";
+import type { AnnouncementBlock } from "@/server/modules/announcements/blocks";
 
 /**
  * Announcements — the things the operator did that affect you.
@@ -67,7 +67,7 @@ export interface AnnouncementSummary {
 }
 
 export interface AnnouncementDetail extends AnnouncementSummary {
-  body: BuzzBlock[];
+  body: AnnouncementBlock[];
 }
 
 const SUMMARY_SELECT = {
@@ -141,7 +141,7 @@ export async function getAnnouncement(
     throw notFound("There is no such announcement.");
   }
   const read = await readSlugs(profileId);
-  return { ...toSummary(row, read), body: (row.body as BuzzBlock[]) ?? [] };
+  return { ...toSummary(row, read), body: (row.body as AnnouncementBlock[]) ?? [] };
 }
 
 /**
@@ -201,7 +201,7 @@ export interface PublishInput {
   slug: string;
   title: string;
   summary: string;
-  body: BuzzBlock[];
+  body: AnnouncementBlock[];
   tier: AnnouncementTier;
   linkHref?: string | null;
   linkLabel?: string | null;

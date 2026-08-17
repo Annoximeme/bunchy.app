@@ -426,16 +426,26 @@ export function EmptyState({
   description,
   action,
   icon,
+  level = 3,
 }: {
   title: string;
   description: string;
   action?: ReactNode;
   icon?: ReactNode;
+  /**
+   * Heading level. Three is right inside a section that already has its own
+   * heading, which is most of them. Two is right when the empty state *is* the
+   * page's content — on Notifications it sat directly under the h1 as an h3,
+   * which is a skipped level and the reason a screen-reader user cannot tell
+   * how a page is structured by tabbing its headings.
+   */
+  level?: 2 | 3;
 }) {
+  const Heading = level === 2 ? "h2" : "h3";
   return (
     <div className="card-surface flex flex-col items-center px-6 py-14 text-center">
       {icon && <div className="mb-4 text-3xl">{icon}</div>}
-      <h3 className="text-base font-semibold text-ink">{title}</h3>
+      <Heading className="text-base font-semibold text-ink">{title}</Heading>
       <p className="mt-1.5 max-w-md text-sm text-muted">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>

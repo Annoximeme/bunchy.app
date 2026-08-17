@@ -36,11 +36,10 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   // for a long time the only one this script did not look at.
   { path: "/", name: "landing", signedOut: true },
   { path: "/discover", name: "discover" },
-  { path: "/discover/buzz", name: "buzz" },
   { path: "/whats-new", name: "whats-new" },
+  { path: "/whats-new/privacy-policy-update", name: "whats-new-item" },
   { path: "/supporter", name: "supporter" },
   { path: "/settings/supporter", name: "supporter-settings" },
-  { path: "/discover/buzz/co-op-survival-thursday", name: "buzz-post" },
   { path: "/profile", name: "profile-own" },
   { path: "/u/milan", name: "profile-public" },
   { path: "/now", name: "now" },
@@ -85,7 +84,15 @@ async function runAxe(page: Page, pageName: string, theme: string) {
     // @ts-expect-error injected on window by the script tag above
     return await window.axe.run(document, {
       resultTypes: ["violations"],
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+      // Best practice as well as the WCAG tags. The conformance rules catch
+      // contrast and names; the best-practice set is what catches a heading
+      // level skipped, content outside a landmark, and an id used twice —
+      // the things that make a page hard to navigate without ever failing an
+      // audit.
+      runOnly: {
+        type: "tag",
+        values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"],
+      },
     });
   })) as {
     violations: Array<{

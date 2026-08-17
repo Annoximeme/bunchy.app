@@ -923,7 +923,6 @@ async function main() {
   }
 
   await seedAvailability(prisma, profileId);
-  await seedBuzz(prisma);
   await seedAnnouncements(prisma);
 
   console.info("\nDone. Sign in with any of these:");
@@ -941,139 +940,12 @@ main().catch((error) => {
 });
 
 /**
- * The Buzz board.
- *
- * Written rather than scraped, which is the whole difference between this and
- * an RSS aggregator. Each row carries the action it exists to produce, because
- * the column is non-null — a post that ends in nothing but reading cannot be
- * stored.
- *
- * No engagement numbers here, and none in the seed either. The "I'm in" count
- * is a count of real members pressing a real button, so on a fresh database it
- * is zero and the cards show the action without a number. That is the honest
- * shape of day one, and seeding it with invented interest would be the exact
- * thing the rest of this product refuses to do.
- */
-const BUZZ = [
-  {
-    slug: "co-op-survival-thursday",
-    eyebrow: "Worth a Thursday",
-    headline: "The co-op survival game that is better with four than with one",
-    standfirst:
-      "It is playable alone and it is not much fun that way. Four people, a voice channel, and about two hours is the shape it was built for.",
-    category: "GAMING",
-    isPick: true,
-    actionLabel: "Play it together",
-    actionQuery: "a co-op game night this week",
-    interestSlugs: ["gaming"],
-    body: [
-      { kind: "paragraph", text: "Survival games are a genre about scarcity, and scarcity is the least interesting thing about them on your own. Alone you optimise. With three other people you argue about where to put the door." },
-      { kind: "heading", text: "Why it works for a bunch" },
-      { kind: "paragraph", text: "It has no competitive ladder, so nobody arrives having practised. Sessions end where you leave them. And it is quiet enough to talk over, which is the actual point of a weeknight." },
-      { kind: "list", items: ["Four is the number the map is balanced for.", "Two hours is a session, not an evening.", "Nobody needs a microphone to keep up."] },
-      { kind: "paragraph", text: "If you have been meaning to play something with people rather than near them, this is a low-stakes place to start." },
-    ],
-  },
-  {
-    slug: "watch-party-slow-films",
-    eyebrow: "Watch together",
-    headline: "Slow films are better with people who will talk through them",
-    standfirst:
-      "Six places, one chat, and somebody who always explains the ending. A watch party costs nothing and is the easiest first thing a bunch ever does.",
-    category: "SCREEN",
-    isPick: true,
-    actionLabel: "Start a watch party",
-    actionQuery: "a watch party this weekend",
-    interestSlugs: ["movies"],
-    body: [
-      { kind: "paragraph", text: "The film is not really the event. The event is six people typing at the same time about the same thing, which is a surprisingly good substitute for a sofa." },
-      { kind: "heading", text: "What makes one work" },
-      { kind: "list", items: ["Pick something nobody has to concentrate on.", "Agree a start time rather than a film.", "Let people arrive late. They will."] },
-      { kind: "paragraph", text: "It is the lowest-effort plan on this board, which is exactly why it is the one most likely to actually happen." },
-    ],
-  },
-  {
-    slug: "walk-and-a-coffee",
-    eyebrow: "Near you",
-    headline: "The walk-and-a-coffee is the most underrated first meet there is",
-    standfirst:
-      "No booking, no bill, no eye contact for two straight hours. If a first meet has to be easy to leave, this is the one.",
-    category: "LOCAL",
-    isPick: false,
-    actionLabel: "Find people to walk with",
-    actionQuery: "a walk and a coffee at the weekend",
-    interestSlugs: ["hiking", "coffee"],
-    body: [
-      { kind: "paragraph", text: "Sitting across a table from a stranger is a job interview. Walking beside one is a conversation, and it has a natural end: the end of the walk." },
-      { kind: "quote", text: "The best first meets are the ones that are easy to leave." },
-      { kind: "paragraph", text: "It is also the plan that survives bad weather, small groups and somebody dropping out an hour before, which is more than can be said for a restaurant booking." },
-    ],
-  },
-  {
-    slug: "focus-session-mornings",
-    eyebrow: "Weekday mornings",
-    headline: "Working alone, together, at nine on a Tuesday",
-    standfirst:
-      "Cameras optional, talking discouraged, and somehow far easier than starting on your own. Four people is enough to make it real.",
-    category: "TECH",
-    isPick: false,
-    actionLabel: "Find a focus bunch",
-    actionQuery: "a weekday morning focus session",
-    interestSlugs: ["coworking"],
-    body: [
-      { kind: "paragraph", text: "Nobody needs another meeting. What some people do need is the specific, slightly embarrassing accountability of four other people knowing you said you would start at nine." },
-      { kind: "heading", text: "The rules that make it survive" },
-      { kind: "list", items: ["Start on time and end on time.", "No standup, no check-in, no agenda.", "Turning the camera off is allowed and normal."] },
-    ],
-  },
-  {
-    slug: "small-venue-gigs",
-    eyebrow: "This month",
-    headline: "Small venues are the only places a gig is a social event",
-    standfirst:
-      "You cannot talk at an arena. You can talk at a room above a pub, and afterwards is when the evening actually starts.",
-    category: "MUSIC",
-    isPick: false,
-    actionLabel: "Find people to go with",
-    actionQuery: "a small gig this month",
-    interestSlugs: ["music"],
-    body: [
-      { kind: "paragraph", text: "The gig is ninety minutes. The hour after it, standing outside deciding whether to get food, is the part that turns four people who went to a thing into four people who go to things." },
-      { kind: "paragraph", text: "Which is why the plan worth making is not the ticket. It is what happens at eleven." },
-    ],
-  },
-];
-
-async function seedBuzz(prisma: PrismaClient) {
-  for (const post of BUZZ) {
-    await prisma.buzzPost.upsert({
-      where: { slug: post.slug },
-      update: {},
-      create: {
-        slug: post.slug,
-        eyebrow: post.eyebrow,
-        headline: post.headline,
-        standfirst: post.standfirst,
-        category: post.category as never,
-        isPick: post.isPick,
-        actionLabel: post.actionLabel,
-        actionQuery: post.actionQuery,
-        interestSlugs: post.interestSlugs,
-        body: post.body,
-        publishedAt: new Date(),
-      },
-    });
-  }
-  console.info(`  seeded ${BUZZ.length} Buzz posts`);
-}
-
-/**
  * Who is up for something, on the demo instance.
  *
- * The board's pulse bar counts live availability rows and hides any lane below
- * `MIN_CLUSTER`, so a database with none of these shows no bar at all — which
- * is correct on a real first day and useless when you are trying to look at the
- * component. These rows exist so the demo instance exercises it.
+ * Bunchy Now and anything else that counts live availability shows nothing at
+ * all when there are no rows — which is correct on a real first day and useless
+ * when you are trying to look at the component. These exist so the demo
+ * instance exercises it.
  *
  * They expire like any other status, so a preview left running for a day goes
  * quiet on its own rather than claiming a room that is not there.
