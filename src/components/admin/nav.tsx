@@ -27,6 +27,7 @@ const ITEMS: NavItem[] = [
   { href: "/admin/interests", label: "Interests" },
   { href: "/admin/moderators", label: "Volunteers" },
   { href: "/admin/guidelines", label: "Guidelines" },
+  { href: "/admin/announcements", label: "Announcements", adminOnly: true },
   { href: "/admin/site", label: "Public site", adminOnly: true },
   { href: "/admin/waitlist", label: "Waiting list", adminOnly: true },
   { href: "/admin/brand", label: "Brand" },

@@ -6,6 +6,11 @@ import { AppNav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-links";
 import { isStaff } from "@/server/modules/admin/guard";
 import { unreadCount } from "@/server/modules/notifications/service";
+import {
+  bannerFor,
+  unreadCount as announcementsUnread,
+} from "@/server/modules/announcements/service";
+import { AnnouncementBanner } from "@/components/announcements/announcement-banner";
 
 /**
  * The signed-in shell.
@@ -24,8 +29,15 @@ export default async function AppLayout({
     redirect(onboardingPath(viewer.onboardingStage));
   }
 
-  const [unreadMessages, pendingRequests, unreadNotifications] = await Promise.all([
-    db.conversation.count({
+  const [
+    unreadMessages,
+    pendingRequests,
+    unreadNotifications,
+    banner,
+    unreadAnnouncements,
+  ] =
+    await Promise.all([
+      db.conversation.count({
       where: {
         participants: { some: { profileId: viewer.profileId } },
         messages: {
@@ -36,11 +48,17 @@ export default async function AppLayout({
         },
       },
     }),
-    db.connection.count({
+      db.connection.count({
       where: { addresseeId: viewer.profileId, status: "PENDING" },
     }),
-    unreadCount(viewer.profileId),
-  ]);
+      unreadCount(viewer.profileId),
+      // The only thing in this product allowed to interrupt somebody, and it is
+      // here rather than on a page because Privacy §14 and Terms §14 promise
+      // notice *in the product* before a change takes effect. A page nobody
+      // visits cannot keep that promise.
+      bannerFor(viewer.profileId),
+      announcementsUnread(viewer.profileId),
+    ]);
 
   return (
     <div className="relative min-h-dvh md:pl-60">
@@ -66,8 +84,19 @@ export default async function AppLayout({
         unreadMessages={await countTrulyUnread(viewer.profileId, unreadMessages)}
         pendingRequests={pendingRequests}
         unreadNotifications={unreadNotifications}
+        unreadAnnouncements={unreadAnnouncements}
         staff={isStaff(viewer)}
       />
+      {banner && (
+        <AnnouncementBanner
+          slug={banner.slug}
+          title={banner.title}
+          summary={banner.summary}
+          linkHref={banner.linkHref}
+          linkLabel={banner.linkLabel}
+          effectiveAt={banner.effectiveAt?.toISOString() ?? null}
+        />
+      )}
       <main id="main" className="pb-24 md:pb-10">
         {children}
         {/*

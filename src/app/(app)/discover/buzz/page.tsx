@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { requireViewer } from "@/server/auth/current-user";
 import { listBuzz, tonightPulse } from "@/server/modules/buzz/service";
+import { listAnnouncements } from "@/server/modules/announcements/service";
+import { AnnouncementList } from "@/components/announcements/announcement-list";
 import type { BuzzCategory } from "@/generated/prisma/enums";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { EmptyState, LinkButton } from "@/components/ui";
@@ -48,7 +50,7 @@ export default async function BuzzPage({
   const category =
     active === "all" || active === "picks" ? undefined : (active as BuzzCategory);
 
-  const [cards, picks, pulse] = await Promise.all([
+  const [cards, picks, pulse, announcements] = await Promise.all([
     listBuzz(viewer.profileId, {
       category,
       picksOnly: active === "picks",
@@ -59,7 +61,19 @@ export default async function BuzzPage({
       ? listBuzz(viewer.profileId, { picksOnly: true, take: 3 })
       : Promise.resolve([]),
     tonightPulse(),
+    // Announcements ride the same board rather than living on a page of their
+    // own, so "what's happening" covers both senses. Only the unread ones, and
+    // only on the unfiltered view: this is a reminder that the record exists,
+    // not the record itself, which is at /whats-new.
+    active === "all"
+      ? listAnnouncements(viewer.profileId)
+      : Promise.resolve([]),
   ]);
+
+  // Two at most. The board is for things to do; the announcements on it are a
+  // pointer to the record, and a stack of them would turn a noticeboard into an
+  // inbox.
+  const unread = announcements.filter((a) => !a.read).slice(0, 2);
 
   const pickSlugs = new Set(picks.map((p) => p.slug));
   const rest = cards.filter((card) => !pickSlugs.has(card.slug));
@@ -70,6 +84,13 @@ export default async function BuzzPage({
         title="Bunchy Buzz"
         subtitle="Things worth talking about. Things worth doing."
       />
+
+      {unread.length > 0 && (
+        <section className="mt-8">
+          <h2 className="sr-only">Announcements</h2>
+          <AnnouncementList announcements={unread} />
+        </section>
+      )}
 
       <PulseBar lanes={pulse} />
 

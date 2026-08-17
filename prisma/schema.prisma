@@ -121,6 +121,11 @@ enum ModerationAction {
   /// action in the dashboard, so it is the one most worth being able to
   /// attribute afterwards.
   SITE_GATE_CHANGED
+  /// An announcement went out to every member. Reaches more people than any
+  /// moderation action, and two of the tiers exist to satisfy a promise made in
+  /// the policies — so who sent what, and when, has to be attributable.
+  ANNOUNCEMENT_PUBLISHED
+  ANNOUNCEMENT_WITHDRAWN
 }
 
 /// Every staff action, recorded before it is taken.
@@ -315,6 +320,7 @@ model Profile {
   matchFeedbackReceived   MatchFeedback[]       @relation("FeedbackSubject")
   analyticsEvents         AnalyticsEvent[]
   buzzSignals BuzzSignal[]
+  announcementReads AnnouncementRead[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -1486,5 +1492,74 @@ model BuzzSignal {
   profile Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@id([postId, profileId])
+  @@index([profileId])
+}
+
+/// How far an announcement reaches. The tier picks the route, in code — see
+/// `DELIVERY` in the announcements service — so nobody can push a feature note
+/// to everybody by ticking the wrong box.
+enum AnnouncementTier {
+  /// Something changed that affects your rights, your data, or whether the site
+  /// is up. Shown as a banner until dismissed, and the only tier that may mail.
+  CRITICAL
+  /// Worth knowing, not worth interrupting for. Appears on What's new and on the
+  /// board, and pushes nothing.
+  NOTABLE
+  /// On the record. Archive only.
+  NOTED
+}
+
+/// Something the operator did that affects you.
+///
+/// This exists because the policies already promise it. Privacy §14 says a
+/// change to what we hold "will tell you in the product before it takes
+/// effect, not with a quiet edit and a new date at the top", and Terms §14
+/// promises the same for anything that materially affects your rights. Neither
+/// was implementable before this table existed.
+///
+/// That promise is what shapes the columns: `effectiveAt` is separate from
+/// `publishedAt` so "before it takes effect" is a constraint the code can check
+/// rather than an intention, and reads are recorded per member so a banner can
+/// retire itself instead of nagging.
+model Announcement {
+  id      String @id @default(cuid())
+  slug    String @unique
+  title   String
+  /// What changed, in one or two sentences, in plain words.
+  summary String
+  /// Body blocks, same tagged union the Buzz posts use. Rendered to React
+  /// elements, never to HTML.
+  body    Json
+
+  tier AnnouncementTier
+
+  /// Where to read the thing this is about — usually a policy page.
+  linkHref  String?
+  linkLabel String?
+
+  publishedAt DateTime?
+  /// When the change takes effect. Never earlier than `publishedAt`, which is
+  /// the whole point of telling people first.
+  effectiveAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reads AnnouncementRead[]
+
+  @@index([publishedAt])
+  @@index([tier, publishedAt])
+}
+
+/// Who has seen it. Dismissing a banner is the same act as reading it.
+model AnnouncementRead {
+  announcementId String
+  profileId      String
+  readAt         DateTime @default(now())
+
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  profile      Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([announcementId, profileId])
   @@index([profileId])
 }
