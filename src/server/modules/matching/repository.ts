@@ -57,6 +57,14 @@ const PROFILE_SELECT = {
     where: { status: "JOINED" as const },
     select: { activityId: true },
   },
+  // Only the answered, positive ones. `metSomeone: true` is a deliberate
+  // filter rather than fetching the row and testing it here: an unanswered
+  // outcome and a "no" are both silence as far as matching is concerned, and
+  // neither should cost a query's worth of rows to discover.
+  outcomes: {
+    where: { metSomeone: true },
+    select: { activityId: true },
+  },
 } as const;
 
 type ProfileRow = {
@@ -80,6 +88,7 @@ type ProfileRow = {
   personality: MatchProfile["personality"];
   bunchMemberships: Array<{ bunchId: string }>;
   activityEntries: Array<{ activityId: string }>;
+  outcomes: Array<{ activityId: string }>;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -127,6 +136,7 @@ function toMatchProfile(row: ProfileRow, now: Date): MatchProfile {
     personality: row.personality,
     bunchIds: row.bunchMemberships.map((m) => m.bunchId),
     attendedActivityIds: row.activityEntries.map((a) => a.activityId),
+    provenActivityIds: row.outcomes.map((o) => o.activityId),
     participationScore: participationScore(row, now),
   };
 }

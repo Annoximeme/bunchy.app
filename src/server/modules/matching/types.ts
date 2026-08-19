@@ -62,6 +62,15 @@ export interface MatchProfile {
   bunchIds: string[];
   /** Activities both people attended. Having actually met beats any profile field. */
   attendedActivityIds: string[];
+  /**
+   * Activities this member went to and afterwards said they met someone at.
+   *
+   * The only record in the product of what actually happened rather than what
+   * somebody said about themselves. Two people who were both at one of these
+   * did not just occupy a room together: each of them, separately and after
+   * the fact, said the evening worked.
+   */
+  provenActivityIds: string[];
   /** How engaged they are, 0-1. A dormant account is a poor introduction. */
   participationScore: number;
 }
@@ -88,7 +97,8 @@ export type SignalName =
   | "availability"
   | "location"
   | "age"
-  | "history";
+  | "history"
+  | "met_well";
 
 export interface PersonMatch {
   profileId: string;

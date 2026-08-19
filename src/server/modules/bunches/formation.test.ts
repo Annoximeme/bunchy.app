@@ -25,6 +25,7 @@ function person(id: string, interests: string[] = [], city = "Antwerp"): MatchPr
     personality: null,
     bunchIds: [],
     attendedActivityIds: [],
+    provenActivityIds: [],
     participationScore: 0.5,
   };
 }

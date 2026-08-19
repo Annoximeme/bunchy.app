@@ -624,3 +624,52 @@ export function historySignal(
 
   return { signal: "history", score, weight: 1, reason };
 }
+
+/**
+ * They have already met, and it went well.
+ *
+ * The only signal here built on what happened rather than on what somebody
+ * typed about themselves. Every other signal reads a profile field: interests,
+ * goals, personality answers, stated availability. Those describe intent. This
+ * one describes an outcome, and an outcome is worth more than any amount of
+ * intent, because two people can share nine tags and have nothing to say to
+ * each other.
+ *
+ * The bar is deliberately high. It is not "both were at the same activity",
+ * which is `history` and only means they occupied a room together. It is that
+ * both of them, separately and after the fact, answered that they met somebody
+ * there worth seeing again. Neither knows what the other said, and the question
+ * is asked about the evening rather than about a named person, so this is not a
+ * rating of each other and cannot be gamed into one.
+ *
+ * Returns null rather than zero when there is no shared history, so a pair who
+ * have never met is not scored as a pair who met and it went badly. Absence of
+ * evidence is not evidence, and `push` skips a null signal entirely.
+ */
+export function metWellSignal(
+  subject: MatchProfile,
+  candidate: MatchProfile,
+): SignalResult | null {
+  if (subject.provenActivityIds.length === 0) return null;
+
+  const proven = new Set(subject.provenActivityIds);
+  const shared = candidate.provenActivityIds.filter((id) => proven.has(id));
+  if (shared.length === 0) return null;
+
+  // Saturates fast. Once two people have had two good evenings together the
+  // product has learned what it needed to; a third adds nothing a member would
+  // recognise, and letting it climb would turn the strongest signal in the
+  // system into a runaway.
+  const score = clamp(shared.length / 2);
+
+  return {
+    signal: "met_well",
+    score,
+    weight: 0,
+    reason:
+      shared.length === 1
+        ? "You have met before, and it went well for both of you"
+        : "You have met a few times, and it went well for both of you",
+    evidence: shared.slice(0, 3),
+  };
+}

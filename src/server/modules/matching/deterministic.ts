@@ -12,6 +12,7 @@ import {
   clamp,
   complementaryInterestsSignal,
   historySignal,
+  metWellSignal,
   locationSignal,
   personalitySignal,
   sharedInterestsSignal,
@@ -57,8 +58,9 @@ const BASE_WEIGHTS: Record<SignalName, number> = {
   location: 0.1,
   availability: 0.1,
   history: 0.05,
-  // Applied multiplicatively instead, so the budget above stays exact.
+  // Both applied multiplicatively instead, so the budget above stays exact.
   age: 0,
+  met_well: 0,
 };
 
 /**
@@ -76,6 +78,32 @@ function agePenalty(signals: SignalResult[]): number {
   const age = signals.find((s) => s.signal === "age");
   if (!age) return 1;
   return 1 - MAX_AGE_PENALTY * (1 - clamp(age.score));
+}
+
+/**
+ * Having already met, well, as a multiplier rather than a weighted signal.
+ *
+ * Same reasoning as age, and the same mechanism pointed the other way. The six
+ * weights come from the product spec and sum to exactly 1.0, so adding an
+ * additive term would quietly reweight every other dimension. This scales the
+ * finished score instead.
+ *
+ * It only ever lifts. A pair with no shared history produces no signal at all
+ * and multiplies by 1, so nobody is punished for being new: the alternative,
+ * scoring an unproven pair below a proven one by subtraction, would make the
+ * product progressively harder to join the longer it ran.
+ *
+ * Twenty percent is chosen to be decisive without being absolute. It is enough
+ * to lift somebody you actually got on with above a stranger who ticks more
+ * boxes, which is the entire point, and not so much that the product stops
+ * introducing you to anybody new once you have met two people.
+ */
+const MAX_MET_WELL_BOOST = 0.2;
+
+function metWellBoost(signals: SignalResult[]): number {
+  const met = signals.find((s) => s.signal === "met_well");
+  if (!met) return 1;
+  return 1 + MAX_MET_WELL_BOOST * clamp(met.score);
 }
 
 /** Goals that mean "I want to actually go somewhere with someone". */
@@ -178,19 +206,26 @@ export class DeterministicScorer implements CompatibilityScorer {
     push(locationSignal(subject, candidate));
     push(ageSignal(subject, candidate));
     push(historySignal(subject, candidate));
+    push(metWellSignal(subject, candidate));
 
-    // Age carries weight 0, so it contributes only through `agePenalty` below
-    // and through the reason it produces. Everything else is a weighted mean.
+    // Age and met_well both carry weight 0, so they contribute only through
+    // the multipliers below and through the reasons they produce. Everything
+    // else is a weighted mean.
     const totalWeight = collected.reduce((sum, s) => sum + s.weight, 0);
     const raw =
       totalWeight === 0
         ? 0
         : collected.reduce((sum, s) => sum + s.score * s.weight, 0) / totalWeight;
 
-    const damped =
+    // Clamped after the boost: a strong pair who have also met well can push
+    // the weighted mean above 1, and `calibrate` raises what it is given to a
+    // fractional power, where anything over 1 stops being a percentage.
+    const damped = clamp(
       raw *
-      confidenceFactor(collected.length, Object.keys(BASE_WEIGHTS).length) *
-      agePenalty(collected);
+        confidenceFactor(collected.length, Object.keys(BASE_WEIGHTS).length) *
+        agePenalty(collected) *
+        metWellBoost(collected),
+    );
 
     return {
       profileId: candidate.profileId,
@@ -221,6 +256,10 @@ const HIGHLIGHT_PRIORITY: Record<SignalName, number> = {
   history: 0.9,
   location: 0.6,
   age: 0.3,
+  // Ranked separately below rather than through this table. Kept here so the
+  // Record stays exhaustive and adding a tenth signal is still a compile error
+  // rather than a silent zero.
+  met_well: 0,
 };
 
 /** Below this a signal is not worth mentioning even if it has a reason. */
@@ -235,21 +274,31 @@ const DEFAULT_HIGHLIGHT_FLOOR = 0.45;
 /**
  * The two or three things worth printing on a card. Never padded with filler,
  * if only one signal is genuinely worth saying, the card says one thing.
+ *
+ * `met_well` is pinned to the front rather than sorted with the rest, and the
+ * reason is a trap in the ordering below: the sort key is `score * weight *
+ * priority`, and `met_well` deliberately carries weight 0 so it can act as a
+ * multiplier without spending the spec's budget. Left in the sort it would
+ * multiply to zero and rank last, so the single most compelling thing the
+ * product can say about two people, that they have already met and it worked,
+ * would be the one line never printed on the card.
  */
 function buildHighlights(signals: SignalResult[]): string[] {
-  return signals
-    .filter(
-      (s) =>
-        s.reason &&
-        s.score >= (HIGHLIGHT_FLOOR[s.signal] ?? DEFAULT_HIGHLIGHT_FLOOR),
-    )
+  const worthSaying = signals.filter(
+    (s) =>
+      s.reason && s.score >= (HIGHLIGHT_FLOOR[s.signal] ?? DEFAULT_HIGHLIGHT_FLOOR),
+  );
+
+  const met = worthSaying.filter((s) => s.signal === "met_well");
+  const rest = worthSaying
+    .filter((s) => s.signal !== "met_well")
     .sort(
       (a, b) =>
         b.score * b.weight * HIGHLIGHT_PRIORITY[b.signal] -
         a.score * a.weight * HIGHLIGHT_PRIORITY[a.signal],
-    )
-    .slice(0, 3)
-    .map((s) => s.reason!);
+    );
+
+  return [...met, ...rest].slice(0, 3).map((s) => s.reason!);
 }
 
 export const deterministicScorer = new DeterministicScorer();

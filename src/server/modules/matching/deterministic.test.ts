@@ -51,6 +51,7 @@ function profile(overrides: Partial<MatchProfile> = {}): MatchProfile {
     personality: overrides.personality ?? null,
     bunchIds: overrides.bunchIds ?? [],
     attendedActivityIds: overrides.attendedActivityIds ?? [],
+    provenActivityIds: overrides.provenActivityIds ?? [],
     participationScore: overrides.participationScore ?? 0.5,
   };
 }
@@ -382,5 +383,94 @@ describe("DeterministicScorer", () => {
     );
 
     expect(nicheMatch.score).toBeGreaterThan(genericMatch.score);
+  });
+});
+
+/**
+ * The one signal built on what happened rather than on what somebody typed.
+ *
+ * `ActivityOutcome` has been collected since activities shipped and read only
+ * by an admin counter. These are the rules that make it matter.
+ */
+describe("having already met, well", () => {
+  const base = () =>
+    profile({
+      interests: [interest("gaming", { strength: 3 })],
+      goals: ["NEW_FRIENDS"],
+    });
+
+  it("lifts a pair who met and both said it worked", () => {
+    const subject = { ...base(), profileId: "a" };
+    const stranger = { ...base(), profileId: "b" };
+    const proven = { ...base(), profileId: "c", provenActivityIds: ["act-1"] };
+
+    const withHistory = { ...subject, provenActivityIds: ["act-1"] };
+
+    const strangerScore = scorer.score(withHistory, stranger, context).score;
+    const provenScore = scorer.score(withHistory, proven, context).score;
+
+    expect(provenScore).toBeGreaterThan(strangerScore);
+  });
+
+  it("says so on the card, ahead of every other reason", () => {
+    const subject = { ...base(), profileId: "a", provenActivityIds: ["act-1"] };
+    const other = { ...base(), profileId: "b", provenActivityIds: ["act-1"] };
+
+    const { highlights } = scorer.score(subject, other, context);
+    // Pinned rather than sorted: the signal carries weight 0 so it can act as a
+    // multiplier, and the highlight sort multiplies by weight.
+    expect(highlights[0]).toMatch(/met before, and it went well/i);
+  });
+
+  it("needs both of them to have said it, not just one", () => {
+    const subject = { ...base(), profileId: "a", provenActivityIds: ["act-1"] };
+    // Was at the same activity, but never said they met anyone.
+    const oneSided = { ...base(), profileId: "b", provenActivityIds: [] };
+
+    const { signals } = scorer.score(subject, oneSided, context);
+    expect(signals.find((s) => s.signal === "met_well")).toBeUndefined();
+  });
+
+  it("does not punish somebody new", () => {
+    // The boost only ever lifts. Scoring an unproven pair below a proven one by
+    // subtraction would make the product harder to join the longer it ran.
+    const newcomer = { ...base(), profileId: "b" };
+    const alone = { ...base(), profileId: "a" };
+
+    const { signals, score } = scorer.score(alone, newcomer, context);
+    expect(signals.find((s) => s.signal === "met_well")).toBeUndefined();
+    expect(score).toBeGreaterThan(0);
+  });
+
+  it("saturates rather than running away", () => {
+    const subject = {
+      ...base(),
+      profileId: "a",
+      provenActivityIds: ["1", "2", "3", "4", "5"],
+    };
+    const twice = { ...base(), profileId: "b", provenActivityIds: ["1", "2"] };
+    const fiveTimes = {
+      ...base(),
+      profileId: "c",
+      provenActivityIds: ["1", "2", "3", "4", "5"],
+    };
+
+    expect(scorer.score(subject, fiveTimes, context).score).toBe(
+      scorer.score(subject, twice, context).score,
+    );
+  });
+
+  it("never pushes a score past 100", () => {
+    // The boost multiplies a weighted mean that can already be near 1.
+    const strong = {
+      ...profile({
+        interests: [interest("gaming", { strength: 3 }), interest("hiking", { strength: 3 })],
+        goals: ["NEW_FRIENDS", "HOBBY_PARTNERS"],
+      }),
+      provenActivityIds: ["1", "2", "3"],
+    };
+    const twin = { ...strong, profileId: "b" };
+
+    expect(scorer.score(strong, twin, context).score).toBeLessThanOrEqual(100);
   });
 });
