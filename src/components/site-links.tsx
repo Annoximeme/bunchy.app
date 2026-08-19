@@ -35,6 +35,10 @@ export const SITE_LINKS: readonly SiteLink[] = [
   // makes sense: on its own it reads as a product changelog, and beside them it
   // reads as what it is, the record of how those two have changed.
   { href: "/changelog", label: "Changelog" },
+  // Carries the flag, because `/` on its own bounces a signed-in member
+  // straight back to Discover. Without it this link would look broken from
+  // inside the product, which is the only place this footer renders.
+  { href: "/?home=1", label: "Home" },
 ] as const;
 
 /**

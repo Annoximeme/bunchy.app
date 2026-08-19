@@ -26,7 +26,13 @@ const ROOT = new URL("../src/app/", import.meta.url).pathname;
 
 /** Both `app/x/page.tsx` and `app/(group)/x/page.tsx` are real routes. */
 function routeExists(path: string): boolean {
-  const segment = path.replace(/^\//, "");
+  // The query string is dropped before resolving. A link may legitimately
+  // carry one, `/?home=1` asks the landing page not to bounce a signed-in
+  // member back to Discover, and the job of this test is to catch a link that
+  // points at no page rather than one that points at a page with an argument.
+  const segment = path.split("?")[0]!.replace(/^\//, "");
+  // The root is `app/page.tsx`, which has no segment of its own.
+  if (segment === "") return existsSync(`${ROOT}page.tsx`);
   const candidates = [
     `${ROOT}${segment}/page.tsx`,
     `${ROOT}(legal)/${segment}/page.tsx`,

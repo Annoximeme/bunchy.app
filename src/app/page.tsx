@@ -83,9 +83,34 @@ function structuredData(origin: string) {
   };
 }
 
-export default async function LandingPage() {
+/**
+ * Whether this visit is somebody deliberately asking for the landing page.
+ *
+ * A signed-in member arriving at `/` is almost always a stray tap on a logo or
+ * a bookmark, and sending them to the product rather than the pitch is right.
+ * But the redirect was unconditional, which meant that once you had an account
+ * the landing page became unreachable: you could not re-read what you signed up
+ * for, and the person who builds this could not look at his own front page
+ * without signing out.
+ *
+ * Same failure the site links already had, where signing in put About, Safety
+ * and the volunteer page behind a door with no handle. The fix is the same
+ * shape. An explicit request is honoured; a stray one is not.
+ */
+function wantsTheLandingPage(params: { home?: string }): boolean {
+  return params.home !== undefined;
+}
+
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ home?: string }>;
+}) {
   const viewer = await getViewer();
-  if (viewer) redirect(onboardingPath(viewer.onboardingStage));
+  const params = await searchParams;
+  if (viewer && !wantsTheLandingPage(params)) {
+    redirect(onboardingPath(viewer.onboardingStage));
+  }
 
   // Carries the CSP nonce: this app runs a nonce-based policy with no
   // `unsafe-inline`, and an unnonced inline script is refused outright.
