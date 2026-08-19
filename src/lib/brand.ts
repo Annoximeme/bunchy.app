@@ -12,8 +12,17 @@ export const brand = {
   /** The primary line. Spec §40: this is the one that stays. */
   tagline: "Find your bunch.",
   positioning: "You don't need more followers. You need a bunch.",
+  /**
+   * The line that lands in every meta description and every share preview.
+   *
+   * It used to say Bunchy used AI to connect people, which was never true.
+   * Matching is a deterministic algorithm on our own servers and the assistant
+   * is template-driven, with no model and no provider anywhere in the product.
+   * The privacy policy has always described it accurately; this line was the
+   * one place the site oversold itself, and it was the first thing anybody read.
+   */
   subtitle:
-    "Bunchy uses AI to connect you with people who actually share your interests, goals and way of life.",
+    "Bunchy finds you a handful of people who are into the same things you are, and free when you are.",
   altTaglines: [
     "Find your people.",
     "Meet people who get you.",

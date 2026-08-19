@@ -70,9 +70,9 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
     <section>
       <SectionHeading
         eyebrow="Why you two"
-        eyebrowTone="ai"
+        eyebrowTone="suggested"
         title="What you have in common"
-        subtitle={`Worked out from what you have each told ${brand.name} — not from anything either of you wrote about the other.`}
+        subtitle={`Worked out from what you have each told ${brand.name}, not from anything either of you wrote about the other.`}
       />
 
       <Card className="space-y-5">
@@ -81,7 +81,7 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
             <ul className="flex min-w-0 flex-wrap gap-1.5">
               {highlights.map((highlight) => (
                 <li key={highlight}>
-                  <Chip tone="ai">{highlight}</Chip>
+                  <Chip tone="suggested">{highlight}</Chip>
                 </li>
               ))}
             </ul>

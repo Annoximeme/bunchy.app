@@ -114,7 +114,7 @@ export default async function ProfilePage() {
             <EditableCard
               title="Into"
               href="/onboarding/interests"
-              empty="Nothing yet. This is the one that matters most — it is what Bunchy matches on."
+              empty="Nothing yet. This is the one that matters most: it is what Bunchy matches on."
               count={practices.length}
             >
               <ul className="flex flex-wrap gap-1.5">
@@ -184,12 +184,12 @@ export default async function ProfilePage() {
               href="/onboarding/personality"
               empty="Nothing yet. Answer the style questions and this fills itself in."
               count={profile.traits.length}
-              note="Worked out from your answers rather than written by you. Only clear leanings are described — anything near the middle is left unsaid."
+              note="Worked out from your answers rather than written by you. Only clear leanings are described, and anything near the middle is left unsaid."
             >
               <ul className="flex flex-wrap gap-1.5">
                 {profile.traits.map((trait) => (
                   <li key={trait}>
-                    <Chip tone="ai">{trait}</Chip>
+                    <Chip tone="suggested">{trait}</Chip>
                   </li>
                 ))}
               </ul>
@@ -217,7 +217,7 @@ export default async function ProfilePage() {
         <section>
           <SectionHeading
             eyebrow="Your account"
-            eyebrowTone="ai"
+            eyebrowTone="suggested"
             title="Settings"
             subtitle="None of this appears on your profile."
           />

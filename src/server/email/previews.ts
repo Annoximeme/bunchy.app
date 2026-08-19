@@ -52,7 +52,7 @@ export const EMAIL_PREVIEWS: readonly EmailPreview[] = [
     when: "When somebody does something that involves you, and you have email on for that type.",
     message: notificationEmail({
       title: "Sam replied in Thursday Co-op",
-      body: "“Works for me — I can be on at eight. Anyone else?”",
+      body: "“Works for me. I can be on at eight, anyone else?”",
       link: `${EXAMPLE_ORIGIN}/bunches/thursday-co-op`,
       settingsUrl: `${EXAMPLE_ORIGIN}/profile`,
       unsubscribe: { kind: "notifications", profileId: "example-profile" },
@@ -71,7 +71,7 @@ export const EMAIL_PREVIEWS: readonly EmailPreview[] = [
   {
     slug: "waitlist-launch",
     label: "Bunchy is open",
-    when: "Once, to the waiting list, on launch day. Sent by hand — nothing fires this automatically.",
+    when: "Once, to the waiting list, on launch day. Sent by hand, so nothing fires this automatically.",
     message: waitlistLaunchEmail(`${EXAMPLE_ORIGIN}/signup`, {
       kind: "waitlist",
       email: "someone@example.com",
@@ -95,7 +95,7 @@ export function renderPreview(preview: EmailPreview): string {
   const strip = [
     '<div style="font:14px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;background:#172033;color:#fff;padding:12px 20px;">',
     `<strong>${escape(preview.label)}</strong>`,
-    ` — subject: <code style="color:#FFC857;">${escape(preview.message.subject)}</code>`,
+    `, subject: <code style="color:#FFC857;">${escape(preview.message.subject)}</code>`,
     `<div style="opacity:.7;margin-top:4px;">${escape(preview.when)}</div>`,
     "</div>",
   ].join("");

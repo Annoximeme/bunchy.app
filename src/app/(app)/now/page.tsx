@@ -132,7 +132,7 @@ export default async function BunchyNowPage({
                 People you could message now
               </h2>
               {board.people.people.length > 0 && (
-                <Chip tone="ai">Ranked by compatibility</Chip>
+                <Chip tone="suggested">Ranked by compatibility</Chip>
               )}
             </div>
 

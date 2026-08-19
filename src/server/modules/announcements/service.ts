@@ -434,7 +434,7 @@ export async function publishAnnouncement(
   // somebody trying to backdate the record.
   if (publishedAt && publishedAt.getTime() < now.getTime() - 60_000) {
     throw validationFailed(
-      "That publish date has passed. Members are told when they are told, and backdating the record would make it useless — publish now, or pick a date ahead.",
+      "That publish date has passed. Members are told when they are told, and backdating the record would make it useless. Publish now, or pick a date ahead.",
     );
   }
 
@@ -442,7 +442,7 @@ export async function publishAnnouncement(
     const noticeAt = publishedAt ?? now;
     if (input.effectiveAt < noticeAt) {
       throw validationFailed(
-        "That date has passed. Members are told before a change takes effect, not after — pick a date in the future or leave it empty.",
+        "That date has passed. Members are told before a change takes effect, not after. Pick a date in the future, or leave it empty.",
       );
     }
   }

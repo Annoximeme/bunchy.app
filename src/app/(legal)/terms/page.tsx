@@ -159,11 +159,10 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={9} title="AI features">
+      <Clause n={9} title="Suggestions">
         <p>
-          {brand.name} uses software to suggest people, bunches and activities,
-          and to offer optional help such as conversation starters and catch-up
-          summaries. These are suggestions and they are sometimes wrong. They
+          {brand.name} suggests people, bunches and activities, and offers
+          optional help such as conversation starters and catch-up summaries. These are suggestions and they are sometimes wrong. They
           only ever run when you ask for them. Nothing generates on a timer.
         </p>
         <p>
@@ -222,7 +221,7 @@ export default function TermsPage() {
       <Clause n={13} title="Supporting Bunchy">
         <p>
           Supporting {brand.name} is optional and buys nothing functional. The
-          whole product — matching, bunches, messages, activities — is free for
+          whole product (matching, bunches, messages, activities) is free for
           everyone and stays that way. What a supporter gets is cosmetic: a
           badge, a ring around their avatar, and a choice of app icon. Nothing
           you pay for changes who you meet, how often you are shown to anyone,
@@ -242,8 +241,8 @@ export default function TermsPage() {
         <p>
           If you are a consumer in the EU you have a fourteen-day right of
           withdrawal on a digital service. Starting a subscription asks you to
-          begin the service immediately, which ordinarily ends that right — so
-          independently of it, if you change your mind within fourteen days of a
+          begin the service immediately, which ordinarily ends that right.
+          Independently of it, if you change your mind within fourteen days of a
           payment, write to{" "}
           <a href={`mailto:${LEGAL.supportContact}`}>{LEGAL.supportContact}</a>{" "}
           and it will be refunded. No reason required.
@@ -251,7 +250,7 @@ export default function TermsPage() {
         <p>
           If a payment fails, Stripe retries it. If the retries run out the
           subscription ends and the cosmetics stop. Nothing else about your
-          account is affected, ever — a failed payment is not a moderation
+          account is affected, ever. A failed payment is not a moderation
           matter.
         </p>
       </Clause>

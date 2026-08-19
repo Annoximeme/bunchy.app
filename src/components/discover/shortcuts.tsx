@@ -46,7 +46,7 @@ const SHORTCUTS: Shortcut[] = [
     href: "/do",
     label: "Do something",
     description:
-      "Say what you have — money, time, energy — and get an evening back.",
+      "Say what you have (money, time, energy) and get an evening back.",
     icon: Compass,
     tone: "accent",
   },

@@ -130,7 +130,7 @@ export default async function WhatsNewPage({
           level={2}
           icon="📭"
           title="Nothing to report"
-          description="When something changes that affects you — what we hold, what the terms say, whether the site is up — it lands here, and the important ones find you rather than waiting to be found."
+          description="When something changes that affects you, whether that is what we hold, what the terms say, or whether the site is up, it lands here. The important ones find you rather than waiting to be found."
         />
       ) : (
         <>
@@ -165,7 +165,7 @@ export default async function WhatsNewPage({
             {unread === 0
               ? "You have read all of these."
               : `${unread} you have not read yet.`}{" "}
-            Nothing is ever removed from this page — withdrawing an announcement
+            Nothing is ever removed from this page. Withdrawing an announcement
             takes it off the board and leaves the record alone.
           </p>
 

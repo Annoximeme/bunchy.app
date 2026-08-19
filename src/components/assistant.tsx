@@ -16,7 +16,7 @@ import {
 import { activityWhen } from "@/lib/format";
 
 /**
- * Bunchy AI.
+ * Ask Bunchy.
  *
  * Presented as a thing that looks things up, not a thing that chats. There is
  * no typing indicator, no persona and no thread of remembered banter, because
@@ -142,7 +142,7 @@ function Answer({ reply }: { reply: Reply }) {
   return (
     <Card>
       <div className="flex items-start gap-3">
-        <Chip tone="ai">Bunchy AI</Chip>
+        <Chip tone="suggested">Ask Bunchy</Chip>
         {reply.guessed && (
           <span className="text-xs text-muted">
             I wasn&rsquo;t sure what you meant, so I looked for people.

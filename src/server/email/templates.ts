@@ -149,7 +149,7 @@ export function waitlistLaunchEmail(
     ],
     action: { label: "Have a look", href: signupUrl },
     fine: [
-      "This is the only email the waiting list was for. Unsubscribing takes your address off it — there is no other list to be on.",
+      "This is the only email the waiting list was for. Unsubscribing takes your address off it, and there is no other list to be on.",
     ],
     footnote: `You are getting this because you asked to be told when ${brand.name} opened.`,
   }, unsubscribe);

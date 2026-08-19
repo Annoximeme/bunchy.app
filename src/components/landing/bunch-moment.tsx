@@ -82,7 +82,7 @@ export function BunchMoment() {
         {stage === "alone" && (
           <span
             aria-hidden
-            className="idle-pulse absolute size-32 rounded-full border-2 border-purple-ai"
+            className="idle-pulse absolute size-32 rounded-full border-2 border-purple-glow"
           />
         )}
 
@@ -92,7 +92,7 @@ export function BunchMoment() {
             <span
               key={ring}
               aria-hidden
-              className="ping-ring absolute size-40 rounded-full border-2 border-purple-ai"
+              className="ping-ring absolute size-40 rounded-full border-2 border-purple-glow"
               style={{ ["--ping-delay" as string]: `${ring * 0.25}s` }}
             />
           ))}
@@ -167,7 +167,7 @@ export function BunchMoment() {
       <button
         type="button"
         onClick={run}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-purple-ai/50 bg-purple-ai/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-purple-ai/25"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-purple-glow/50 bg-purple-glow/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-purple-glow/25"
       >
         {stage === "plan" ? (
           <>

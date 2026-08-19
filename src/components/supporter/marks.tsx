@@ -35,7 +35,7 @@ export function SupporterMark({
 }) {
   return (
     <span
-      title="Supporter — chips in to keep Bunchy running"
+      title="Supporter, chips in to keep Bunchy running"
       className={cn("group/mark inline-flex shrink-0 align-middle", className)}
     >
       <svg
@@ -78,7 +78,7 @@ export function StaffMark({
 }) {
   return (
     <span
-      title="Bunchy staff — verified by the platform, not chosen by the member"
+      title="Bunchy staff, verified by the platform, not chosen by the member"
       className={cn("group/mark inline-flex shrink-0 align-middle", className)}
     >
       <svg

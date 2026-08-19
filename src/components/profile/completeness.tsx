@@ -101,7 +101,7 @@ export function ProfileCompleteness({
             >
               {gap.label}
             </Link>
-            <span className="text-ink-soft"> — {gap.because}.</span>
+            <span className="text-ink-soft">: {gap.because}.</span>
           </li>
         ))}
       </ul>

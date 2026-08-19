@@ -278,8 +278,8 @@ export default async function GuidelinesPage() {
           is yours.
         </p>
         <p className="mt-2 text-sm text-ink-soft">
-          Email addresses are the one thing deliberately kept from moderators —
-          account search returns them to admins only, and they are stripped on
+          Email addresses are the one thing deliberately kept from moderators.
+          Account search returns them to admins only, and they are stripped on
           the server rather than hidden in the page, so there is nothing in the
           response to uncover. If you genuinely need one for a report, ask an
           admin and say why.
@@ -335,8 +335,8 @@ export default async function GuidelinesPage() {
             not interrogate them and do not ask for identification.
           </li>
           <li>
-            <strong>A member says they were harmed at a meet-up</strong> —
-            escalate, keep everything, delete nothing. What looks like tidying
+            <strong>A member says they were harmed at a meet-up.</strong>{" "}
+            Escalate, keep everything, delete nothing. What looks like tidying
             is evidence.
           </li>
         </ul>

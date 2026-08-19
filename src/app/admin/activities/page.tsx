@@ -82,7 +82,7 @@ export default async function AdminActivitiesPage({
               <Cell className="text-xs text-muted">
                 {activity.mode === "ONLINE"
                   ? "Online"
-                  : (activity.locationLabel ?? "—")}
+                  : (activity.locationLabel ?? "No location")}
               </Cell>
 
               <Cell className="whitespace-nowrap tabular-nums">
@@ -103,7 +103,7 @@ export default async function AdminActivitiesPage({
                     confirmLabel={`Cancel "${activity.title}"`}
                   />
                 ) : (
-                  <span className="text-xs text-muted">—</span>
+                  <span className="text-xs text-muted">None</span>
                 )}
               </Cell>
             </tr>

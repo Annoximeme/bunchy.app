@@ -146,7 +146,7 @@ export default async function AboutPage() {
           <p className="mt-8 max-w-2xl text-lg leading-relaxed text-white/75 md:text-xl md:leading-relaxed">
             {brand.name} exists to get four or five people who are into the same
             things into the same room, or the same voice channel, on a day they
-            are all actually free — and then to get out of the way. It is built
+            are all actually free, and then to get out of the way. It is built
             by one person, in the open, and this page explains what it is, what
             it refuses to be, and who is behind it.
           </p>
@@ -161,7 +161,7 @@ export default async function AboutPage() {
           <Prose>
             <p>
               Not because people are unfriendly. Because the structures that
-              used to do it for you — school, a course, a job with a canteen —
+              used to do it for you (school, a course, a job with a canteen)
               quietly stop, and nothing replaces them. What replaces them, if
               you let it, is an app that shows you a thousand people you will
               never meet and calls that a social life.
@@ -206,8 +206,8 @@ export default async function AboutPage() {
               enough that if you do not turn up, somebody notices.
             </p>
             <p>
-              You say what you are up for — gaming tonight, a film on Saturday,
-              coffee next week — and roughly when you are free. Matching looks
+              You say what you are up for (gaming tonight, a film on Saturday,
+              coffee next week) and roughly when you are free. Matching looks
               at interests, what you are looking for, how you like to spend
               time, distance and availability, and then it{" "}
               <strong>stops</strong>. There is no feed to fall into afterwards.
@@ -396,7 +396,7 @@ export default async function AboutPage() {
             <Prose>
               <p>
                 {brand.name} is written, designed, run and paid for by{" "}
-                <strong>{LEGAL.operator}</strong> — {LEGAL.operatorDescription},
+                <strong>{LEGAL.operator}</strong>, {LEGAL.operatorDescription},
                 based in {LEGAL.jurisdiction}. Not a startup, not a team, not a
                 company with a landing page and three founders. One person, who
                 wanted this to exist and could not find it.
@@ -425,7 +425,7 @@ export default async function AboutPage() {
 
             <Prose>
               <p>
-                That is precisely why there is no feed — nothing in here needs
+                That is precisely why there is no feed: nothing in here needs
                 your attention for its own sake, because nobody is being paid
                 when it gets it.
               </p>
@@ -435,7 +435,7 @@ export default async function AboutPage() {
                 come from a human who also has to sleep, features arrive slower
                 than they would with a team, and if that person is ill for a
                 fortnight it shows. An independent project is not automatically
-                better than a funded one — it is differently constrained, and
+                better than a funded one. It is differently constrained, and
                 you should know which constraints you are choosing.
               </p>
             </Prose>
@@ -452,7 +452,7 @@ export default async function AboutPage() {
             <Prose size="sm">
               <p>
                 {brand.name} earns nothing so far. The whole product is free
-                and stays free — matching, bunches, messages, activities, all of
+                and stays free: matching, bunches, messages, activities, all of
                 it, for everybody. There is a{" "}
                 <Link href="/supporter">tip jar</Link>: a few euros a month, if
                 you want to, in exchange for a badge, a ring on your avatar and
@@ -465,7 +465,7 @@ export default async function AboutPage() {
                 The commitments that follow from that are written down where
                 they can be held against us. If {brand.name} ever does earn
                 money, <Link href="/moderators">paying the volunteers</Link> who
-                kept it safe is the first thing that money should do — before
+                kept it safe is the first thing that money should do, before
                 features, before marketing, before anyone takes a salary out of
                 it. That is an intention rather than a contract, and it is
                 published as one on purpose.
@@ -475,7 +475,7 @@ export default async function AboutPage() {
                 ads against your interests, or introducing a tier that makes the
                 matching better for people who pay. The matching engine deciding
                 who you meet based on who paid would break the only thing this
-                product is for — which is why what the tip jar buys is a badge,
+                product is for, which is why what the tip jar buys is a badge,
                 a ring and an icon, and why that list is short enough to check.
               </p>
             </Prose>
@@ -488,8 +488,8 @@ export default async function AboutPage() {
               <p>
                 Members can report profiles, messages, {BUNCH_NOUN.plural} and
                 activities. Those reports go to volunteer moderators, who can
-                act on content and suspend accounts —{" "}
-                <Link href="/moderators">that role is described in full</Link>,
+                act on content and suspend accounts.{" "}
+                <Link href="/moderators">That role is described in full</Link>,
                 including the unglamorous parts, and applications are open.
               </p>
               <p>
@@ -503,7 +503,7 @@ export default async function AboutPage() {
                 The operator can put a banner in front of every member, and that
                 is the one thing in here allowed to interrupt you. It is for
                 changes to the terms, to what we hold about you, or to whether
-                the site is up — never for a new feature. Which of those may
+                the site is up, never for a new feature. Which of those may
                 interrupt you is decided in code rather than by whoever writes
                 the announcement, and every one that goes out is signed, dated
                 and in the audit trail. You can read all of them, including the
@@ -513,8 +513,8 @@ export default async function AboutPage() {
               <p>
                 On location: {brand.name} never stores a street address or
                 precise coordinates. Positions are snapped to a coarse grid, and
-                the product speaks in areas — &ldquo;Antwerp region&rdquo; —
-                never in addresses. <Link href="/safety">The safety page</Link>{" "}
+                the product speaks in areas (&ldquo;Antwerp region&rdquo;)
+                rather than in addresses. <Link href="/safety">The safety page</Link>{" "}
                 covers meeting people in person, and{" "}
                 <Link href="/privacy">the privacy policy</Link> covers what is
                 held and for how long.
@@ -536,7 +536,7 @@ export default async function AboutPage() {
                 What is stored is deliberately thin. The schema keeps everything
                 that identifies a real human apart from everything another
                 member can see, and there is exactly one sanctioned path from a
-                database row to a public payload — which is what makes that
+                database row to a public payload, which is what makes that
                 separation hold rather than being an intention in a document.
               </p>
             </Prose>
@@ -581,7 +581,7 @@ export default async function AboutPage() {
               <p>
                 {brand.name} has not properly launched. There are no member
                 numbers to quote, no testimonials, and the example faces you see
-                on the marketing pages are examples rather than members —
+                on the marketing pages are examples rather than members,
                 labelled as such, because inventing them on a page whose promise
                 is meeting real people would be an odd way to start.
               </p>
@@ -698,7 +698,7 @@ const REFUSALS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "No notifications designed to pull you back",
-    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action — that rule is enforced in the notification module itself, not in a style guide. The one exception is a change to your rights, your data, or whether the site is up.",
+    "You are only emailed or notified about something a person actually did that involves you. There is no digest of activity you did not ask about and no way to notify somebody about their own action. That rule is enforced in the notification module itself, not in a style guide. The one exception is a change to your rights, your data, or whether the site is up.",
   ],
   [
     "No streaks, no rota, no attendance score",
@@ -706,7 +706,7 @@ const REFUSALS: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "No advertising, and no selling anything about you",
-    "There is no ad network, no tracking pixel, and no third-party analytics. Even the emails carry no tracking image — the design is built out of background colours and text partly for that reason.",
+    "There is no ad network, no tracking pixel, and no third-party analytics. Even the emails carry no tracking image, and the design is built out of background colours and text partly for that reason.",
   ],
 ] as const;
 

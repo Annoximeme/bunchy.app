@@ -4,7 +4,7 @@ import { ask } from "@/server/modules/concierge/service";
 import { consume } from "@/server/ratelimit";
 
 /**
- * Bunchy AI.
+ * Ask Bunchy.
  *
  * POST only, and only ever reads. There is no companion endpoint that acts on
  * an answer — the concierge returns links, and the member follows one into a

@@ -178,7 +178,7 @@ export default async function LandingPage() {
                 </Link>
                 <Link
                   href="/signup?start=surprise"
-                  className="inline-flex items-center gap-2 rounded-full border border-purple-ai bg-transparent px-6 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-purple-ai/15 hover:shadow-[0_0_40px_-8px_#7657FF]"
+                  className="inline-flex items-center gap-2 rounded-full border border-purple-glow bg-transparent px-6 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-purple-glow/15 hover:shadow-[0_0_40px_-8px_#7657FF]"
                 >
                   <Sparkles size={18} aria-hidden />
                   Surprise me
@@ -283,7 +283,7 @@ export default async function LandingPage() {
                     }}
                   />
                   <div
-                    className="float absolute left-40 top-2 size-52 rounded-full bg-purple-ai/10 blur-3xl"
+                    className="float absolute left-40 top-2 size-52 rounded-full bg-purple-glow/10 blur-3xl"
                     style={{
                       ["--float-distance" as string]: "12px",
                       ["--float-duration" as string]: "11s",

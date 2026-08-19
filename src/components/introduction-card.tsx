@@ -80,7 +80,7 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
   return (
     <Card className={cn("border-l-4 border-l-purple")}>
       <div className="flex items-start justify-between gap-3">
-        <Chip tone="ai">An introduction</Chip>
+        <Chip tone="suggested">An introduction</Chip>
         <button
           type="button"
           onClick={() => void respond("dismiss")}

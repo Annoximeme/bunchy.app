@@ -246,7 +246,7 @@ export function renderEmail(content: EmailContent): RenderedEmail {
       ? ["", `Unsubscribe: ${content.unsubscribeUrl}`]
       : []),
     "",
-    `— ${brand.name}. ${brand.tagline}`,
+    `${brand.name}. ${brand.tagline}`,
   ].join("\n");
 
   return { html, text };
