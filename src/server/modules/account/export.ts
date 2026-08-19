@@ -8,7 +8,7 @@ import { notFound } from "@/server/errors";
  *
  * **Everything the member wrote is theirs.** Profile, interests, goals,
  * availability, every message, every activity, every report they filed. None of
- * it is summarised or truncated — an export that quietly drops the long tail is
+ * it is summarised or truncated, an export that quietly drops the long tail is
  * worse than no export, because it looks complete.
  *
  * **Other people are not in it, except where they already are.** Names and
@@ -16,8 +16,8 @@ import { notFound } from "@/server/errors";
  * already see them in the product; nobody's email, birth year, coordinates or
  * password hash appears, including the member's own coordinates, which Bunchy
  * never stores precisely in the first place. Messages other people sent *to*
- * this member are included — they are addressed to them and already readable in
- * the app, so withholding them would make a conversation export nonsense — but
+ * this member are included, they are addressed to them and already readable in
+ * the app, so withholding them would make a conversation export nonsense, but
  * messages between other people never are.
  */
 export async function exportAccount(userId: string) {

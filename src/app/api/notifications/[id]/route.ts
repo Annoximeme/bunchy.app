@@ -5,7 +5,7 @@ import { markRead } from "@/server/modules/notifications/service";
  * Marks one notification read.
  *
  * Scoped to the viewer inside `markRead` (it filters on `profileId`), so an id
- * belonging to someone else silently affects nothing rather than erroring —
+ * belonging to someone else silently affects nothing rather than erroring,
  * which would otherwise confirm that the id exists.
  */
 export async function PATCH(

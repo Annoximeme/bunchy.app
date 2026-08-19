@@ -8,7 +8,7 @@ import { Button, Input, Select } from "@/components/ui";
  * Search and filters as a plain form submission.
  *
  * The query lives in the URL, so a moderator can bookmark "all suspended
- * accounts", share a search with a colleague, and use the back button — none of
+ * accounts", share a search with a colleague, and use the back button, none of
  * which works if the filter state lives only in React.
  */
 

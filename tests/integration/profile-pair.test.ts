@@ -9,7 +9,7 @@ import { scorePair } from "@/server/modules/matching/pair";
  * front of each other, and it runs on every profile view. The unit tests for
  * the signals themselves are thorough and stubbed; what they cannot see is
  * whether the thing actually loads two real profiles and survives the states
- * a live database will hand it — a member who has answered nothing, a member
+ * a live database will hand it, a member who has answered nothing, a member
  * who does not exist, somebody looking at their own page.
  *
  * The number itself is deliberately not asserted. Pinning "these two score
@@ -116,7 +116,7 @@ describe("scoring a pair", () => {
   });
 
   it("survives a member who has answered nothing at all", async () => {
-    // No interests, no goals, no availability. The page must render — the
+    // No interests, no goals, no availability. The page must render, the
     // honest outcome is a missing section, not a crash and not a 0% that reads
     // as "you two have nothing in common".
     const [sam, blank] = [await member("sam"), await member("blank")];
@@ -131,7 +131,7 @@ describe("scoring a pair", () => {
 
   it("does not record looking at somebody as a recommendation", async () => {
     // Profile views are not recommendations. Persisting one would poison the
-    // measurement of whether recommendations actually lead anywhere — and this
+    // measurement of whether recommendations actually lead anywhere, and this
     // product does not store who looked at whom.
     const [sam, alex] = [await member("sam"), await member("alex")];
     await shareInterest("chess", "Chess", [

@@ -8,7 +8,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * response, and a config file is evaluated once at build time.
  *
  * The nonce is set on the *request* headers as well as the response. That is
- * not redundant — Next reads the incoming `content-security-policy` header,
+ * not redundant, Next reads the incoming `content-security-policy` header,
  * lifts the nonce out of it, and stamps it onto every script tag it renders,
  * including the inline bootstrap that carries the flight data. Without the
  * request header the page still loads, the scripts are refused, and what you
@@ -37,7 +37,7 @@ function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean):
     // Same-origin, plus Stripe. The live bunch chat is an EventSource against
     // this origin; the only thing in the product that talks to anybody else is
     // the card form, which posts card details straight to Stripe rather than
-    // through us — which is the entire reason we never hold them.
+    // through us, which is the entire reason we never hold them.
     "connect-src 'self' https://api.stripe.com",
     // Stripe renders the card fields inside its own frames, on its own origin.
     // That is the mechanism by which the card number is never in our DOM, so
@@ -53,7 +53,7 @@ function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean):
     // The real site is https and still gets it. A preview build runs with
     // NODE_ENV=production over plain http, and there the directive rewrites
     // the login form's own action to https, which fails to connect and is then
-    // blocked by form-action 'self' — a signed-out app that looks fine.
+    // blocked by form-action 'self', a signed-out app that looks fine.
     ...(isDev || !isHttps ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");
 }

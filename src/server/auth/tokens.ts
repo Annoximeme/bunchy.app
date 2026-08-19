@@ -5,7 +5,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
  *
  * The raw token is shown to the user exactly once (in a cookie or an email
  * link). Only its SHA-256 digest is stored, so a database leak yields no usable
- * credentials. SHA-256 is the right primitive here — unlike a password these
+ * credentials. SHA-256 is the right primitive here, unlike a password these
  * are 256 bits of true randomness, so there is nothing to brute force and a
  * slow KDF would only add latency to every request.
  */

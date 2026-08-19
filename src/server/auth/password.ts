@@ -22,7 +22,7 @@ const scrypt = promisify(scryptCallback) as (
  * native build step, which keeps the container image and CI simple. Argon2id
  * would be a marginal improvement; the cost of a native dependency is not worth
  * it at this stage. Parameters are stored inside each hash so they can be
- * raised later without invalidating existing passwords — `needsRehash` reports
+ * raised later without invalidating existing passwords, `needsRehash` reports
  * when an old hash should be upgraded on next successful login.
  */
 
@@ -116,8 +116,8 @@ export async function verifyPassword(
 
   // The cost parameters come out of the stored string, which means the work
   // this function does is described by data rather than by code. That is the
-  // point — it is what lets the parameters be raised without invalidating
-  // every existing password — but it must have a ceiling. A single row reading
+  // point, it is what lets the parameters be raised without invalidating
+  // every existing password, but it must have a ceiling. A single row reading
   // `scrypt$1073741824$8$1$...` would otherwise ask for gigabytes on the next
   // login attempt against that account, and a hash is not a trustworthy input
   // once anything can write one.

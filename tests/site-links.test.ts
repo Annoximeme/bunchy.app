@@ -5,15 +5,15 @@ import { SITE_LINKS } from "@/components/site-links";
 /**
  * The pages that explain Bunchy have to be reachable from inside Bunchy.
  *
- * This exists because of a real bug, and a quiet one. Every public page —
- * About, Safety, Volunteer, Privacy, Terms — was linked from exactly one
+ * This exists because of a real bug, and a quiet one. Every public page,
+ * About, Safety, Volunteer, Privacy, Terms, was linked from exactly one
  * place: the landing page footer. Signing in redirects you off the landing
  * page, so the moment somebody had an account, all five became unreachable
  * through the interface.
  *
  * The volunteer page is where it did visible damage. It tells a signed-out
  * reader they need an account to apply, and renders the application form once
- * they have one — but signing in removed the only door to the page. Anyone who
+ * they have one, but signing in removed the only door to the page. Anyone who
  * followed that instruction ended up further from applying than when they
  * started.
  *
@@ -68,8 +68,8 @@ describe("reachability", () => {
     // `SITE_LINKS` rather than `SiteNav`. The policy shell draws the list
     // itself now, because `SiteNav` is coloured from the theme tokens and the
     // masthead it sits in is pinned navy. What this test is protecting is that
-    // the pages link to the *whole list from one source* — which is what broke
-    // originally — not which component renders it. Asserting on the component
+    // the pages link to the *whole list from one source*, which is what broke
+    // originally, not which component renders it. Asserting on the component
     // would fail the day a page legitimately draws the list another way, and
     // pass the day somebody hand-types four links into the shell.
     expect(legal).toContain("SITE_LINKS");
@@ -86,7 +86,7 @@ describe("reachability", () => {
  *
  * Written after Bunchy Now offered "Search with your own words" behind a link
  * to `/find`, a page that has never existed. Nothing caught it: the build is
- * happy — `next/link` takes any string — and the only visible symptom was a
+ * happy, `next/link` takes any string, and the only visible symptom was a
  * 404 for whoever clicked, plus a prefetch that hung and made the page look
  * slow. A dead link is not a typo, it is a promise the interface breaks.
  *

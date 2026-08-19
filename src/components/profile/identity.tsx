@@ -6,7 +6,7 @@ import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 /**
  * Who somebody is, drawn once.
  *
- * The name, the avatar, the line of facts and the badges used to exist twice —
+ * The name, the avatar, the line of facts and the badges used to exist twice,
  * copied verbatim into the public profile and the owner's profile, including a
  * paragraph of comment explaining the Staff badge that only survived in one of
  * the copies. Two renderings of one identity are two things that agree until
@@ -19,7 +19,7 @@ import { NameMarks, SupporterRing } from "@/components/supporter/marks";
  * every page in the app already looks like. A profile is the one screen that
  * is *about a person*, so it gets the only piece of composition in the signed-in
  * product: a tinted band behind the head, coloured from that member's own
- * avatar colour. It costs nothing — no image, no request — and it makes two
+ * avatar colour. It costs nothing, no image, no request, and it makes two
  * profiles look like two different people rather than two rows of the same
  * table.
  */
@@ -46,7 +46,7 @@ export function ProfileBadges({
         The Staff badge is the one element in the app that carries a gradient.
         That is the point: everywhere else a colour is a meaning (purple =
         inferred by the system, yellow = time), and a badge built from two brand
-        colours at once belongs to no category — which is what makes it read as
+        colours at once belongs to no category, which is what makes it read as
         issued rather than as a label anyone could pick. It is also the only
         badge worth counterfeiting, so it should be the hardest to mistake.
       */}
@@ -89,8 +89,8 @@ export interface ProfileIdentity extends IdentityBadges {
  *
  * Built as a list and joined, rather than a chain of `&&` inside the JSX. The
  * chained version rendered a leading separator whenever the first item was
- * absent — a profile with no age and no location but a city label opened with
- * a stray middot — and it is impossible to see in the source, because every
+ * absent, a profile with no age and no location but a city label opened with
+ * a stray middot, and it is impossible to see in the source, because every
  * line looks correct on its own.
  *
  * `age` and `ageBand` are mutually exclusive by construction: the serializer
@@ -107,7 +107,7 @@ function factsFor(profile: ProfileIdentity): string[] {
 
 export function ProfileHero({
   profile,
-  /** Replaces the avatar — the owner's page passes an upload control. */
+  /** Replaces the avatar, the owner's page passes an upload control. */
   avatarSlot,
   /** Actions under the identity: connect, or nothing on your own page. */
   children,
@@ -127,7 +127,7 @@ export function ProfileHero({
       {/*
         A band of the member's own colour. `colourFor` is a hash of the name, so
         this is the same colour as their avatar disc everywhere else in the
-        product — a person's colour identifies them, and the header of their
+        product, a person's colour identifies them, and the header of their
         profile is the one place it should be unmistakable.
 
         Rendered from a CSS variable set inline rather than a Tailwind class,
@@ -148,7 +148,7 @@ export function ProfileHero({
       <div className="px-5 pb-6 sm:px-7">
         {/*
           One left edge for the whole identity.
-          
+
           The previous hero set the name beside the avatar and everything else
           beneath it, so the name began about 110px to the right of the badges,
           the bio and the actions: four left edges in a block six lines tall.

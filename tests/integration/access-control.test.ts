@@ -146,7 +146,7 @@ describe("bunch chat", () => {
   it("shows a non-member the public description and no member list", async () => {
     const { outsider, bunch } = await bunchWithMember();
 
-    // A discoverable bunch is meant to be findable — but who is in it, and what
+    // A discoverable bunch is meant to be findable, but who is in it, and what
     // they said, are not part of that.
     const view = await getBunch(bunch.slug, outsider.profileId);
     expect(view.name).toBe("Private bunch");
@@ -164,7 +164,7 @@ describe("the export is only ever your own", () => {
     const serialized = JSON.stringify(mine);
 
     expect(mine.account.email).toBe("alice@integration.test");
-    // Bob appears as a username because Alice can already see it in the app —
+    // Bob appears as a username because Alice can already see it in the app,
     // his email address never does.
     expect(serialized).not.toContain("bob@integration.test");
     expect(await db.profile.count({ where: { id: bob.profileId } })).toBe(1);

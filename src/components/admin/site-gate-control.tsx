@@ -13,7 +13,7 @@ const OPTIONS: Array<{
   blurb: string;
   /**
    * The mode's colour, as a token rather than a hex. These are the `-ink`
-   * variants — the ones darkened to be legible as *text* — and they land on a
+   * variants, the ones darkened to be legible as *text*, and they land on a
    * themed admin panel, so they have to move with it. Written literally they
    * were a dark green and a dark purple sitting on a dark panel at night.
    */

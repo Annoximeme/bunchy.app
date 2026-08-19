@@ -65,7 +65,7 @@ export default async function ComingSoonPage({
           {/*
             Two columns on a wide screen, and the order matters on a narrow one.
             The single column that phones get runs copy, then the form, then the
-            cluster — so the thing this page exists to collect stays above the
+            cluster, so the thing this page exists to collect stays above the
             decoration rather than below 330px of floating avatars.
           */}
           <div className="grid items-center gap-12 lg:grid-cols-[1.04fr_1fr] lg:gap-10">

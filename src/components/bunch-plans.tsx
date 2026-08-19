@@ -12,7 +12,7 @@ import { activityWhen } from "@/lib/format";
  *
  * Three small things a bunch can do to itself, on one card because they are
  * one question: *what now?* Each is a button somebody presses, and none of them
- * has a badge, a streak or a count that grows — §12 asks for interaction rather
+ * has a badge, a streak or a count that grows, §12 asks for interaction rather
  * than addiction, and the difference is visible in what the screen does when
  * you ignore it, which here is nothing.
  */

@@ -2,7 +2,7 @@
 --
 -- Only the year was stored, and age was computed as a subtraction of years.
 -- That is correct for the part of the year after someone's birthday and a year
--- too high before it — so roughly half of all members saw an age that was not
+-- too high before it, so roughly half of all members saw an age that was not
 -- theirs, which is a poor first impression on a profile other people read.
 --
 -- The month, not the day. A full date of birth is the identifier used to open

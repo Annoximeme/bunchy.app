@@ -11,7 +11,7 @@ import { SupporterRing } from "@/components/supporter/marks";
  *
  * The compression happens here, in the browser, before a byte crosses the
  * network. A phone camera produces 4–8MB; this uploads roughly 40KB of it. That
- * is not only about disk — it is the difference between an upload that works on
+ * is not only about disk, it is the difference between an upload that works on
  * a train and one that times out.
  *
  * The server enforces the same limit again and does not trust any of this. A
@@ -26,7 +26,7 @@ const QUALITY = 0.85;
 
 async function compress(file: File): Promise<Blob> {
   // `imageOrientation` applies the EXIF rotation. Without it, half of all phone
-  // portraits arrive sideways — the tag is dropped by the re-encode, so the
+  // portraits arrive sideways, the tag is dropped by the re-encode, so the
   // rotation has to be baked in here.
   const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
 
@@ -120,7 +120,7 @@ export function AvatarUpload({
     This sits in the profile header next to the name, where the plain <Avatar>
     used to be. An earlier version put the buttons and an explanatory paragraph
     in a row beside the picture, which pushed the name block sideways and wrapped
-    it — the control has to occupy the same footprint as the image it replaces.
+    it, the control has to occupy the same footprint as the image it replaces.
     The explanation moved to the button's tooltip: it matters once, while you are
     deciding to click, and never again.
   */

@@ -25,7 +25,7 @@ const POLL_MS = 5000;
  * A one-to-one conversation.
  *
  * The opener panel is shown only while the thread is empty. Once two people are
- * actually talking, suggestions are noise — the assistant's job here is to get
+ * actually talking, suggestions are noise, the assistant's job here is to get
  * the first message sent and then get out of the way.
  */
 export function DirectThread({
@@ -45,7 +45,7 @@ export function DirectThread({
   const [error, setError] = useState<string | null>(null);
   const [context, setContext] = useState<ConversationContext | null>(null);
   // Starts true when the thread opens empty, so the effect below never has to
-  // flip it on synchronously — it only ever settles it in the promise callback.
+  // flip it on synchronously, it only ever settles it in the promise callback.
   const [loadingContext, setLoadingContext] = useState(
     initialMessages.length === 0,
   );

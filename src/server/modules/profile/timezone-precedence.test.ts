@@ -9,7 +9,7 @@ import {
  * invalid one is discarded, and the country is the fallback.
  *
  * Expressed as the same expression the service uses rather than by calling
- * `saveBasics`, which would need a database — the branch worth pinning is which
+ * `saveBasics`, which would need a database, the branch worth pinning is which
  * of the three sources wins, not the write.
  */
 function resolveTimezone(

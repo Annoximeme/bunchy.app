@@ -16,7 +16,7 @@ for (const file of [".env", ".env.local"]) {
  *
  * Behavioural signals need a week of history before they mean anything, so a
  * seed where every bunch was created this second demonstrates only the "too new
- * to tell" branch — which is correct behaviour and a useless demo. Six weeks
+ * to tell" branch, which is correct behaviour and a useless demo. Six weeks
  * back puts the seeded groups in the state most real ones will be in.
  */
 const BUNCHES_FORMED_AT = new Date(Date.now() - 42 * 86_400_000);
@@ -25,7 +25,7 @@ const BUNCHES_FORMED_AT = new Date(Date.now() - 42 * 86_400_000);
  * Development seed.
  *
  * The people here are not filler. They are shaped so that the matching engine
- * has something interesting to say — including the photographer/hiker pair the
+ * has something interesting to say, including the photographer/hiker pair the
  * product brief uses as its example of a good complementary match, a cluster of
  * Antwerp gamers who should obviously find each other, and a few deliberate
  * near-misses (right interests, wrong city; right city, wrong hours) so that a
@@ -434,7 +434,7 @@ const BUNCHES: BunchSeed[] = [
   {
     name: "Antwerp Board Game Nights",
     description:
-      "Twice a month, a table, and whatever games people bring. Beginners genuinely welcome — someone will teach you.",
+      "Twice a month, a table, and whatever games people bring. Beginners genuinely welcome, someone will teach you.",
     type: "LOCAL",
     city: "Antwerp",
     country: "BE",
@@ -446,7 +446,7 @@ const BUNCHES: BunchSeed[] = [
     messages: [
       ["milan", "Bringing the heavy euro box this time, fair warning"],
       ["yuki", "I'll bring something lighter to balance it out"],
-      ["tomas", "First time coming — anything I should know?"],
+      ["tomas", "First time coming, anything I should know?"],
       ["milan", "Just turn up, we'll teach you everything."],
     ],
   },
@@ -463,7 +463,7 @@ const BUNCHES: BunchSeed[] = [
     members: ["elena", "anke"],
     messages: [
       ["tomas", "Thinking about the coast next Saturday, early start?"],
-      ["elena", "Yes — the light is worth getting up for. I'll bring the camera."],
+      ["elena", "Yes, the light is worth getting up for. I'll bring the camera."],
       ["anke", "Count me in if we're back by late afternoon"],
     ],
   },
@@ -531,7 +531,7 @@ const ACTIVITIES: ActivitySeed[] = [
   {
     title: "Coast walk & photo morning",
     description:
-      "Early train, long walk, coffee at the end. Bring a camera if you have one — Elena is happy to show people the basics.",
+      "Early train, long walk, coffee at the end. Bring a camera if you have one, Elena is happy to show people the basics.",
     daysFromNow: 9,
     hour: 8,
     mode: "OFFLINE",
@@ -704,7 +704,7 @@ async function main() {
 
   // Staff roles, so the dashboard is explorable straight after seeding. The
   // first admin can only ever be granted out-of-band (here, or `npm run role`)
-  // — a self-service path to admin would be a privilege-escalation bug.
+  //, a self-service path to admin would be a privilege-escalation bug.
   await prisma.user.update({
     where: { email: "sarah@example.com" },
     data: { role: "ADMIN" },
@@ -917,7 +917,7 @@ async function main() {
         requesterId: elena,
         addresseeId: tomas,
         status: "PENDING",
-        note: "You're always out walking — I'd happily tag along with a camera sometime.",
+        note: "You're always out walking, I'd happily tag along with a camera sometime.",
       },
     });
   }
@@ -943,7 +943,7 @@ main().catch((error) => {
  * Who is up for something, on the demo instance.
  *
  * Bunchy Now and anything else that counts live availability shows nothing at
- * all when there are no rows — which is correct on a real first day and useless
+ * all when there are no rows, which is correct on a real first day and useless
  * when you are trying to look at the component. These exist so the demo
  * instance exercises it.
  *
@@ -995,7 +995,7 @@ async function seedAvailability(
  * behind it.
  *
  * The effective dates are in the future on purpose. An announcement whose date
- * has passed is a changelog entry, and `publishAnnouncement` refuses one — so a
+ * has passed is a changelog entry, and `publishAnnouncement` refuses one, so a
  * seed that wrote a past date would be seeding something the product would not
  * accept from a human.
  */

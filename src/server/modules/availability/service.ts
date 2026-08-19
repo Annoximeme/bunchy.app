@@ -6,7 +6,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { locationLabel } from "@/server/modules/geo/precision";
 
 /**
- * Who's Up — "I'm free, come find me", for a few hours.
+ * Who's Up, "I'm free, come find me", for a few hours.
  *
  * Three rules hold this feature to the shape §4 asks for, and each is enforced
  * here rather than left to the UI:
@@ -14,11 +14,11 @@ import { locationLabel } from "@/server/modules/geo/precision";
  * 1. **It expires, always.** `expiresAt` is computed here, never taken from the
  *    client, and every read filters on it. There is no code path that writes a
  *    status without an expiry. A member may now choose a shorter or longer life
- *    from a fixed list, but only within twice the kind's own default — a
+ *    from a fixed list, but only within twice the kind's own default, a
  *    week-long "free now" is a profile field pretending to be a status.
  * 2. **It is one row.** The table is keyed on the profile, so setting a status
  *    replaces the previous one. Nothing accumulates, which means there is no
- *    history of when this person was at a loose end — the permanent
+ *    history of when this person was at a loose end, the permanent
  *    availability record the brief rules out cannot be built from this table
  *    because the table does not keep one.
  * 3. **Counts and names are different questions.** An aggregate ("8 people near
@@ -49,7 +49,7 @@ const LIFETIME_HOURS: Record<AvailabilityKind, number> = {
  * Bunchy Now lets a member choose how long the status lives, within limits.
  *
  * The kind still sets the default, and the ceiling is still the kind's own
- * lifetime doubled — "free now" cannot be stretched into a week, because a
+ * lifetime doubled, "free now" cannot be stretched into a week, because a
  * week-long "free now" is a profile field pretending to be a status, and the
  * whole point of this table is that everything in it goes away.
  */
@@ -65,7 +65,7 @@ function lifetimeFor(kind: AvailabilityKind, requested?: number | null): number 
 }
 
 /**
- * Below this many people, a cluster is not a crowd — it is one or two
+ * Below this many people, a cluster is not a crowd, it is one or two
  * identifiable members plus a location. "1 person in Turnhout is up for gaming"
  * combined with a Discover search names them, so counts under this are not
  * published at all.
@@ -111,7 +111,7 @@ export const AVAILABILITY_LABELS: Record<AvailabilityKind, string> = {
  * The three horizons Bunchy Now filters on.
  *
  * Derived from the kind rather than stored, because a member picking "free
- * tonight" has already said when — asking again would be a second question with
+ * tonight" has already said when, asking again would be a second question with
  * the same answer.
  */
 export const HORIZON_KINDS = {
@@ -175,7 +175,7 @@ export async function setAvailability(
   return decorate(row, await interestLabels(interestIds));
 }
 
-/** Ends the status now. Idempotent — clearing an absent status is not an error. */
+/** Ends the status now. Idempotent, clearing an absent status is not an error. */
 export async function clearAvailability(profileId: string): Promise<void> {
   await db.availabilityStatus.deleteMany({ where: { profileId } });
   track({
@@ -204,7 +204,7 @@ export async function myAvailability(
  * Whose statuses this viewer is allowed to see by name.
  *
  * Returns a Prisma condition rather than a list of ids, so the check lands in
- * the same query as everything else instead of being applied after the fact —
+ * the same query as everything else instead of being applied after the fact,
  * a filter that runs in application code is a filter somebody eventually
  * forgets to call.
  *
@@ -213,14 +213,14 @@ export async function myAvailability(
  * because one of them is not what it looks like: CONNECTIONS is *friend of a
  * friend*, not "people I am connected to". Implementing it as direct
  * connections here would have given one enum value two meanings depending on
- * which screen you set it from. Direct connections are folded in as well —
+ * which screen you set it from. Direct connections are folded in as well,
  * somebody whose request you accepted seeing that you are free is the least
  * surprising thing this feature can do.
  */
 /**
  * The audience test, as a condition on the *profile*.
  *
- * Needed in two shapes. Reading statuses, it hangs off the status row —
+ * Needed in two shapes. Reading statuses, it hangs off the status row,
  * that is `visibleStatusCondition` below. Selecting *people who are
  * available*, it has to apply to the profile itself, because a filter that
  * only checks "has a live status" returns members whose audience excludes
@@ -295,7 +295,7 @@ export interface AvailabilityCluster {
 /**
  * "8 people near Antwerp are up for something tonight."
  *
- * Counts only, no names, and nothing below `MIN_CLUSTER` — a count of one is a
+ * Counts only, no names, and nothing below `MIN_CLUSTER`, a count of one is a
  * person, not a statistic. Members who chose NOBODY are excluded entirely
  * rather than counted anonymously: they asked not to be part of this.
  */
@@ -400,7 +400,7 @@ function decorate(
 /**
  * Deletes statuses that ran out.
  *
- * Not required for correctness — every read filters on `expiresAt` — but a
+ * Not required for correctness, every read filters on `expiresAt`, but a
  * member who set a status on Friday should not find the row still sitting in an
  * export or a database dump on Monday. Data that has served its purpose is
  * deleted rather than merely ignored.

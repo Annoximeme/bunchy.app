@@ -2,7 +2,7 @@
  * Things a bunch could actually do.
  *
  * A catalogue of *kinds* of evening, not a directory of places. Bunchy holds no
- * venue data — the gazetteer knows cities, not bowling alleys — so this file
+ * venue data, the gazetteer knows cities, not bowling alleys, so this file
  * deliberately contains no venue names, no addresses, no opening hours and no
  * prices. Inventing any of those would send somebody to a bar that does not
  * exist, which is the one failure a product about meeting up cannot recover
@@ -11,8 +11,8 @@
  * `cost` is a band used for filtering against a budget the member set. It is
  * not a quote and the UI never renders it as one.
  *
- * When real venue data arrives — an OpenStreetMap adapter, or venues named by
- * members after they have actually been — it attaches to these ideas rather
+ * When real venue data arrives, an OpenStreetMap adapter, or venues named by
+ * members after they have actually been, it attaches to these ideas rather
  * than replacing them, because the idea is what survives a venue closing down.
  */
 

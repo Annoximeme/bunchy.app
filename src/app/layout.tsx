@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   /**
    * Without this, Next resolves og:image against http://localhost:3000 and
-   * every shared link previews with an image no crawler can fetch — which is
+   * every shared link previews with an image no crawler can fetch, which is
    * indistinguishable from having no image at all, and was.
    *
    * `next build` evaluates this, so APP_URL is passed into the build as an
@@ -69,7 +69,7 @@ export const viewport: Viewport = {
  * theme at somebody who chose one.
  *
  * It carries the CSP nonce because this app runs a nonce-based policy with no
- * `unsafe-inline` — an unnonced inline script here would simply be refused, and
+ * `unsafe-inline`, an unnonced inline script here would simply be refused, and
  * the theme would flicker on every load with nothing in the console to explain
  * it. `system` is stored as the absence of the attribute, which is what lets the
  * media query take over again.

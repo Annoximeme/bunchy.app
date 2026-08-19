@@ -12,7 +12,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
  * Direct messages between connected members.
  *
  * There is no way to start a conversation here. Conversations are created by
- * `connections.respondToRequest` when someone accepts — which means an
+ * `connections.respondToRequest` when someone accepts, which means an
  * unwanted message is not something we filter, it is something that has no code
  * path to exist.
  */
@@ -229,7 +229,7 @@ export async function markConversationRead(
 }
 
 /**
- * "You both like Warhammer, strategy games and AI — here's something to say."
+ * "You both like Warhammer, strategy games and AI, here's something to say."
  *
  * Computed on demand from what the two people have in common rather than stored,
  * so it stays truthful as profiles change.
@@ -281,7 +281,7 @@ export async function conversationContext(
     if (mine.intent === theirs.intent) {
       shared.push(theirs.interest.label);
     } else {
-      // One practices it, the other is curious — worth calling out separately.
+      // One practices it, the other is curious, worth calling out separately.
       complementary.push(theirs.interest.label);
     }
   }

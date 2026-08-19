@@ -2,7 +2,7 @@
  * The database handle for integration tests, and the guard that comes with it.
  *
  * Integration tests truncate every table between cases. Pointed at the wrong
- * database that is not a test run, it is data loss — which is exactly what
+ * database that is not a test run, it is data loss, which is exactly what
  * happened once, when the unit config's `tests/**` glob swept these files up
  * and ran them against the development database with none of the integration
  * setup. A thousand rows went into `bunchy_dev` before anyone noticed.

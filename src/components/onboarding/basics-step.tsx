@@ -54,7 +54,7 @@ export function BasicsStep({
   // replaces it.
   useEffect(() => {
     // An empty box shows nothing, but that is derived below rather than set
-    // here — clearing state synchronously in an effect causes a cascade.
+    // here, clearing state synchronously in an effect causes a cascade.
     if (placeQuery.trim().length === 0) return;
 
     const controller = new AbortController();

@@ -13,7 +13,7 @@ import {
 /**
  * Who's Up is the feature in this release with the most obvious way to go
  * wrong: it is a member saying where they are and that they are free. These
- * tests pin the four promises that make it defensible — it expires, it does not
+ * tests pin the four promises that make it defensible, it expires, it does not
  * accumulate, a count never identifies anybody, and the audience is the one the
  * member chose.
  */
@@ -262,7 +262,7 @@ describe("the audience is the one the member chose", () => {
   });
 
   it("shows a CONNECTIONS status to a friend of a friend", async () => {
-    // CONNECTIONS means friend-of-a-friend across this codebase — see
+    // CONNECTIONS means friend-of-a-friend across this codebase, see
     // `satisfiesAudience`. If that ever silently became "direct connections
     // only", this is the test that notices.
     const careful = await member("careful", { scope: "CONNECTIONS" });

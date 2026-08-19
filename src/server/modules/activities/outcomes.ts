@@ -7,7 +7,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
  * "Did you go? Did you meet someone?"
  *
  * The product's stated measure of success is whether a member met a person, and
- * before this that number did not exist anywhere — the database recorded who
+ * before this that number did not exist anywhere, the database recorded who
  * was recommended, who joined and who said they were free, all of which are
  * intent. This closes the loop, and the answers are the only training signal a
  * learned ranker could honestly use later.

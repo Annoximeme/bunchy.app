@@ -11,7 +11,7 @@ import { Button, ErrorNotice, cn } from "@/components/ui";
  * The notification list.
  *
  * Read state is changed by the member, never by the page. Opening this screen
- * does not silently mark everything read — following a notification marks that
+ * does not silently mark everything read, following a notification marks that
  * one, and there is an explicit "mark all read". A screen that clears itself on
  * sight is convenient for the unread badge and useless to someone who opened it
  * to remember what they still had to answer.

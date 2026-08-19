@@ -108,7 +108,7 @@ describe("sending", () => {
 
 describe("failures", () => {
   it("retries a transient refusal and succeeds", async () => {
-    // 4xx is "try again later" — common, and recoverable.
+    // 4xx is "try again later", common, and recoverable.
     sendMail.mockRejectedValueOnce(smtpError(451)).mockResolvedValue({});
     expect(await send()).toBe("ok");
     expect(sendMail).toHaveBeenCalledTimes(2);
@@ -136,7 +136,7 @@ describe("failures", () => {
 
   it("throws rather than resolving quietly", async () => {
     // Callers of sendEmail deliberately swallow errors so a failed
-    // notification cannot break the action that caused it — which makes this
+    // notification cannot break the action that caused it, which makes this
     // the last layer where a problem is visible at all.
     sendMail.mockRejectedValue(smtpError(550));
     expect(await send()).toBeInstanceOf(Error);
@@ -161,7 +161,7 @@ describe("what reaches the log", () => {
 describe("configuration", () => {
   it("refuses to send when no host is configured", async () => {
     // `env()` memoizes, so the module registry has to be reset for the
-    // environment to be read again — the same reason this cannot be checked by
+    // environment to be read again, the same reason this cannot be checked by
     // deleting the variable mid-test.
     vi.resetModules();
     delete process.env.SMTP_HOST;

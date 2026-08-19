@@ -7,7 +7,7 @@ import { rateLimited } from "@/server/errors";
  * The database store is correct across multiple instances and needs no extra
  * infrastructure, which is the right trade for MVP traffic. Swapping in Redis
  * later means implementing `RateLimitStore` and changing one line in
- * `defaultStore` — no caller changes.
+ * `defaultStore`, no caller changes.
  */
 export interface RateLimitStore {
   /** Increments the counter for `key` in the current window and returns the new count. */
@@ -26,7 +26,7 @@ export const RULES = {
   passwordReset: { limit: 5, windowMs: 60 * 60 * 1000 },
   // Asking us to send the confirmation mail again.
   //
-  // Every other route that puts a message on the wire is already bounded —
+  // Every other route that puts a message on the wire is already bounded,
   // signup, password reset, and everything behind `notify`, which a member can
   // switch off. This one was not, and being signed in is not a reason to trust
   // it: an account holding the button down is an outbound mail flood from our
@@ -36,7 +36,7 @@ export const RULES = {
   //
   // Five an hour is more than anybody clicks in earnest.
   emailVerification: { limit: 5, windowMs: 60 * 60 * 1000 },
-  // Submitting an emailed token — a reset link or a confirmation link.
+  // Submitting an emailed token, a reset link or a confirmation link.
   //
   // The tokens are 256 bits of randomness, so this is not what stops them
   // being guessed; nothing needs to, at that size. It is here so that an

@@ -107,7 +107,7 @@ describe("DeterministicScorer", () => {
 
   /**
    * The case the product brief calls out by name. These two share no interest
-   * at all, so any scorer built on tag intersection ranks them near zero — and
+   * at all, so any scorer built on tag intersection ranks them near zero, and
    * gets the answer wrong, because they have an obvious afternoon together.
    */
   it("matches an experienced photographer with someone curious about photography", async () => {

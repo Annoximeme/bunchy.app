@@ -3,7 +3,7 @@
  *
  * The database (`OAuthAccount`) and the account-linking logic in `service.ts`
  * are ready for third-party sign-in. No concrete provider is registered because
- * none has credentials in this environment — and a sign-in button that cannot
+ * none has credentials in this environment, and a sign-in button that cannot
  * complete a round trip is worse than no button, so the UI only renders
  * providers that `enabledProviders()` actually returns.
  *

@@ -2,7 +2,7 @@
  * The Bunchy logo.
  *
  * The symbol is four rounded shapes clustered into one bunch. Each is a
- * different size and sits at a different angle — individuality — and they hold
+ * different size and sits at a different angle, individuality, and they hold
  * an even gap all the way round rather than merging, so the mark still reads as
  * *several* at 16px and in flat monochrome. The largest shape is coral, which
  * is what makes the signature colour unmistakable even at favicon size.
@@ -73,7 +73,7 @@ export function BunchyMark({
  * "Bunchy", drawn.
  *
  * Cap height 100, x-height starting at 28, descender to 116, stroke 20 with
- * round caps and joins. Letters are spaced by hand — round letters (c) sit
+ * round caps and joins. Letters are spaced by hand, round letters (c) sit
  * tighter to their neighbours than flat-sided ones, and the diagonal of the y
  * tighter still, because even optical spacing is not even metric spacing.
  */
@@ -139,7 +139,7 @@ export function BunchyWordmark({
 
 /**
  * Symbol + wordmark. The mark is set to 1.45× the wordmark height so their ink
- * reads at the same optical weight — the mark is inset inside its own box, so
+ * reads at the same optical weight, the mark is inset inside its own box, so
  * matching the boxes would leave it looking undersized.
  */
 export function BunchyLogo({

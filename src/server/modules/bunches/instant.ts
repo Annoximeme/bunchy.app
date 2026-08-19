@@ -11,7 +11,7 @@ import { snapToGrid } from "@/server/modules/geo/precision";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 
 /**
- * Instant Bunch — "I want to play Warhammer tonight" becomes a group.
+ * Instant Bunch, "I want to play Warhammer tonight" becomes a group.
  *
  * Two steps, deliberately. `previewInstantBunch` reads the request and shows
  * who it found; `createInstantBunch` acts on a list of people the member picked.
@@ -19,7 +19,7 @@ import { findPlace } from "@/server/modules/geo/gazetteer";
  * and §6/§23 are clear that nothing sends invitations without explicit
  * authorisation. Preview never writes; create never guesses who to invite.
  *
- * The group starts as everybody `INVITED` and the creator `ACTIVE` — the same
+ * The group starts as everybody `INVITED` and the creator `ACTIVE`, the same
  * shape as a staff-proposed bunch, for the same reason: a group of people who
  * never agreed to be grouped is not a bunch. What the creator gets immediately
  * is a room with their name on it, not eight people in it.
@@ -74,7 +74,7 @@ export async function previewInstantBunch(
 export interface CreateInstantBunchInput {
   name: string;
   description: string;
-  /** People to invite. May be empty — a bunch of one is a valid starting point. */
+  /** People to invite. May be empty, a bunch of one is a valid starting point. */
   profileIds: string[];
   interestSlugs: string[];
   /** Creates a first activity at this time, when the request named one. */
@@ -208,7 +208,7 @@ export async function createInstantBunch(
  * "Warhammer tonight", "Hiking Saturday", "Board games".
  *
  * The member's own words plus the time they named. Falls back to something
- * plain rather than something clever — a bunch called "Let's Connect!" is worse
+ * plain rather than something clever, a bunch called "Let's Connect!" is worse
  * than one called "Saturday plans".
  */
 export function suggestName(intent: ResolvedIntent): string {
@@ -227,7 +227,7 @@ function suggestDescription(intent: ResolvedIntent): string {
   // The topic leads the sentence rather than sitting mid-clause, so its own
   // capitalisation is always correct. "Getting together for warhammer" is what
   // lowercasing produced, and there is no general rule that tells a proper noun
-  // from a common one — "Board games" wants lowering, "Warhammer" does not.
+  // from a common one, "Board games" wants lowering, "Warhammer" does not.
   const topic = intent.topic ?? intent.interests[0]?.label;
   parts.push(topic ? `${topic} with a few people.` : "Getting a few people together.");
 
@@ -248,7 +248,7 @@ function capitalize(value: string): string {
  * Filters an invite list down to people who may actually be invited.
  *
  * The client sends ids it got from a search, but a search result is a moment in
- * time — somebody can block you, close their account or switch off bunch
+ * time, somebody can block you, close their account or switch off bunch
  * invites between seeing the list and pressing the button. Re-checking here
  * rather than trusting the list is the difference between a stale id and an
  * unwanted invitation.
@@ -291,7 +291,7 @@ async function interestIdsFor(slugs: string[]): Promise<string[]> {
  * The plan, as a real activity rather than a sentence in a description.
  *
  * Going through the Activity model means the reminder job, the participant
- * list and the "an activity changed" notification all work on it for free —
+ * list and the "an activity changed" notification all work on it for free,
  * and that the time survives as data instead of prose somebody has to re-read.
  */
 async function firstActivity(

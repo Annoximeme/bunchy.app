@@ -7,7 +7,7 @@ import type { InterestStatus } from "@/generated/prisma/enums";
 /**
  * Interest curation.
  *
- * Members can add their own interests, which is what keeps the taxonomy alive —
+ * Members can add their own interests, which is what keeps the taxonomy alive,
  * and also what fills it with near-duplicates ("boardgames", "Board Gaming").
  * Left alone, those fragment the matching signal: two people who share a passion
  * score as strangers because they typed it differently.

@@ -5,14 +5,14 @@
  * cannot invent a capability the product does not have, it cannot be talked
  * into anything, and it works with no key and no network.
  *
- * The set of answers is closed and small. That is a feature — a concierge that
+ * The set of answers is closed and small. That is a feature, a concierge that
  * appears to understand anything, then produces something plausible and wrong
  * for the nine requests out of ten it cannot serve, is worse than one that says
  * "I can do these five things" and does them properly.
  *
  * Note what is *not* here: nothing that writes. Classification decides which
  * question to answer, never which action to take, because the concierge has no
- * write capability at all — see `service.ts`.
+ * write capability at all, see `service.ts`.
  */
 
 export type AskKind =
@@ -33,7 +33,7 @@ export type AskKind =
 
 export interface Ask {
   kind: AskKind;
-  /** Confidence is not a probability — it is whether a phrase actually matched. */
+  /** Confidence is not a probability, it is whether a phrase actually matched. */
   matched: boolean;
 }
 
@@ -113,8 +113,8 @@ export function classify(text: string): Ask {
     }
   }
 
-  // Nothing matched a verb. A bare noun phrase — "board games", "hiking
-  // Saturday" — is overwhelmingly a request to find people for it, which is
+  // Nothing matched a verb. A bare noun phrase, "board games", "hiking
+  // Saturday", is overwhelmingly a request to find people for it, which is
   // also the answer that degrades most gracefully when the guess is wrong:
   // it shows real people and an honest empty state rather than a wrong answer.
   return { kind: "find_people", matched: false };

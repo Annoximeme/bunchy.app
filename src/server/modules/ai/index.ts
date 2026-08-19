@@ -4,7 +4,7 @@ import type { Assistant } from "@/server/modules/ai/provider";
 /**
  * The assistant, resolved.
  *
- * There is one implementation and it is free — see `provider.ts` for why that
+ * There is one implementation and it is free, see `provider.ts` for why that
  * is a design decision rather than a placeholder. This file used to pick
  * between a local and a hosted provider based on `AI_PROVIDER`; the hosted one
  * is gone, along with the environment variables that could have switched it on

@@ -18,7 +18,7 @@ import {
 /**
  * One handler for every onboarding step.
  *
- * Each step is the same shape — validate, persist, report where to go next — so
+ * Each step is the same shape, validate, persist, report where to go next, so
  * five near-identical route files would be five places to forget something.
  */
 const STEPS = {

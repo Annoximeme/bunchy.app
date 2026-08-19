@@ -10,13 +10,13 @@ import type { PersonMatch } from "@/server/modules/matching/types";
  *
  * Everything else in this module ranks a pool: Discover scores four hundred
  * candidates and keeps eight, bunch formation scores a room. This scores
- * exactly one pair, which is what a profile page needs — somebody arriving
+ * exactly one pair, which is what a profile page needs, somebody arriving
  * there has already chosen who they are looking at, and the question is no
  * longer "who?" but "why us?".
  *
  * It runs the same scorer as everything else rather than a simplified copy.
- * A profile page that disagreed with the Discover card that led to it — 87%
- * there, "quite similar" here — would make both numbers untrustworthy, and the
+ * A profile page that disagreed with the Discover card that led to it, 87%
+ * there, "quite similar" here, would make both numbers untrustworthy, and the
  * one people would believe is whichever they saw last.
  *
  * ## What this deliberately does not do

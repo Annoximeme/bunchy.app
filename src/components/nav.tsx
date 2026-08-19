@@ -14,7 +14,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
  *
  * Five destinations, no more. On mobile it is a bottom bar (thumb-reachable);
  * on desktop a left rail. Note what is missing: there is no notification
- * bell with a permanent red dot, and no counter that exists to be cleared —
+ * bell with a permanent red dot, and no counter that exists to be cleared,
  * unread badges appear only when a real person is actually waiting.
  *
  * "Start a bunch" sits outside that list, as an action rather than a place
@@ -39,9 +39,9 @@ const ITEMS = [
  * Radar and Bunchy Now are deliberately not among them. Six items plus the
  * button in 390px
  * gives ~48px targets with no breathing room, against the 67px the current
- * five get — and §16 asks for large touch targets before it asks for
+ * five get, and §16 asks for large touch targets before it asks for
  * completeness. On a phone both are reached from Discover, which carries them
- * as hero actions — prominence bought by shrinking every target on the bar is
+ * as hero actions, prominence bought by shrinking every target on the bar is
  * not prominence worth having.
  */
 const MOBILE_ITEMS = ITEMS.filter(
@@ -68,7 +68,7 @@ export function AppNav({
   unreadNotifications: number;
   /** Published announcements this member has not opened. */
   unreadAnnouncements: number;
-  /** Renders the staff entry. The link is cosmetic — /admin guards itself. */
+  /** Renders the staff entry. The link is cosmetic, /admin guards itself. */
   staff?: boolean;
 }) {
   const pathname = usePathname();
@@ -155,7 +155,7 @@ export function AppNav({
         <div className="space-y-1 border-t border-line pt-4">
           {/* Below the line with the staff link and the profile, not up among
               the seven ways to meet people. It is a record to consult, not a
-              thing to do — the important ones arrive as a banner rather than
+              thing to do, the important ones arrive as a banner rather than
               waiting here to be found. */}
           <Link
             href="/supporter"

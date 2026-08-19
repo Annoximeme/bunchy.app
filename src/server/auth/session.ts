@@ -4,7 +4,7 @@ import { hashToken, issueToken } from "@/server/auth/tokens";
 /**
  * Session lifecycle, expressed purely in terms of tokens and rows.
  *
- * Nothing here knows about cookies or requests — `cookies.ts` owns that glue.
+ * Nothing here knows about cookies or requests, `cookies.ts` owns that glue.
  * Keeping the split means sessions can be exercised in tests without a fake
  * HTTP layer.
  */
@@ -46,8 +46,8 @@ export interface ResolvedSession {
 }
 
 /**
- * Validates a raw session token. Returns null for anything unusable — expired,
- * unknown, or belonging to a suspended account — so callers have a single
+ * Validates a raw session token. Returns null for anything unusable, expired,
+ * unknown, or belonging to a suspended account, so callers have a single
  * "not signed in" path.
  */
 export async function resolveSession(

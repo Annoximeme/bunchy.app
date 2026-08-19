@@ -15,14 +15,14 @@ export const dynamic = "force-dynamic";
  *
  * It does not unsubscribe anybody. Rendering is a GET, and mail scanners,
  * link-preview bots and prefetchers follow every URL in a message before a
- * human ever opens it — so a GET that acted would quietly unsubscribe people
+ * human ever opens it, so a GET that acted would quietly unsubscribe people
  * who never clicked anything, and they would have no way to know why the mail
  * stopped. The button below posts.
  *
  * Deliberately outside the app layout and outside `(app)`: somebody following
  * this link is not signed in, may never have been, and is here for one thing.
  * Nothing on this page asks them to log in, and nothing tries to talk them out
- * of it — a page that makes unsubscribing feel like a negotiation is a page
+ * of it, a page that makes unsubscribing feel like a negotiation is a page
  * that gets its sender reported instead.
  */
 export default async function UnsubscribePage({
@@ -106,7 +106,7 @@ function Done({ kind }: { kind: string }) {
  *
  * Somebody looking at this page is trying to make email stop and has just been
  * told the button does not work. Without somewhere to go next, the only lever
- * left in their client is the spam button — which costs far more than the
+ * left in their client is the spam button, which costs far more than the
  * reply they might otherwise send.
  */
 function Broken() {

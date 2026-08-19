@@ -6,7 +6,7 @@ import { useState } from "react";
  * "Tell someone where you're going."
  *
  * Deliberately not a feature that sends anything. Bunchy has no way to reach a
- * person who is not a member — and even with email working, a message from an
+ * person who is not a member, and even with email working, a message from an
  * unfamiliar domain is the one a friend ignores. The person you actually tell
  * things to is already in a chat window, so this hands you the text and gets out
  * of the way.
@@ -33,7 +33,7 @@ export function TellSomeone({
   ].join("\n");
 
   async function share() {
-    // The native sheet where it exists — on a phone that is the difference
+    // The native sheet where it exists, on a phone that is the difference
     // between one tap and switching apps.
     if (typeof navigator !== "undefined" && navigator.share) {
       try {

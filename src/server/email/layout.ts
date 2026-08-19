@@ -33,7 +33,7 @@ import { brand } from "@/lib/brand";
  *   readable rather than merely intended to be.
  *
  * Contrast comes from `lib/palette`, so the rule the rest of the product
- * follows — every brand fill has exactly one ink that can be read on it —
+ * follows, every brand fill has exactly one ink that can be read on it,
  * holds in the inbox too. Coral with white label text is 1.9:1; it is the
  * mistake this module cannot make, because it does not choose the pair.
  */
@@ -72,7 +72,7 @@ export interface EmailContent {
   /** Body paragraphs, in order. Plain text; escaped on the way out. */
   body: string[];
   action?: EmailAction;
-  /** Small print under the action — expiry, "wasn't you", that sort of thing. */
+  /** Small print under the action, expiry, "wasn't you", that sort of thing. */
   fine?: string[];
   /** The last line: why this person is receiving this at all. */
   footnote: string;
@@ -82,7 +82,7 @@ export interface EmailContent {
    * The `List-Unsubscribe` header is not a substitute for this one. The header
    * is honoured by Gmail, Yahoo and Outlook.com and by very little else, so in
    * every other client the only way off the list is what is written in the
-   * message — and a bulk email with no visible way out is the definition of
+   * message, and a bulk email with no visible way out is the definition of
    * the thing the spam button exists for.
    */
   unsubscribeUrl?: string;
@@ -117,8 +117,8 @@ function paragraph(text: string, index: number): string {
 /**
  * The logo, as four coloured blocks.
  *
- * Two rows of two, at the sizes the real mark uses — largest coral, smallest
- * purple — because the cluster reading as *several different* shapes is the
+ * Two rows of two, at the sizes the real mark uses, largest coral, smallest
+ * purple, because the cluster reading as *several different* shapes is the
  * one thing the mark is doing. Fixed `width`/`height` attributes as well as
  * CSS: Outlook honours the attribute and ignores the style.
  */
@@ -164,7 +164,7 @@ function header(): string {
  * `bgcolor` on the cell and `background-color` in the style, because Outlook
  * reads the attribute and everything else reads the property. The padding is
  * on the `<a>` rather than the cell so the whole coloured area is the click
- * target — padding on the cell leaves a border of dead pixels that look
+ * target, padding on the cell leaves a border of dead pixels that look
  * clickable and are not.
  */
 function actionButton(action: EmailAction): string {

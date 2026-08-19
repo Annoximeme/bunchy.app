@@ -7,7 +7,7 @@ import {
 } from "@/lib/notifications";
 
 /**
- * These tests exist because the defaults were once written twice — the settings
+ * These tests exist because the defaults were once written twice, the settings
  * screen drew the suggestion switch off while the sender delivered the
  * suggestion anyway. The rules below are the product promise in §29, so they
  * are asserted rather than left to a comment.

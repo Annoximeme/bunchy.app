@@ -10,7 +10,7 @@ interface NavItem {
   /** Overview would otherwise match every nested route. */
   exact?: boolean;
   /**
-   * Hidden from moderators. The page behind it answers 404 for them anyway —
+   * Hidden from moderators. The page behind it answers 404 for them anyway,
    * this only stops the nav offering a door that will not open.
    */
   adminOnly?: boolean;

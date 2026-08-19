@@ -44,7 +44,7 @@ export async function GET() {
 export async function POST(request: Request) {
   return handleAuthed(async (viewer) => {
     // Cheap to set and it replaces one row, but it is still member-visible
-    // content — the note is free text that other people read.
+    // content, the note is free text that other people read.
     await consume("message", viewer.profileId);
     await assertAvailabilityEnabled(viewer.profileId);
 

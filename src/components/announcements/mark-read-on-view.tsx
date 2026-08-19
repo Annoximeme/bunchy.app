@@ -12,7 +12,7 @@ import { api } from "@/lib/api";
  * to render it more than once, and a write in that path is a write with no
  * defined number of times it happens. And the unread badge in the nav is
  * computed in the layout *above* this page, so a write during the page's render
- * lands too late to change it — the member reads the notice and watches the
+ * lands too late to change it, the member reads the notice and watches the
  * badge keep insisting there is something unread.
  *
  * Doing it here fixes both: one effect, guarded against Strict Mode's double

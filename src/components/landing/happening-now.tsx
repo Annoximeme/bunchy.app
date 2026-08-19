@@ -8,8 +8,8 @@ import { landingPulse } from "@/server/modules/discovery/landing-pulse";
  * privacy floor, this board describes it; until then it shows what the board
  * will look like, said plainly.
  *
- * The examples are labelled twice — once in the section's own subheading and
- * once per card — because this is the exact place a pre-launch product is
+ * The examples are labelled twice, once in the section's own subheading and
+ * once per card, because this is the exact place a pre-launch product is
  * tempted to imply traction it does not have. The brand rules forbid that, and
  * a number on a landing page is read as a claim whether or not it was meant as
  * one.

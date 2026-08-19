@@ -3,7 +3,7 @@
 **Find your people.**
 
 Bunchy is a social discovery platform for making real friendships,
-joining small bunches, and actually doing things together — online, in
+joining small bunches, and actually doing things together, online, in
 person, or both.
 
 It is deliberately not a feed. There is no infinite scroll, no follower count,
@@ -47,8 +47,8 @@ default `console` email transport, so those flows are fully usable locally.
 | `npm run dev`       | Development server                                   |
 | `npm run build`     | `prisma generate` + production build                 |
 | `npm run verify`    | Typecheck, lint, and unit tests                      |
-| `npm test`          | Unit tests (Vitest) — no database needed             |
-| `npm run test:components` | Component tests (jsdom) — no database needed      |
+| `npm test`          | Unit tests (Vitest), no database needed             |
+| `npm run test:components` | Component tests (jsdom), no database needed      |
 | `npm run test:integration` | Integration tests against a real `bunchy_test` DB |
 | `npm run verify:all`| Everything                                           |
 | `npm run jobs`      | Activity reminders and bunch suggestions (run hourly) |
@@ -63,57 +63,57 @@ default `console` email transport, so those flows are fully usable locally.
 
 Phase 1 of the roadmap is complete and working end to end.
 
-- **Landing page** — explains the product in under ten seconds, with real cards.
-- **Authentication** — email/password with scrypt hashing, database-backed
+- **Landing page**, explains the product in under ten seconds, with real cards.
+- **Authentication**, email/password with scrypt hashing, database-backed
   opaque session tokens in httpOnly cookies, email verification, password reset,
   session revocation. OAuth is abstracted but has no registered provider.
-- **Onboarding** — a five-step conversational flow (basics, interests,
+- **Onboarding**, a five-step conversational flow (basics, interests,
   personality, goals, availability), resumable from any device because progress
   is a stage machine on the profile row rather than client state.
-- **Compatibility scoring** — a weighted multi-signal engine, unit tested.
-- **Discover** — ranked people, bunches and activities, each with a plain-English
+- **Compatibility scoring**, a weighted multi-signal engine, unit tested.
+- **Discover**, ranked people, bunches and activities, each with a plain-English
   reason. Finite by design.
-- **Connections** — mutual consent; a conversation cannot exist until both
+- **Connections**, mutual consent; a conversation cannot exist until both
   people have agreed.
-- **Bunches** — creation, join requests, invites, roles, moderation, and live
+- **Bunches**, creation, join requests, invites, roles, moderation, and live
   group chat over SSE with replies, reactions and mentions.
-- **Activities** — create, join, waitlist with automatic promotion, cancel.
-- **Bunchy AI** — conversation starters, bunch catch-up summaries and activity
+- **Activities**, create, join, waitlist with automatic promotion, cancel.
+- **Bunchy AI**, conversation starters, bunch catch-up summaries and activity
   suggestions, behind a provider interface with a working local implementation.
-- **Trust & safety** — block, report, leave, remove, rate limiting, and privacy
+- **Trust & safety**, block, report, leave, remove, rate limiting, and privacy
   controls over discoverability, messaging, location and age.
-- **Staff dashboard** — report queue with the reported content inline, account
+- **Staff dashboard**, report queue with the reported content inline, account
   search with suspend/ban/role actions, bunch and activity moderation, interest
   curation (including duplicate merging), platform metrics with the north-star
   figure, and an append-only audit log of every staff action.
-- **Analytics** — a typed event spine wired into every lifecycle moment, with
+- **Analytics**, a typed event spine wired into every lifecycle moment, with
   weekly cohort retention, onboarding funnel drop-off and network health. No
   page-view or session-duration events exist, by design.
-- **Notifications** — an inbox that only reports things a person did, grouped by
+- **Notifications**, an inbox that only reports things a person did, grouped by
   day, plus per-type in-app and email switches that save the moment they move.
   Opening the screen does not mark anything read, and suggestions are off until
   you ask for them.
-- **Visual identity** — coral/purple/yellow/mint on soft cream with deep navy
+- **Visual identity**, coral/purple/yellow/mint on soft cream with deep navy
   text, a four-shape logo and a drawn wordmark, every accent paired with a
   text-safe ink at a measured contrast ratio. The guide is `brand/index.html`.
-- **Bunch chemistry** — whether a group is actually working, not just whether
+- **Bunch chemistry**, whether a group is actually working, not just whether
   it looks compatible: how many members are in the conversation, how evenly it's
   shared, whether anyone turns up. Members see what they could act on, never a
   score.
-- **Bunch formation** — proposes groups of five to twelve from members who
+- **Bunch formation**, proposes groups of five to twelve from members who
   aren't in a bunch, admitting people on their weakest link so a group never
   forms around one popular person. Staff review it; everyone proposed gets an
   invitation they can decline.
-- **Founding members & referrals** — a badge for finishing onboarding early
+- **Founding members & referrals**, a badge for finishing onboarding early
   (never an ordinal, confers nothing) and a personal invite link with no reward
   ladder, no leaderboard, no contact import and no reminder emails.
-- **Leaving** — download everything we hold as one JSON file, straight away, and
+- **Leaving**, download everything we hold as one JSON file, straight away, and
   delete the account for real: immediate, password-confirmed, no thirty-day
   "recovery window". Bunch conversations keep their shape with the author
   detached, people whose plans are affected are told first, and reports outlive
   the person who filed them.
 
-- **Privacy policy & terms** — at `/privacy` and `/terms`, written from the
+- **Privacy policy & terms**, at `/privacy` and `/terms`, written from the
   schema rather than a template, with a test that fails if the copy drifts from
   the code. Both are engineer-written drafts pending legal review; the company
   details live in `src/lib/legal.ts` and the pages show a draft banner until
@@ -129,9 +129,9 @@ decisions behind it, and what is deliberately deferred.
 ### Matching is not tag intersection
 
 Counting shared interests only ever finds people who already look identical. The
-scorer combines eight weighted signals — shared interests (rarity-weighted),
+scorer combines eight weighted signals, shared interests (rarity-weighted),
 *complementary* interests, social goals, personality fit, availability overlap,
-distance, age and shared history — and each interest carries an intent:
+distance, age and shared history, and each interest carries an intent:
 "I do this" or "I want to get into this".
 
 That is what lets Bunchy introduce an experienced photographer to someone who
@@ -146,7 +146,7 @@ for two people who want a hiking partner.
 
 Bunchy never stores an address or a precise coordinate. Coordinates are snapped
 to a coarse grid *on write*, so the most precise fact the database can express is
-"somewhere in this ~5 km cell" — enough to rank by distance, useless for finding
+"somewhere in this ~5 km cell", enough to rank by distance, useless for finding
 anyone. `User` (email, password hash, birth year) and `Profile` (everything
 public) are separate tables, and a single serializer is the only sanctioned path
 from a row to a payload another member can see.
@@ -155,7 +155,7 @@ from a row to a payload another member can see.
 
 ## Configuration
 
-All environment variables are validated at boot — see `src/server/env.ts`.
+All environment variables are validated at boot, see `src/server/env.ts`.
 
 | Variable            | Required        | Notes                                            |
 | ------------------- | --------------- | ------------------------------------------------ |
@@ -169,7 +169,7 @@ template: `cp .env.example .env`. For a server, see `DEPLOY.md`.
 
 There are no AI variables, and that is deliberate. Bunchy's assistant is
 deterministic and runs in-process, so running the product costs a database and
-a mail provider and nothing else — no metered API is reachable from any code
+a mail provider and nothing else, no metered API is reachable from any code
 path. If you later want richer generated text, the `Assistant` interface is the
 one place to implement it; prefer a self-hosted model, since a hosted one puts
 a per-request bill behind features members use constantly.

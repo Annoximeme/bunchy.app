@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 
 /**
  * `resolveReferrer` is the only part of referrals with rules worth asserting:
- * what it accepts, and — more importantly — the two cases where it must refuse.
+ * what it accepts, and, more importantly, the two cases where it must refuse.
  * The database is stubbed so these stay unit tests.
  */
 
@@ -42,7 +42,7 @@ describe("resolveReferrer", () => {
 
   it("returns null for an unrecognised code rather than throwing", async () => {
     findUnique.mockResolvedValue(null);
-    // A mistyped invite link must never block a signup — losing attribution is
+    // A mistyped invite link must never block a signup, losing attribution is
     // a rounding error, refusing the account is not.
     expect(await resolveReferrer("ZZZZZZZZ")).toBeNull();
   });

@@ -48,7 +48,7 @@ export const basicsSchema = z.object({
   /**
    * The browser's IANA zone, read from `Intl` and sent without being shown.
    *
-   * Not a question — asking is what the original design ruled out, and rightly:
+   * Not a question, asking is what the original design ruled out, and rightly:
    * most people cannot name their zone and a dropdown of 400 of them is a wall
    * to climb before signing up. Detecting it costs the member nothing and fixes
    * the countries where deriving from a country code is impossible, which are

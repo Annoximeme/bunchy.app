@@ -7,7 +7,7 @@ import {
 import { scorer } from "@/server/modules/matching/index";
 
 /**
- * Serendipity — the person you would not have found.
+ * Serendipity, the person you would not have found.
  *
  * The ordinary matcher rewards similarity, and it is right to: shared interests
  * are the easiest reason for two people to spend an evening together. Run it
@@ -16,7 +16,7 @@ import { scorer } from "@/server/modules/matching/index";
  *
  * This re-ranks the same candidates against a different question. Not "who is
  * most like you" but "who is unlike you in what they do, and like you in how
- * they do it" — different hobbies, same social temperature, overlapping
+ * they do it", different hobbies, same social temperature, overlapping
  * evenings, close enough to actually meet.
  *
  * It re-ranks rather than re-queries deliberately. `loadCandidates` is where
@@ -164,7 +164,7 @@ export async function surpriseMe(
 
       // The headline number is not the ordinary compatibility. It answers a
       // different question, so it would be dishonest to reuse the same label
-      // for it — the UI calls it "unexpected compatibility".
+      // for it, the UI calls it "unexpected compatibility".
       const score = Math.round(
         (COMPATIBILITY_WEIGHT * style + NOVELTY_WEIGHT * (novelty / 100)) * 100,
       );

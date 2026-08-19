@@ -3,8 +3,8 @@ import type { NotificationType } from "@/generated/prisma/enums";
 /**
  * How each notification type is described to the member controlling it.
  *
- * Written from their point of view — "Someone wants to connect", not
- * "CONNECTION_REQUEST" — and grouped so the settings screen reads as a set of
+ * Written from their point of view, "Someone wants to connect", not
+ * "CONNECTION_REQUEST", and grouped so the settings screen reads as a set of
  * decisions rather than a dump of enum values.
  *
  * The `person` flag marks notifications where a human is actually waiting on

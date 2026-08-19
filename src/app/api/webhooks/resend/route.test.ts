@@ -181,7 +181,7 @@ describe("events", () => {
 
   it("acknowledges events it does not act on rather than erroring", async () => {
     // A non-2xx makes Resend retry, and repeated failures get the endpoint
-    // disabled — which would silently take the bounces down with it.
+    // disabled, which would silently take the bounces down with it.
     const response = await POST(
       request({ type: "email.delivered", data: { to: ["fine@example.com"] } }),
     );

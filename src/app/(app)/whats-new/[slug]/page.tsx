@@ -32,10 +32,10 @@ export async function generateMetadata({
  * The bodies have been written and stored since the day this feature shipped
  * and there has been nowhere to read them: the archive listed titles and
  * summaries, and the banner carried a link to the policy rather than to the
- * notice itself. So the detail of *what changed and why* — the part the
- * policies actually promise — was the one thing not on screen anywhere.
+ * notice itself. So the detail of *what changed and why*, the part the
+ * policies actually promise, was the one thing not on screen anywhere.
  *
- * Opening this marks it read — from a client effect rather than from this
+ * Opening this marks it read, from a client effect rather than from this
  * render, because a server component is a render and not an event, and because
  * the unread badge is counted in the layout above and would otherwise stay
  * stale while the member sat there reading the thing it was counting.

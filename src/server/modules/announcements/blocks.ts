@@ -3,7 +3,7 @@
  *
  * A small tagged union rather than markdown or HTML. It is rendered to React
  * elements and never through `dangerouslySetInnerHTML`, so an announcement
- * cannot carry markup however the row was written — which matters more here
+ * cannot carry markup however the row was written, which matters more here
  * than almost anywhere, because these are the messages that arrive with the
  * operator's authority behind them.
  *

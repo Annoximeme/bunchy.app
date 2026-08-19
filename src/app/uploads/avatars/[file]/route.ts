@@ -14,7 +14,7 @@ import {
  * Behind a session, like every other member-generated thing here. /safety
  * promises that signed-out visitors and search engines see the marketing pages
  * and nothing else, and a photograph of a member served from an open URL would
- * make that untrue — the URL is unguessable, but "unguessable" is not the same
+ * make that untrue, the URL is unguessable, but "unguessable" is not the same
  * promise as "not public".
  *
  * Filenames are validated against the exact pattern this app writes before they

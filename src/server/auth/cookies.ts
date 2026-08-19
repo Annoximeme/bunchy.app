@@ -50,7 +50,7 @@ export async function clearSessionCookie() {
 
 /**
  * Request metadata attached to a new session, for the "where am I signed in"
- * screen. The IP is hashed on the way in — we never store it raw.
+ * screen. The IP is hashed on the way in, we never store it raw.
  */
 export async function sessionContextFromRequest(): Promise<SessionContext> {
   const headerList = await headers();

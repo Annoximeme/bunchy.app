@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bunchy — deploy.
+# Bunchy, deploy.
 #
 #   ./deploy.sh
 #
@@ -23,7 +23,7 @@ BEFORE=$(git rev-parse HEAD)
 git pull --ff-only
 AFTER=$(git rev-parse HEAD)
 if [ "$BEFORE" = "$AFTER" ]; then
-  echo "    already at $(git rev-parse --short HEAD) — rebuilding anyway"
+  echo "    already at $(git rev-parse --short HEAD), rebuilding anyway"
 else
   echo "    $(git rev-parse --short "$BEFORE") -> $(git rev-parse --short "$AFTER")"
 fi
@@ -41,7 +41,7 @@ docker compose up -d --remove-orphans
 # The Caddyfile is bind-mounted as a single file, and a single-file bind mount
 # pins the inode. Editing the file writes a new one and renames it over the
 # old, so the container goes on serving the config it started with while the
-# host shows the new one — and `up -d` sees an unchanged container spec and
+# host shows the new one, and `up -d` sees an unchanged container spec and
 # leaves it alone. That failure is silent and total: the proxy config simply
 # never changes. Recreating is what re-resolves the mount.
 echo "==> Reloading the proxy"
@@ -54,7 +54,7 @@ for i in $(seq 1 60); do
     break
   fi
   if [ "$i" = "60" ]; then
-    echo "    never became healthy — last 40 lines:" >&2
+    echo "    never became healthy, last 40 lines:" >&2
     docker compose logs app --tail 40 >&2
     exit 1
   fi
@@ -66,4 +66,4 @@ done
 echo "==> Pruning dangling images"
 docker image prune -f >/dev/null
 
-echo "==> Done — $(git rev-parse --short HEAD)"
+echo "==> Done, $(git rev-parse --short HEAD)"

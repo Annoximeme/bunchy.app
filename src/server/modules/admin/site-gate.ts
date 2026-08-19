@@ -14,7 +14,7 @@ import { env } from "@/server/env";
  * on the next request with no restart and no deploy.
  *
  * Files rather than a database row, deliberately. The same switch has to work
- * when the app is not running — that is half of what it is for — and a gate
+ * when the app is not running, that is half of what it is for, and a gate
  * whose state lives in Postgres cannot be read by the proxy that has to serve
  * the page when Postgres is unreachable. It also means `./maintenance.sh` on
  * the host and this dashboard are the same mechanism rather than two that
@@ -43,7 +43,7 @@ export function readGate(): GateMode {
 /**
  * Whether an admin can be let back in after flipping the switch.
  *
- * Caddy recognises exactly one bypass — a cookie carrying `PREVIEW_TOKEN` — so
+ * Caddy recognises exactly one bypass, a cookie carrying `PREVIEW_TOKEN`, so
  * without that token configured, turning the gate on locks out the person who
  * turned it on, and every other admin, from the dashboard containing the
  * off switch. Recovery would mean SSH.
@@ -78,7 +78,7 @@ export async function setGate(
 
   await mkdir(FLAG_DIR, { recursive: true });
 
-  // Clear both first so the two flags can never be set at once — Caddy checks
+  // Clear both first so the two flags can never be set at once, Caddy checks
   // SOON before ON, so a stale ON underneath would silently become the state
   // the moment SOON was lifted.
   await rm(path.join(FLAG_DIR, FILES.SOON), { force: true });

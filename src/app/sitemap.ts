@@ -6,7 +6,7 @@ import { env } from "@/server/env";
  * behind a session, and a sitemap listing URLs that redirect to /login is a
  * sitemap full of soft 404s.
  *
- * Dynamic rather than generated at build time — see `robots.ts` for why.
+ * Dynamic rather than generated at build time, see `robots.ts` for why.
  */
 export const dynamic = "force-dynamic";
 

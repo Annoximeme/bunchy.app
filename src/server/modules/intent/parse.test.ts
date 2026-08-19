@@ -116,7 +116,7 @@ describe("time, in the member's own zone", () => {
     const brussels = parse("play something tonight", "Europe/Brussels");
     const tokyo = parse("play something tonight", "Asia/Tokyo");
 
-    // Same words, same instant, two different UTC answers — and each is 18:00
+    // Same words, same instant, two different UTC answers, and each is 18:00
     // where the member actually is.
     expect(local(brussels.when!.from, "Europe/Brussels")).toBe("Wed 12/08, 18:00");
     expect(local(tokyo.when!.from, "Asia/Tokyo")).toBe("Thu 13/08, 18:00");
@@ -138,7 +138,7 @@ describe("time, in the member's own zone", () => {
   });
 
   it("says so when it clamped", () => {
-    // 15:00 UTC is 17:00 in Brussels — this morning is over.
+    // 15:00 UTC is 17:00 in Brussels, this morning is over.
     const intent = parse("go for a run this morning");
     expect(intent.notes.join(" ")).toContain("already started");
   });

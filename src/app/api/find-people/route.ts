@@ -9,7 +9,7 @@ import { consume } from "@/server/ratelimit";
  * POST rather than GET with a query string, because the search text is a
  * sentence about what somebody wants to do this weekend and query strings end
  * up in access logs, proxy caches and browser history. Nothing here is
- * cacheable anyway — the answer depends on who is asking.
+ * cacheable anyway, the answer depends on who is asking.
  */
 
 const schema = z.object({

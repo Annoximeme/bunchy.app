@@ -63,7 +63,7 @@ describe("breadth beats volume", () => {
       input({ members: members(8), messages: chatter(2, 12) }),
     );
 
-    // Same message count either way — only the distribution differs.
+    // Same message count either way, only the distribution differs.
     expect(chatter(8, 3)).toHaveLength(chatter(2, 12).length);
     expect(spread.score!).toBeGreaterThan(dominated.score!);
   });
@@ -135,7 +135,7 @@ describe("missing signals", () => {
       input({ members: members(6), messages: chatter(6, 2) }),
     );
 
-    // Everyone turned up, so including the signal can only help — and its
+    // Everyone turned up, so including the signal can only help, and its
     // absence must not silently drag the score down as a zero would.
     expect(withActivities.score!).toBeGreaterThanOrEqual(withoutActivities.score!);
     expect(withoutActivities.signals.some((s) => s.signal === "turn_up")).toBe(false);

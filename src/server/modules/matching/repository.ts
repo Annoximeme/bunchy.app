@@ -150,7 +150,7 @@ const CANDIDATE_POOL = 400;
  *
  * Discover asks "who should this person meet"; Find Someone and Instant Bunch
  * ask "who matches this description". The difference is that a search's terms
- * are requirements, not hints — so everything here becomes an AND in the query,
+ * are requirements, not hints, so everything here becomes an AND in the query,
  * and the loose "shares any interest OR same country OR shares a bunch"
  * affinity net is dropped when criteria are supplied.
  *
@@ -176,7 +176,7 @@ export interface CandidateFilter {
    * Discover leaves them out, and should: it exists to make introductions, and
    * introducing you to someone you already know is not one. But "who should I
    * invite to play Warhammer tonight" is a different question with the opposite
-   * answer — your friends are the first people you would ask. Excluding them
+   * answer, your friends are the first people you would ask. Excluding them
    * there produced an empty screen on a platform that had exactly the right
    * person on it.
    */
@@ -189,7 +189,7 @@ export interface CandidateFilter {
  *
  * Scoring is cheap but not free, so we narrow before we rank: people who share
  * at least one interest, are in the same country, or already share a bunch.
- * Everything excluded here is excluded on *policy* rather than score — blocks,
+ * Everything excluded here is excluded on *policy* rather than score, blocks,
  * privacy choices, existing connections and explicit "not interested" feedback
  * are not low-ranking matches, they are matches that must never appear.
  */
@@ -260,7 +260,7 @@ function applyCriteria(
     criteria.push({ goals: { some: { goal: { in: filter.goals } } } });
   }
   if (filter.availableNow) {
-    // `expiresAt` in the future is what "live" means — expired rows are left
+    // `expiresAt` in the future is what "live" means, expired rows are left
     // in place rather than swept, so every read must exclude them itself.
     criteria.push({ availabilityStatus: { is: { expiresAt: { gt: now } } } });
 
@@ -269,7 +269,7 @@ function applyCriteria(
     // Attaching the badge already respected `whoCanSeeAvailability`, so a
     // member who limits their status to connections never had it shown to a
     // stranger. But this filter selected them anyway, so they still appeared in
-    // a list headed "free right now" — and appearing in that list discloses the
+    // a list headed "free right now", and appearing in that list discloses the
     // status just as plainly as the badge would have. Membership is disclosure.
     criteria.push(availabilityAudienceCondition(subject.profileId));
   }
@@ -316,7 +316,7 @@ function applyCriteria(
 /**
  * A latitude/longitude box that certainly contains the radius.
  *
- * Deliberately generous — it exists to let Postgres throw away most of the
+ * Deliberately generous, it exists to let Postgres throw away most of the
  * table on an indexed comparison, not to be the answer. `withinRadius` does the
  * real measurement on what survives.
  */

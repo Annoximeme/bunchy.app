@@ -4,7 +4,7 @@ import type { PersonMatch, SignalResult } from "@/server/modules/matching/types"
  * The words of an introduction, as a pure function of the score that produced it.
  *
  * §5 says an introduction must never fabricate compatibility. The way to
- * guarantee that is not to instruct a writer carefully — it is to give the
+ * guarantee that is not to instruct a writer carefully, it is to give the
  * writer nothing to invent with. Every clause below is emitted only when the
  * signal that justifies it actually fired and scored well, and the phrasing
  * comes from a fixed table rather than from anything generative. There is no
@@ -15,7 +15,7 @@ import type { PersonMatch, SignalResult } from "@/server/modules/matching/types"
  * another, so it may only contain things the viewer could already see on that
  * profile. Shared interests, stated goals and symbolic availability are all on
  * the public profile. Age, location and anything behind a privacy switch are
- * deliberately absent — the caller has them, and this never asks.
+ * deliberately absent, the caller has them, and this never asks.
  */
 
 /** Below this a signal has not really said anything worth repeating. */
@@ -51,7 +51,7 @@ const CLAUSES: ReadonlyArray<{
     signal: "complementary_interests",
     // Deliberately directionless. The signal's evidence is "the interest worth
     // naming", which for some pairings is the candidate's and for others the
-    // viewer's — so "they could teach you X" would be a coin flip presented as
+    // viewer's, so "they could teach you X" would be a coin flip presented as
     // a fact. "Something to swap notes on" is true of every pairing it emits.
     fallback: "there's something each of you could show the other",
     withEvidence: (items) => `you'd have things to swap notes on, like ${list(items)}`,
@@ -117,7 +117,7 @@ export function composeIntroduction(
  *
  * A high score with no strong individual signal is an average of mediocre
  * ones, and an introduction that can only say "you seem compatible" is worse
- * than no introduction — it spends the one moment someone might have acted on.
+ * than no introduction, it spends the one moment someone might have acted on.
  */
 export function worthIntroducing(
   match: Pick<PersonMatch, "score" | "signals">,
@@ -141,7 +141,7 @@ export function worthIntroducing(
  * Joining them with commas and a trailing "and" produced sentences like "you're
  * both looking for hobby partners, new friends and local communities, you'd
  * have things to swap notes on, like Nature and Hiking and you're free at the
- * same times" — grammatical, and unreadable, because the clauses contain their
+ * same times", grammatical, and unreadable, because the clauses contain their
  * own lists. Short sentences cost nothing and can be skimmed.
  */
 function sentence(clauses: string[]): string {

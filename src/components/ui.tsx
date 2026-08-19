@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 /**
  * Shared primitives.
  *
- * Small and unopinionated on purpose — the visual identity lives in the design
+ * Small and unopinionated on purpose, the visual identity lives in the design
  * tokens, so these mostly compose token-driven classes rather than inventing
  * styles of their own.
  */
@@ -27,7 +27,7 @@ const BUTTON_BASE =
 
 /**
  * The primary button carries a deep navy label on coral, not a white one.
- * White on #FF5C6C measures 3.00:1 — below AA for a button label — while navy
+ * White on #FF5C6C measures 3.00:1: below AA for a button label, while navy
  * on the same coral is 5.42:1. Keeping the signature colour exactly as
  * specified and moving the label is the trade that costs the brand nothing.
  */
@@ -108,8 +108,8 @@ export function Card({
 /**
  * `eyebrow` is the landing page's device, brought inside.
  *
- * Every section there opens with a short coloured label in caps — THE PROBLEM,
- * WHAT YOU CAN ACTUALLY DO — and it does two jobs: it separates sections
+ * Every section there opens with a short coloured label in caps, THE PROBLEM,
+ * WHAT YOU CAN ACTUALLY DO, and it does two jobs: it separates sections
  * without a rule, and the colour says what kind of thing follows. The signed-in
  * product had none of it, which is a large part of why a page of stacked white
  * cards read as a different product from the one that sold it.
@@ -220,7 +220,7 @@ export function CompatibilityBadge({ score }: { score: number }) {
     >
       <span className="text-sm font-semibold tabular-nums">{score}%</span>
       {/* No `opacity-80` here. Dimming the label pulled it to 3.61:1 on the
-          soft coral behind it — the quietness was worth having and was being
+          soft coral behind it, the quietness was worth having and was being
           bought by making the word hard to read. The smaller size already
           subordinates it. */}
       <span className="text-[11px] font-medium">match</span>
@@ -324,7 +324,7 @@ const CONTROL =
   "text-ink placeholder:text-muted transition-colors duration-200 " +
   // No `focus:outline-none` here. It compiles to a higher-specificity selector
   // than the `:focus-visible` outline in globals.css and silently cancelled it
-  // on every input, textarea and select in the product — leaving a keyboard
+  // on every input, textarea and select in the product, leaving a keyboard
   // user with a 20%-opacity ring well under the 3:1 a focus indicator needs.
   "focus:border-accent focus:ring-2 focus:ring-accent/30 " +
   "disabled:opacity-60";
@@ -380,7 +380,7 @@ export function Toggle({
         {/*
           `left-0` is load-bearing. A button centres its inline content, and an
           absolutely positioned child with no `left` falls back to its static
-          position — the centre of an empty line box — so the translate pushed
+          position, the centre of an empty line box, so the translate pushed
           the knob clean off the right edge of the track.
         */}
         <span
@@ -436,7 +436,7 @@ export function EmptyState({
   /**
    * Heading level. Three is right inside a section that already has its own
    * heading, which is most of them. Two is right when the empty state *is* the
-   * page's content — on Notifications it sat directly under the h1 as an h3,
+   * page's content, on Notifications it sat directly under the h1 as an h3,
    * which is a skipped level and the reason a screen-reader user cannot tell
    * how a page is structured by tabbing its headings.
    */

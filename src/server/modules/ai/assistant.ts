@@ -11,7 +11,7 @@ import { ONLINE_FIRST_INTERESTS, slugifyInterest } from "@/lib/interests";
  * Bunchy's assistant: no network, no API key, no bill.
  *
  * Template-driven rather than generative, which makes it worse at prose and
- * better at the three things this product actually needs — it is instant, it
+ * better at the three things this product actually needs, it is instant, it
  * costs nothing to run at any scale, and it can never say anything
  * unpredictable to a member. Every output is grounded in data the two people
  * actually entered, so "never fabricate" is a property of the code rather than
@@ -173,7 +173,7 @@ export class BunchyAssistant implements Assistant {
   }
 }
 
-/** Cheap keyword extraction — the most repeated meaningful words. */
+/** Cheap keyword extraction, the most repeated meaningful words. */
 const STOP_WORDS = new Set([
   "the", "and", "for", "that", "this", "with", "you", "are", "but", "not",
   "have", "has", "was", "were", "would", "could", "should", "there", "their",

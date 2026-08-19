@@ -29,7 +29,7 @@ export const metadata: Metadata = { title: "Discover" };
 export const dynamic = "force-dynamic";
 
 /**
- * Discover — the heart of the product.
+ * Discover, the heart of the product.
  *
  * It answers exactly two questions: who should I meet, and what should I do.
  * Note the ending: once the suggestions run out, the page says so and stops.
@@ -38,22 +38,22 @@ export const dynamic = "force-dynamic";
  *
  * ## The order, and why it changed
  *
- * The page used to put up to five blocks of chrome — a verification banner, an
+ * The page used to put up to five blocks of chrome, a verification banner, an
  * introduction, four unexplained shortcut pills, an outcome prompt and the
- * availability panel — above the first recommendation. The page promises "this
+ * availability panel, above the first recommendation. The page promises "this
  * is the whole page" in its own subtitle, and then the whole page started
  * halfway down it.
  *
  * What is here now is ordered by what a member actually opens this for:
  *
- * 1. **What is on the page** — the head, with counts that jump to each section.
- * 2. **Anything owed** — confirm your email, how did Thursday go. Short, and
+ * 1. **What is on the page**, the head, with counts that jump to each section.
+ * 2. **Anything owed**, confirm your email, how did Thursday go. Short, and
  *    genuinely unfinished business rather than an interruption.
- * 3. **The introduction** — one person, chosen deliberately. The highest-value
+ * 3. **The introduction**, one person, chosen deliberately. The highest-value
  *    thing on the page when it exists, and it usually does not.
- * 4. **Who is around now** — time-critical, and worthless an hour later.
- * 5. **The recommendations** — the reason for the page.
- * 6. **The other ways in** — the shortcuts, at the point where "none of these
+ * 4. **Who is around now**, time-critical, and worthless an hour later.
+ * 5. **The recommendations**, the reason for the page.
+ * 6. **The other ways in**, the shortcuts, at the point where "none of these
  *    appeal" becomes true.
  */
 export default async function DiscoverPage() {
@@ -63,7 +63,7 @@ export default async function DiscoverPage() {
     One batch, not four.
 
     `neighbourhood`, `outcome` and `introduction` used to be three sequential
-    awaits after this — each waiting for the one before it for no reason, on
+    awaits after this, each waiting for the one before it for no reason, on
     the heaviest page in the product. They do not depend on each other or on
     anything above, so they belong in the same round trip.
   */

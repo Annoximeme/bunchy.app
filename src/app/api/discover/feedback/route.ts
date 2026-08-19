@@ -11,7 +11,7 @@ const schema = z.object({
 });
 
 /**
- * "Not for me" — the control that makes Discover trustworthy.
+ * "Not for me", the control that makes Discover trustworthy.
  *
  * Members will only tell us what they don't want if doing so is instant and
  * permanent, so this writes through immediately and the engine treats it as a

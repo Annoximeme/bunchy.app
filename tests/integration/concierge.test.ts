@@ -11,7 +11,7 @@ import { clearIntentCatalogue } from "@/server/modules/intent/resolve";
  * The claim these tests exist to defend is the strong one: the concierge cannot
  * change anything. §6 and §23 say it must never send an invitation, publish an
  * activity or make a commitment without authorisation, and the implementation's
- * answer is that it has no write path — so the tests count rows before and
+ * answer is that it has no write path, so the tests count rows before and
  * after, on every kind of question, rather than checking a guard.
  *
  * The rest is about not inventing: every count it states has to be a count of
@@ -115,7 +115,7 @@ describe("it cannot change anything", () => {
     }
     const after = await counts();
 
-    // Not "the guard held" — there is nothing here that could have written.
+    // Not "the guard held", there is nothing here that could have written.
     expect(after).toEqual(before);
   });
 

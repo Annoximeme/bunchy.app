@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
  * The engine can tell you which seven people would work together. It cannot
  * tell you whether it is a good idea to put these seven particular people in a
  * room, and it never sees the thing a moderator would notice in five seconds.
- * So it proposes and a person decides — and everyone proposed gets an invite
+ * So it proposes and a person decides, and everyone proposed gets an invite
  * they can decline rather than a bunch they wake up inside.
  */
 export default async function FormationPage() {

@@ -3,7 +3,7 @@
  *
  * Onboarding needs to turn "Antwerp" into a country, a region label and coarse
  * coordinates. A hosted geocoding API would do that, but none is provisioned
- * here and a city picker that returns nothing is a broken feature — so the
+ * here and a city picker that returns nothing is a broken feature, so the
  * default implementation is a built-in gazetteer of populated places. It works
  * offline, costs nothing and never sends a member's location to a third party.
  *
@@ -27,7 +27,7 @@ export interface Geocoder {
 type Row = [city: string, region: string, country: string, lat: number, lng: number];
 
 const PLACES: Row[] = [
-  // Belgium — the founding market.
+  // Belgium, the founding market.
   ["Antwerp", "Antwerp region", "BE", 51.2194, 4.4025],
   ["Ghent", "East Flanders", "BE", 51.0543, 3.7174],
   ["Brussels", "Brussels-Capital", "BE", 50.8503, 4.3517],

@@ -54,11 +54,11 @@ export interface MatchProfile {
   interests: MatchInterest[];
   goals: SocialGoal[];
   availability: AvailabilityWindow[];
-  /** IANA zone. Null falls back to UTC — see `sharedHours`. */
+  /** IANA zone. Null falls back to UTC, see `sharedHours`. */
   timezone: string | null;
   personality: PersonalityVector | null;
 
-  /** Community context — bunches in common are strong evidence of fit. */
+  /** Community context, bunches in common are strong evidence of fit. */
   bunchIds: string[];
   /** Activities both people attended. Having actually met beats any profile field. */
   attendedActivityIds: string[];
@@ -67,7 +67,7 @@ export interface MatchProfile {
 }
 
 /**
- * One dimension's contribution. `reason` is written to be shown to a member —
+ * One dimension's contribution. `reason` is written to be shown to a member,
  * every score in this product must be explainable in a sentence.
  */
 export interface SignalResult {

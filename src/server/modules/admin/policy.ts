@@ -5,7 +5,7 @@ import type { UserRole } from "@/generated/prisma/enums";
  *
  * Deliberately free of any database or request dependency. This is the rule
  * that stops one compromised moderator session from locking out every other
- * staff member, so it should be testable exhaustively and in isolation — a
+ * staff member, so it should be testable exhaustively and in isolation, a
  * security policy you need a running Postgres to exercise is a security policy
  * that quietly stops being exercised.
  *
@@ -38,7 +38,7 @@ export interface Principal {
  * | MODERATOR      |  yes   |    no     |  no   |
  * | ADMIN          |  yes   |   yes     |  no   |
  *
- * Nobody, at any rank, may act on their own account — otherwise an admin can
+ * Nobody, at any rank, may act on their own account, otherwise an admin can
  * demote themselves into a state nobody can restore, and a suspended staff
  * member can lift their own suspension.
  */

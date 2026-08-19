@@ -14,13 +14,13 @@ import { authSecret } from "@/server/env";
  * forgotten. That is a real cost and worth stating plainly rather than
  * pretending it is free. It is proportionate because the people a ban protects
  * have a stronger interest in not meeting that person again than the banned
- * person has in the erasure of one opaque hash — and because everything below
+ * person has in the erasure of one opaque hash, and because everything below
  * is built to keep the retention as small as it can be.
  *
  * **Keyed, not merely hashed.** A plain SHA-256 of an email is reversible in
  * practice: the address space is small enough to enumerate. An HMAC under
  * `AUTH_SECRET` means a copy of this table alone cannot tell anyone whether a
- * given person was banned — an attacker needs the application secret too.
+ * given person was banned, an attacker needs the application secret too.
  *
  * **No link to the account.** The table has no foreign key to `User`, which is
  * the whole point: a cascade would remove the row along with the account, which

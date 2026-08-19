@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bunchy — run the visual and accessibility audit against a throwaway instance.
+# Bunchy, run the visual and accessibility audit against a throwaway instance.
 #
 #   ./scripts/visual-audit.sh [output-directory]   # defaults to ./screenshots
 #
@@ -22,7 +22,7 @@
 # ## The preview database
 #
 # A separate database on the same Postgres instance, holding seeded demo data.
-# It is *not* the production database and must never be pointed at it — the
+# It is *not* the production database and must never be pointed at it, the
 # audit signs in and clicks things. Create it once with:
 #
 #   docker compose exec db createdb -U "$POSTGRES_USER" bunchy_preview
@@ -45,7 +45,7 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-# Only the three variables this needs, and only from assignments — `source`ing
+# Only the three variables this needs, and only from assignments, `source`ing
 # a file written for docker compose runs whatever happens to be in it.
 read_env() {
   sed -n "s/^$1=//p" .env | tail -1

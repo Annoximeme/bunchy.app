@@ -9,7 +9,7 @@
 #                           ^ the authority ends here
 #
 # everything after that slash is a path, so the parser reads `aB3` as the port
-# and reports `P1013: invalid port number in database URL` — a message that
+# and reports `P1013: invalid port number in database URL`, a message that
 # points at the port, which was fine, rather than at the password, which was
 # not. The database was healthy throughout, which made it read like a
 # networking problem.

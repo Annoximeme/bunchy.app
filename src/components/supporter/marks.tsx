@@ -4,8 +4,8 @@ import { cn } from "@/components/ui";
  * The two marks that can sit beside a name, and why they are different shapes.
  *
  * A supporter chipped in. A staff member can suspend your account. Those are
- * not the same claim, and drawing them alike — or drawing either as a verified
- * tick — would make the more important one unreadable.
+ * not the same claim, and drawing them alike, or drawing either as a verified
+ * tick, would make the more important one unreadable.
  *
  * So: the supporter mark is the Bunchy cluster in the supporter gradient, quiet
  * and off to the side. The staff mark is a filled shield in the same gradient,
@@ -66,7 +66,7 @@ export function SupporterMark({
  *
  * It is a shield, which no other badge here is. It carries the gradient, which
  * the palette reserves for exactly two things and which a display name cannot
- * contain. And it is rendered from the role on the server — a member cannot put
+ * contain. And it is rendered from the role on the server, a member cannot put
  * it beside their own name by typing it, because it is not a character.
  */
 export function StaffMark({

@@ -73,7 +73,7 @@ export interface UserSearchQuery {
  *
  * It also removes email from the *search*, not just the output. A moderator who
  * can type an address and see whether a row comes back has been handed a
- * membership oracle — they would learn the fact without ever seeing the field,
+ * membership oracle, they would learn the fact without ever seeing the field,
  * which is the thing the restriction exists to prevent.
  */
 export async function searchUsers(
@@ -363,7 +363,7 @@ export async function unbanUser(
 }
 
 /**
- * Role changes are admin-only and never self-applied — an admin cannot demote
+ * Role changes are admin-only and never self-applied, an admin cannot demote
  * themselves into a state where nobody can restore them.
  */
 export async function setUserRole(

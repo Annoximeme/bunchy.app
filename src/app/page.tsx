@@ -22,7 +22,7 @@ import { HappeningNow } from "@/components/landing/happening-now";
  *
  * A fixed composition rather than a themed one: navy where the product is being
  * shown off, cream where it is being explained, whatever the reader's theme
- * says. Every colour here is written literally for that reason — the tokens
+ * says. Every colour here is written literally for that reason, the tokens
  * flip, and a page that inverts halfway down is not a composition.
  *
  * The font is self-hosted through next/font. Google's CDN is blocked by this
@@ -46,7 +46,7 @@ const display = Plus_Jakarta_Sans({
  *
  * No `aggregateRating` and no `review` either. Those are the two properties
  * most worth faking and the two Google penalises hardest for self-serving
- * markup — and there is nothing to report, because nobody has used this yet.
+ * markup, and there is nothing to report, because nobody has used this yet.
  *
  * The price is a real claim the page already makes out loud, so it is safe to
  * make it here as well.
@@ -99,7 +99,7 @@ export default async function LandingPage() {
         nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* 1 — Navigation */}
+      {/* 1: Navigation */}
       <header className="absolute inset-x-0 top-0 z-40">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
           <BunchyLogo height={24} color="#FFFFFF" />
@@ -121,7 +121,7 @@ export default async function LandingPage() {
       </header>
 
       <main id="main">
-        {/* 2 — Hero */}
+        {/* 2: Hero */}
         <section className="relative overflow-hidden pb-20 pt-28 md:pt-36">
           <div
             aria-hidden
@@ -200,17 +200,17 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 2b — The product, starting here */}
+        {/* 2b, The product, starting here */}
         <section className="px-5 pb-4">
           <div className="reveal mx-auto max-w-6xl">
             <UpFor />
           </div>
         </section>
 
-        {/* 2c — What's happening */}
+        {/* 2c, What's happening */}
         <HappeningNow />
 
-        {/* 3 — The contrast, in daylight */}
+        {/* 3: The contrast, in daylight */}
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
@@ -229,7 +229,7 @@ export default async function LandingPage() {
               argument was carried entirely by the words inside them and the
               picture said the two things were equivalent.
 
-              `items-center` rather than `items-stretch` for the same reason —
+              `items-center` rather than `items-stretch` for the same reason,
               matching the cluster's height to the card would put it back in an
               invisible box.
             */}
@@ -259,11 +259,11 @@ export default async function LandingPage() {
               {/* Here. No card, no border, no box. */}
               <div className="relative px-2 py-4">
                 {/* Organic ground. Three soft blobs at low opacity doing the job
-                    a card border used to do — holding the group together —
+                    a card border used to do, holding the group together,
                     without drawing a container around people. */}
                 {/* `z-0` and not `-z-10`: a negative index puts these behind the
                     section's own background, which is where they spent their
-                    first draft — invisible. */}
+                    first draft, invisible. */}
                 {/*
                   Faint, and centred on the avatars rather than on the words.
                   The first version ran these at 20–28% and put a coral one
@@ -271,7 +271,7 @@ export default async function LandingPage() {
                   back with two contrast failures, because #CE2F45 and #8a5e00
                   are measured against cream and had no headroom left once cream
                   had been tinted pink. The token block upstairs already says
-                  this — the ambient washes are 0.07 on light "because the same
+                  this, the ambient washes are 0.07 on light "because the same
                   gesture at the same strength would read as a stain on cream".
                 */}
                 <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
@@ -373,7 +373,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 5 — The signature moment */}
+        {/* 5: The signature moment */}
         <section className="px-5 py-24">
           <div className="reveal mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
@@ -393,7 +393,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 6 — How it works, in daylight */}
+        {/* 6: How it works, in daylight */}
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
@@ -411,13 +411,13 @@ export default async function LandingPage() {
               {/*
                 Ends on the last dot rather than the container. The dots sit at
                 the left edge of five equal columns, so the span between the
-                first and last centre is four columns plus four gaps — not the
+                first and last centre is four columns plus four gaps, not the
                 full width, which ran the line a whole column past Together.
               */}
               {/*
                 A ribbon rather than a rule. The connector was a 1px straight
                 line between five small dots, which is the drawing you make when
-                the five things are rows in a pipeline — and this is meant to be
+                the five things are rows in a pipeline, and this is meant to be
                 an evening, not a funnel. Same anchor points, same arithmetic:
                 the dots sit at the left edge of five equal columns, so the span
                 between the first and last centre is four columns plus four
@@ -488,7 +488,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 7 — What you can actually do */}
+        {/* 7: What you can actually do */}
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-[#9B85FF]">
@@ -563,7 +563,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 8 — Online, in person, or both */}
+        {/* 8: Online, in person, or both */}
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-mint-status">
@@ -574,7 +574,7 @@ export default async function LandingPage() {
             </h2>
             {/*
               No photographs and no testimonials. Bunchy has not launched, so
-              every face and quote here would have to be invented or bought — on
+              every face and quote here would have to be invented or bought, on
               a page whose entire promise is meeting real people, and for a
               product whose own brand rules forbid claiming traction it does not
               have. These are the shapes of plans the product makes, labelled as
@@ -645,7 +645,7 @@ export default async function LandingPage() {
               />
             </div>
 
-            {/* The optional evolution — offered, never required. */}
+            {/* The optional evolution, offered, never required. */}
             <div className="reveal mt-8 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8">
               <h3 className="text-xl font-bold tracking-tight">
                 And sometimes one becomes the other.
@@ -661,7 +661,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 9 — Recurring */}
+        {/* 9: Recurring */}
         <section className="px-5 pb-24">
           <div className="reveal mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 sm:p-12">
             <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
@@ -696,7 +696,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* Objections — kept from the previous page, because they convert */}
+        {/* Objections, kept from the previous page, because they convert */}
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="reveal mx-auto max-w-3xl">
             <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -726,7 +726,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 7 — Final CTA */}
+        {/* 7: Final CTA */}
         {/* py, not just pb: this section had no top padding, so the card began
             at the exact pixel the cream section ended and the two collided at
             the colour change. Every other section on the page is py-24. */}
@@ -820,7 +820,7 @@ export default async function LandingPage() {
  * Activity tags. Yellow is activities; mint is reserved for availability.
  *
  * The ink is `#8a5e00` rather than the yellow fill: this pill sits on a white
- * card on the cream band, and #FFC857 on white is about 1.7:1 — a colour that
+ * card on the cream band, and #FFC857 on white is about 1.7:1: a colour that
  * works as a fill and not at all as text.
  */
 /** The four in the contrast cluster. One of each brand accent. */
@@ -865,7 +865,7 @@ function Stage({
     <li className="relative">
       {/*
         The node sits on top of the ribbon and hides the piece of it that would
-        otherwise run underneath — hence the ring in the band's own colour.
+        otherwise run underneath, hence the ring in the band's own colour.
         Together is drawn larger and haloed: the copy says it is the only stage
         that counts, and five identical dots quietly said the opposite.
       */}
@@ -991,7 +991,7 @@ function Moment({
     <div
       className={`relative mb-5 break-inside-avoid overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 ${className}`}
     >
-      {/* The organic shape the brief asks for — behind the content, rather than
+      {/* The organic shape the brief asks for, behind the content, rather than
           decorating an empty corner. */}
       <div
         aria-hidden
@@ -1029,7 +1029,7 @@ function Moment({
             <span
               key={`${initial}-${i}`}
               className="flex size-9 items-center justify-center rounded-full text-xs font-bold ring-4 ring-band-deep"
-              // Colour and label both come from who they are — the fill is too
+              // Colour and label both come from who they are, the fill is too
               // bright to carry white on yellow or mint. See lib/palette.ts.
               style={{
                 background: person(initial).fill,

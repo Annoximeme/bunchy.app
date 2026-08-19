@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
  * The waiting list, and how much of it has been told.
  *
  * Admin-only, and it shows counts rather than addresses. The list holds one
- * column for one purpose and nobody needs to read it — a screen that renders
+ * column for one purpose and nobody needs to read it, a screen that renders
  * every address is a screen that leaks the whole list to a shoulder, a
  * screenshot or a session left open, in exchange for answering a question
  * ("who is on it?") that nothing here has to ask.

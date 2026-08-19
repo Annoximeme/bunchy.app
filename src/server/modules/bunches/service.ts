@@ -18,7 +18,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 /**
  * Bunches: creation, membership and moderation.
  *
- * A bunch is capped at 12 members. That is the product, not a placeholder —
+ * A bunch is capped at 12 members. That is the product, not a placeholder,
  * past roughly a dozen people a group stops being somewhere you're known and
  * becomes somewhere you post. The cap is enforced on every path that can add a
  * member, including invite acceptance and join approval.
@@ -657,7 +657,7 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
 
   const isMember = viewerMembership?.status === "ACTIVE";
 
-  // A private bunch shows nothing beyond its name to non-members — not its
+  // A private bunch shows nothing beyond its name to non-members, not its
   // description, not who is in it.
   if (bunch.visibility === "PRIVATE" && !isMember && viewerMembership?.status !== "INVITED") {
     throw notFound("That bunch no longer exists.");
@@ -698,7 +698,7 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
 
 /**
  * Browsable public bunches. Distinct from `recommendBunches`, which ranks by
- * compatibility — this is the plain "show me what exists" list with a search box.
+ * compatibility, this is the plain "show me what exists" list with a search box.
  */
 export async function browseBunches(
   viewerProfileId: string,

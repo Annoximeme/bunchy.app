@@ -28,8 +28,8 @@ export const metadata: Metadata = {
  * ## Why it is a composition rather than a themed document
  *
  * It used to follow the reader's theme, on the reasoning that the landing page
- * is a poster and this is a document. It is now banded — navy where Bunchy is
- * making a claim, cream where it is explaining itself — because the argument
+ * is a poster and this is a document. It is now banded, navy where Bunchy is
+ * making a claim, cream where it is explaining itself, because the argument
  * has a shape: statement, reasoning, refusal, the person responsible, the
  * offer. Alternating grounds are what let a reader feel that shape while
  * scrolling rather than having to parse fourteen headings to find it.
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
  * ## Motion
  *
  * `.reveal` is a scroll-driven CSS animation, not a library. It is guarded
- * twice — unsupported browsers never see the rule, and anyone who asked for
- * less motion is excluded before that — so the content is plainly visible in
+ * twice, unsupported browsers never see the rule, and anyone who asked for
+ * less motion is excluded before that, so the content is plainly visible in
  * both cases. This page is read, not watched.
  */
 
@@ -72,7 +72,7 @@ const editorial = Instrument_Serif({
  * The two colours still written literally, and the reason is the same for both:
  * they only ever appear on `band-deep`, which is the same navy in whichever
  * theme the reader is in. A token in those positions would move a colour whose
- * ground stayed put — which is the mistake this page shipped with, and the one
+ * ground stayed put, which is the mistake this page shipped with, and the one
  * the band tokens exist to stop.
  *
  * Everything on `band-soft` reads from the tokens, because that ground moves.
@@ -91,7 +91,7 @@ export default async function AboutPage() {
     <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
       {/* ----------------------------------------------------------------- 1
         A `div`, not a `section`. `<header>` only carries the banner role when
-        it is not inside article, aside, main, nav or section — nesting it in a
+        it is not inside article, aside, main, nav or section, nesting it in a
         section silently demoted the masthead to a plain group, which put the
         skip link and the logo outside any landmark at all. An axe pass with the
         best-practice rules on is what surfaced it.
@@ -270,7 +270,7 @@ export default async function AboutPage() {
 
         {/*
           Masonry, not a grid. Six refusals are six independent statements and
-          they are not the same length — the notifications one carries the most
+          they are not the same length, the notifications one carries the most
           because it is the one with an exception attached. In a stretched grid
           that card set the height of its whole row and left the two beside it
           as tall boxes with a third of their space empty. Letting each card end
@@ -285,7 +285,7 @@ export default async function AboutPage() {
             >
               {/* A filled coral disc rather than a bare glyph. The palette's own
                   rule is that coral carries a navy label, never a light one, and
-                  a solid disc reads as a stamp — more emphatic than a thin mark
+                  a solid disc reads as a stamp, more emphatic than a thin mark
                   in a colour that is 2.9:1 against white. Hidden from screen
                   readers, which would otherwise announce "multiplication sign"
                   before every heading in the list. */}
@@ -357,7 +357,7 @@ export default async function AboutPage() {
                   Dockerfile's runner stage says so in a comment, because a COPY
                   of a directory that does not exist fails the build. An
                   imported asset is emitted into `.next/static`, which the image
-                  already copies — so the photograph ships without touching the
+                  already copies, so the photograph ships without touching the
                   Dockerfile, and cannot 404 in production while looking fine in
                   development.
 
@@ -648,7 +648,7 @@ export default async function AboutPage() {
       {/*
         Outside `main`, and not nested in a section: `<footer>` only carries the
         contentinfo role at the top level, and inside a section it is just a
-        group — which is how the site links ended up in no landmark at all.
+        group, which is how the site links ended up in no landmark at all.
       */}
       <footer className="bg-band-deep px-5 pb-14 text-sm text-white">
         <div className="mx-auto max-w-3xl border-t pt-8" style={{ borderColor: "rgb(255 255 255 / 0.10)" }}>
@@ -751,7 +751,7 @@ function Prose({
  *
  * Two palettes, and the `on` prop is not decoration. The `-ink` tokens are the
  * accents darkened until they are legible on the soft band, which makes them
- * close to unreadable on the deep one — mint-ink on #0A0E1A is 1.6:1, and an
+ * close to unreadable on the deep one, mint-ink on #0A0E1A is 1.6:1, and an
  * axe pass over the first draft of this page caught exactly that. The deep band
  * gets the bright variants instead: coral 6.3:1, purple 6.7:1, mint 10.6:1.
  *

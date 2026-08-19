@@ -6,8 +6,8 @@ import { EMAIL_PREVIEWS, renderPreview } from "@/server/email/previews";
  * Look at an email without sending one.
  *
  * The rendered HTML, served as itself. A route handler rather than a page,
- * because an email is a whole document — doctype, `<body>` background, the lot
- * — and nesting one inside the admin layout would show it wrapped in Bunchy's
+ * because an email is a whole document, doctype, `<body>` background, the lot
+ *, and nesting one inside the admin layout would show it wrapped in Bunchy's
  * stylesheet, which is exactly the condition an inbox will never reproduce.
  *
  * Opened in a new tab rather than an iframe on the brand page: this app sends
@@ -21,7 +21,7 @@ import { EMAIL_PREVIEWS, renderPreview } from "@/server/email/previews";
  * The guard's refusal is caught here rather than left to propagate. A page
  * under `/admin` gets Next's not-found boundary for free; a route handler does
  * not, so an uncaught `notFound()` from `requireStaff` leaves the framework to
- * turn a deliberate refusal into a 500 — which is both the wrong status and a
+ * turn a deliberate refusal into a 500: which is both the wrong status and a
  * line in the error log every time somebody who is not staff pokes at the URL.
  */
 export async function GET(

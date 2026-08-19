@@ -81,7 +81,7 @@ describe("tokens", () => {
     const payload = Buffer.from("u0.w.sam@example.com", "utf8").toString(
       "base64url",
     );
-    // Even correctly signed, an old version must not be honoured — that is the
+    // Even correctly signed, an old version must not be honoured, that is the
     // entire point of the prefix.
     const token = signUnsubscribe({ kind: "waitlist", email: "x" });
     expect(verifyUnsubscribe(`${payload}.${token.split(".")[1]}`)).toBeNull();

@@ -13,7 +13,7 @@ import type { EmailMessage } from "@/server/email";
  * Each template returns the subject and both body parts, so a call site cannot
  * send a message that skipped the brand shell or, worse, invented its own. It
  * also means the entire outbound voice of the product can be read end to end
- * in one sitting — which is the only reliable way to notice that one message
+ * in one sitting, which is the only reliable way to notice that one message
  * says "we'll write once" and another has quietly started writing weekly.
  *
  * The copy follows the same rules as the site: no exclamation marks, no
@@ -29,7 +29,7 @@ type Body = Omit<EmailMessage, "to">;
  * There are two, they are different endpoints, and they must appear together
  * or not at all: the visible link in the footer, and the one-click URL in the
  * header. Deriving both from one target is what stops a template showing a
- * footer link with no header — invisible to Gmail's button — or the reverse,
+ * footer link with no header, invisible to Gmail's button, or the reverse,
  * which is worse: a one-click header on a message whose body never mentions
  * that unsubscribing is possible.
  */
@@ -79,7 +79,7 @@ export function verificationEmail(link: string): Body {
  * Reset your password.
  *
  * Deliberately plainer than the welcome. Someone reading this is locked out
- * and wants the link, not the pitch — and the "wasn't you" line has to be
+ * and wants the link, not the pitch, and the "wasn't you" line has to be
  * impossible to miss, because this is the message an attacker's failed
  * takeover attempt looks like from the inside.
  */
@@ -104,7 +104,7 @@ export function passwordResetEmail(link: string): Body {
  * Somebody did something that involves you.
  *
  * The notification module already refuses to send anything that is not about a
- * person's action, so this template can state that plainly in the footer — it
+ * person's action, so this template can state that plainly in the footer, it
  * is a promise the code enforces rather than a claim in the copy.
  */
 export function notificationEmail(input: {

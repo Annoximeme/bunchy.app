@@ -3,7 +3,7 @@
  *
  * Bunchy is run by one person, not a company. That is unusual enough in a
  * privacy policy that it is worth being explicit about rather than dressing up
- * as an organisation — under the GDPR a sole trader is still a controller, and
+ * as an organisation, under the GDPR a sole trader is still a controller, and
  * naming a real human is more honest than inventing a legal entity.
  *
  * **No postal address is published.** The GDPR requires the controller's
@@ -11,7 +11,7 @@
  * satisfies that, and a solo developer's registered address is their home. The
  * pages say a postal address is available on request instead, which meets the
  * obligation without publishing where someone lives. A lawyer should confirm
- * this for the operating jurisdiction — it is the kind of call worth checking.
+ * this for the operating jurisdiction, it is the kind of call worth checking.
  */
 
 export const LEGAL = {

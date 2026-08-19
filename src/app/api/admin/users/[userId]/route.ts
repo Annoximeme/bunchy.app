@@ -18,7 +18,7 @@ import {
  *
  * There is still a staff gate *before* the body is parsed, though. Without it
  * a member who is not staff got a 422 describing the schema, where every other
- * admin route answers 404 — which is precisely the reconnaissance the
+ * admin route answers 404: which is precisely the reconnaissance the
  * 404-not-403 rule exists to deny. Authorization first, then validation.
  */
 

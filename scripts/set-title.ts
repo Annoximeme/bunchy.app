@@ -13,7 +13,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
  * their password, is the entire attack and it costs nothing to run. Requiring
  * database access means whoever sets a title already controls the deployment.
  *
- * Kept short on purpose — a title is a badge, not a bio.
+ * Kept short on purpose, a title is a badge, not a bio.
  */
 
 const MAX_LENGTH = 48;
@@ -51,7 +51,7 @@ async function main() {
 
   if (!user.profile) {
     console.error(
-      `${user.email} has no profile yet — the title lives on the profile, which is created during signup.`,
+      `${user.email} has no profile yet, the title lives on the profile, which is created during signup.`,
     );
     await prisma.$disconnect();
     process.exit(1);

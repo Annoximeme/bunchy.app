@@ -7,7 +7,7 @@ import { api, errorMessage } from "@/lib/api";
  * Straight to Stripe's portal.
  *
  * A fresh session every time rather than a stored link, because portal URLs are
- * short-lived by design — a cached one would send somebody to an expired page
+ * short-lived by design, a cached one would send somebody to an expired page
  * at the exact moment they were trying to cancel.
  */
 export function ManageBillingButton() {

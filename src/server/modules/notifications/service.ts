@@ -41,7 +41,7 @@ export async function notify(input: NotifyInput): Promise<void> {
 
   // An absent row means the member has never touched this setting. The fallback
   // is the same one the settings screen draws, so what they see is what they
-  // get — a suggestion type stays silent until it is switched on.
+  // get, a suggestion type stays silent until it is switched on.
   const fallback = defaultPreference(input.type);
   const inApp = preference?.inApp ?? fallback.inApp;
   const wantsEmail = preference?.email ?? fallback.email;

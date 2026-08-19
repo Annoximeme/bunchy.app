@@ -7,8 +7,8 @@ import { afterAll, beforeAll, beforeEach } from "vitest";
  * Integration test bootstrap.
  *
  * These tests run against a real PostgreSQL database, because the things they
- * exist to check — cascade behaviour, `SetNull` on a foreign key, a transaction
- * that must not half-commit — are properties of the database and cannot be
+ * exist to check, cascade behaviour, `SetNull` on a foreign key, a transaction
+ * that must not half-commit, are properties of the database and cannot be
  * observed against a mock. A test double that returns whatever we told it to
  * would have happily agreed that deleting an account preserves its reports.
  *
@@ -20,7 +20,7 @@ import { afterAll, beforeAll, beforeEach } from "vitest";
  * 2. **Truncate between tests, migrate once.** Re-running migrations per test
  *    would take minutes; truncating every table takes milliseconds and leaves
  *    exactly the same clean slate.
- * 3. **One worker.** Tests share a database, so they run serially — see
+ * 3. **One worker.** Tests share a database, so they run serially, see
  *    `singleFork` in the config. Parallel workers truncating each other's rows
  *    is a flake generator, not a speed-up.
  */
@@ -68,7 +68,7 @@ beforeAll(async () => {
   try {
     await statement("postgres", `CREATE DATABASE bunchy_test`);
   } catch {
-    // Already there — the normal case after the first run.
+    // Already there, the normal case after the first run.
   }
 
   execFileSync("npx", ["prisma", "migrate", "deploy"], {

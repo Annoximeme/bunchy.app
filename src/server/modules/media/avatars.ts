@@ -15,7 +15,7 @@ import { validationFailed } from "@/server/errors";
  *   1. The browser downscales and re-encodes before uploading, so a 12MP phone
  *      photo arrives as ~50KB of WebP rather than 6MB of JPEG.
  *   2. This module refuses anything over MAX_BYTES, because a browser is not a
- *      trustworthy place to enforce a limit — a hand-written POST skips step 1
+ *      trustworthy place to enforce a limit, a hand-written POST skips step 1
  *      entirely.
  *   3. One file per member, and the previous one is deleted on replace. Storage
  *      is therefore bounded by member count, not by how often people fiddle
@@ -48,7 +48,7 @@ interface Format {
  * Content sniffing, not header trust.
  *
  * A `Content-Type: image/webp` header costs an attacker nothing to write. What
- * matters is that the bytes are an image and not, say, an SVG — which is a
+ * matters is that the bytes are an image and not, say, an SVG, which is a
  * document that can carry script, and which is deliberately absent from this
  * list for that reason.
  */

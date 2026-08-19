@@ -19,7 +19,7 @@ import {
 /**
  * Everything a bunch does to itself: plans, icebreakers, challenges.
  *
- * One route because they are one screen and one permission model — the service
+ * One route because they are one screen and one permission model, the service
  * re-checks membership on every call, so this layer only has to name the verb.
  * Every verb below is somebody pressing a button; nothing here can be reached
  * on a schedule.

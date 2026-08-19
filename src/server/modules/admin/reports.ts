@@ -7,7 +7,7 @@ import type { ReportStatus } from "@/generated/prisma/enums";
 /**
  * The report queue.
  *
- * Reports are never auto-actioned — a coordinated group filing reports must not
+ * Reports are never auto-actioned, a coordinated group filing reports must not
  * be able to mute anyone. A human reads each one, and both the decision and the
  * decider are recorded.
  *
@@ -23,7 +23,7 @@ export interface ReportQueueQuery {
 
 /**
  * Loads the content a report points at, so a moderator can judge it without
- * leaving the queue. Deleted targets come back as null rather than erroring —
+ * leaving the queue. Deleted targets come back as null rather than erroring,
  * a report about something already removed is still worth reviewing.
  */
 async function resolveTarget(targetType: string, targetId: string) {
@@ -218,7 +218,7 @@ const DECISION_TO_AUDIT = {
 
 /**
  * Records a decision on a report. Deliberately does *not* also punish the
- * reported member — that is a separate, separately audited action, so nobody
+ * reported member, that is a separate, separately audited action, so nobody
  * can suspend an account as an invisible side effect of clearing a queue.
  */
 export async function decideReport(

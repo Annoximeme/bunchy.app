@@ -6,7 +6,7 @@ import { Card } from "@/components/ui";
  *
  * Not a progress bar with a percentage. A number like "profile 60% complete"
  * invites you to fill in fields to move a number, which is the engagement
- * mechanic this product spends the rest of its design refusing — and it says
+ * mechanic this product spends the rest of its design refusing, and it says
  * nothing about *which* gap is actually costing you anything.
  *
  * So it names the specific missing things, in the order of how much each one

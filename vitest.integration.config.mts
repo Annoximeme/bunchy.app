@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config";
  * Integration tests: real database, no mocks.
  *
  * Kept in its own config rather than a tag on the unit suite so `npm test`
- * stays fast and runnable with no infrastructure — a test suite people skip
+ * stays fast and runnable with no infrastructure, a test suite people skip
  * because it needs a database is a test suite that stops being run.
  */
 export default defineConfig({

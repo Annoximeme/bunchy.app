@@ -12,7 +12,7 @@ import { distanceKm } from "@/server/modules/geo/distance";
 /**
  * Individual compatibility signals.
  *
- * Every function here is pure and returns `null` when it has nothing to say —
+ * Every function here is pure and returns `null` when it has nothing to say,
  * a member who skipped the availability step should not be scored as
  * *incompatible* on availability, they should simply be scored on the signals
  * we do have. The scorer renormalizes weights over whatever came back, so
@@ -138,7 +138,7 @@ const COMPLEMENTARY_SATURATION = 3.2;
  * An experienced photographer and someone who hikes and wants to learn
  * photography share *no* interest intent, and a naive scorer would rank them
  * near zero. Here the photography/hiking bridge plus the practices/curious
- * asymmetry makes them a strong match — which is the correct answer, because
+ * asymmetry makes them a strong match, which is the correct answer, because
  * they have an obvious reason to spend a Saturday together.
  */
 export function complementaryInterestsSignal(
@@ -449,7 +449,7 @@ const AVAILABILITY_LABELS: Record<string, string> = {
  * intersects in UTC.
  *
  * Same zone or unknown zones fall back to exactly the old behaviour, so the
- * common case is unchanged — this only ever removes false overlap.
+ * common case is unchanged, this only ever removes false overlap.
  */
 const FULL_OVERLAP_HOURS = 25;
 

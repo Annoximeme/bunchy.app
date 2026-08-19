@@ -5,8 +5,8 @@ import { isSuppressed } from "@/server/email/suppression";
 /**
  * Outbound email behind an adapter.
  *
- * Two implementations. The default writes the message — including the
- * verification/reset link — to the server log, which makes the whole
+ * Two implementations. The default writes the message, including the
+ * verification/reset link, to the server log, which makes the whole
  * verification and password-reset flow genuinely usable in development instead
  * of being a dead end. Setting `EMAIL_PROVIDER=smtp` switches to real delivery;
  * see `smtp.ts` for why SMTP rather than a provider SDK.
@@ -52,7 +52,7 @@ class ConsoleEmailTransport implements EmailTransport {
         `subject: ${message.subject}`,
         // The text part is what gets printed: it is the readable one in a
         // terminal, and it carries the same link. The HTML part is noted
-        // rather than dumped — several hundred lines of tables would bury the
+        // rather than dumped, several hundred lines of tables would bury the
         // verification link this transport exists to surface. To look at the
         // rendered thing, use the previews under /admin/brand.
         message.html ? `parts:   text + html (${message.html.length} bytes)` : "",
@@ -87,7 +87,7 @@ export function transport(): EmailTransport {
  * It is a single indexed lookup on an address we already have in hand.
  *
  * It is *not* wrapped in a try/catch that sends anyway. If the database is
- * unreachable the correct behaviour is to fail this send — the caller for a
+ * unreachable the correct behaviour is to fail this send, the caller for a
  * notification already swallows the error, and the caller for a password reset
  * already surfaces it. Sending to an address we cannot check is how a
  * suppression list quietly stops meaning anything.

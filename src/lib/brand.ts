@@ -4,7 +4,7 @@
  * Every user-facing occurrence of the name, tagline and positioning line reads
  * from here, so a brand change is a change to this file rather than a grep
  * across the codebase. `altTaglines` are the approved alternates from the brand
- * spec — kept here so nobody invents a new one in a component.
+ * spec, kept here so nobody invents a new one in a component.
  */
 export const brand = {
   name: "Bunchy",

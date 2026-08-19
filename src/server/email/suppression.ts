@@ -6,7 +6,7 @@ import type { EmailSuppressionReason } from "@/generated/prisma/enums";
  *
  * A provider tells you about a bounce or a complaint exactly once, on a
  * webhook, and then considers the matter closed. If nothing on this end
- * records it, the next send goes to the same dead mailbox — and the *next* —
+ * records it, the next send goes to the same dead mailbox, and the *next*,
  * and the sending domain accumulates precisely the signal that mailbox
  * providers use to decide whether Bunchy's password resets reach an inbox.
  *

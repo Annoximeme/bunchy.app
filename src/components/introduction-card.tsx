@@ -15,7 +15,7 @@ import { Avatar, Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";
  *   decide. An introduction whose justification is behind a "why?" link is a
  *   recommendation pretending to be a reason.
  * - "Send" is not a one-tap action. It opens the openers, because the message
- *   that actually gets sent should be one the member chose or wrote — Bunchy
+ *   that actually gets sent should be one the member chose or wrote, Bunchy
  *   drafts, the member sends.
  * - "Not interested" is described as permanent where it is offered, because it
  *   is, and a member should not discover that afterwards.

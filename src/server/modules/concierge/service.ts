@@ -15,7 +15,7 @@ import { loadMatchProfile } from "@/server/modules/matching/repository";
  * Ask Bunchy: the concierge.
  *
  * **It cannot write anything.** Not "it is careful about writing", not "it asks
- * first" — there is no code path from here to a mutation. Every next step it
+ * first", there is no code path from here to a mutation. Every next step it
  * offers is a link into a flow that already requires a deliberate press, so
  * §6's "never claim an action was completed" and §23's "never make unauthorized
  * commitments" are properties of the module's shape rather than rules it tries

@@ -10,7 +10,7 @@ import { Button, Card, ErrorNotice, Field, Input } from "@/components/ui";
  *
  * Both controls sit in one place and neither is buried. Deletion is not hidden
  * behind three screens of "are you sure?", and it is not softened into
- * "deactivate" — the member said delete, so the word on the button is Delete.
+ * "deactivate", the member said delete, so the word on the button is Delete.
  *
  * Equally, nothing here tries to talk them out of it. No "you'll lose your 4
  * connections", no offer of a pause instead. The confirmation exists to prevent

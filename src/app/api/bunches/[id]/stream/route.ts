@@ -8,7 +8,7 @@ import { listMessages } from "@/server/modules/messaging/bunch-chat";
  * The transport is deliberately the simplest thing that is actually real-time:
  * each connection tails the same cursor query the REST endpoint uses. There is
  * no shared in-process bus, which means this is correct across as many
- * instances as we care to run — at the cost of one small indexed query per
+ * instances as we care to run, at the cost of one small indexed query per
  * connection per tick. At MVP scale that trade is obviously right; when it
  * stops being right, the fix is Redis pub/sub behind this same endpoint, with
  * no client changes at all.
@@ -26,7 +26,7 @@ const MAX_CONNECTION_MS = 5 * 60 * 1000;
  * Open streams one member may hold at once, per instance.
  *
  * Every connection is a database query every two seconds for up to five
- * minutes, and nothing else here bounds how many a single account can open —
+ * minutes, and nothing else here bounds how many a single account can open,
  * the rate limiter counts requests, and this endpoint's cost is in how long
  * one request lasts. Two hundred streams from one script is a hundred queries
  * a second that no one would attribute to a member reading a chat.

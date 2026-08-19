@@ -77,7 +77,7 @@ describe("the supporter mark", () => {
 describe("staff on a public profile", () => {
   it("flattens both staff roles to one label", () => {
     // A member can tell staff from someone claiming to be staff. What they
-    // cannot tell is who holds which power — publishing the moderator list
+    // cannot tell is who holds which power, publishing the moderator list
     // would just be a target list.
     expect(serialize("ADMIN").staff).toBe(true);
     expect(serialize("MODERATOR").staff).toBe(true);

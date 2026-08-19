@@ -363,7 +363,7 @@ describe("challenges", () => {
 
     const row = await db.bunchChallenge.findFirstOrThrow({ where: { bunchId: bunch.id } });
     const columns = Object.keys(row).join(" ").toLowerCase();
-    // No points, no streak, no per-member completion — every one of those is a
+    // No points, no streak, no per-member completion, every one of those is a
     // mechanism for the thing §12 asks this feature not to become.
     expect(columns).not.toMatch(/point|streak|score|rank|level/);
   });

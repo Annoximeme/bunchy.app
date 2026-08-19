@@ -4,8 +4,8 @@ import { brand } from "@/lib/brand";
 /**
  * Web app manifest, so Bunchy can be installed to a phone's home screen.
  *
- * This is a product where the thing you are trying to do — see whether anyone
- * is free tonight — happens on a phone, standing somewhere, deciding whether to
+ * This is a product where the thing you are trying to do, see whether anyone
+ * is free tonight, happens on a phone, standing somewhere, deciding whether to
  * go out. An icon on the home screen is the difference between that and
  * remembering a URL.
  *

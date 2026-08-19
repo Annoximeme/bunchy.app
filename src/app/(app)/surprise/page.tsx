@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
  * Serendipity, on its own page.
  *
  * Deliberately not a card on Discover. Discover is a ranked list and this is an
- * argument against ranked lists — putting it inside one would make it look like
+ * argument against ranked lists, putting it inside one would make it look like
  * the bottom of the same order rather than a different question.
  */
 export default async function SurprisePage() {

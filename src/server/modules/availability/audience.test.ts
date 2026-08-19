@@ -5,7 +5,7 @@ import {
 } from "@/server/modules/availability/service";
 
 /**
- * The audience test is now used in two places — attaching a badge, and choosing
+ * The audience test is now used in two places, attaching a badge, and choosing
  * who counts as "available" in the first place. These pin the property that
  * made the second one necessary.
  */

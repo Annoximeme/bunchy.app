@@ -40,7 +40,7 @@ export async function GET(
 
     // Satori draws the vector from a data URI. `contain` rather than `cover`,
     // so a ratio mistake shows as letterboxing instead of a silently cropped
-    // logo — and the ratios are derived from the viewBoxes precisely so it
+    // logo, and the ratios are derived from the viewBoxes precisely so it
     // never letterboxes.
     const encoded = Buffer.from(asset.svg(), "utf8").toString("base64");
 

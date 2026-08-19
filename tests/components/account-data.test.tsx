@@ -39,7 +39,7 @@ describe("deleting an account", () => {
     await user.type(screen.getByLabelText(/your password/i), "hunter2");
     expect(confirm).toBeDisabled();
 
-    // Lower case must not arm it — the point of typing the word is that it
+    // Lower case must not arm it, the point of typing the word is that it
     // cannot happen by accident.
     await user.type(screen.getByLabelText(/type delete/i), "delete");
     expect(confirm).toBeDisabled();
@@ -53,8 +53,8 @@ describe("deleting an account", () => {
     await openTheForm();
     const text = document.body.textContent ?? "";
 
-    // The copy names the recovery window in order to deny it — "erased now, not
-    // in thirty days" — so the assertion is about what is *offered*, not which
+    // The copy names the recovery window in order to deny it, "erased now, not
+    // in thirty days", so the assertion is about what is *offered*, not which
     // words appear.
     expect(text).toMatch(/erased now, not in thirty days/i);
     expect(text).not.toMatch(/deactivate|pause your account/i);

@@ -7,7 +7,7 @@ import { recommendActivities } from "@/server/modules/matching/activities";
  * Everything Discover needs, in one round trip.
  *
  * Note there is no `page` or `cursor` parameter. Discover answers "who should I
- * meet?" and "what should I do?" with a finite, considered set — an endpoint
+ * meet?" and "what should I do?" with a finite, considered set, an endpoint
  * that could always return more is the beginning of an infinite feed.
  */
 export async function GET() {

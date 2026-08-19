@@ -14,7 +14,7 @@ import { waitlistLaunchEmail } from "@/server/email/templates";
  * - **Writing twice is embarrassing.** Somebody who was told "one message"
  *   gets two.
  * - **Writing zero times is worse.** They left an address specifically to hear
- *   about this, and there is no second chance — the list is not kept for a
+ *   about this, and there is no second chance, the list is not kept for a
  *   retry campaign, because there is no campaign.
  * - **Half a send with no record of where it stopped is worst of all.** That
  *   is the one that cannot be recovered from at all.
@@ -38,7 +38,7 @@ export interface AnnounceOptions {
    *
    * The default is a rehearsal, not a send. A mass mail script whose default
    * behaviour is to mass mail is one keystroke from an irreversible mistake,
-   * and this one has no undo — the messages are in inboxes.
+   * and this one has no undo, the messages are in inboxes.
    */
   send?: boolean;
   /**
@@ -50,7 +50,7 @@ export interface AnnounceOptions {
   /**
    * Pause between messages. Every provider rate-limits, and the response to
    * being over the limit is usually a block on the sending domain rather than
-   * a polite 429 — which on launch day is indistinguishable from not having
+   * a polite 429: which on launch day is indistinguishable from not having
    * launched.
    */
   delayMs?: number;
@@ -177,7 +177,7 @@ export async function announceLaunch(
     } catch (error) {
       // Left unmarked on purpose: an unmarked row is retried by the next run,
       // which is the whole recovery story for a provider having a bad ten
-      // minutes. The address is never logged with the error — it is somebody's
+      // minutes. The address is never logged with the error, it is somebody's
       // email, and this log ends up in a container's stdout.
       result.failed += 1;
       report("failed", error);

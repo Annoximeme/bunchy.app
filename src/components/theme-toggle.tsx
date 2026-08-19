@@ -12,7 +12,7 @@ import { cn } from "@/components/ui";
  * as no value at all, which hands control back to the media query.
  *
  * The applied theme is an attribute on <html> rather than a class, so the CSS
- * can scope the media query around it — see the three-state block in
+ * can scope the media query around it, see the three-state block in
  * globals.css.
  */
 
@@ -52,7 +52,7 @@ const LABEL: Record<Theme, string> = {
  * The DOM attribute is the source of truth, not React state.
  *
  * It is set before first paint by the inline script in the layout, so the
- * component has to read it rather than own it — and reading an external store
+ * component has to read it rather than own it, and reading an external store
  * is what `useSyncExternalStore` exists for. The earlier version pulled it into
  * state inside an effect, which trips `react-hooks/set-state-in-effect` and
  * renders once with the wrong answer on the way past.
@@ -78,7 +78,7 @@ function readTheme(): Theme {
 
 export function ThemeToggle({ className }: { className?: string }) {
   // On the server there is no attribute to read, and "system" is what the CSS
-  // does in that case — so the first client render agrees with the HTML.
+  // does in that case, so the first client render agrees with the HTML.
   const current = useSyncExternalStore<Theme>(
     subscribe,
     readTheme,

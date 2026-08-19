@@ -6,7 +6,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
  *
  *   npm run role -- someone@example.com ADMIN
  *
- * There is deliberately no in-app way to create the *first* admin — a
+ * There is deliberately no in-app way to create the *first* admin, a
  * self-service "make me an admin" path is a privilege-escalation bug waiting to
  * happen. Granting the first one requires database access, which means it
  * requires someone who already controls the deployment.

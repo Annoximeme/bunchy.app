@@ -5,8 +5,8 @@ import { lockupSvg } from "@/server/modules/brand/assets";
 /**
  * The image every shared link previews with.
  *
- * Dark, and fixed. A social card cannot follow the reader's theme — the
- * platform fetches one file and serves it to everybody — so this is a choice
+ * Dark, and fixed. A social card cannot follow the reader's theme, the
+ * platform fetches one file and serves it to everybody, so this is a choice
  * rather than a mirror, and the dark one is the right choice: previews land in
  * feeds and chat apps that are overwhelmingly dark, where a cream card glows
  * like a lightbulb and reads as an advert. It is the same navy-and-plum the
@@ -140,7 +140,7 @@ export default function OpengraphImage() {
           a logo and a slogan could be any company; a card with a name, a
           distance and a match reading says what this actually does in the two
           seconds a link gets in a feed. The person is invented and generic on
-          purpose — a real member has no business appearing in a group chat
+          purpose, a real member has no business appearing in a group chat
           they were never part of.
         */}
         <div

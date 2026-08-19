@@ -134,7 +134,7 @@
   }
   .lede { font-size: 18px; color: var(--ink-soft); line-height: 1.65; }
   .note { font-size: 14px; color: var(--muted); }
-  code, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  code.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
   /* ── section rhythm ───────────────────────────────────────── */
   section { padding: 76px 0; border-top: 1px solid var(--line); }
@@ -164,7 +164,7 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .rise { animation: rise .6s cubic-bezier(.22,1,.36,1) both; }
+    .rise { animation: rise .6s cubic-bezier(.22,1.36,1) both; }
     .rise:nth-child(2) { animation-delay: .06s; }
     .rise:nth-child(3) { animation-delay: .12s; }
     @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -204,7 +204,7 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     border-radius: 999px; font-weight: 500; font-size: 14px; padding: 10px 20px;
     border: 1px solid transparent; cursor: pointer; font-family: inherit;
-    transition: all .2s cubic-bezier(.22,1,.36,1);
+    transition: all .2s cubic-bezier(.22,1.36,1);
   }
   .btn-primary   { background: var(--coral); color: var(--on-coral); }
   .btn-primary:hover { background: #F5455A; }
@@ -305,7 +305,7 @@
     <p class="lede" style="margin-top:32px">
       Everything here is built from the live tokens, not pictured. The swatches, the
       buttons, the cards and the logo on this page are the same values and the same
-      geometry that ship in the product — so what you read is what a browser renders.
+      geometry that ship in the product, so what you read is what a browser renders.
     </p>
   </header>
 
@@ -314,7 +314,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark"/></svg>
-        <span class="eyebrow">01 — The idea</span>
+        <span class="eyebrow">01: The idea</span>
       </div>
       <h2>You don't need more followers. You need a bunch.</h2>
       <p class="lede">
@@ -350,7 +350,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--coral);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
-        <span class="eyebrow">02 — The symbol</span>
+        <span class="eyebrow">02: The symbol</span>
       </div>
       <h2>Four shapes, one bunch</h2>
       <p class="lede">
@@ -379,7 +379,7 @@
       </div>
 
       <div class="stack" style="gap:14px">
-        <span class="eyebrow">Clearspace — the height of the smallest shape, on all four sides</span>
+        <span class="eyebrow">Clearspace, the height of the smallest shape, on all four sides</span>
         <div class="row">
           <div class="clearspace">
             <div style="display:flex; align-items:center; gap:16px">
@@ -391,7 +391,7 @@
       </div>
 
       <div class="stack" style="gap:14px">
-        <span class="eyebrow">Scale — rendered at true size</span>
+        <span class="eyebrow">Scale, rendered at true size</span>
         <div class="sizerow">
           <div class="sizecell"><div class="tile"><svg width="16" height="16"><use href="#mark"/></svg></div><span>16</span></div>
           <div class="sizecell"><div class="tile"><svg width="20" height="20"><use href="#mark"/></svg></div><span>20</span></div>
@@ -404,7 +404,7 @@
         </div>
         <p class="note">
           The gaps are what survive the shrink. At 16px the four shapes still read as
-          four — that is the whole reason they never touch.
+          four, that is the whole reason they never touch.
         </p>
       </div>
 
@@ -437,7 +437,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--purple);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
-        <span class="eyebrow">03 — The wordmark</span>
+        <span class="eyebrow">03: The wordmark</span>
       </div>
       <h2>Drawn, not set</h2>
       <p class="lede">
@@ -472,7 +472,7 @@
 
       <p class="note">
         The coral wordmark above is the one place coral appears as a letterform.
-        Logotypes are explicitly exempt from WCAG contrast requirements — but the
+        Logotypes are explicitly exempt from WCAG contrast requirements, but the
         exemption stops at the logo, so coral never sets a headline, a link or a
         label anywhere else.
       </p>
@@ -492,7 +492,7 @@
         <h4>Supporting typeface, for everything that isn't the logo</h4>
         <p class="note" style="margin-top:8px">
           The product sets UI and marketing copy in a rounded geometric sans. Licence one
-          of <strong>Nunito</strong>, <strong>Figtree</strong> or <strong>Poppins</strong> —
+          of <strong>Nunito</strong>, <strong>Figtree</strong> or <strong>Poppins</strong>,
           all carry the roundness of the wordmark without competing with it. Until one is
           licensed and self-hosted, the product ships a tuned system stack: headings at 700
           with <code>-0.025em</code> tracking, body at 400/1.6. Do not link a font from a
@@ -507,7 +507,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--line-strong);--m3:var(--mint);--m4:var(--line-strong)"/></svg>
-        <span class="eyebrow">04 — Colour</span>
+        <span class="eyebrow">04: Colour</span>
       </div>
       <h2>One loud voice, three specialists</h2>
       <p class="lede">
@@ -537,7 +537,7 @@
           <div class="sw-chip" style="background:#FFC857"><span class="sw-role" style="color:#172033">Activity</span></div>
           <div class="sw-body">
             <span class="sw-name">Sunny Yellow</span><span class="sw-hex">#FFC857</span>
-            <span class="sw-use">Activities and events — the "when" on an activity card is yellow every time.</span>
+            <span class="sw-use">Activities and events, the "when" on an activity card is yellow every time.</span>
           </div>
         </div>
         <div class="sw">
@@ -551,7 +551,7 @@
           <div class="sw-chip" style="background:#FFF9F3; border-bottom:1px solid var(--line)"><span class="sw-role" style="color:#6B7280">Ground</span></div>
           <div class="sw-body">
             <span class="sw-name">Soft Cream</span><span class="sw-hex">#FFF9F3</span>
-            <span class="sw-use">The application background. Never pure white — the warmth is the brand.</span>
+            <span class="sw-use">The application background. Never pure white, the warmth is the brand.</span>
           </div>
         </div>
         <div class="sw">
@@ -564,7 +564,7 @@
       </div>
 
       <div class="stack" style="gap:12px">
-        <span class="eyebrow">Distribution — 60 / 25 / 10 / 5</span>
+        <span class="eyebrow">Distribution, 60 / 25 / 10 / 5</span>
         <div class="ratiobar">
           <span style="flex:60; background:#FFF9F3; color:#6B7280">60% cream &amp; white</span>
           <span style="flex:25; background:#172033; color:#FFF9F3">25% navy</span>
@@ -587,25 +587,25 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--line-strong);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--yellow)"/></svg>
-        <span class="eyebrow">05 — Contrast</span>
+        <span class="eyebrow">05: Contrast</span>
       </div>
       <h2>The rule that shapes the whole system</h2>
       <p class="lede">
         Every ratio below is measured, not estimated. One result decides more of this
         design than any other: <strong>white text on coral is 3.00:1</strong>, which fails
         WCAG AA for a button label. So Bunchy's primary button carries a deep navy label
-        instead — 5.42:1, the signature colour completely unchanged.
+        instead, 5.42:1, the signature colour completely unchanged.
       </p>
     </div>
 
     <div class="stack-lg">
       <div class="row" style="gap:26px">
         <div class="stack" style="gap:10px">
-          <span class="eyebrow" style="color:var(--fail)">✕ Fails — 3.00:1</span>
+          <span class="eyebrow" style="color:var(--fail)">✕ Fails, 3.00:1</span>
           <span class="btn" style="background:#FF5C6C;color:#fff;cursor:default">Find my bunch</span>
         </div>
         <div class="stack" style="gap:10px">
-          <span class="eyebrow" style="color:var(--pass)">✓ Ships — 5.42:1</span>
+          <span class="eyebrow" style="color:var(--pass)">✓ Ships, 5.42:1</span>
           <button class="btn btn-primary" type="button">Find my bunch</button>
         </div>
       </div>
@@ -622,9 +622,9 @@
             <tr><td><span class="dot" style="background:#172033"></span>Navy on coral</td><td class="num">5.42:1</td><td class="verdict v-pass">AA</td><td>Primary button label, unread badge</td></tr>
             <tr><td><span class="dot" style="background:#6B7280"></span>Slate on cream</td><td class="num">4.63:1</td><td class="verdict v-pass">AA</td><td>Secondary text</td></tr>
             <tr><td><span class="dot" style="background:#FFFFFF;border:1px solid var(--line)"></span>White on purple</td><td class="num">4.59:1</td><td class="verdict v-pass">AA</td><td>Labels on purple fills</td></tr>
-            <tr><td><span class="dot" style="background:#7657FF"></span>Purple on cream</td><td class="num">4.39:1</td><td class="verdict v-fail">Large only</td><td>Never as body text — use purple ink</td></tr>
+            <tr><td><span class="dot" style="background:#7657FF"></span>Purple on cream</td><td class="num">4.39:1</td><td class="verdict v-fail">Large only</td><td>Never as body text, use purple ink</td></tr>
             <tr><td><span class="dot" style="background:#FFFFFF;border:1px solid var(--line)"></span>White on coral</td><td class="num">3.00:1</td><td class="verdict v-fail">Fails</td><td>Not used anywhere</td></tr>
-            <tr><td><span class="dot" style="background:#FF5C6C"></span>Coral on cream</td><td class="num">2.87:1</td><td class="verdict v-fail">Fails</td><td>Not used as text — use coral ink</td></tr>
+            <tr><td><span class="dot" style="background:#FF5C6C"></span>Coral on cream</td><td class="num">2.87:1</td><td class="verdict v-fail">Fails</td><td>Not used as text, use coral ink</td></tr>
             <tr><td><span class="dot" style="background:#55D6BE"></span>Mint on cream</td><td class="num">1.71:1</td><td class="verdict v-fail">Fails</td><td>Fills only, never text</td></tr>
             <tr><td><span class="dot" style="background:#FFC857"></span>Yellow on cream</td><td class="num">1.47:1</td><td class="verdict v-fail">Fails</td><td>Fills only, never text</td></tr>
           </tbody>
@@ -634,7 +634,7 @@
       <div class="stack" style="gap:14px">
         <h3>Every accent carries a text-safe twin</h3>
         <p class="note">
-          The bright value is the <em>fill</em>. The darkened value — the "ink" — is the
+          The bright value is the <em>fill</em>. The darkened value, the "ink", is the
           same hue pushed until it is legible as text on cream. Reach for the ink whenever
           the colour becomes a letterform.
         </p>
@@ -655,7 +655,7 @@
         <h4>Danger cannot also be red</h4>
         <p class="note" style="margin-top:8px">
           When the primary action is coral, a bright red destructive button is a trap.
-          Danger is <code>#B3261E</code> — deeper and browner, clearly not the brand — and
+          Danger is <code>#B3261E</code>, deeper and browner, clearly not the brand, and
           destructive actions are rendered as tinted, not filled, so they never compete
           with the primary button for the eye.
         </p>
@@ -672,7 +672,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--coral);--m2:var(--purple);--m3:var(--mint);--m4:var(--yellow)"/></svg>
-        <span class="eyebrow">06 — Components</span>
+        <span class="eyebrow">06: Components</span>
       </div>
       <h2>Tactile, not corporate</h2>
       <p class="lede">
@@ -693,7 +693,7 @@
       </div>
 
       <div class="stack" style="gap:14px">
-        <span class="eyebrow">Chips — each tone is a meaning, never a mood</span>
+        <span class="eyebrow">Chips, each tone is a meaning, never a mood</span>
         <div class="row">
           <span class="chip">Board games</span>
           <span class="chip chip-ai">Matched for you</span>
@@ -705,7 +705,7 @@
 
       <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
         <div class="stack" style="gap:12px">
-          <span class="eyebrow">Person card — the AI reasoning is purple</span>
+          <span class="eyebrow">Person card, the AI reasoning is purple</span>
           <div class="ui-card">
             <div style="display:flex; gap:14px; align-items:flex-start">
               <div class="avatar">T</div>
@@ -735,7 +735,7 @@
         </div>
 
         <div class="stack" style="gap:12px">
-          <span class="eyebrow">Activity card — the "when" is yellow, always</span>
+          <span class="eyebrow">Activity card, the "when" is yellow, always</span>
           <div class="ui-card">
             <div style="display:flex; justify-content:space-between; gap:14px">
               <div>
@@ -751,7 +751,7 @@
             </div>
           </div>
 
-          <span class="eyebrow" style="margin-top:12px">Bunchy AI — purple marks the machine</span>
+          <span class="eyebrow" style="margin-top:12px">Bunchy AI, purple marks the machine</span>
           <div class="ui-card">
             <div style="display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px">
               <span style="width:9px;height:9px;border-radius:999px;background:var(--purple);flex:none"></span>
@@ -805,7 +805,7 @@
       </div>
 
       <div class="stack" style="gap:14px">
-        <span class="eyebrow">Dark mode — the brand dimmed, not a different product</span>
+        <span class="eyebrow">Dark mode, the brand dimmed, not a different product</span>
         <div class="demo demo-dark">
           <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px">
             <svg width="30" height="30"><use href="#mark"/></svg>
@@ -834,7 +834,7 @@
           </div>
         </div>
         <p class="note">
-          Fills and their labels do not change between modes — a coral button with a navy
+          Fills and their labels do not change between modes, a coral button with a navy
           label is the same object at midnight. Only text colours move, because only they
           depend on what's behind them.
         </p>
@@ -847,7 +847,7 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--danger);--m2:var(--line-strong);--m3:var(--line-strong);--m4:var(--line-strong)"/></svg>
-        <span class="eyebrow">07 — Misuse</span>
+        <span class="eyebrow">07: Misuse</span>
       </div>
       <h2>How this breaks</h2>
     </div>
@@ -855,7 +855,7 @@
     <div class="grid donts">
       <div class="rule no"><h4>Don't put white text on coral</h4><p>3.00:1. The single most likely mistake, because it is what every other consumer app does.</p></div>
       <div class="rule no"><h4>Don't let the shapes touch or overlap</h4><p>The gaps are the idea. Merged shapes read as one blob and the mark loses its meaning.</p></div>
-      <div class="rule no"><h4>Don't recolour the cluster arbitrarily</h4><p>Coral is always the largest shape. Full colour, single colour, or knockout — nothing else.</p></div>
+      <div class="rule no"><h4>Don't recolour the cluster arbitrarily</h4><p>Coral is always the largest shape. Full colour, single colour, or knockout, nothing else.</p></div>
       <div class="rule no"><h4>Don't rotate or rearrange the mark</h4><p>The angles are already built in. Rotating the whole cluster makes it look like a mistake.</p></div>
       <div class="rule no"><h4>Don't use mint or yellow as text</h4><p>1.71:1 and 1.47:1 on cream. They are fills. Their inks are what you write with.</p></div>
       <div class="rule no"><h4>Don't tint the page background</h4><p>Cream is the ground everywhere. Coloured page backgrounds break the 60/25/10/5 balance instantly.</p></div>
@@ -869,11 +869,11 @@
     <div class="head">
       <div class="head-row">
         <svg class="marker" width="22" height="22"><use href="#mark" style="--m1:var(--mint);--m2:var(--mint);--m3:var(--mint);--m4:var(--mint)"/></svg>
-        <span class="eyebrow">08 — Handoff</span>
+        <span class="eyebrow">08: Handoff</span>
       </div>
       <h2>Production tokens</h2>
       <p class="lede">
-        Copy-paste ready. These are the exact values shipping in the Bunchy codebase — the
+        Copy-paste ready. These are the exact values shipping in the Bunchy codebase, the
         naming convention is <code>--color-x</code> for the fill, <code>--color-x-ink</code>
         for the text-safe twin, and <code>--color-on-x</code> for the label that sits on
         the fill.
@@ -883,40 +883,40 @@
     <div class="stack-lg">
       <pre>:root {
   /* Ground &amp; text */
-  --color-canvas:         #FFF9F3;   /* app background — never pure white */
+  --color-canvas:         #FFF9F3;   /* app background, never pure white */
   --color-surface:        #FFFFFF;
   --color-surface-sunken: #F9F0E6;
-  --color-ink:            #172033;   /* all primary text — never pure black */
+  --color-ink:            #172033;   /* all primary text, never pure black */
   --color-ink-soft:       #3D4759;
   --color-muted:          #6B7280;
   --color-line:           #EFE6DA;
 
-  /* Coral — brand, primary action, active state */
+  /* Coral, brand, primary action, active state */
   --color-accent:         #FF5C6C;
   --color-accent-hover:   #F5455A;
   --color-accent-soft:    #FFE9EB;
   --color-accent-ink:     #CE2F45;   /* coral AS TEXT (4.88:1) */
   --color-on-accent:      #172033;   /* label on coral  (5.42:1) */
 
-  /* Purple — AI, recommendations, premium */
+  /* Purple, AI, recommendations, premium */
   --color-purple:         #7657FF;
   --color-purple-soft:    #EFEAFF;
   --color-purple-ink:     #6A47F5;   /* 5.24:1 */
   --color-on-purple:      #FFFFFF;   /* 4.59:1 */
 
-  /* Yellow — activities, events, discovery */
+  /* Yellow, activities, events, discovery */
   --color-yellow:         #FFC857;
   --color-yellow-soft:    #FFF3DC;
   --color-yellow-ink:     #8A5E00;   /* 5.46:1 */
   --color-on-yellow:      #172033;   /* 10.58:1 */
 
-  /* Mint — success, connected, going */
+  /* Mint, success, connected, going */
   --color-mint:           #55D6BE;
   --color-mint-soft:      #E3F8F3;
   --color-mint-ink:       #0E7A69;   /* 5.02:1 */
   --color-on-mint:        #172033;   /* 9.10:1 */
 
-  /* Destructive — deliberately not coral */
+  /* Destructive, deliberately not coral */
   --color-danger:         #B3261E;
   --color-danger-soft:    #FDECEA;
 
@@ -982,7 +982,7 @@
       <svg width="26" height="26"><use href="#mark"/></svg>
       <svg height="17" style="width:56px; color:var(--ink)"><use href="#wordmark"/></svg>
     </div>
-    Bunchy — Find your bunch. Colour values, geometry and contrast ratios on this page
+    Bunchy, Find your bunch. Colour values, geometry and contrast ratios on this page
     are the ones in the shipping codebase; ratios are computed to WCAG 2.1 relative
     luminance.
   </footer>

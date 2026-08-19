@@ -6,13 +6,13 @@ import { Chip, cn } from "@/components/ui";
  *
  * "92% compatible" is a number somebody has to take on faith. This breaks it
  * into the dimensions it was actually built from, each with the sentence the
- * scorer wrote when it ran — so a member can disagree with a specific part
+ * scorer wrote when it ran, so a member can disagree with a specific part
  * ("we're not that similar on availability") rather than with a black box.
  *
  * Two decisions worth stating:
  *
  * - **Only signals that ran are shown.** The scorer skips dimensions it has no
- *   evidence for and renormalises over the rest. Drawing "Personality — 0%" for
+ *   evidence for and renormalises over the rest. Drawing "Personality, 0%" for
  *   somebody who has not done the style questions would be reporting missing
  *   data as a bad result.
  * - **The bars are decoration.** Every number is present as text, the list is a

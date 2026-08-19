@@ -174,7 +174,7 @@ describe("the radar shows what is around", () => {
     const result = await scanRadar(viewer.profileId, { now: NOW });
     expect(result.locationUnknown).toBe(true);
     expect(result.applied.withinKm).toBeNull();
-    // Still useful — it just cannot be sorted by distance.
+    // Still useful, it just cannot be sorted by distance.
     expect(result.items).toHaveLength(1);
   });
 

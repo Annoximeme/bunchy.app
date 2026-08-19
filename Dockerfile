@@ -1,4 +1,4 @@
-# Bunchy — production image.
+# Bunchy, production image.
 #
 # Four stages, and the split is doing real work rather than following a
 # template. `deps` installs once and is cached until package-lock changes;
@@ -7,7 +7,7 @@
 # ships the traced server and nothing else.
 #
 # The migration image exists separately because `prisma migrate deploy` needs
-# the schema engine binary — tens of megabytes that the web process has no use
+# the schema engine binary, tens of megabytes that the web process has no use
 # for, and that would otherwise sit in the image handling public traffic.
 
 ARG NODE_VERSION=22-alpine
@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Playwright is a devDependency used for local browser checks, and its
 # postinstall tries to pull ~200MB of browsers. In a build container with no
-# route to the CDN that does not fail cleanly — npm dies with "Exit handler
+# route to the CDN that does not fail cleanly, npm dies with "Exit handler
 # never called" after about seventy seconds, which reads like anything but a
 # download problem. Nothing in the image runs a browser.
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
@@ -53,7 +53,7 @@ ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build"
 # resolved while the pages are being generated, and `metadataBase` is what turns
 # the og:image path into the absolute URL a crawler fetches. Left unset, Next
 # falls back to localhost and every shared link previews with an unreachable
-# image — which looks exactly like having no preview image at all.
+# image, which looks exactly like having no preview image at all.
 ARG APP_URL="http://localhost:3000"
 ENV APP_URL=$APP_URL
 
@@ -89,7 +89,7 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup -g 1001 -S bunchy && adduser -u 1001 -S bunchy -G bunchy
 
 # `standalone` contains the server plus its traced dependencies. `static` is
-# not traced — Next expects it copied alongside.
+# not traced, Next expects it copied alongside.
 #
 # There is no `public/` copy because this project has no `public/` directory:
 # the favicon and apple-icon live in `src/app` as Next file conventions and are
@@ -100,7 +100,7 @@ COPY --from=build --chown=bunchy:bunchy /app/.next/static ./.next/static
 
 # Uploaded avatars. Created here, owned by the runtime user, because a named
 # volume mounted over a directory inherits that directory's ownership from the
-# image — mount it over a path that does not exist and Docker creates it owned
+# image, mount it over a path that does not exist and Docker creates it owned
 # by root, where a process running as uid 1001 cannot write.
 RUN mkdir -p /app/uploads/avatars && chown -R bunchy:bunchy /app/uploads
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh

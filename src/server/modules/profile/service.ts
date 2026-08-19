@@ -75,7 +75,7 @@ export async function saveBasics(
   const place = findPlace(input.cityLabel, input.countryCode);
   // Detected, then derived, then unknown.
   //
-  // Still not asked for — a timezone question is one most people answer wrongly.
+  // Still not asked for, a timezone question is one most people answer wrongly.
   // But the browser already knows, and taking its answer fixes the countries
   // where a country code cannot imply a zone: the US, Australia and Russia
   // derived to null and fell back to UTC, which quietly made "weekday evening"
@@ -87,7 +87,7 @@ export async function saveBasics(
   const timezone =
     (input.timezone && isValidTimezone(input.timezone) ? input.timezone : null) ??
     timezoneForCountry(place?.countryCode ?? input.countryCode);
-  // Coordinates are snapped before they are ever written — the database has no
+  // Coordinates are snapped before they are ever written, the database has no
   // opportunity to hold a precise location.
   const approx = place ? snapToGrid(place.lat, place.lng) : null;
 
@@ -199,7 +199,7 @@ export async function saveInterests(
       });
     }
 
-    // Keep the popularity counters honest — they drive interest rarity in
+    // Keep the popularity counters honest, they drive interest rarity in
     // matching, so drift here quietly degrades recommendation quality.
     const removed = previous
       .map((p) => p.interestId)
@@ -294,7 +294,7 @@ export async function saveAvailability(
     }),
   ]);
 
-  // Earned by finishing, not by signing up — see `awardFoundingMember`.
+  // Earned by finishing, not by signing up, see `awardFoundingMember`.
   await awardFoundingMember(profileId);
 
   track({ name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED, profileId });
@@ -312,7 +312,7 @@ export async function savePrivacy(
 
   // Switching Who's Up off deletes the live status rather than merely hiding
   // it. Every read already excludes NOBODY, so this changes nothing anyone can
-  // see — which is the point: "off" should mean the row is gone, not that four
+  // see, which is the point: "off" should mean the row is gone, not that four
   // queries agree to ignore it.
   if (input.whoCanSeeAvailability === "NOBODY") {
     await db.availabilityStatus.deleteMany({ where: { profileId } });

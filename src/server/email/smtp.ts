@@ -10,7 +10,7 @@ import type { EmailMessage, EmailTransport } from "@/server/email";
  * choice of provider becomes four environment variables instead of a
  * dependency and a rewrite. A solo operator can move provider in an afternoon.
  *
- * What this carries is password-reset and email-verification links — the mail
+ * What this carries is password-reset and email-verification links, the mail
  * that decides whether someone locked out of their account gets back in. That
  * shapes three decisions:
  *
@@ -20,7 +20,7 @@ import type { EmailMessage, EmailTransport } from "@/server/email";
  *    recoverable; a permanent 5xx is not, and retrying it just delays the log
  *    line that says so.
  * 3. **Failures are loud.** `sendEmail` callers already swallow errors so a
- *    failed notification cannot break the action that caused it — which means
+ *    failed notification cannot break the action that caused it, which means
  *    this layer is the last place a problem can be seen at all.
  */
 
@@ -62,7 +62,7 @@ function transporter(): Transporter {
 function isTransient(error: unknown): boolean {
   const code = (error as { responseCode?: number } | null)?.responseCode;
   if (typeof code === "number") return code >= 400 && code < 500;
-  // No response code at all means we never got a usable answer — a timeout, a
+  // No response code at all means we never got a usable answer, a timeout, a
   // dropped socket, DNS. Those are worth another go.
   return true;
 }
@@ -111,7 +111,7 @@ export class SmtpEmailTransport implements EmailTransport {
       }
     }
 
-    // Never include `message.text` — it holds a live password-reset link, and
+    // Never include `message.text`, it holds a live password-reset link, and
     // logs are the last place a single-use credential should end up.
     console.error(
       `email: giving up on "${message.subject}" after ${MAX_ATTEMPTS} attempts`,

@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
  * is no list of features here to be tempted into growing.
  *
  * **The money is spent in the order published.** /about says paying the
- * volunteers comes first — before features, before marketing, before anyone
+ * volunteers comes first, before features, before marketing, before anyone
  * takes a salary. The three cards say the same thing in the same order, which
  * is not the order a pitch would choose.
  *

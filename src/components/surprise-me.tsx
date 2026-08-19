@@ -9,7 +9,7 @@ import { Avatar, Button, Card, Chip } from "@/components/ui";
  * Surprise Me.
  *
  * One person at a time, with the reasons attached. A grid of unexpected matches
- * is a contradiction — the point is to make somebody consider one person they
+ * is a contradiction, the point is to make somebody consider one person they
  * would have scrolled past, and ten of them at once is a feed.
  *
  * "Not interested" only removes them from this session rather than writing a

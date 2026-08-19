@@ -24,7 +24,7 @@ import { db } from "@/server/db/client";
  * Unambiguous alphabet, following Crockford: no `I`, `L` or `O` (misread as
  * `1`, `1` and `0`), no `0`/`1` for the same reason, and no `U` so a code
  * cannot spell something unfortunate. These get read aloud and typed from
- * memory, so the confusable characters are worth the smaller keyspace —
+ * memory, so the confusable characters are worth the smaller keyspace,
  * 28^8 is still 3.8×10^11.
  *
  * Existing codes are unaffected: `resolveReferrer` accepts any A–Z0–9 string,
@@ -84,7 +84,7 @@ export async function referralCount(profileId: string): Promise<number> {
 /**
  * Resolves an invite code to the inviter, for attribution at signup.
  *
- * Returns null for anything unrecognised rather than throwing — a mistyped or
+ * Returns null for anything unrecognised rather than throwing, a mistyped or
  * expired link should let someone sign up regardless. Losing the attribution is
  * a rounding error; blocking a signup over it is not.
  */

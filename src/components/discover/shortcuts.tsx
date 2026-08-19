@@ -5,8 +5,8 @@ import { cn } from "@/components/ui";
 /**
  * The other ways to find something.
  *
- * These were four pills in a row — "Bunchy Now", "Do something", "Surprise
- * me", "Open the radar" — four verbs with nothing to say which one to press.
+ * These were four pills in a row, "Bunchy Now", "Do something", "Surprise
+ * me", "Open the radar", four verbs with nothing to say which one to press.
  * Three of them answer the same rough question ("find me something now") by
  * completely different routes, and a member who had not already used all three
  * had no way to tell them apart. A shortcut nobody understands is a shortcut
@@ -19,7 +19,7 @@ import { cn } from "@/components/ui";
  *
  * They used to sit above, which put four escape hatches in front of the thing
  * the page exists to show. They are what you want when the recommendations did
- * not appeal — so they belong exactly where that becomes true, at the end.
+ * not appeal, so they belong exactly where that becomes true, at the end.
  * That also turns a dead-end ("that's everything") into a door.
  */
 

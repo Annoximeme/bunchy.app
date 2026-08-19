@@ -14,8 +14,8 @@ export type OnboardingStepKey = (typeof ONBOARDING_STEPS)[number]["key"];
  * Onboarding chrome.
  *
  * The question is set as a heading in the member's own language ("What are you
- * into?"), not a form label. Progress is shown as a small honest bar — five
- * steps, here's where you are — rather than a gamified streak.
+ * into?"), not a form label. Progress is shown as a small honest bar, five
+ * steps, here's where you are, rather than a gamified streak.
  */
 export function OnboardingShell({
   step,

@@ -34,7 +34,7 @@ import {
  *
  * There is deliberately no stored `Introduction` row. The copy is a pure
  * function of the match, so it can be recomputed identically; what needs
- * remembering — shown, acted on, dismissed — is already what `Recommendation`
+ * remembering, shown, acted on, dismissed, is already what `Recommendation`
  * records.
  */
 

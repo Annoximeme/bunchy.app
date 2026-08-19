@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
  * The permanent record of everything the operator has told members.
  *
  * The archive half of the promise in Privacy §14 and Terms §14. The banner is
- * how notice is *given*; this is how it stays checkable afterwards — a member
+ * how notice is *given*; this is how it stays checkable afterwards, a member
  * who wants to know when something changed, or whether they were told, has one
  * page to look at rather than a support email to write.
  *

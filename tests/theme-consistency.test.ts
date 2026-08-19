@@ -14,13 +14,13 @@ import { describe, expect, it } from "vitest";
  *
  * The fix was tokens for every ground and every ink. This is what stops the
  * next literal creeping back in, because the failure is invisible in the theme
- * you happen to be developing in — a hard-coded `#172033` looks perfect all day
+ * you happen to be developing in, a hard-coded `#172033` looks perfect all day
  * in light mode and is unreadable at night.
  *
  * ## What is deliberately allowed
  *
  * **Accent fills.** `#FF5C6C`, `#7657FF`, `#FFC857`, `#55D6BE` are the same in
- * both themes by design — a coral button is the same coral at night — so they
+ * both themes by design, a coral button is the same coral at night, so they
  * are legitimate literals. The palette in globals.css says so explicitly.
  *
  * **The bright inks on a deep band.** `#9B85FF` and `#55D6BE` as *text* are
@@ -41,8 +41,8 @@ import { describe, expect, it } from "vitest";
  * are correct to write their colours literally, and both would otherwise fail
  * this test for doing the right thing.
  *
- * `opengraph-image.tsx` is in `src/app` but is the same case — an image, not a
- * page — so it is named out below.
+ * `opengraph-image.tsx` is in `src/app` but is the same case, an image, not a
+ * page, so it is named out below.
  */
 const ROOTS = ["app", "components"].map((dir) =>
   join(import.meta.dirname, "..", "src", dir),
@@ -57,7 +57,7 @@ const ROOTS = ["app", "components"].map((dir) =>
  *   admin/brand      swatches whose whole job is to show the logo *on light*
  *                    and *on dark*. With tokens the pair swapped in dark mode
  *                    and the knockout logo was drawn white on a near-white
- *                    panel — invisible, on the one page that exists to show
+ *                    panel, invisible, on the one page that exists to show
  *                    people what the logo looks like.
  */
 const EXEMPT = [
@@ -100,7 +100,7 @@ function sourceFiles(dir: string): string[] {
 }
 
 /**
- * Comments are prose and may name a colour while explaining why it was wrong —
+ * Comments are prose and may name a colour while explaining why it was wrong,
  * several of them do, and that is the opposite of the problem.
  */
 function withoutComments(source: string): string {
@@ -121,7 +121,7 @@ describe("colours that the theme moves", () => {
         for (const [hex, token] of MOVED) {
           if (!line.toLowerCase().includes(hex)) continue;
           offences.push(
-            `${file.slice(file.indexOf("/src/") + 1)}:${i + 1} uses ${hex} — use ${token}`,
+            `${file.slice(file.indexOf("/src/") + 1)}:${i + 1} uses ${hex}, use ${token}`,
           );
         }
       });

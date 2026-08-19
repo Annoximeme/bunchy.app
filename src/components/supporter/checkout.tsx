@@ -18,7 +18,7 @@ import { api, errorMessage } from "@/lib/api";
  * The brief asked for a wallet button, a divider and a card form. That is three
  * integrations of a thing Stripe now ships as one: `PaymentElement` renders
  * Apple Pay and Google Pay at the top when the browser has them, its own
- * divider, and the card fields underneath — and it picks up new payment methods
+ * divider, and the card fields underneath, and it picks up new payment methods
  * without this file changing. Fewer moving parts on the one screen where a bug
  * costs somebody money.
  *
@@ -40,7 +40,7 @@ function appearanceFromTokens(): Appearance {
    *
    * The obvious shape here is `token("--color-ink", "#172033")`, and it is
    * wrong: the fallback is the *light* value, so on the one occasion it fired
-   * — a token failing to resolve — a reader in dark mode would get dark text in
+   *, a token failing to resolve, a reader in dark mode would get dark text in
    * a dark box, on the screen where they are typing card details. An undefined
    * value makes Stripe use its own default instead, which is at least designed
    * to be legible on its own background.

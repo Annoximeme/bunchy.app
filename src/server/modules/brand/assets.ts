@@ -8,7 +8,7 @@ import { BRAND_FILLS, SHAPES, WORDMARK_PATHS } from "@/components/logo";
  * a component is two logos that agree right up until one of them changes, and
  * the one that gets forgotten is always the file somebody downloaded.
  *
- * Everything here is a pure string builder — no database, no request, so it can
+ * Everything here is a pure string builder, no database, no request, so it can
  * be tested and diffed like any other code.
  */
 
@@ -76,7 +76,7 @@ export function wordmarkSvg(treatment: Treatment): string {
  * Symbol + wordmark.
  *
  * The mark is set to 1.45× the wordmark's cap height so the two read at the same
- * optical weight — the mark is inset inside its own box, so matching the boxes
+ * optical weight, the mark is inset inside its own box, so matching the boxes
  * leaves it looking undersized. Same ratio the component uses.
  */
 export function lockupSvg(
@@ -84,7 +84,7 @@ export function lockupSvg(
   /**
    * The wordmark's colour, when it differs from the mark's.
    *
-   * The logo on a dark background is not "the white logo" — it is the coloured
+   * The logo on a dark background is not "the white logo", it is the coloured
    * cluster with the name in white. The four colours are the most recognisable
    * thing Bunchy has, and throwing them away on every dark surface throws away
    * the recognition with them. Defaults to matching the mark, so the

@@ -6,7 +6,7 @@ import { suppress } from "@/server/email/suppression";
  * Bounces and complaints, from the provider.
  *
  * Resend signs webhooks with the Svix scheme, and this verifies it by hand
- * rather than pulling in the `svix` package — the same reasoning as talking
+ * rather than pulling in the `svix` package, the same reasoning as talking
  * SMTP instead of a provider SDK. It is an HMAC and three headers; a
  * dependency here would be a supply-chain surface on an unauthenticated public
  * endpoint, which is the last place to want one.
@@ -15,8 +15,8 @@ import { suppress } from "@/server/email/suppression";
  *
  * The signed payload is `${id}.${timestamp}.${body}`, keyed on the part of the
  * webhook secret after `whsec_`, base64-decoded. The `svix-signature` header
- * carries one or more space-separated `v1,<base64>` entries — more than one
- * during a secret rotation — and any of them matching is a pass.
+ * carries one or more space-separated `v1,<base64>` entries, more than one
+ * during a secret rotation, and any of them matching is a pass.
  *
  * The raw body text is what gets signed, so it must be read as text and never
  * as parsed-then-restringified JSON: `JSON.parse` followed by
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
   if (!secret) {
     // Unconfigured is not "accept anything". An endpoint that processes
     // unsigned bounce reports is an endpoint anybody can use to suppress
-    // somebody else's address — a denial of service on a person's password
+    // somebody else's address, a denial of service on a person's password
     // reset, delivered by us.
     console.error("resend webhook: RESEND_WEBHOOK_SECRET is not set");
     return new Response("Not configured.", { status: 503 });
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
         ? ("COMPLAINT" as const)
         : null;
 
-  // Everything else — delivered, opened, clicked — is acknowledged and
+  // Everything else, delivered, opened, clicked, is acknowledged and
   // dropped. Resend will send whichever events the endpoint is subscribed to,
   // and answering 2xx to the ones we do not act on keeps it from retrying them
   // and eventually disabling the endpoint.

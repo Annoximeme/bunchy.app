@@ -19,7 +19,7 @@ import {
 import { CompatibilityRadar, type RadarSignal } from "@/components/compatibility-radar";
 
 /**
- * "Start a Bunch" — the product's primary action (§15).
+ * "Start a Bunch", the product's primary action (§15).
  *
  * One box, a sentence, and then a decision. The design rule throughout is that
  * the member can see and change everything the machine concluded: the parsed
@@ -108,7 +108,7 @@ export function StartBunch({ initialQuery = "" }: { initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
   const [availableNow, setAvailableNow] = useState(false);
   /**
-   * Null means "whatever the request implied" — the usual case, where the
+   * Null means "whatever the request implied", the usual case, where the
    * parser decides from whether the plan is online. Once the member touches the
    * control it becomes an explicit choice and stays one.
    */
@@ -344,7 +344,7 @@ export function StartBunch({ initialQuery = "" }: { initialQuery?: string }) {
  * What Bunchy understood, as controls rather than a summary.
  *
  * Every chip here is something the parser decided. Showing them is what makes
- * the reading correctable — and showing the parts it *could not* place is what
+ * the reading correctable, and showing the parts it *could not* place is what
  * stops it looking omniscient when it quietly dropped half the sentence.
  */
 function Reading({
@@ -590,7 +590,7 @@ function CreatePanel({
 }
 
 /**
- * The empty state §27 asks for — but built from what the search actually found.
+ * The empty state §27 asks for, but built from what the search actually found.
  *
  * "Broaden your search" is advice. "Nobody is free Saturday, but four people
  * match everything else" is information, and the button next to it does the

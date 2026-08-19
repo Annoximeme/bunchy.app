@@ -9,8 +9,8 @@ import { Button, ErrorNotice, Field, Input } from "@/components/ui";
 /**
  * Auth forms.
  *
- * Every one of these handles the same four states explicitly — idle,
- * submitting, field-level error, request error — because the moment someone
+ * Every one of these handles the same four states explicitly, idle,
+ * submitting, field-level error, request error, because the moment someone
  * cannot get into their account is the moment a vague "something went wrong"
  * costs you a member.
  */
@@ -100,7 +100,7 @@ export function SignUpForm() {
 
       {/*
         Lives here rather than in the shared auth footer, where it used to greet
-        people on Sign in and Reset your password too — neither of which is
+        people on Sign in and Reset your password too, neither of which is
         joining anything.
       */}
       <p className="mt-5 text-center text-xs text-muted">

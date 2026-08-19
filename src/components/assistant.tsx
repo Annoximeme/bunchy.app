@@ -20,7 +20,7 @@ import { activityWhen } from "@/lib/format";
  *
  * Presented as a thing that looks things up, not a thing that chats. There is
  * no typing indicator, no persona and no thread of remembered banter, because
- * all three would imply capabilities it does not have — and a member who
+ * all three would imply capabilities it does not have, and a member who
  * believes they are talking to something that can act on their behalf will
  * eventually assume it did.
  *

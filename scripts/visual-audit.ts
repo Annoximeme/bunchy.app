@@ -86,7 +86,7 @@ async function runAxe(page: Page, pageName: string, theme: string) {
       resultTypes: ["violations"],
       // Best practice as well as the WCAG tags. The conformance rules catch
       // contrast and names; the best-practice set is what catches a heading
-      // level skipped, content outside a landmark, and an id used twice —
+      // level skipped, content outside a landmark, and an id used twice,
       // the things that make a page hard to navigate without ever failing an
       // audit.
       runOnly: {
@@ -110,7 +110,7 @@ async function runAxe(page: Page, pageName: string, theme: string) {
       id: v.id,
       impact: v.impact,
       help: v.help,
-      nodes: v.nodes.slice(0, 4).map((n) => `${n.target.join(" ")} — ${n.html.slice(0, 160)}`),
+      nodes: v.nodes.slice(0, 4).map((n) => `${n.target.join(" ")}, ${n.html.slice(0, 160)}`),
     });
   }
 }
@@ -131,7 +131,7 @@ async function signInOnce(browser: Browser) {
   await page.fill('input[type="password"]', PASSWORD);
   // Wait on the response, not on a navigation. Signing in is a fetch followed
   // by a client-side `router.push`, and there is no document load for
-  // `waitForURL` to hang its default `load` condition on — it resolved
+  // `waitForURL` to hang its default `load` condition on, it resolved
   // sometimes and timed out others, on a sign-in that had already succeeded.
   const [response] = await Promise.all([
     page.waitForResponse((r) => r.url().endsWith("/api/auth/login"), { timeout: 30_000 }),
@@ -161,7 +161,7 @@ async function signInOnce(browser: Browser) {
  * than against any colour anybody chose.
  *
  * `prefers-reduced-motion: reduce` is the switch those rules are already
- * guarded by, so asking for it gives the settled page — which is the state a
+ * guarded by, so asking for it gives the settled page, which is the state a
  * reader does their reading in, and the only state in which "is this legible"
  * is a meaningful question. It is also a real user preference, so this is the
  * page as some people always see it.
@@ -202,8 +202,8 @@ async function main() {
       for (const target of PAGES) {
         const page = target.signedOut ? anonPage : signedInPage;
         try {
-          // `networkidle` is the right wait for a screenshot — it means the
-          // images and fonts have arrived — but it must not be able to fail a
+          // `networkidle` is the right wait for a screenshot, it means the
+          // images and fonts have arrived, but it must not be able to fail a
           // page on its own. One hanging request (a link prefetch that never
           // resolves) left /now with no screenshot at all, which is the exact
           // blind spot this script exists to close. The page is rendered by
@@ -216,7 +216,7 @@ async function main() {
             .waitForLoadState("networkidle", { timeout: 10_000 })
             .catch(() => console.warn(`    (network never went idle on ${target.path})`));
           // Force the lazy images in. `next/image` defers anything below the
-          // fold, and a full-page screenshot resizes rather than scrolls — so
+          // fold, and a full-page screenshot resizes rather than scrolls, so
           // an image far down the page never enters a viewport, never loads,
           // and is captured as its blur placeholder. That is exactly how the
           // founder photograph on About first appeared to be broken when it was
@@ -261,7 +261,7 @@ async function main() {
   await browser.close();
 
   // Deduplicated: the same violation on the same page in both themes is one
-  // problem, not two, unless it is a contrast one — those genuinely differ.
+  // problem, not two, unless it is a contrast one, those genuinely differ.
   const seen = new Set<string>();
   const unique = violations.filter((v) => {
     const key = `${v.page}|${v.id}|${v.id === "color-contrast" ? v.theme : ""}`;
@@ -280,7 +280,7 @@ async function main() {
     `critical ${bySeverity.critical ?? 0} · serious ${bySeverity.serious ?? 0} · moderate ${bySeverity.moderate ?? 0} · minor ${bySeverity.minor ?? 0}`,
   );
   for (const v of unique.sort((a, b) => a.page.localeCompare(b.page))) {
-    console.log(`\n[${v.impact}] ${v.page} (${v.theme}) — ${v.id}`);
+    console.log(`\n[${v.impact}] ${v.page} (${v.theme}), ${v.id}`);
     console.log(`  ${v.help}`);
     for (const node of v.nodes) console.log(`    ${node}`);
   }

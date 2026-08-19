@@ -4,8 +4,8 @@ import type { NotificationType } from "@/generated/prisma/enums";
  * Default notification settings for a new member.
  *
  * The bias is deliberate: notify when a *person* is waiting on you, stay quiet
- * otherwise. Nothing that exists to pull someone back into the app — no
- * "people are active near you", no re-engagement nudges — is on by default, and
+ * otherwise. Nothing that exists to pull someone back into the app, no
+ * "people are active near you", no re-engagement nudges, is on by default, and
  * email is off for everything except the two events you would want to know
  * about while away.
  */

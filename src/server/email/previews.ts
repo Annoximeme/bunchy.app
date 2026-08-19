@@ -10,8 +10,8 @@ import {
  * The catalogue of emails, for looking at.
  *
  * Built by calling the real templates with example arguments, so a preview
- * cannot show something the product does not send. The alternative — a folder
- * of sample HTML kept beside the templates — is the same trap as a logo file
+ * cannot show something the product does not send. The alternative, a folder
+ * of sample HTML kept beside the templates, is the same trap as a logo file
  * beside a logo component: two things that agree until one changes.
  *
  * The example URLs are obviously fake on purpose. A preview that carried a
@@ -83,7 +83,7 @@ export const EMAIL_PREVIEWS: readonly EmailPreview[] = [
  * The preview document.
  *
  * The email's own HTML, with a thin strip above it naming the template and
- * showing the subject line — the subject is half of what an email looks like
+ * showing the subject line, the subject is half of what an email looks like
  * in an inbox, and a preview that only rendered the body would be reviewing
  * the wrong half. The strip is plain markup that cannot reach inside the
  * message, because everything below it must stay byte-identical to what gets
@@ -101,13 +101,13 @@ export function renderPreview(preview: EmailPreview): string {
   ].join("");
 
   // No HTML part means nothing to preview but the text, which is still worth
-  // seeing — that is the case for anything sent outside the templates.
+  // seeing, that is the case for anything sent outside the templates.
   if (!html) {
     return `${strip}<pre style="font:13px/1.6 ui-monospace,monospace;padding:20px;white-space:pre-wrap;">${escape(text)}</pre>`;
   }
 
   // Injected after the opening body tag so the document stays one valid page
-  // and the email's own `<head>` — its color-scheme hints and title — is the
+  // and the email's own `<head>`, its color-scheme hints and title, is the
   // one the browser applies.
   return html.replace(/(<body[^>]*>)/i, `$1${strip}`);
 }

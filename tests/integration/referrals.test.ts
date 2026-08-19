@@ -123,7 +123,7 @@ describe("founding members", () => {
       "@/server/modules/profile/founding"
     );
 
-    // Fill the cohort with bulk inserts rather than a thousand real signups —
+    // Fill the cohort with bulk inserts rather than a thousand real signups,
     // the boundary is the contract, and it is worth testing for real.
     const users = Array.from({ length: FOUNDING_MEMBER_LIMIT }, (_, i) => ({
       id: `full-user-${i}`,

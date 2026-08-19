@@ -3,7 +3,7 @@
  *
  * Compatibility answers "would these people get on, on paper". Chemistry asks
  * the harder question: *is this group actually working*. A bunch of nine people
- * where two do all the talking scores brilliantly on paper and is not a bunch —
+ * where two do all the talking scores brilliantly on paper and is not a bunch,
  * it is an audience with extra steps.
  *
  * Three rules, all of which fall out of the product's stance rather than the
@@ -21,7 +21,7 @@
  * 3. **Members never see the number.** `observations` is what a person is shown:
  *    plain sentences about things they could act on. The score exists to rank
  *    recommendations, to propose new bunches, and to let staff spot a group
- *    dying quietly — not to grade anybody's friendships.
+ *    dying quietly, not to grade anybody's friendships.
  */
 
 export type ChemistrySignalName =
@@ -285,7 +285,7 @@ export function bunchChemistry(input: ChemistryInput): BunchChemistry {
 function sizeFit(count: number): number {
   if (count >= 5 && count <= 12) return 1;
   if (count < 5) return clamp(count / 5);
-  // Past 12 it degrades slowly rather than falling off a cliff — a bunch of 14
+  // Past 12 it degrades slowly rather than falling off a cliff, a bunch of 14
   // is worse than one of 9, not broken.
   return clamp(1 - (count - 12) / 20);
 }

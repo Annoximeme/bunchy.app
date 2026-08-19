@@ -16,7 +16,7 @@ export interface Viewer {
   avatarUrl: string | null;
   onboardingStage: OnboardingStage;
   /**
-   * Staff privilege. Never rendered to other members *as a level* — profiles
+   * Staff privilege. Never rendered to other members *as a level*, profiles
    * show a plain "Staff" badge derived from this, so members can tell a real
    * staff account from someone claiming to be one, without publishing who can
    * ban whom. See `PublicProfile.staff`.

@@ -7,14 +7,14 @@ import { recommendBunches } from "@/server/modules/matching/bunches";
  *
  * Every other notification in this product is a reaction: someone wrote to you,
  * someone invited you, someone replied. These two are the exceptions, and both
- * were shipped as preference toggles with nothing behind them — a member could
+ * were shipped as preference toggles with nothing behind them, a member could
  * switch on "a reminder shortly before an activity you joined" and never
  * receive one. That is the kind of half-feature this codebase is supposed not
  * to have, so it is a job now rather than a promise.
  *
  * There is no scheduler in the app. This is a plain function; `npm run jobs`
  * runs it, and a cron or a platform scheduler calls that. Deliberately not a
- * setInterval inside the web process — work that must happen once should not be
+ * setInterval inside the web process, work that must happen once should not be
  * attached to something that runs in N replicas.
  *
  * **Idempotent by group key.** Each job derives a stable key per member per
@@ -49,7 +49,7 @@ export async function runScheduledNotifications(
 }
 
 /**
- * "Did you go?" — the only notification sent after something rather than before.
+ * "Did you go?", the only notification sent after something rather than before.
  *
  * Sent once, a few hours after an activity ends, to the people who said they
  * were coming. It asks the question the product is actually built to answer,
@@ -183,7 +183,7 @@ export async function sendBunchRecommendations(now = new Date()): Promise<number
   const cutoff = new Date(now.getTime() - RECOMMENDATION_COOLDOWN_DAYS * 86_400_000);
 
   // Only people who explicitly opted in. The default is off, so an absent row
-  // is a no — this deliberately does not fall back to `defaultPreference`.
+  // is a no, this deliberately does not fall back to `defaultPreference`.
   const optedIn = await db.notificationPreference.findMany({
     where: { type: "BUNCH_RECOMMENDATION", inApp: true },
     select: { profileId: true },
@@ -223,7 +223,7 @@ export async function sendBunchRecommendations(now = new Date()): Promise<number
 /**
  * The time, in the recipient's own zone, and labelled with it.
  *
- * A member with no zone on file falls back to UTC — stated explicitly, because
+ * A member with no zone on file falls back to UTC, stated explicitly, because
  * an unlabelled hour in a reminder for a real-world meetup is someone turning
  * up at the wrong time.
  */

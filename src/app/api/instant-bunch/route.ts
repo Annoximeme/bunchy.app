@@ -29,7 +29,7 @@ const createSchema = z.object({
   profileIds: z.array(z.string()).max(20),
   interestSlugs: z.array(z.string()).max(8).default([]),
   // Accepted from the client because the member can change the time the parser
-  // proposed — but it is still validated as a real future instant below.
+  // proposed, but it is still validated as a real future instant below.
   startsAt: z.iso.datetime().nullable().optional(),
   mode: z.enum(["ONLINE", "OFFLINE"]).nullable().optional(),
   cityLabel: z.string().trim().max(120).nullable().optional(),

@@ -12,8 +12,8 @@ import { describe, expect, it } from "vitest";
  * everyone has forgotten the decision.
  *
  * It is deliberately a *code* test rather than a note in a README. A hosted
- * model is one `fetch` away, and the moment it is added by accident — a
- * half-finished experiment, a copied snippet — this fails and someone has to
+ * model is one `fetch` away, and the moment it is added by accident, a
+ * half-finished experiment, a copied snippet, this fails and someone has to
  * argue for it on purpose.
  *
  * Adding a self-hosted model later is fine and this will not stand in the way:

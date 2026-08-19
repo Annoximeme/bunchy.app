@@ -20,7 +20,7 @@ jobs:
       # Several modules build a Prisma client at import time, so the unit suite
       # needs this present even though it never opens a connection. It used to
       # arrive via a committed `.env`; that file is now git-ignored in every
-      # environment, so CI supplies its own placeholder — the same one the
+      # environment, so CI supplies its own placeholder, the same one the
       # build job uses, and pointing at nothing that exists.
       DATABASE_URL: postgresql://unused:unused@localhost:5432/unused
     steps:

@@ -104,7 +104,7 @@ describe("read state is per member", () => {
     const [row] = await listNotifications(owner);
 
     // Scoped in the query, so a foreign id silently matches nothing rather than
-    // erroring — an error would confirm the id exists.
+    // erroring, an error would confirm the id exists.
     await markRead(stranger, row!.id);
     expect(await unreadCount(owner)).toBe(1);
 

@@ -20,14 +20,14 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 /**
  * "Find someone to play Fortnite with."
  *
- * Discover answers "who should I meet?" — an open question, answered with a
+ * Discover answers "who should I meet?", an open question, answered with a
  * considered set. This answers a *closed* one, where the member has said what
  * they want and the terms are requirements rather than hints.
  *
  * The part worth reading is `explainEmpty`. §27 says never show a fake
  * recommendation and always offer a way forward, and the cheap version of that
  * is a static list of four buttons. Instead, when a search finds nobody, each
- * constraint is lifted in turn to find out *which one* emptied it — so the
+ * constraint is lifted in turn to find out *which one* emptied it, so the
  * answer is "nobody is free Saturday, but four people match everything else"
  * rather than "try broadening your search". One is useful; the other is a
  * shrug with a button on it.
@@ -216,7 +216,7 @@ async function countMatching(
  * Each constraint is lifted on its own and the search re-run, so what comes
  * back is a fact about this member's actual pool rather than generic advice.
  * Only runs when nothing matched, and only over constraints that were
- * genuinely applied — at most four extra counts, on the one path where a member
+ * genuinely applied, at most four extra counts, on the one path where a member
  * is otherwise looking at an empty screen.
  */
 async function explainEmpty(
@@ -290,7 +290,7 @@ async function explainEmpty(
  * Attaches display fields and the Who's Up badge.
  *
  * Location and age go through the same privacy switches Discover honours, and
- * a status appears only if this viewer is inside the audience its owner chose —
+ * a status appears only if this viewer is inside the audience its owner chose,
  * the condition is applied in the query, not filtered afterwards.
  */
 async function decorate(
@@ -361,7 +361,7 @@ async function decorate(
             : // Shared with the profile serializer rather than subtracted here.
               // This path had its own copy, so the birth month never reached it
               // and everyone whose birthday had not arrived yet was shown a
-              // year too old — on the one screen that puts an age next to a
+              // year too old, on the one screen that puts an age next to a
               // face somebody is deciding whether to message.
               ageFrom(
                 profile.user.birthYear,

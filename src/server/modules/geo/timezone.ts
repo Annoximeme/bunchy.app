@@ -4,7 +4,7 @@ import type { AvailabilityWindow } from "@/generated/prisma/enums";
  * Turning "weekday evening" into hours that two people can actually share.
  *
  * Availability is stored symbolically, which is the right way to ask the
- * question — nobody wants to fill in a calendar grid to sign up. But "weekday
+ * question, nobody wants to fill in a calendar grid to sign up. But "weekday
  * evening" is a *local* idea, and the matcher was comparing the labels
  * directly. A member in Antwerp and a member in Tokyo both picking
  * WEEKDAY_EVENING scored as a perfect overlap while having no hour in common at
@@ -39,7 +39,7 @@ export function isWeekendWindow(window: AvailabilityWindow): boolean {
  * The zone's current offset from UTC, in hours.
  *
  * Derived from `Intl` rather than a table, so it stays correct as zones change
- * their rules without shipping a new dependency. An unknown zone returns 0 —
+ * their rules without shipping a new dependency. An unknown zone returns 0,
  * the same answer as having no zone at all, which is the honest fallback.
  */
 export function offsetHours(timezone: string | null, at = new Date()): number {
@@ -99,7 +99,7 @@ function overlapHours(a: UtcRange, b: UtcRange): number {
 /**
  * Hours per week two sets of windows genuinely share.
  *
- * Weekday and weekend windows are compared separately — being free on a
+ * Weekday and weekend windows are compared separately, being free on a
  * Tuesday evening and a Saturday evening is not an overlap, and the old
  * label-matching happened to get that right only because the labels differed.
  */
@@ -141,7 +141,7 @@ export interface WindowOverlap {
  *
  * The distinction matters as soon as zones differ. A member in Brussels free on
  * weekday evenings and a member in Tokyo free late at night share real hours
- * (16:00-21:00 UTC against 14:00-21:00 UTC) while sharing no label — and two
+ * (16:00-21:00 UTC against 14:00-21:00 UTC) while sharing no label, and two
  * people who both picked "weekday evening" in those cities share a label and no
  * hours at all. Describing an overlap by its labels gets both cases wrong.
  */

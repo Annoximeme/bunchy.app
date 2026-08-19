@@ -8,7 +8,7 @@ import type { MatchProfile } from "@/server/modules/matching/types";
 /**
  * Bunch recommendations.
  *
- * A bunch is a better first suggestion than a person for most new members —
+ * A bunch is a better first suggestion than a person for most new members,
  * joining eight people who already talk to each other is far less exposing than
  * messaging a stranger. So this runs on the same footing as person matching
  * rather than as an afterthought.

@@ -194,7 +194,7 @@ export default async function ModeratorsPage() {
             {/*
               These two are buttons that happen to be links, and they sit
               inside the legal prose wrapper, whose `[&_a]:…` rules style every
-              descendant link as body-copy link — coral ink, underlined. A
+              descendant link as body-copy link, coral ink, underlined. A
               descendant selector out-specifies the element's own classes, so
               the primary button was rendering coral text on a coral fill at
               1.7:1, which is very nearly invisible. The `!` is the narrow fix:

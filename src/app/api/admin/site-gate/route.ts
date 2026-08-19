@@ -19,7 +19,7 @@ const schema = z.object({
  *
  * Not wrapped in `handle` because the response has to carry a Set-Cookie: the
  * moment the gate goes up, Caddy starts refusing every request that does not
- * present the preview cookie — including the one that would load this page
+ * present the preview cookie, including the one that would load this page
  * again. Issuing it here is what stops an admin locking themselves out with
  * their own switch. `setGate` refuses outright when there is no token to issue.
  */

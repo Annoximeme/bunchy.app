@@ -37,7 +37,7 @@ beforeEach(() => {
  *
  * Privacy §14 and Terms §14 promise a member is told *before* a change takes
  * effect. That promise is only worth the sentence if the code can refuse to
- * break it, so these are not validation niceties — they are the mechanism.
+ * break it, so these are not validation niceties, they are the mechanism.
  */
 describe("publishing an announcement", () => {
   it("refuses an effective date that has already passed", async () => {

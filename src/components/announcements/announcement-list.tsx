@@ -7,14 +7,14 @@ import type { AnnouncementTier } from "@/generated/prisma/enums";
  * The record of everything members have been told.
  *
  * Drawn as a dated spine rather than a stack of cards. These are events with an
- * order and, for the ones that matter, a second date attached — published then,
- * takes effect then — and a list of equal boxes flattens exactly the thing
+ * order and, for the ones that matter, a second date attached, published then,
+ * takes effect then, and a list of equal boxes flattens exactly the thing
  * somebody comes here to check.
  *
  * The tier is always visible. A member reading this a year later should be able
  * to tell at a glance which of these interrupted everybody and which did not,
  * because that is the difference between "we changed the terms" and "we shipped
- * Radar" — and a system that draws them identically is one that will eventually
+ * Radar", and a system that draws them identically is one that will eventually
  * be used to push the second as though it were the first.
  */
 
@@ -114,7 +114,7 @@ export function TierChip({ tier }: { tier: AnnouncementTier }) {
 /**
  * When it was said, and when it lands.
  *
- * The second date is the one the policies are about — Privacy §14 and Terms §14
+ * The second date is the one the policies are about, Privacy §14 and Terms §14
  * promise notice *before* a change takes effect, and that is only checkable if
  * the date is on the notice rather than buried in the body.
  */
@@ -198,7 +198,7 @@ export function AnnouncementList({
           </h2>
           {/*
             The spine. A single line down the left with a dot per entry, so the
-            record reads as a sequence of events rather than as a pile — and the
+            record reads as a sequence of events rather than as a pile, and the
             dot carries the tier's colour, which is the fastest way to see that
             two of these interrupted everybody and one did not.
           */}

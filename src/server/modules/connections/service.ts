@@ -9,7 +9,7 @@ import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 
 /**
- * Connections — mutual consent, always.
+ * Connections, mutual consent, always.
  *
  * Nobody can message anybody until both people have agreed. That single rule is
  * what keeps Bunchy from becoming an inbox full of strangers, and it is enforced
@@ -126,7 +126,7 @@ export async function sendRequest(
       throw conflict("You're already connected.");
     }
     if (existing.status === "PENDING") {
-      // They already asked us — treat this as accepting rather than a duplicate.
+      // They already asked us, treat this as accepting rather than a duplicate.
       if (existing.requesterId === addresseeId) {
         await respondToRequest(existing.id, requesterId, true);
         return { id: existing.id, status: "ACCEPTED" };
@@ -185,7 +185,7 @@ async function notifyOfRequest(
 }
 
 /**
- * Accepting creates the conversation. Declining is silent by design — the
+ * Accepting creates the conversation. Declining is silent by design, the
  * requester is not told, because "X said no" is an invitation to try again from
  * a new angle.
  */

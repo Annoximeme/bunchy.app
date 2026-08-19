@@ -381,7 +381,7 @@ export default async function GuidelinesPage() {
  * A Panel with its body padded.
  *
  * `Panel` deliberately pads only its title bar and hands `children` through
- * untouched, so every consumer supplies its own — which meant the cards and
+ * untouched, so every consumer supplies its own, which meant the cards and
  * table rows here sat flush against the panel edge while the heading above them
  * was inset. One wrapper rather than eight copies of `p-5`.
  */

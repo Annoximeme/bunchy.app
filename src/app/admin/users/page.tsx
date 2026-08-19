@@ -124,7 +124,7 @@ export default async function AdminUsersPage({
                           <span className="text-muted">No profile</span>
                         )}
                       </p>
-                      {/* Null for moderators — redacted server-side, so there
+                      {/* Null for moderators, redacted server-side, so there
                           is nothing in the payload to reveal either. */}
                       {user.email ? (
                         <p className="truncate text-xs text-muted">

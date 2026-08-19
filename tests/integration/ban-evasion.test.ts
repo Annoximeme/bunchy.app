@@ -53,7 +53,7 @@ describe("a banned member cannot come straight back", () => {
     await banUser(actor, troll.userId, "Harassment");
     await deleteAccount(troll.userId, PASSWORD);
 
-    // No foreign key to User, so the cascade cannot take it — that is the
+    // No foreign key to User, so the cascade cannot take it, that is the
     // whole design.
     expect(await db.bannedEmail.count()).toBe(1);
   });

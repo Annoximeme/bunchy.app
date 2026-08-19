@@ -25,7 +25,7 @@ describe("notification preferences", () => {
   it("shows suggestions off and person events on, before anything is saved", () => {
     render(<NotificationPreferences initial={[]} />);
 
-    // The screen must draw the same defaults the sender actually applies —
+    // The screen must draw the same defaults the sender actually applies,
     // these two disagreeing once meant members received suggestions the
     // settings page showed as off.
     expect(screen.getByRole("switch", { name: suggestion })).toHaveAttribute(
@@ -42,7 +42,7 @@ describe("notification preferences", () => {
     render(<NotificationPreferences initial={[]} />);
 
     // Counted rather than only asserted inside the branch. The suffix used to
-    // be "— email"; when the copy dropped its em dashes this loop stopped
+    // be ",  email"; when the copy dropped its em dashes this loop stopped
     // matching anything and the test kept passing on zero switches, which is
     // the quietest way for a test to stop testing.
     let checked = 0;

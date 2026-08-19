@@ -1,7 +1,7 @@
 /**
  * Query counts and wall time for the hot service calls, against real data.
  *
- * `npm run measure`. Query count matters more than the millisecond figure — a
+ * `npm run measure`. Query count matters more than the millisecond figure, a
  * call whose count grows with the size of a bunch or a member base is the one
  * that falls over at scale, and it is invisible in a wall-clock number taken on
  * a seeded database of thirteen people.
@@ -35,7 +35,7 @@ async function main() {
 
   const sarah = (await db.profile.findFirst({ where: { username: "sarah" }, select: { id: true } }))!;
 
-  // Build a 12-member bunch — the top of the product's stated range.
+  // Build a 12-member bunch, the top of the product's stated range.
   const profiles = await db.profile.findMany({ take: 12, select: { id: true } });
   const big = await db.bunch.create({
     data: {
@@ -52,11 +52,11 @@ async function main() {
 
   console.log(`(small bunch = ${small._count.memberships} members, big = 12)\n`);
   await measure("recommendPeople(limit 8)", () => recommendPeople(sarah.id, { limit: 8 }));
-  // What the page actually does now — one indexed lookup.
+  // What the page actually does now, one indexed lookup.
   await measure("readChemistry (page path)", () => readChemistry(big.id));
   // What the hourly job does. Allowed to be slow; must not be on a render.
-  await measure(`recomputeChemistry — ${small._count.memberships} members`, () => recomputeChemistry(small.id));
-  await measure("recomputeChemistry — 12 members", () => recomputeChemistry(big.id));
+  await measure(`recomputeChemistry, ${small._count.memberships} members`, () => recomputeChemistry(small.id));
+  await measure("recomputeChemistry, 12 members", () => recomputeChemistry(big.id));
   await measure("getBunch(slug)", () => getBunch(small.slug, sarah.id));
   await measure("listMyBunches", () => listMyBunches(sarah.id));
 

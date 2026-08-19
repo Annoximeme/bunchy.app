@@ -28,12 +28,12 @@ export async function generateMetadata({
  * Somebody else's profile.
  *
  * The page is ordered by the question a visitor is actually asking, which is
- * not "what are this person's settings?" — it is "would we get on, and what
+ * not "what are this person's settings?", it is "would we get on, and what
  * would I say?". So: who they are, then what the two of you have in common,
  * then the rest of them.
  *
- * The previous version was a stack of five identical cards — Into, Wants to get
- * into, Looking for, Usually free, Style — each rendering one of their fields
+ * The previous version was a stack of five identical cards, Into, Wants to get
+ * into, Looking for, Usually free, Style, each rendering one of their fields
  * the same way their own settings page does. That is a directory entry, and it
  * left the one screen where somebody decides whether to reach out saying
  * nothing at all about why these two were put in front of each other.
@@ -223,7 +223,7 @@ export default async function PublicProfilePage({
             )}
 
             {/*
-              A profile with nothing on it is a real state — somebody who
+              A profile with nothing on it is a real state, somebody who
               signed up and stopped. Better to say so plainly than to render an
               empty stretch of page that looks like the app failed to load.
             */}

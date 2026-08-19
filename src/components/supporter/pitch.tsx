@@ -24,8 +24,8 @@ const editorial = Instrument_Serif({
 /**
  * The pitch, the proof and the payment, in that order.
  *
- * A client component because two things on it are interactive — the ring
- * preview and the plan toggle — and neither is worth a round trip.
+ * A client component because two things on it are interactive, the ring
+ * preview and the plan toggle, and neither is worth a round trip.
  *
  * The celebration is CSS. `rise` already exists in globals.css for exactly this
  * (one transition between two states, behind `prefers-reduced-motion`), and a
@@ -53,9 +53,9 @@ const DESTINATIONS = [
 ];
 
 /**
- * Artwork, not interface. These colours are fixed in both themes on purpose —
+ * Artwork, not interface. These colours are fixed in both themes on purpose,
  * a home-screen icon that changed with the reader's OS setting would be a
- * different icon — so they are literals, and the navy is the brand's own
+ * different icon, so they are literals, and the navy is the brand's own
  * #0A0E1A rather than the ink token that happens to look similar.
  */
 const APP_ICONS = [
@@ -102,7 +102,7 @@ export function SupporterPitch({
         Banded like About, in the same order and for the same reason: the
         argument has a shape, and alternating grounds are what let a reader feel
         it while scrolling. Inside the app shell the bands are rounded panels
-        rather than full-bleed stripes — a stripe that ran under the sidebar
+        rather than full-bleed stripes, a stripe that ran under the sidebar
         would be fighting the chrome rather than using it.
       */}
       <section className="mt-12 rounded-[var(--radius-card)] bg-band-warm px-6 py-10 sm:px-10">

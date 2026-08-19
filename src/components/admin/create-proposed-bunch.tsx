@@ -9,7 +9,7 @@ import { Button, ErrorNotice, Field, Input, Textarea } from "@/components/ui";
  * Turning a proposal into invitations.
  *
  * The name and description are editable before sending, because the generated
- * ones are a starting point — "Climbing in Ghent" is a reasonable guess and a
+ * ones are a starting point, "Climbing in Ghent" is a reasonable guess and a
  * human can do better in ten seconds.
  */
 export function CreateProposedBunch({

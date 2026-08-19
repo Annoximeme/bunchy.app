@@ -165,7 +165,7 @@ export async function postMessage(
     select: { name: true },
   });
 
-  // Only mention people who are actually in the bunch — otherwise a mention is
+  // Only mention people who are actually in the bunch, otherwise a mention is
   // a way to notify a stranger.
   const validMentions =
     input.mentionProfileIds.length > 0
@@ -214,7 +214,7 @@ export async function postMessage(
 
 /**
  * Notifies the people a message concerns: whoever was replied to, and whoever
- * was mentioned. Not the whole bunch — a busy bunch would otherwise notify
+ * was mentioned. Not the whole bunch, a busy bunch would otherwise notify
  * everyone about everything, which is how people end up muting a group and
  * drifting away from it.
  */
@@ -269,7 +269,7 @@ async function fanOutNotifications(
  * Rolling activity level, 0-1, decayed by age.
  *
  * Used to rank bunches in Discover and to spot bunches that have gone quiet. It
- * is never rendered as a public number or a rank — a leaderboard of bunches is
+ * is never rendered as a public number or a rank, a leaderboard of bunches is
  * exactly the popularity hierarchy this product is trying not to build.
  */
 export async function bumpActivityScore(bunchId: string): Promise<void> {

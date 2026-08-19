@@ -10,7 +10,7 @@ type Status = "NEW" | "REVIEWING" | "ACCEPTED" | "DECLINED" | "WITHDRAWN";
 /**
  * Deciding on one application.
  *
- * "Accept" deliberately does not make anybody staff — it records that this
+ * "Accept" deliberately does not make anybody staff, it records that this
  * person is worth talking to. The reminder under the buttons says so, because
  * an admin clicking Accept and assuming a badge appeared is how somebody ends
  * up thinking they were rejected.

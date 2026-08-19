@@ -34,7 +34,7 @@ describe("noveltyFor", () => {
 
   it("discounts a pair with no bridge at all", () => {
     // Nothing shared and nothing complementary is a cold introduction, not a
-    // discovery — it must not outrank a pair that has a way in.
+    // discovery, it must not outrank a pair that has a way in.
     const you = profile(["chess", "reading"]);
     const them = profile(["motocross", "welding"]);
 

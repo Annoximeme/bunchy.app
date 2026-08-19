@@ -17,7 +17,7 @@ const schema = z.object({
  * An evening, from constraints.
  *
  * Rate limited on the AI rule because it runs the activity recommender and,
- * when asked to find people, the matcher — and "try another" is a button people
+ * when asked to find people, the matcher, and "try another" is a button people
  * press repeatedly by design.
  */
 export async function POST(request: Request) {

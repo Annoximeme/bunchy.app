@@ -140,7 +140,7 @@ describe("finding someone", () => {
       },
     });
 
-    // Discover leaves connections out, and should — it exists to introduce
+    // Discover leaves connections out, and should, it exists to introduce
     // people. "Who would I play Warhammer with tonight" has the opposite
     // answer, and excluding friends emptied a screen that had exactly the
     // right person on it.
@@ -306,7 +306,7 @@ describe("when nobody matches", () => {
     const seeker = await member("seeker", { interests: ["warhammer"] });
 
     // An empty platform. Dropping any requirement still finds nobody, so there
-    // is no honest suggestion to make — and a "broaden your search" button
+    // is no honest suggestion to make, and a "broaden your search" button
     // that leads to another empty screen is worse than no button.
     const result = await findPeople(seeker.profileId, "play Warhammer tonight", {
       now: NOW,

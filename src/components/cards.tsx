@@ -74,7 +74,7 @@ export function PersonCard({ person }: { person: PersonCardData }) {
       // Deliberately no `router.refresh()` here.
       //
       // Refreshing re-runs the page's recommendations, which drops this card
-      // and reflows everything below it — under the cursor of somebody who has
+      // and reflows everything below it, under the cursor of somebody who has
       // just pressed a small button, and taking the undo with it. The card
       // stays in its own hole until the next natural navigation.
     } catch (cause) {
@@ -256,8 +256,8 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
       <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{bunch.description}</p>
 
       {/*
-        Why you'd fit. The scorer has always produced these — five shared
-        interests, same preferred group size, active this weekend — and this
+        Why you'd fit. The scorer has always produced these, five shared
+        interests, same preferred group size, active this weekend, and this
         card accepted them in its props and then dropped them on the floor, so
         a bunch recommendation was a number with no argument behind it. The
         person card has rendered its equivalent from the start.
@@ -331,7 +331,7 @@ export function ActivityCard({ activity }: { activity: ActivityCardData }) {
       className="card-surface group flex items-start justify-between gap-4 p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]"
     >
       <div className="min-w-0">
-        {/* Yellow marks activities throughout the product — the "when" is the
+        {/* Yellow marks activities throughout the product, the "when" is the
             first thing you look for, and it is the same colour every time. */}
         <p className="text-sm font-medium text-yellow-ink">
           {activityWhen(activity.startsAt)}

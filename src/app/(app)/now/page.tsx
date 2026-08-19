@@ -43,13 +43,13 @@ const HORIZONS: Array<{ value: Horizon | "all"; label: string }> = [
 ];
 
 /**
- * Bunchy Now — what people are up for, right now.
+ * Bunchy Now, what people are up for, right now.
  *
  * Two halves, and the difference between them is the privacy model. The counts
  * at the top are aggregates: never fewer than three people, never a name, never
  * anything finer than a city label. The cards below are individuals, and they
  * appear only because each of those members chose an audience that includes the
- * viewer — the same rule Who's Up has always applied, enforced in the query
+ * viewer, the same rule Who's Up has always applied, enforced in the query
  * rather than here.
  */
 export default async function BunchyNowPage({
@@ -209,7 +209,7 @@ export default async function BunchyNowPage({
  *
  * Deliberately not the Discover card: what matters here is what they are up for
  * and when, so the status leads and the compatibility follows. There are no
- * actions on it either — connecting, messaging and blocking all live on the
+ * actions on it either, connecting, messaging and blocking all live on the
  * profile, and duplicating them here would mean a second place to keep the
  * permission checks right.
  */
@@ -221,7 +221,7 @@ function NowPerson({
   return (
     <Card className="flex items-start gap-4">
       {/*
-        The avatar is `aria-hidden` — it is a decorative initial, and the name
+        The avatar is `aria-hidden`, it is a decorative initial, and the name
         is a link of its own two lines down. Without a label this anchor reached
         a screen reader as a link with no text at all, which is what an axe pass
         over a populated board caught. Hidden from the accessibility tree

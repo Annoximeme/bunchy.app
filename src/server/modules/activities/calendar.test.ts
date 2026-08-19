@@ -89,7 +89,7 @@ describe("toICalendar", () => {
 
   it("says only 'Online' when the viewer has not joined", () => {
     // `onlineUrl` is already null for non-participants by the time it reaches
-    // here — the calendar must not invent one.
+    // here, the calendar must not invent one.
     const ics = build({ mode: "ONLINE", onlineUrl: null });
     expect(ics).toContain("LOCATION:Online");
     expect(ics).not.toContain("meet.example");

@@ -3,7 +3,7 @@
 -- A record rather than an email: an application in a mailbox gets lost, and the
 -- person who wrote it spends a month wondering whether anybody read it. One per
 -- profile, so applying cannot be repeated to get attention, and tied to a member
--- rather than open to anonymous submissions — a moderator needs a history here,
+-- rather than open to anonymous submissions, a moderator needs a history here,
 -- and it means the form never asks for a name or an email we already hold.
 CREATE TYPE "ModeratorApplicationStatus" AS ENUM ('NEW', 'REVIEWING', 'ACCEPTED', 'DECLINED', 'WITHDRAWN');
 

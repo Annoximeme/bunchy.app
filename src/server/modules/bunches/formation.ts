@@ -7,9 +7,9 @@ import type { MatchProfile } from "@/server/modules/matching/types";
  * harder question the product is actually built on: given a pool of people who
  * have nobody, which *group of five to twelve* would work.
  *
- * That is not the same as taking the top N matches for one person. A star —
+ * That is not the same as taking the top N matches for one person. A star,
  * one popular member everybody scores well against, who have nothing in common
- * with each other — is a bad bunch and a very good list. So the objective here
+ * with each other, is a bad bunch and a very good list. So the objective here
  * is the **mean score across every pair in the group**, and a candidate is only
  * admitted if they hold up against everyone already in it, not just the seed.
  *
@@ -18,7 +18,7 @@ import type { MatchProfile } from "@/server/modules/matching/types";
  * have options), then repeatedly admit whoever raises the group's weakest link
  * the most. Stop when nobody left clears the floor.
  *
- * Nothing here creates anything. It proposes, and a human decides — see the
+ * Nothing here creates anything. It proposes, and a human decides, see the
  * note on consent in `proposeBunches`.
  */
 
@@ -31,7 +31,7 @@ export interface ProposedMember {
 
 export interface BunchProposal {
   members: ProposedMember[];
-  /** Mean across every pair, 0-100 — the number that matters. */
+  /** Mean across every pair, 0-100: the number that matters. */
   cohesion: number;
   /** The worst pair in the group. A good mean can hide one bad fit. */
   weakestPair: number;
@@ -95,7 +95,7 @@ export function proposeBunches(
 
     if (group.length < minSize) {
       // This seed cannot reach a viable size. Set them aside and try the next
-      // hardest to place — one unplaceable person must not block everyone else,
+      // hardest to place, one unplaceable person must not block everyone else,
       // which is what abandoning the whole pass here used to do.
       unplaced.push(seed.profileId);
       continue;
@@ -220,7 +220,7 @@ function describe(group: MatchProfile[], scores: PairScores): BunchProposal {
   );
   // Only a city *everyone* shares may be named. A group spanning Antwerp and
   // Tokyo must not be called "Gaming in Tokyo" because one member happens to be
-  // enumerated first — a wrong name is worse than a generic one.
+  // enumerated first, a wrong name is worse than a generic one.
   const cities = new Set(
     group.map((m) => m.location.cityLabel).filter((c): c is string => !!c),
   );

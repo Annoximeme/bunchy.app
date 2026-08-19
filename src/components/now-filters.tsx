@@ -9,7 +9,7 @@ import { cn } from "@/components/ui";
  *
  * Links, not buttons with state. The board is a server-rendered page and the
  * filters are part of its address, which means a filtered view can be shared,
- * bookmarked and reloaded — and means there is no client cache to fall out of
+ * bookmarked and reloaded, and means there is no client cache to fall out of
  * step with what the server actually returned.
  */
 export function NowFilters({

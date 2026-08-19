@@ -6,7 +6,7 @@ import { exportAccount } from "@/server/modules/account/export";
  * Download everything Bunchy holds about you.
  *
  * Returned as a file rather than a JSON body so the browser saves it, and
- * without pagination or a background job — at member scale the whole account
+ * without pagination or a background job, at member scale the whole account
  * fits in one response, and "we'll email you a link within 30 days" is the
  * shape data export takes when a product would rather you didn't bother.
  */

@@ -2,8 +2,8 @@
 --
 -- The launch announcement is a one-shot send to every address on the list, and
 -- the one thing it must never do is write to the same person twice. Holding
--- that in the process running the send would mean an interrupted run — a
--- dropped SMTP connection, a closed laptop, a container restart — either
+-- that in the process running the send would mean an interrupted run, a
+-- dropped SMTP connection, a closed laptop, a container restart, either
 -- starting over from the top or being abandoned halfway with no record of
 -- where it got to. So it lives here, one timestamp per row, set as each
 -- message is accepted.

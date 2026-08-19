@@ -10,7 +10,7 @@ import {
  * Questions the operational tables cannot answer.
  *
  * Cohort retention and funnel drop-off both need to know *when* something
- * happened, not just that it is currently true — which is exactly what the
+ * happened, not just that it is currently true, which is exactly what the
  * event table adds.
  *
  * Everything here is honest about incompleteness. A cohort that joined four
@@ -36,7 +36,7 @@ export interface RetentionCohort {
  * Weekly signup cohorts, with the share who did something real at least 1, 7
  * and 30 days later.
  *
- * "Something real" is the `RETENTION_EVENTS` list — connecting, messaging,
+ * "Something real" is the `RETENTION_EVENTS` list, connecting, messaging,
  * joining. Deliberately not "opened the app": a member who loaded a page and
  * left has not returned in any sense worth optimizing for, and counting it
  * would quietly make this a time-on-site metric.

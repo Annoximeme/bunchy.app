@@ -10,7 +10,7 @@ import { MIN_CLUSTER } from "@/server/modules/availability/service";
  * organisers, no cities, no times more precise than a bucket.
  *
  * The same `MIN_CLUSTER` floor the availability board uses applies here, for
- * the same reason — "1 person is up for gaming online tonight" is a person, not
+ * the same reason, "1 person is up for gaming online tonight" is a person, not
  * a statistic, and anything under the floor is withheld rather than rounded.
  *
  * Returns null when there is not enough real activity to describe, which today

@@ -4,7 +4,7 @@ import { z } from "zod";
  * Validated server environment.
  *
  * Fails fast and loudly at boot rather than producing confusing runtime errors
- * three layers deep. Never import this from client components — it would leak
+ * three layers deep. Never import this from client components, it would leak
  * secrets into the browser bundle.
  */
 const schema = z.object({
@@ -15,7 +15,7 @@ const schema = z.object({
   AUTH_SECRET: z.string().optional(),
   // No AI keys, by design. Bunchy's assistant is deterministic and runs
   // in-process, so there is no variable here that could put the product on a
-  // metered API — see `modules/ai/provider.ts`.
+  // metered API, see `modules/ai/provider.ts`.
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   EMAIL_FROM: z.string().default("Bunchy <hello@bunchy.app>"),
   SMTP_HOST: z.string().optional(),
@@ -33,7 +33,7 @@ const schema = z.object({
   /**
    * Signing secret for the provider's bounce/complaint webhook, as
    * `whsec_...`. Unset means the endpoint refuses every request rather than
-   * trusting unsigned ones — an unauthenticated endpoint that suppresses
+   * trusting unsigned ones, an unauthenticated endpoint that suppresses
    * addresses is a way for anybody to stop somebody else's password reset.
    */
   RESEND_WEBHOOK_SECRET: z.string().optional(),
@@ -57,7 +57,7 @@ const schema = z.object({
 
 /**
  * `next build` evaluates route modules to collect page data. That runs with
- * NODE_ENV=production but legitimately has no runtime secrets — a build machine
+ * NODE_ENV=production but legitimately has no runtime secrets, a build machine
  * should not need the session key. Shape validation still applies; only the
  * secret assertions are deferred to the first real server start.
  */
@@ -111,7 +111,7 @@ export function env() {
  * Test seam. Drops the memoised environment so the next `env()` re-reads
  * `process.env`.
  *
- * The cache is process-wide and deliberately so — the environment does not
+ * The cache is process-wide and deliberately so, the environment does not
  * change under a running server, and re-validating on every access would be
  * waste. That makes any test asserting on a *different* configuration depend
  * on being the first to call `env()`, which is a test that passes until
@@ -127,7 +127,7 @@ export function resetEnv(): void {
  *
  * All five or none. A deploy holding a secret key but no price ids would render
  * a checkout that cannot charge, and one holding no webhook secret would take
- * payments it never hears the confirmation for — a subscription that exists at
+ * payments it never hears the confirmation for, a subscription that exists at
  * Stripe and not here, which is the worst of the failure modes because the
  * member has paid and the product does not know.
  */
@@ -147,7 +147,7 @@ export function supporterEnabled(): boolean {
  *
  * Guarded twice: `load()` refuses to boot a production server without a real
  * secret, and this throws outright rather than ever handing back the
- * development value in production — the build-phase exemption above must not
+ * development value in production, the build-phase exemption above must not
  * become a way to ship with a known key.
  */
 export function authSecret(): string {

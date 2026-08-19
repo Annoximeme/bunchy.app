@@ -14,7 +14,7 @@ import {
  * present.
  *
  * Not tested: whether it looks right. That is what the previews under
- * /admin/brand are for — no assertion is going to tell you the coral band is
+ * /admin/brand are for, no assertion is going to tell you the coral band is
  * too heavy.
  */
 

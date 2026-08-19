@@ -10,7 +10,7 @@ import { activityWhen } from "@/lib/format";
  * Bunch Radar.
  *
  * Not a map. The product stores a five-kilometre grid cell and a city label, so
- * a map with pins on it would be drawing precision that does not exist — and
+ * a map with pins on it would be drawing precision that does not exist, and
  * inviting people to read a position out of it. Bands and labels say exactly
  * what is known: "Antwerp · within 5 km".
  */

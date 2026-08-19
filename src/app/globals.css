@@ -5,7 +5,7 @@
  * Bunchy design tokens.
  *
  * Soft cream ground, deep navy text, coral signature. Never pure white as the
- * page, never pure black as the text — both are what makes the interface read
+ * page, never pure black as the text, both are what makes the interface read
  * as warm rather than clinical.
  *
  * Four accents, each with one job, so colour means something instead of
@@ -24,7 +24,7 @@
  * fails AA for body text, so primary buttons carry a deep navy label (5.42:1)
  * rather than the white one every other consumer app reaches for. Coral as text
  * on cream is 2.87:1 and is never used; --color-accent-ink (#C42A40, 5.36:1)
- * is. Ratios are measured, not estimated, and are listed in the brand guide —
+ * is. Ratios are measured, not estimated, and are listed in the brand guide,
  * and measured against every ground the token actually lands on, not just
  * cream, which is what an axe pass over the dashboard caught them missing.
  */
@@ -35,7 +35,7 @@
   --color-surface-sunken: #f9f0e6;
   --color-ink: #172033;
   --color-ink-soft: #3d4759;
-  /* Was #6b7280, which is 4.29:1 on --color-surface-sunken — under AA, and
+  /* Was #6b7280, which is 4.29:1 on --color-surface-sunken, under AA, and
      sunken is the admin dashboard's page background, so every muted caption in
      there was failing. This clears 4.5:1 on all three light grounds. */
   --color-muted: #646977;
@@ -47,12 +47,12 @@
   --wash-coral: rgba(255, 92, 108, 0.07);
   --wash-purple: rgba(118, 87, 255, 0.07);
 
-  /* Coral — the signature. Brand, primary action, active state. */
+  /* Coral, the signature. Brand, primary action, active state. */
   --color-accent: #ff5c6c;
   --color-accent-hover: #f5455a;
   --color-accent-soft: #ffe9eb;
-  /* Was #ce2f45. That reads on cream, but on --color-accent-soft — which is
-     what the status pills use behind it — it is 4.40:1, just under AA. */
+  /* Was #ce2f45. That reads on cream, but on --color-accent-soft, which is
+     what the status pills use behind it, it is 4.40:1, just under AA. */
   --color-accent-ink: #c42a40;
   --color-on-accent: #172033;
 
@@ -62,13 +62,13 @@
   --color-purple-ink: #6a47f5;
   --color-on-purple: #ffffff;
 
-  /* Yellow — activities, discovery, moments worth noticing. */
+  /* Yellow, activities, discovery, moments worth noticing. */
   --color-yellow: #ffc857;
   --color-yellow-soft: #fff3dc;
   --color-yellow-ink: #8a5e00;
   --color-on-yellow: #172033;
 
-  /* Mint — success, connection, community health. */
+  /* Mint, success, connection, community health. */
   --color-mint: #55d6be;
   --color-mint-soft: #e3f8f3;
   --color-mint-ink: #0e7a69;
@@ -105,7 +105,7 @@
    * The accent fills from the original landing spec, kept under their spec
    * names. These are *fills*, not grounds: a coral button is the same coral in
    * both themes, which is why they are safe to write once. The two grounds that
-   * used to live here — `navy-base` and `cream-bg` — became `band-deep` and
+   * used to live here, `navy-base` and `cream-bg`, became `band-deep` and
    * `band-soft` below, because a ground is exactly the thing that has to move
    * when the reader's theme does.
    */
@@ -114,18 +114,18 @@
    *
    * The public pages are built out of two alternating grounds, and these are
    * them. They exist because those pages used to write the two colours
-   * literally and therefore ignored the reader's theme entirely — including on
+   * literally and therefore ignored the reader's theme entirely, including on
    * the landing page, which mounts a theme toggle in its own footer that
    * changed nothing on the page it sat on.
    *
    * `band-deep` is the stage the product is shown on. It is dark in both
-   * themes — navy in light, a step darker still at night so it stays clearly
-   * below the reading ground — which means white on it is white on it whatever
+   * themes, navy in light, a step darker still at night so it stays clearly
+   * below the reading ground, which means white on it is white on it whatever
    * the OS says, and nothing drawn on a deep band needs a themed colour.
    *
    * `band-soft` is the reading ground, and it is the canvas: the same surface a
    * signed-in page uses, by alias rather than by a second copy of the hex. That
-   * is the whole point — a reader who has chosen dark should get the same
+   * is the whole point, a reader who has chosen dark should get the same
    * ground on the privacy policy as on their own profile.
    *
    * The two must stay clearly apart at night, or the alternation the public
@@ -147,7 +147,7 @@
  * Dark palette.
  *
  * These are plain custom-property overrides on `:root`, not a nested `@theme`.
- * `@theme` is a build-time construct — Tailwind hoists it out of any at-rule it
+ * `@theme` is a build-time construct, Tailwind hoists it out of any at-rule it
  * is written inside, so nesting it in a media query silently applies the dark
  * values unconditionally. Overriding the variables the generated utilities
  * already reference is the mechanism that actually respects the preference.
@@ -164,7 +164,7 @@
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* Navy all the way down rather than neutral grey — the dark mode is the
+    /* Navy all the way down rather than neutral grey, the dark mode is the
        brand's own colour dimmed, not a different product at night. */
     --color-canvas: #101826;
     --color-surface: #182231;
@@ -223,7 +223,7 @@
 }
 
 :root[data-theme="dark"] {
-    /* Navy all the way down rather than neutral grey — the dark mode is the
+    /* Navy all the way down rather than neutral grey, the dark mode is the
        brand's own colour dimmed, not a different product at night. */
     --color-canvas: #101826;
     --color-surface: #182231;
@@ -366,7 +366,7 @@ body {
 /* --- Landing bands ---------------------------------------------------------
  *
  * A flat `bg-surface/60` band is 60% white laid over a warm cream canvas, which
- * reads as a washed-out grey slab rather than a section — the one thing on the
+ * reads as a washed-out grey slab rather than a section, the one thing on the
  * page that looked like it came from a different design. These are tints of the
  * canvas instead, each carrying two very low-opacity brand colours so a band has
  * a temperature rather than a brightness.
@@ -439,7 +439,7 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     /* A plain class, not `@utility`: Tailwind v4 refuses a nested @utility,
-       and this one has to be nested — it must not exist at all where the
+       and this one has to be nested, it must not exist at all where the
        timeline is unsupported or motion is unwelcome. */
     .reveal {
       animation: reveal-rise linear both;
@@ -453,7 +453,7 @@ body {
  *
  * The hero cluster and the Bunch Moment used to run on framer-motion. Every
  * animation they needed is a transform loop or a transition between two states,
- * which is what CSS does natively — so the library was ~50KB of client
+ * which is what CSS does natively, so the library was ~50KB of client
  * JavaScript on the one page a first-time visitor loads before deciding whether
  * to stay.
  *
@@ -463,7 +463,7 @@ body {
  *
  * All of it sits behind `prefers-reduced-motion: no-preference`. With motion
  * reduced the composition renders in exactly the same arrangement, simply
- * still — the layout never depends on an animation having run.
+ * still, the layout never depends on an animation having run.
  */
 @keyframes bunchy-float {
   from,
@@ -519,8 +519,8 @@ body {
 
 /* --- Long-form prose --------------------------------------------------------
  *
- * The typography plugin owns the rhythm — line height, the space between a
- * heading and the paragraph beneath it, the measure — and these own the colour,
+ * The typography plugin owns the rhythm, line height, the space between a
+ * heading and the paragraph beneath it, the measure, and these own the colour,
  * which is the one thing it must not decide. `--tw-prose-body` defaults to a
  * grey that does not clear AA on cream, and body text is the entire point of a
  * document page.

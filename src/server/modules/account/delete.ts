@@ -9,7 +9,7 @@ import { track } from "@/server/modules/analytics/track";
  *
  * It is immediate and irreversible. There is no thirty-day "we'll keep it in
  * case you change your mind", because that is not a safety net, it is a
- * retention tactic wearing one — the member said delete, and the product's
+ * retention tactic wearing one, the member said delete, and the product's
  * answer is that the data is gone.
  *
  * Most of the erasure is the database's job: `User` cascades to `Profile`, which
@@ -25,7 +25,7 @@ import { track } from "@/server/modules/analytics/track";
  *    is removed.
  * 3. **Reports they filed** are anonymized rather than deleted (the schema does
  *    this via `SetNull`) so a harassment report outlives the person who filed
- *    it. Bunch messages and created bunches behave the same way — the group's
+ *    it. Bunch messages and created bunches behave the same way, the group's
  *    history keeps its shape, with the author detached.
  */
 

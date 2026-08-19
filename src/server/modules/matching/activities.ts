@@ -7,7 +7,7 @@ import type { AvailabilityWindow } from "@/generated/prisma/enums";
 import type { MatchProfile } from "@/server/modules/matching/types";
 
 /**
- * Activity recommendations — "what should I do?", the other half of Discover.
+ * Activity recommendations, "what should I do?", the other half of Discover.
  *
  * Ranking favours things that are actually joinable: soon, nearby or online,
  * with spots left, at a time the member said they are free.
@@ -34,7 +34,7 @@ export interface RecommendedActivity {
  *
  * Members do not have a stored timezone yet, so this reads the server's UTC
  * clock. That is accurate for the launch market (Belgium, one hour off UTC) and
- * wrong enough to matter for a member in Tokyo — capturing a timezone during
+ * wrong enough to matter for a member in Tokyo, capturing a timezone during
  * onboarding is the fix, tracked as a Phase 2 item.
  */
 export function windowForDate(date: Date): AvailabilityWindow {

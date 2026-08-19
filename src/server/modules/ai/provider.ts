@@ -16,8 +16,8 @@
  *    unpredictable to a member, which for a product about meeting strangers is
  *    worth more than better prose.
  *
- * The interface stays an interface so a *free* local model — Ollama, llama.cpp,
- * anything self-hosted — can be dropped in later by implementing these four
+ * The interface stays an interface so a *free* local model, Ollama, llama.cpp,
+ * anything self-hosted, can be dropped in later by implementing these four
  * methods and changing one line in `index.ts`. That door is open. What is not
  * here, and is not coming back without a decision, is a hosted provider that
  * bills per token.

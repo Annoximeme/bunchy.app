@@ -7,7 +7,7 @@ import { cn } from "@/components/ui";
  *
  * **Scale.** The page opened with a greeting and a promise, then a long column
  * of blocks. Nothing said whether there were two recommendations below or
- * twenty, so the only way to find out was to scroll to the bottom — on the one
+ * twenty, so the only way to find out was to scroll to the bottom, on the one
  * page whose whole design argument is that it ends.
  *
  * **Navigation.** Three sections, each a screen tall, with no way to reach the
@@ -65,7 +65,7 @@ export function DiscoverSummary({
       {/*
         The same two washes the landing hero and the app shell use, at card
         scale. Discover is the page a member opens most, and it was the one
-        with no head at all — plain text against the page background, which is
+        with no head at all, plain text against the page background, which is
         what every other screen also looks like.
       */}
       <div

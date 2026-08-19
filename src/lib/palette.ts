@@ -1,7 +1,7 @@
 /**
  * Brand fills, and the one colour that can be read on each of them.
  *
- * The tokens file has said this from the beginning — every accent ships a
+ * The tokens file has said this from the beginning, every accent ships a
  * `--color-on-x` precisely because the fills are too bright to carry white
  * text. It was being followed for buttons and ignored for avatars: the landing
  * page set white initials on the yellow and mint discs, which measure 1.54:1
@@ -10,7 +10,7 @@
  * This is the rule in one place so the landing page and the signed-in app
  * cannot drift apart on it again. Literals rather than `var(--color-…)`,
  * because the landing is a fixed composition whose colours must not follow the
- * theme, and the app's avatar fills should not either — a person's colour
+ * theme, and the app's avatar fills should not either, a person's colour
  * identifies them, so it has to survive a theme change.
  */
 

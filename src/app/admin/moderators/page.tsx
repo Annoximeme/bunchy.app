@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
  * a conflict nobody needs on day one.
  *
  * Accepting here does not grant the role. It marks a decision to talk to
- * somebody; making them staff is `npm run role`, which needs database access —
+ * somebody; making them staff is `npm run role`, which needs database access,
  * the same bar as the first admin, and for the same reason. A queue that can
  * promote people is a queue worth compromising.
  */

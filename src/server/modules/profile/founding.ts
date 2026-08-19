@@ -13,7 +13,7 @@ import { db } from "@/server/db/client";
  *
  * **It is earned by finishing, not by signing up.** Accounts that never complete
  * onboarding do not consume a place, because a half-filled profile is not a
- * founding member — it is a row.
+ * founding member, it is a row.
  *
  * **It changes nothing else.** It does not affect matching, ranking, discovery
  * order or what anyone can do. A badge that bought advantages would turn the
@@ -27,7 +27,7 @@ export const FOUNDING_MEMBER_LIMIT = 1000;
 /**
  * Marks the profile as founding if there is still room.
  *
- * Racy by construction — two people finishing onboarding at the same instant
+ * Racy by construction, two people finishing onboarding at the same instant
  * could both see the same count. That is accepted: the failure mode is one
  * extra founding member out of a thousand, and the alternative is serializing
  * every onboarding completion behind a lock to protect a badge.

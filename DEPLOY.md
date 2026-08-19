@@ -1,7 +1,7 @@
 # Deploying Bunchy
 
 A single VPS running Docker Compose: Postgres, the Next.js server, an hourly
-jobs container, and Caddy terminating TLS. Everything is in this repository —
+jobs container, and Caddy terminating TLS. Everything is in this repository,
 there is no console to click through, and rebuilding the machine from scratch
 is `git clone`, one `.env`, one command.
 
@@ -19,14 +19,14 @@ and both are the most likely place a first deploy goes wrong:
 - **Caddy obtaining a certificate.** That needs the real domain resolving to
   the real server. See "If TLS does not come up" below.
 - **SMTP delivery.** Needs real credentials. `EMAIL_PROVIDER=console` ships as
-  the default precisely so this cannot fail silently — it writes mail to the
+  the default precisely so this cannot fail silently, it writes mail to the
   log and sends nothing, which is fine for a smoke test and unacceptable the
   moment anyone but you has an account.
 
 ## Before you start
 
 Point DNS at the server first, and let it propagate. Caddy asks Let's Encrypt
-for a certificate on first start, and Let's Encrypt rate-limits failures — so
+for a certificate on first start, and Let's Encrypt rate-limits failures, so
 getting DNS wrong first costs you an hour of waiting rather than a retry.
 
 Two A records, both to the VPS IPv4:
@@ -49,7 +49,7 @@ dig +short www.bunchy.app
 # On the VPS, as a non-root user in the docker group.
 git clone https://github.com/Annoximeme/bunchy.app.git
 cd bunchy.app
-git checkout claude/bunchy-platform-architecture-2j8d04
+git checkout main
 
 cp .env.production.example .env
 chmod 600 .env
@@ -68,7 +68,7 @@ suggested only because it is unambiguous to read back off a screen.
 
 That encoding exists because of a real failure. A base64 password contained a
 `/`, which ends the authority section of a URL, so Postgres came up healthy and
-`prisma migrate deploy` reported `P1013: invalid port number in database URL` —
+`prisma migrate deploy` reported `P1013: invalid port number in database URL`,
 an error naming the port, which was fine, rather than the password, which was
 not.
 
@@ -92,7 +92,7 @@ docker compose run --rm migrate npx prisma db seed
 ```
 
 Thirteen members, four bunches with six weeks of history, and some activities.
-**Only on a machine nobody real is using** — it creates accounts with a known
+**Only on a machine nobody real is using**, it creates accounts with a known
 password.
 
 ## Subsequent deploys
@@ -110,7 +110,7 @@ becomes healthy, so a broken deploy is loud.
 ```sh
 docker compose ps                    # what is running, and health
 docker compose logs -f app           # the web process
-docker compose logs -f jobs          # hourly work — reminders, chemistry
+docker compose logs -f jobs          # hourly work, reminders, chemistry
 docker compose restart app           # restart just the server
 docker compose exec db psql -U bunchy bunchy   # a database shell
 ```
@@ -140,7 +140,7 @@ start, and Let's Encrypt rate-limits that.
 
 Until you do this, nobody can reset a password.
 
-Any provider works — Resend, Postmark, Mailgun, SES, Fastmail — because the app
+Any provider works, Resend, Postmark, Mailgun, SES, Fastmail, because the app
 speaks plain SMTP rather than a vendor SDK. Set four values in `.env`:
 
 ```
@@ -164,7 +164,7 @@ send.
 
 The coming-soon page promises everyone on the list exactly one message, on the
 day it opens. This sends it. Run by hand, when you have decided that today is
-the day — nothing schedules it.
+the day, nothing schedules it.
 
 ```
 # Rehearsal. Sends nothing, reports what it would do.
@@ -184,7 +184,7 @@ Two details in that command are load-bearing. It is the **`jobs`** container,
 not `app`: the app image is a standalone Next build with no devDependencies, so
 there is no `tsx` in it. And the entrypoint is named **explicitly**, because
 `docker compose exec` skips a container's ENTRYPOINT and that is where
-`DATABASE_URL` is assembled — without it the script fails with
+`DATABASE_URL` is assembled, without it the script fails with
 `DATABASE_URL: expected string, received undefined`, which looks like a broken
 `.env` and is not.
 
@@ -213,13 +213,13 @@ docker compose up -d
 
 On a machine where no migration has ever succeeded there is nothing in that
 volume yet, so `docker compose down -v` is the faster route. Once the site has
-run even once, `-v` deletes the database — the flag has no undo and no warning.
+run even once, `-v` deletes the database, the flag has no undo and no warning.
 
 **If TLS does not come up.** `docker compose logs caddy`. Almost always one of:
 DNS not yet resolving to this server; port 80 blocked by the host firewall
 (Let's Encrypt's HTTP challenge needs it, not just 443); or a rate limit from
 earlier failed attempts. For the third, uncomment `acme_ca` in the `Caddyfile`
-to use the staging CA — its certificates are untrusted by browsers, but the
+to use the staging CA, its certificates are untrusted by browsers, but the
 limits are far looser, so you can confirm the rest works and then switch back.
 
 **Disk filling up.** `docker system df`. `deploy.sh` prunes dangling images,
@@ -233,7 +233,7 @@ but old build cache accumulates: `docker builder prune -f`.
   discipline where every change works against both versions at once. That is
   worth doing when downtime costs something; right now it costs a few seconds.
 - **No automatic rollback.** `git checkout <sha> && ./deploy.sh` is the rollback,
-  and it is worth knowing that a migration is not undone by it — reversing a
+  and it is worth knowing that a migration is not undone by it, reversing a
   schema change is a decision, not a script.
 - **No secret manager.** `.env` at 600 on a single machine is proportionate for
   one operator. It stops being proportionate the moment someone else has a

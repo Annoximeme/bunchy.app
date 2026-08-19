@@ -11,7 +11,7 @@ import { Button, ErrorNotice, cn } from "@/components/ui";
  * The personality questions are deliberately framed as "which sounds more like
  * you" with a five-point scale and no scoring, no traits named at the member,
  * and no result screen. It is a preference capture, and it should feel like one
- * — not a test that tells someone who they are.
+ *, not a test that tells someone who they are.
  */
 
 // --- Personality ------------------------------------------------------------

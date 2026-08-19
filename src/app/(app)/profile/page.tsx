@@ -28,8 +28,8 @@ export const dynamic = "force-dynamic";
  * to read past their notification preferences to be sure they had not missed
  * anything.
  *
- * They are separated here into **Your profile** — the things other members see,
- * which is what the page is named after — and **Your account** — the settings
+ * They are separated here into **Your profile**, the things other members see,
+ * which is what the page is named after, and **Your account**, the settings
  * that are nobody's business but yours. Two headed regions rather than two
  * routes, because `/profile` is linked from the nav, three empty states, the
  * privacy policy and the terms, and `#invite` is a deep link from Discover.
@@ -292,7 +292,7 @@ export default async function ProfilePage() {
  *
  * The edit link used to be a bare "Edit" beside every heading, which meant six
  * identical links whose only distinguishing context was the heading next to
- * them — unusable from a screen reader's link list. Each one names its own
+ * them, unusable from a screen reader's link list. Each one names its own
  * field now, visibly short and fully spelled out for anybody listening.
  *
  * An empty field renders its prompt rather than an empty box. This is the page

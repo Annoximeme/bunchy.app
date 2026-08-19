@@ -2,7 +2,7 @@
  * Display formatting.
  *
  * All of these take an explicit `now` where it matters so they can be tested,
- * and none of them ever render a countdown or an "only 2 hours left" — urgency
+ * and none of them ever render a countdown or an "only 2 hours left", urgency
  * framing is a pressure tactic, and this product does not use one.
  */
 

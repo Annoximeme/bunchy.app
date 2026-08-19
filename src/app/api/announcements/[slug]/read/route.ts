@@ -6,7 +6,7 @@ import { markRead } from "@/server/modules/announcements/service";
  *
  * Not rate limited. The write is idempotent, it is the record that notice was
  * given, and a member who cannot record having read something would keep being
- * shown it — a limiter here would turn a promise-keeping mechanism into a nag.
+ * shown it, a limiter here would turn a promise-keeping mechanism into a nag.
  */
 export async function POST(
   _request: Request,

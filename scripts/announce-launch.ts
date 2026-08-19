@@ -21,7 +21,7 @@ import {
  *     node node_modules/.bin/tsx scripts/announce-launch.ts --send
  *
  * `jobs` rather than `app`, because the app image is a standalone Next build
- * with no devDependencies — no tsx, so no way to run any of this. And the
+ * with no devDependencies, no tsx, so no way to run any of this. And the
  * entrypoint by name, because `docker compose exec` skips a container's
  * ENTRYPOINT, and that is where DATABASE_URL gets assembled from its parts.
  * Without it the script dies on "DATABASE_URL: expected string, received
@@ -100,8 +100,8 @@ async function main() {
   }
 
   // The console transport prints to stdout instead of sending. Discovering
-  // that after a "successful" run of two thousand addresses — all of them now
-  // marked as notified, none of them written to — is not recoverable, so it is
+  // that after a "successful" run of two thousand addresses, all of them now
+  // marked as notified, none of them written to, is not recoverable, so it is
   // a refusal rather than a warning.
   if (args.send && config.EMAIL_PROVIDER !== "smtp") {
     console.error(
@@ -126,11 +126,11 @@ async function main() {
         event.outcome === "sent" ? "→" : event.outcome === "skipped" ? "·" : "✗";
       // The address is printed here and nowhere else. This is an operator
       // watching their own list scroll past, not a log line that outlives the
-      // run — which is why the failure path inside the module logs the error
+      // run, which is why the failure path inside the module logs the error
       // without it.
       console.info(
         `[${event.done}/${event.total}] ${mark} ${event.email}` +
-          (event.outcome === "failed" ? ` — ${describe(event.error)}` : "") +
+          (event.outcome === "failed" ? `, ${describe(event.error)}` : "") +
           (event.outcome === "skipped" ? " (already a member)" : ""),
       );
     },

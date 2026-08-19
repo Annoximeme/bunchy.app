@@ -4,7 +4,7 @@ import { classify } from "@/server/modules/concierge/classify";
 /**
  * The router decides which question gets answered, so getting it wrong means
  * confidently answering something nobody asked. These pin the distinctions that
- * are easy to lose — particularly the ones where two requests share every noun
+ * are easy to lose, particularly the ones where two requests share every noun
  * and differ only in the verb.
  */
 

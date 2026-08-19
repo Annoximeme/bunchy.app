@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 /**
  * The staff shell.
  *
- * Non-staff get `notFound()` rather than a redirect or a 403 — the admin area
+ * Non-staff get `notFound()` rather than a redirect or a 403: the admin area
  * should be indistinguishable from a URL that does not exist. Note that this
  * layout is a convenience, not the security boundary: every page and every
  * service below it re-checks, so a route added without a guard still fails
@@ -28,7 +28,7 @@ export default async function AdminLayout({
   return (
     <div className="min-h-dvh bg-surface-sunken">
       {/* A permanent, unmistakable marker that these actions affect real people.
-          A <header> rather than a <div> so it sits inside a landmark — content
+          A <header> rather than a <div> so it sits inside a landmark, content
           outside one is content a screen-reader user has no way to jump to. */}
       <header className="bg-ink px-5 py-1.5 text-center text-xs font-medium text-canvas">
         Staff area · signed in as {viewer!.displayName} ({viewer!.role.toLowerCase()})

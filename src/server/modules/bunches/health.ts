@@ -17,12 +17,12 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
  * Loading what `bunchChemistry` needs, computing it, and storing the result.
  *
  * The scoring itself is a pure function with no database access, so this is the
- * only file in the feature that knows Prisma exists — the same split the
+ * only file in the feature that knows Prisma exists, the same split the
  * matching engine uses, and for the same reason: the interesting logic stays
  * testable without a server.
  *
  * **Nothing here runs during a page render.** Computing a full reading means
- * loading every member's match profile and scoring every pair — measured at
+ * loading every member's match profile and scoring every pair, measured at
  * 78ms against 4ms for the rest of the bunch page. `readChemistry` serves the
  * stored row; `recomputeChemistry` is called by the scheduled job (§21).
  */
@@ -43,7 +43,7 @@ export interface StoredChemistry {
 /**
  * The stored reading. One indexed lookup, no scoring.
  *
- * Returns null when a bunch has never been scored — which is the normal state
+ * Returns null when a bunch has never been scored, which is the normal state
  * for the first hour of its life, and reads on screen as "too new to tell"
  * rather than as an error.
  */
@@ -200,7 +200,7 @@ async function pairwiseScores(
 /**
  * Rescores every bunch that could plausibly have changed.
  *
- * Bunches with no members are skipped entirely — there is nothing to say about
+ * Bunches with no members are skipped entirely, there is nothing to say about
  * a group nobody has accepted into yet, and scoring them would be the bulk of
  * the work on a young platform.
  */

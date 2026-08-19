@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Read-only by construction. There is no route that edits or deletes a
- * moderation event — an audit trail staff can rewrite is not an audit trail.
+ * moderation event, an audit trail staff can rewrite is not an audit trail.
  */
 export default async function AdminAuditPage() {
   await requireStaff();

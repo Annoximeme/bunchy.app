@@ -8,7 +8,7 @@ import {
 /**
  * What the two of you have in common.
  *
- * The public profile used to answer "who is this person?" and stop there — a
+ * The public profile used to answer "who is this person?" and stop there, a
  * list of their interests, their goals, their availability, rendered exactly as
  * their own settings page renders them. Which is a directory entry. The whole
  * premise of Bunchy is that it finds overlap for you, and the one screen where
@@ -20,8 +20,8 @@ import {
  *
  * ## Two kinds of overlap, kept separate
  *
- * - **Shared** — you both already do this. The easiest conversation there is.
- * - **Complementary** — one of you practises what the other is curious about,
+ * - **Shared**, you both already do this. The easiest conversation there is.
+ * - **Complementary**, one of you practises what the other is curious about,
  *   or the two interests simply go well together. The engine scores this
  *   separately from plain overlap because the spec requires it: a photographer
  *   and somebody learning photography have more to do together than two
@@ -31,8 +31,8 @@ import {
  * The complementary list is deliberately *not* split into "they can teach you"
  * and "you can teach them", even though that would read better. The engine
  * returns one undirected list of labels, and working the direction out here
- * would mean re-deriving its pairing rules — affinity across related interests,
- * not just matching slugs — in a second place that would disagree with the
+ * would mean re-deriving its pairing rules, affinity across related interests,
+ * not just matching slugs, in a second place that would disagree with the
  * first the moment either changed. The direction is not lost: the strongest
  * pairing's own sentence ("They could get you into film photography") comes
  * through in the highlights and in the breakdown below.
@@ -62,7 +62,7 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
 
   // Nothing scored and nothing overlapping is not worth a section. An empty
   // "what you have in common" panel says something louder and more discouraging
-  // than saying nothing, and it is usually wrong — it means one of the two has
+  // than saying nothing, and it is usually wrong, it means one of the two has
   // not finished onboarding, not that these people would not get on.
   if (!hasLists && highlights.length === 0) return null;
 
@@ -93,7 +93,7 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
 
           {/*
             Bigger than the Discover card's badge, because here it is the
-            subject rather than a annotation on a list item — but still a
+            subject rather than a annotation on a list item, but still a
             number in a soft pill, not a trophy. There is no leaderboard
             anywhere in this product for it to feed.
           */}

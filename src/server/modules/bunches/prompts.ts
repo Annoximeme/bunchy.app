@@ -78,7 +78,7 @@ export interface Challenge {
  *
  * Every one of these is finished in a single sitting by talking to each other.
  * Nothing here requires a streak, a daily return, a purchase, or anyone to be
- * the first — §12 asks for interaction rather than addiction, and a challenge
+ * the first, §12 asks for interaction rather than addiction, and a challenge
  * that only works if everyone shows up every day is the addictive kind wearing
  * a friendly hat.
  */
@@ -130,7 +130,7 @@ export const CHALLENGES: readonly Challenge[] = [
  *
  * Interest-matched questions come first, then general ones, and anything
  * already asked is skipped entirely. Returns null when the bank is exhausted,
- * which is honest — a bunch that has answered thirty questions does not need a
+ * which is honest, a bunch that has answered thirty questions does not need a
  * thirty-first, it needs to go and do something.
  */
 export function nextIcebreaker(
@@ -146,7 +146,7 @@ export function nextIcebreaker(
   if (unused.length === 0) return null;
 
   // Three tiers, in order. The middle one matters: without it, a bunch about
-  // yoga — which has no keyed question — would fall through to the whole bank
+  // yoga, which has no keyed question, would fall through to the whole bank
   // and get asked which army it is painting. A question aimed at somebody
   // else's hobby is worse than a general one.
   const matching = unused.filter((prompt) =>

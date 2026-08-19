@@ -9,7 +9,7 @@ import type { OutcomePrompt as Prompt } from "@/server/modules/activities/outcom
 /**
  * "Did you go?", asked once, on the page people already open.
  *
- * Two taps, no free text, and dismissible without answering — a prompt that
+ * Two taps, no free text, and dismissible without answering, a prompt that
  * blocks the page until it is fed is a toll booth, and the answer it extracts
  * that way is not worth having. Dismissing is client-side only: nothing is
  * written, so the question can come back tomorrow, and silence never becomes a
@@ -33,7 +33,7 @@ export function OutcomePrompt({ prompt }: { prompt: Prompt }) {
         json: { attended, ...(metSomeone === undefined ? {} : { metSomeone }) },
       });
 
-      // Going means there is a second question. Not going ends it — pressing
+      // Going means there is a second question. Not going ends it, pressing
       // someone who did not turn up for a reason is how a product earns being
       // ignored.
       if (attended && metSomeone === undefined) {

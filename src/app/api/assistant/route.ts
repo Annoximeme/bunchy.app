@@ -7,7 +7,7 @@ import { consume } from "@/server/ratelimit";
  * Ask Bunchy.
  *
  * POST only, and only ever reads. There is no companion endpoint that acts on
- * an answer — the concierge returns links, and the member follows one into a
+ * an answer, the concierge returns links, and the member follows one into a
  * flow that asks them to confirm. That is not a convention to remember; the
  * service has no write path at all.
  */

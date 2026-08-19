@@ -3,15 +3,15 @@
 # Nightly database backup.
 #
 # The database is the only thing on this machine that cannot be rebuilt from
-# git, so this is the one piece of state worth protecting. Everything else —
-# images, containers, certificates — comes back from `docker compose up`.
+# git, so this is the one piece of state worth protecting. Everything else,
+# images, containers, certificates, comes back from `docker compose up`.
 #
 # Run by cron as the user that owns the deploy. Writes a custom-format dump,
 # which restores with `pg_restore --clean --if-exists` and, unlike plain SQL,
 # can restore selected tables.
 #
 # WARNING: these dumps live on the same disk as the database they protect. A
-# backup that only exists on the machine it is backing up is not a backup — it
+# backup that only exists on the machine it is backing up is not a backup, it
 # survives a bad migration, and does not survive the disk, the provider, or a
 # mistaken `docker compose down -v`. Copying them off the machine is the step
 # that makes this real; see the note at the bottom of the file.
@@ -51,7 +51,7 @@ docker compose --project-directory "$REPO" exec -T db \
 # the pipe.
 SIZE="$(wc -c < "$PARTIAL")"
 if [ "$SIZE" -lt 1000 ]; then
-  echo "[backup] refusing to keep a ${SIZE}-byte dump — something went wrong" >&2
+  echo "[backup] refusing to keep a ${SIZE}-byte dump, something went wrong" >&2
   rm -f "$PARTIAL"
   exit 1
 fi
@@ -61,7 +61,7 @@ chmod 600 "$TARGET"
 
 # Uploaded avatars: the only member data that is not in Postgres, and therefore
 # the only other thing on this machine that a restore cannot reconstruct. Small
-# — one compressed image per member — so it is taken in full every night rather
+#, one compressed image per member, so it is taken in full every night rather
 # than incrementally.
 UPLOADS="$DEST/bunchy-uploads-$STAMP.tgz"
 if docker volume inspect bunchy_uploads >/dev/null 2>&1; then

@@ -165,7 +165,7 @@ export const INTEREST_BY_SLUG = new Map(
  * exists rather than creating a new tag per game.
  *
  * Deliberately not exhaustive. An unknown title is handled by the parser's
- * "play <something>" rule and reported as unrecognised, which is honest —
+ * "play <something>" rule and reported as unrecognised, which is honest,
  * inventing an interest to hold it would not be.
  */
 export const INTEREST_ALIASES: Readonly<Record<string, readonly string[]>> = {
@@ -222,7 +222,7 @@ export const INTEREST_ALIASES: Readonly<Record<string, readonly string[]>> = {
 /**
  * Interests whose natural home is online.
  *
- * Used to guess a mode when the member did not say one — and only to guess: the
+ * Used to guess a mode when the member did not say one, and only to guess: the
  * caller records it as an assumption rather than a fact, because plenty of
  * people play these in the same room. Warhammer is pointedly absent; it is a
  * game you play at a table.

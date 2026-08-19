@@ -39,11 +39,11 @@ describe("windowInUtc", () => {
   });
 
   it("splits a window that crosses midnight UTC", () => {
-    // 18:00-23:00 in Tokyo (+9) is 09:00-14:00 UTC — no split.
+    // 18:00-23:00 in Tokyo (+9) is 09:00-14:00 UTC, no split.
     expect(windowInUtc("WEEKDAY_EVENING", "Asia/Tokyo", SUMMER)).toEqual([
       { start: 9, end: 14 },
     ]);
-    // 06:00-12:00 in Tokyo is 21:00-03:00 UTC — split at midnight.
+    // 06:00-12:00 in Tokyo is 21:00-03:00 UTC, split at midnight.
     expect(windowInUtc("WEEKDAY_MORNING", "Asia/Tokyo", SUMMER)).toEqual([
       { start: 21, end: 24 },
       { start: 0, end: 3 },

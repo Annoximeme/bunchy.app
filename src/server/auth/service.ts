@@ -76,7 +76,7 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
 
   const passwordHash = await hashPassword(input.password);
   const username = await generateUsername(email);
-  // Unresolvable codes are dropped, never rejected — losing the attribution is
+  // Unresolvable codes are dropped, never rejected, losing the attribution is
   // a rounding error, blocking a signup over a mistyped link is not.
   const referredById = await resolveReferrer(input.referralCode);
 
@@ -107,7 +107,7 @@ export async function signUp(input: SignUpInput, context: SessionContext = {}) {
   //
   // The account exists by this point. Letting a mail failure throw out of
   // signUp returned a 500 with no session cookie, so the member saw "something
-  // went wrong", tried again, and was told the email was already taken — locked
+  // went wrong", tried again, and was told the email was already taken, locked
   // out of an account they had just successfully created. A provider outage, a
   // rejected recipient domain or an expired API key would each do it.
   //

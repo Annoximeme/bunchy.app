@@ -20,7 +20,7 @@ function icsDate(iso: string): string {
 }
 
 /**
- * RFC 5545 §3.3.11. Backslash first — escaping it after the others would
+ * RFC 5545 §3.3.11. Backslash first, escaping it after the others would
  * escape the backslashes they just introduced.
  */
 function escapeText(value: string): string {
@@ -74,7 +74,7 @@ export function toICalendar(
       new Date(activity.startsAt).getTime() + DEFAULT_DURATION_MS,
     ).toISOString();
 
-  // Online activities point at wherever they happen — but `onlineUrl` is null
+  // Online activities point at wherever they happen, but `onlineUrl` is null
   // for anyone who has not joined, so this never leaks a meeting link into a
   // calendar file. Offline ones carry the venue label, which is venue-level by
   // construction and never an address.
@@ -114,7 +114,7 @@ export function toICalendar(
     "END:VCALENDAR",
   ];
 
-  // CRLF is required, not stylistic — some clients reject bare LF outright.
+  // CRLF is required, not stylistic, some clients reject bare LF outright.
   return lines.map(fold).join("\r\n") + "\r\n";
 }
 

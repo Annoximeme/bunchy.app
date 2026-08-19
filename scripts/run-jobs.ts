@@ -6,7 +6,7 @@ import { deliverAnnouncementEmails } from "@/server/modules/announcements/delive
 /**
  * Scheduled work, run from outside the web process.
  *
- * `npm run jobs` — point a cron, a platform scheduler or a Kubernetes CronJob
+ * `npm run jobs`, point a cron, a platform scheduler or a Kubernetes CronJob
  * at this. Hourly is right: activity reminders go out 24 hours ahead, so an
  * hourly pass gives at worst an hour of jitter on a day of notice, and every
  * job here is idempotent so an overlapping run sends nothing extra.

@@ -20,7 +20,7 @@ import {
  *
  * **Nothing here creates a bunch.** It returns proposals. Auto-creating a group
  * of real people and dropping them into a chat together is the kind of thing
- * that reads as clever in a spec and as a violation in an inbox — so a staff
+ * that reads as clever in a spec and as a violation in an inbox, so a staff
  * member reviews the proposal, and every proposed member receives an *invite*
  * they can decline. Consent is the whole design, not a step to optimise away.
  */

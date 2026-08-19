@@ -49,7 +49,7 @@ export default async function BunchPage({
   try {
     bunch = await getBunch(slug, viewer.profileId);
   } catch (error) {
-    // Private bunches and deleted bunches both render as "not found" — telling
+    // Private bunches and deleted bunches both render as "not found", telling
     // someone a private bunch exists is itself a leak.
     if (isAppError(error) && error.code === "not_found") notFound();
     throw error;
@@ -64,7 +64,7 @@ export default async function BunchPage({
 
   const isModerator = bunch.viewerRole === "OWNER" || bunch.viewerRole === "MODERATOR";
 
-  // Only members see this, and only the observations — never the score.
+  // Only members see this, and only the observations, never the score.
   // The stored reading, not a fresh one: scoring every pair costs 78ms and
   // belongs in the job that already runs hourly.
   const health = bunch.isMember ? await readChemistry(bunch.id) : null;

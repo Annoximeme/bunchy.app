@@ -13,7 +13,7 @@ import {
 } from "@/server/modules/bunches/prompts";
 
 /**
- * Social plans, icebreakers and challenges — the three things a bunch does to
+ * Social plans, icebreakers and challenges, the three things a bunch does to
  * itself.
  *
  * They share a file because they share the one rule that matters: **every one
@@ -74,7 +74,7 @@ export interface PlanView {
   options: PlanOptionView[];
   decidedOptionId: string | null;
   activityId: string | null;
-  /** "Saturday works for 7 of 9" — computed, never stored. */
+  /** "Saturday works for 7 of 9", computed, never stored. */
   best: { optionId: string; yes: number; of: number } | null;
 }
 
@@ -248,7 +248,7 @@ export async function planToActivity(
   if (!chosen) throw conflict("That plan has no chosen time.");
 
   // Goes through the ordinary activity service, so the bunch-membership check,
-  // the invite notifications and the reminder job all apply — this is a normal
+  // the invite notifications and the reminder job all apply, this is a normal
   // activity that happens to have come from a vote.
   const description = input.description.trim();
   if (description.length < 10) {
@@ -413,7 +413,7 @@ export async function askIcebreaker(
   track({
     name: ANALYTICS_EVENTS.ICEBREAKER_ASKED,
     profileId,
-    // The key, not the text — and never an answer, because there are none here.
+    // The key, not the text, and never an answer, because there are none here.
     properties: { bunchId, questionKey: prompt.key },
   });
 

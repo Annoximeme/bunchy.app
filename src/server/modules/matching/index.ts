@@ -7,7 +7,7 @@ import type { CompatibilityScorer } from "@/server/modules/matching/types";
  * Everything that ranks people goes through this accessor, so introducing an
  * embedding index or an LLM re-ranker is a change here and nowhere else. A
  * future version can also read a config flag and return different scorers for
- * different cohorts to run an evaluation in production — every recommendation
+ * different cohorts to run an evaluation in production, every recommendation
  * already records which scorer produced it.
  */
 let active: CompatibilityScorer = deterministicScorer;

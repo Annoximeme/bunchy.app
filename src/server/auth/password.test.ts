@@ -40,12 +40,12 @@ describe("verifyPassword", () => {
    *
    * scrypt needs 128 * N * r bytes, and those come out of the stored string. A
    * row asking for gigabytes would otherwise be honoured on the next login
-   * attempt against that account — a denial of service written into one field,
+   * attempt against that account, a denial of service written into one field,
    * needing no traffic to trigger.
    */
   it("refuses a hash whose parameters ask for absurd memory", async () => {
     // 128 * 2^21 * 8 = 2GB. Chosen because it is a size the machine might
-    // actually hand over — an implausibly huge value is the easy case, since
+    // actually hand over, an implausibly huge value is the easy case, since
     // the allocation simply fails. This one succeeds and then thrashes.
     const absurd = `scrypt$${2 ** 21}$8$1$c2FsdA==$a2V5`;
     const started = Date.now();

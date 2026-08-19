@@ -6,8 +6,8 @@ import { cn } from "@/components/ui";
  * The pages that exist outside the product, in one list.
  *
  * These used to be reachable from exactly one place: the landing page footer.
- * Which meant that the moment somebody signed in — and the landing page starts
- * redirecting them to Discover — About, Safety, Volunteer, Privacy and Terms
+ * Which meant that the moment somebody signed in, and the landing page starts
+ * redirecting them to Discover, About, Safety, Volunteer, Privacy and Terms
  * became unreachable through the interface entirely.
  *
  * The volunteer page is where that showed up worst, because it is the one that
@@ -42,7 +42,7 @@ export const SITE_LINKS: readonly SiteLink[] = [
  *
  * Deliberately plain and deliberately last. The argument of this product is
  * that a session should end, and a footer full of destinations is one of the
- * standard ways of making sure it does not — so this one carries no
+ * standard ways of making sure it does not, so this one carries no
  * recommendations, no "you might also like", and nothing with a badge on it.
  * It is here so the pages that explain what Bunchy is are reachable from
  * inside it, which is the least a product like this owes.

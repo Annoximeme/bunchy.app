@@ -17,7 +17,7 @@ import {
  *
  * Live over SSE with an automatic fall back to polling, because a chat that
  * silently stops updating is worse than one that never claimed to be live. New
- * messages only auto-scroll when the reader is already at the bottom — yanking
+ * messages only auto-scroll when the reader is already at the bottom, yanking
  * someone away from what they were reading is a small betrayal that chat apps
  * commit constantly.
  */
@@ -100,7 +100,7 @@ export function BunchChat({
       source.onerror = () => setLive(false);
     } catch {
       // EventSource unavailable (or blocked). `live` already starts false, so
-      // there is nothing to set — the polling fallback below covers us.
+      // there is nothing to set, the polling fallback below covers us.
     }
 
     const poll = setInterval(async () => {
@@ -111,7 +111,7 @@ export function BunchChat({
         );
         merge(result.messages);
       } catch {
-        // Offline or a blip — the next tick tries again.
+        // Offline or a blip, the next tick tries again.
       }
     }, POLL_FALLBACK_MS);
 
@@ -273,7 +273,7 @@ export function BunchChat({
                 </p>
               ) : message.kind === "PROMPT" ? (
                 /* An icebreaker or a challenge. Somebody pressed a button to
-                   ask it, so it is attributed — but nobody wrote the words,
+                   ask it, so it is attributed, but nobody wrote the words,
                    and rendering it as speech made Bunchy's questions look
                    like things a member had typed. */
                 <div className="my-2 rounded-[var(--radius-control)] border border-purple/30 bg-purple-soft px-4 py-3">

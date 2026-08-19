@@ -4,7 +4,7 @@ import type { PersonalityVector } from "@/server/modules/matching/types";
  * The single sanctioned path from a profile row to something another member can
  * see.
  *
- * Every surface — Discover, bunches, messages, the profile page — renders
+ * Every surface, Discover, bunches, messages, the profile page, renders
  * `PublicProfile`. Nothing accepts a raw Prisma row. That is what makes the PII
  * split in the schema actually hold: there is no field on this type that could
  * carry an email address or a precise coordinate, so no route can leak one by
@@ -16,7 +16,7 @@ export interface PublicInterest {
   label: string;
   category: string;
   strength: number;
-  /** "Practices" vs "curious about" — shown so people know who can teach what. */
+  /** "Practices" vs "curious about", shown so people know who can teach what. */
   intent: "PRACTICES" | "CURIOUS";
 }
 
@@ -47,13 +47,13 @@ export interface PublicProfile {
   connectionState: ConnectionState;
   joinedAt: string;
   /**
-   * Here since the beginning (§37). A fact, not a rank — there is no ordinal
+   * Here since the beginning (§37). A fact, not a rank, there is no ordinal
    * anywhere in the codebase, and it confers nothing beyond the badge.
    */
   foundingMember: boolean;
   /**
    * A staff title such as "Founder & Lead Developer of Bunchy". Set from the
-   * CLI only — see the schema comment on `Profile.title` for why a
+   * CLI only, see the schema comment on `Profile.title` for why a
    * member-editable badge would be an impersonation surface.
    */
   title: string | null;
@@ -187,7 +187,7 @@ export interface SerializeInput {
  * Age from a birth year and, when we have it, a birth month.
  *
  * A subtraction of years is a year too high for everyone who has not had their
- * birthday yet — half the year, half the members. With the month, the only
+ * birthday yet, half the year, half the members. With the month, the only
  * remaining error is the days before a birthday inside the birth month, because
  * the day is deliberately not stored.
  */
@@ -278,7 +278,7 @@ export const PUBLIC_PROFILE_SELECT = {
       birthMonth: true,
       role: true,
       // Enough to answer "is this current", and nothing about the money. No
-      // amount, no card, no invoice — a public payload has no business
+      // amount, no card, no invoice, a public payload has no business
       // carrying any of it.
       supporter: { select: { status: true, currentPeriodEnd: true } },
     },

@@ -1,11 +1,11 @@
-// Bunchy — database schema
+// Bunchy, database schema
 //
 // Design notes
 // ------------
 // 1. PII SEPARATION. `User` holds everything that identifies a real human
 //    (email, password hash, birth year, auth material). `Profile` holds only
 //    data that is safe to render to another member. Nothing in the discovery
-//    surface reads from `User`. See src/server/modules/profile/serialize.ts —
+//    surface reads from `User`. See src/server/modules/profile/serialize.ts,
 //    it is the single sanctioned path from a database row to a public payload.
 //
 // 2. APPROXIMATE LOCATION ONLY. We never store a street address or precise
@@ -28,7 +28,7 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Identity & authentication  (private — never serialized to other members)
+// Identity & authentication  (private, never serialized to other members)
 // ---------------------------------------------------------------------------
 
 enum UserStatus {
@@ -46,7 +46,7 @@ enum UserStatus {
 /// authorization data.
 ///
 /// The level is never serialized. Profiles do show a plain "Staff" badge
-/// derived from this — ADMIN and MODERATOR both flatten to one label, so a
+/// derived from this, ADMIN and MODERATOR both flatten to one label, so a
 /// member can verify that an account claiming to be staff is, which is the
 /// other half of the impersonation defence that `Profile.title` starts. What
 /// stays private is who holds which power.
@@ -68,8 +68,8 @@ model User {
   ///
   /// A full date of birth is the identifier used to open bank accounts; it is
   /// worth much more to whoever steals this database than it is to us. Year
-  /// alone was not enough to state an age truthfully — a subtraction of years
-  /// reads a year high until someone's birthday — so the month is stored and
+  /// alone was not enough to state an age truthfully, a subtraction of years
+  /// reads a year high until someone's birthday, so the month is stored and
   /// the day is not. The remaining error is the weeks before a birthday within
   /// the birth month itself.
   birthYear       Int?
@@ -115,7 +115,7 @@ enum ModerationAction {
   INTEREST_UPDATED
   INTEREST_MERGED
   /// A staff member created a bunch from a formation proposal and invited
-  /// its members. Invitations, not memberships — but a dozen people getting a
+  /// its members. Invitations, not memberships, but a dozen people getting a
   /// notification because of one click belongs in the audit trail.
   BUNCH_PROPOSED
   /// An admin took the public site down or put it back up. The widest-reaching
@@ -124,7 +124,7 @@ enum ModerationAction {
   SITE_GATE_CHANGED
   /// An announcement went out to every member. Reaches more people than any
   /// moderation action, and two of the tiers exist to satisfy a promise made in
-  /// the policies — so who sent what, and when, has to be attributable.
+  /// the policies, so who sent what, and when, has to be attributable.
   ANNOUNCEMENT_PUBLISHED
   ANNOUNCEMENT_WITHDRAWN
 }
@@ -237,7 +237,7 @@ model Profile {
   approxLat   Float?
   approxLng   Float?
   /// IANA zone, e.g. "Europe/Brussels". Null means we don't know and fall back
-  /// to UTC — availability windows are local ideas, and comparing the labels
+  /// to UTC, availability windows are local ideas, and comparing the labels
   /// directly told a member in Antwerp they were free at the same time as a
   /// member in Tokyo.
   timezone    String?
@@ -256,7 +256,7 @@ model Profile {
   /// the profile.
   ///
   /// Deliberately NOT member-editable. A free-text line rendered in a badge is
-  /// an impersonation surface — anyone could write "Bunchy Support" and ask a
+  /// an impersonation surface, anyone could write "Bunchy Support" and ask a
   /// member for their password. It is set from the CLI
   /// (`scripts/set-title.ts`), which means it requires database access, the
   /// same bar as granting the first admin (§13).
@@ -265,7 +265,7 @@ model Profile {
   /// arrived and confers nothing. This says what someone does here.
   title String?
 
-  /// Stable, shareable, and not the username — usernames can change and a
+  /// Stable, shareable, and not the username, usernames can change and a
   /// printed invite link should not rot when they do.
   referralCode String? @unique
   /// Who invited them, if anyone. Set once at signup and never editable.
@@ -383,7 +383,7 @@ model PrivacySettings {
   /// Who may see a "Who's Up" status, when one is set.
   ///
   /// EVERYONE by default, which sounds like the wrong choice and is not. The
-  /// audience is already bounded by `discoverable` above — "everyone" here means
+  /// audience is already bounded by `discoverable` above, "everyone" here means
   /// the same people who can find this member in Discover today, not the public
   /// internet. Defaulting to CONNECTIONS would instead make the feature
   /// pointless: the candidate query for Find Someone excludes people you are
@@ -439,7 +439,7 @@ model Interest {
 enum InterestIntent {
   /// "I already do this."
   PRACTICES
-  /// "I want to get into this." — the other half of complementary matching.
+  /// "I want to get into this.", the other half of complementary matching.
   CURIOUS
 }
 
@@ -640,7 +640,7 @@ model Bunch {
 
   createdBy   Profile?           @relation("BunchCreator", fields: [createdById], references: [id], onDelete: SetNull)
   /// Moderators can switch challenges off for their bunch (§12). Icebreakers
-  /// need no such flag — they are only ever posted by someone pressing a
+  /// need no such flag, they are only ever posted by someone pressing a
   /// button, so "off" is simply not pressing it.
   challengesEnabled Boolean @default(true)
 
@@ -688,7 +688,7 @@ model BunchMembership {
 
 enum BunchMessageKind {
   TEXT
-  /// "Ana joined the bunch", "Activity scheduled" — rendered differently,
+  /// "Ana joined the bunch", "Activity scheduled", rendered differently,
   /// never notified as if a person spoke.
   SYSTEM
   /// An icebreaker question or a challenge, posted into the chat by a member
@@ -747,7 +747,7 @@ model MessageMention {
 }
 
 // ---------------------------------------------------------------------------
-// Activities — the point of the product is that people actually do things
+// Activities, the point of the product is that people actually do things
 // ---------------------------------------------------------------------------
 
 enum ActivityMode {
@@ -817,7 +817,7 @@ model ActivityParticipant {
 /// What actually happened.
 ///
 /// Bunchy measures whether someone met a person, not how long they stayed on
-/// the site — and until this table existed, that measurement did not exist
+/// the site, and until this table existed, that measurement did not exist
 /// either. Every other signal in the schema is about intent: who was
 /// recommended, who joined, who said they were free. This is the only one about
 /// outcome, which makes it the only honest input to whether the matching works.
@@ -843,7 +843,7 @@ model ModeratorApplication {
   hoursPerWeek Int
   /// Why they want to do it, in their words.
   motivation   String
-  /// Anything relevant they have done before. Optional — most good moderators
+  /// Anything relevant they have done before. Optional, most good moderators
   /// have never been one.
   experience   String?
   /// They confirmed they understand the queue contains harassment, scams and
@@ -942,7 +942,7 @@ model Report {
   /// Nullable so a report outlives its reporter. If someone reports harassment
   /// and then deletes their account, cascading the report away would quietly
   /// clear the queue and let the reported member escape review. The report is
-  /// anonymized instead — the safety record survives, the person does not.
+  /// anonymized instead, the safety record survives, the person does not.
   reporterId String?
   targetType ReportTargetType
   targetId   String
@@ -982,7 +982,7 @@ model Report {
 ///    cannot leak a member.
 /// 2. **Deleted with the member.** The profile relation cascades, so erasing an
 ///    account erases its event history too. That does mean historical aggregates
-///    shift slightly when someone leaves — the right trade for a product that
+///    shift slightly when someone leaves, the right trade for a product that
 ///    promises real data control.
 model AnalyticsEvent {
   id   String @id @default(cuid())
@@ -1015,7 +1015,7 @@ model AnalyticsEvent {
 ///
 /// Three deliberate constraints keep it proportionate:
 ///
-/// 1. **No foreign key to `User`.** That is the entire point — a cascade would
+/// 1. **No foreign key to `User`.** That is the entire point, a cascade would
 ///    take the row with the account, which is exactly the evasion path.
 /// 2. **Only a keyed hash, never the address.** HMAC-SHA256 under `AUTH_SECRET`,
 ///    so a copy of this table alone cannot tell anyone whether a given person
@@ -1058,7 +1058,7 @@ enum NotificationType {
   ACTIVITY_INVITE
   ACTIVITY_REMINDER
   ACTIVITY_CHANGED
-  /// "Did you go?" — the only notification sent after something, rather than
+  /// "Did you go?", the only notification sent after something, rather than
   /// before it. See ActivityOutcome.
   ACTIVITY_FOLLOW_UP
 }
@@ -1083,7 +1083,7 @@ model Notification {
 
 // Deliberately no column defaults. The default for an untouched setting lives
 // in `defaultPreference()` and depends on the type, which the database cannot
-// express — a blanket `@default(true)` here once meant a member could be
+// express, a blanket `@default(true)` here once meant a member could be
 // opted into suggestions the settings screen showed as off. Without a column
 // default Prisma requires both values on insert, so the omission is a compile
 // error rather than a silent subscription.
@@ -1165,8 +1165,8 @@ enum AvailabilityKind {
   UP_FOR_GAMING
   UP_FOR_ACTIVITIES
   OPEN_TO_MEETING
-  /// Added for Bunchy Now. Same machinery as the rest — one row per member,
-  /// always expiring — just more specific about what someone is up for, because
+  /// Added for Bunchy Now. Same machinery as the rest, one row per member,
+  /// always expiring, just more specific about what someone is up for, because
   /// "up for something" and "up for a match tonight" find different people.
   UP_FOR_FOOD
   UP_FOR_SPORTS
@@ -1174,7 +1174,7 @@ enum AvailabilityKind {
   UP_FOR_SPONTANEOUS
 }
 
-/// A member saying "I'm free, come find me" — for a while.
+/// A member saying "I'm free, come find me", for a while.
 ///
 /// Keyed on the profile rather than given its own id, so there is exactly one
 /// live status per person and setting a new one replaces the old. That is not a
@@ -1217,7 +1217,7 @@ model AvailabilityStatus {
 /// Keyed on the bunch, so there is one row per group and it is replaced rather
 /// than appended. A table of every reading ever taken would be a record of each
 /// group's decline, which is not something this product should be able to hand
-/// anybody — and `previousScore` covers the only comparison the feature needs
+/// anybody, and `previousScore` covers the only comparison the feature needs
 /// ("more active than last week") without keeping a history.
 ///
 /// Written by the scheduled job, never during a page render. Computing it means
@@ -1230,7 +1230,7 @@ model BunchChemistry {
   score      Int?
   /// The reading before this one, for "up from last week". Never a series.
   previousScore Int?
-  /// "none" | "low" | "good" — how much the number should be trusted.
+  /// "none" | "low" | "good", how much the number should be trusted.
   confidence String
   /// Per-signal breakdown, as the pure scorer produced it.
   signals    Json
@@ -1254,7 +1254,7 @@ enum SocialPlanStatus {
   CANCELLED
 }
 
-/// "When suits everyone?" — a few candidate times and a vote.
+/// "When suits everyone?", a few candidate times and a vote.
 ///
 /// Deliberately not a poll engine. There are no arbitrary options, only
 /// datetimes, because the one question this answers is when a group can meet.
@@ -1269,7 +1269,7 @@ model SocialPlan {
   status      SocialPlanStatus @default(OPEN)
   /// Set when the plan is decided; the option that won.
   decidedOptionId String?
-  /// The activity it turned into. Creating one is an explicit second step —
+  /// The activity it turned into. Creating one is an explicit second step,
   /// §10 is clear that nothing is booked or committed automatically.
   activityId  String?          @unique
   createdAt   DateTime         @default(now())
@@ -1287,7 +1287,7 @@ model SocialPlanOption {
   id       String   @id @default(cuid())
   planId   String
   startsAt DateTime
-  /// How the member described it, e.g. "Saturday afternoon". Optional — the
+  /// How the member described it, e.g. "Saturday afternoon". Optional, the
   /// datetime is the truth, this is only how it reads.
   label    String?
 
@@ -1324,7 +1324,7 @@ model SocialPlanVote {
 
 /// Which icebreaker questions a bunch has already had.
 ///
-/// Exists so questions do not repeat — and for nothing else. The *answers* are
+/// Exists so questions do not repeat, and for nothing else. The *answers* are
 /// ordinary chat messages, which is the whole design: §11 says not to build
 /// permanent personality profiles out of casual answers, and the way to
 /// guarantee that is to have nowhere to put them. An answer here is deleted,
@@ -1421,8 +1421,8 @@ model WaitlistSignup {
   @@index([notifiedAt])
 }
 
-/// How far an announcement reaches. The tier picks the route, in code — see
-/// `DELIVERY` in the announcements service — so nobody can push a feature note
+/// How far an announcement reaches. The tier picks the route, in code, see
+/// `DELIVERY` in the announcements service, so nobody can push a feature note
 /// to everybody by ticking the wrong box.
 enum AnnouncementTier {
   /// Something changed that affects your rights, your data, or whether the site
@@ -1459,7 +1459,7 @@ model Announcement {
 
   tier AnnouncementTier
 
-  /// Where to read the thing this is about — usually a policy page.
+  /// Where to read the thing this is about, usually a policy page.
   linkHref  String?
   linkLabel String?
 

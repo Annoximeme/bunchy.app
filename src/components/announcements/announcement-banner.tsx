@@ -8,14 +8,14 @@ import { api } from "@/lib/api";
 /**
  * The one thing on this product that interrupts you.
  *
- * It appears for CRITICAL announcements only — a change to your rights, your
- * data, or whether the site is up — and it exists because Privacy §14 and Terms
+ * It appears for CRITICAL announcements only, a change to your rights, your
+ * data, or whether the site is up, and it exists because Privacy §14 and Terms
  * §14 promise members are told in the product *before* a change takes effect.
  * A page nobody visits cannot keep that promise; this can.
  *
  * Dismissing it is the same act as reading it, which is why the close button
  * writes a read row rather than hiding it locally. Somebody who clears this on
- * their phone should not meet it again on their laptop — and the record of who
+ * their phone should not meet it again on their laptop, and the record of who
  * has seen what is the thing that makes "we told you" checkable.
  *
  * One at a time, oldest first, chosen on the server. A stack of banners is a

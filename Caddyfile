@@ -1,4 +1,4 @@
-# Bunchy — TLS termination and reverse proxy.
+# Bunchy, TLS termination and reverse proxy.
 #
 # Caddy is here rather than nginx for one reason: certificates. It obtains and
 # renews them from Let's Encrypt automatically, with no certbot, no cron entry
@@ -9,7 +9,7 @@
 {
 	email {$TLS_EMAIL}
 	# Uncomment to test against the staging CA, which has far looser rate
-	# limits. Certificates it issues are not trusted by browsers — use it while
+	# limits. Certificates it issues are not trusted by browsers, use it while
 	# getting DNS right, then comment it out again.
 	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
@@ -18,7 +18,7 @@
 #
 # Both hostnames used to serve the same site from the same block, which means a
 # crawler could reach every page at two addresses and had no way to know which
-# was canonical — the textbook duplicate-content split, where the two versions
+# was canonical, the textbook duplicate-content split, where the two versions
 # divide whatever authority the page earns instead of accumulating it. A 301 is
 # the unambiguous answer, and it is permanent so it is cached as such.
 www.{$DOMAIN} {
@@ -34,7 +34,7 @@ www.{$DOMAIN} {
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"
 		# The app sets its own X-Frame-Options, nosniff, Referrer-Policy and
-		# Permissions-Policy in next.config.ts. They are not duplicated here —
+		# Permissions-Policy in next.config.ts. They are not duplicated here,
 		# two places setting the same header is how they end up disagreeing.
 		-Server
 	}
@@ -51,16 +51,16 @@ www.{$DOMAIN} {
 	# environment variable so that turning the site off does not require
 	# restarting the thing that serves the "off" page.
 	#
-	#   flags/SOON  — pre-launch. The site is finished enough to be private and
+	#   flags/SOON, pre-launch. The site is finished enough to be private and
 	#                 not finished enough to be public.
-	#   flags/ON    — maintenance. Deliberate, longer than a deploy.
+	#   flags/ON, maintenance. Deliberate, longer than a deploy.
 	#
 	# Both are bypassed by a preview cookie, because a switch that also locks
 	# out the person who flipped it is a switch nobody can safely use. Visiting
 	# /?preview=$PREVIEW_TOKEN once sets the cookie for thirty days.
 
 	# Hand out the cookie, then bounce to the same path without the token in the
-	# URL — so a shared screenshot or a browser history entry does not leak it.
+	# URL, so a shared screenshot or a browser history entry does not leak it.
 	@preview_grant query preview={$PREVIEW_TOKEN}
 	handle @preview_grant {
 		header Set-Cookie "bunchy_preview={$PREVIEW_TOKEN}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
@@ -84,7 +84,7 @@ www.{$DOMAIN} {
 		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
 		# The brand assets stay reachable while the gate is up. A browser
 		# fetches the manifest without credentials, so even a previewer got a
-		# 503 and a console error — and, worse, the Open Graph image was gated
+		# 503 and a console error, and, worse, the Open Graph image was gated
 		# too, which meant every link to bunchy.app shared privately before
 		# launch previewed as broken. None of these say anything the
 		# coming-soon page does not already say out loud.
@@ -140,7 +140,7 @@ www.{$DOMAIN} {
 		not header_regexp Cookie bunchy_preview={$PREVIEW_TOKEN}
 		# The brand assets stay reachable while the gate is up. A browser
 		# fetches the manifest without credentials, so even a previewer got a
-		# 503 and a console error — and, worse, the Open Graph image was gated
+		# 503 and a console error, and, worse, the Open Graph image was gated
 		# too, which meant every link to bunchy.app shared privately before
 		# launch previewed as broken. None of these say anything the
 		# coming-soon page does not already say out loud.
@@ -165,7 +165,7 @@ www.{$DOMAIN} {
 		health_interval 30s
 	}
 
-	# When the app is unreachable — a deploy, a restart, an outage — serve the
+	# When the app is unreachable, a deploy, a restart, an outage, serve the
 	# maintenance page rather than Caddy's bare error text. Every deploy takes
 	# the app down for around twenty seconds, so without this there is a window
 	# on every single release where the site says "502 Bad Gateway" to whoever

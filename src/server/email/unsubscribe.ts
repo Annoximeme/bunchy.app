@@ -13,13 +13,13 @@ import { NOTIFICATION_TYPE_INFO, defaultPreference } from "@/lib/notifications";
  * reason that rule exists at all: when the only way off a list is to sign in
  * and hunt for a setting, people press *report spam* instead, and a complaint
  * is far more expensive than an unsubscribe. A domain that has never sent bulk
- * mail before — which is Bunchy on launch day — has no reputation to absorb
+ * mail before, which is Bunchy on launch day, has no reputation to absorb
  * either.
  *
  * ## Stateless tokens
  *
  * The token is an HMAC over the target, keyed on `AUTH_SECRET`. No table, no
- * row to look up, no expiry — and the last one is the point. An unsubscribe
+ * row to look up, no expiry, and the last one is the point. An unsubscribe
  * link has to work when somebody finds the email in their archive two years
  * from now, and a link that has expired into an error page is a link that
  * sends them to the spam button instead.
@@ -32,7 +32,7 @@ import { NOTIFICATION_TYPE_INFO, defaultPreference } from "@/lib/notifications";
  *
  * Corporate mail scanners and link prefetchers follow every URL in a message
  * before a human sees it. If the unsubscribe URL acted on GET, a scanner would
- * silently unsubscribe the recipient — and the recipient would never know why
+ * silently unsubscribe the recipient, and the recipient would never know why
  * the mail stopped. So GET renders a page with a button, and the action lives
  * on POST. That is also exactly what RFC 8058 one-click sends.
  */
@@ -128,7 +128,7 @@ export type UnsubscribeOutcome = "done" | "already" | "invalid";
  * Act on a verified token.
  *
  * Idempotent, and quiet about what it found. A token for an address that is no
- * longer on the list reports `already` rather than `invalid` — the person did
+ * longer on the list reports `already` rather than `invalid`, the person did
  * what was asked of them and the outcome they wanted is the case, and telling
  * them "that link is invalid" would send them looking for another way to make
  * the mail stop.
@@ -154,7 +154,7 @@ export async function applyUnsubscribe(
   if (!profile) return "already";
 
   // Every type, not just the one that prompted it. Somebody who presses
-  // unsubscribe is asking for the email to stop, not to be re-sorted — and
+  // unsubscribe is asking for the email to stop, not to be re-sorted, and
   // the one-click POST carries no way to ask which they meant. In-app
   // notifications are untouched, so nothing is actually lost: the settings
   // screen turns email back on per type.

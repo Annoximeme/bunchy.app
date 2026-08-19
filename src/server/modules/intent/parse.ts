@@ -10,7 +10,7 @@ import { ONLINE_FIRST_INTERESTS } from "@/lib/interests";
  * "I want to play Warhammer tonight" → something the matching engine can use.
  *
  * Deterministic and pure. An LLM would parse a wider range of sentences, and
- * `resolve.ts` can put one in front of this — but the *floor* has to be a
+ * `resolve.ts` can put one in front of this, but the *floor* has to be a
  * function, for three reasons:
  *
  * 1. It cannot invent. Interests come from the catalogue passed in, times from
@@ -20,7 +20,7 @@ import { ONLINE_FIRST_INTERESTS } from "@/lib/interests";
  *    is the product's primary action (§15) and it works with the AI switched
  *    off entirely.
  * 3. It can be tested exhaustively, which is how the time grammar stays correct
- *    across timezones — the part most likely to be quietly wrong.
+ *    across timezones, the part most likely to be quietly wrong.
  *
  * Everything it did not understand comes back in `unrecognised`, and every
  * assumption comes back in `notes`. The screen shows both. A parser that
@@ -199,7 +199,7 @@ export function parseIntent(
   const { slugs, labels } = takeInterests(scanner, catalogue);
 
   // "play <something we've never heard of>" is still a request to play a game.
-  // Naming the thing matters — the bunch ends up called "Zomboid tonight" —
+  // Naming the thing matters, the bunch ends up called "Zomboid tonight",
   // but it is an inference, so it is admitted to.
   let topic = labels[0] ?? null;
   const unknownGame = takeUnknownGame(scanner, raw, slugs.length > 0);
@@ -235,7 +235,7 @@ export function parseIntent(
  * The words after "in", "near" or "around", kept verbatim for the geocoder.
  *
  * Resolution happens in `resolve.ts`, which has the gazetteer. This only spots
- * that a place was named — and claims the span, so "Ghent" is never scanned for
+ * that a place was named, and claims the span, so "Ghent" is never scanned for
  * interests or leftovers.
  */
 function takePlaceHint(scanner: Scanner, raw: string): string | null {
@@ -245,7 +245,7 @@ function takePlaceHint(scanner: Scanner, raw: string): string | null {
   while ((match = pattern.exec(raw)) !== null) {
     if (!match[1]) continue;
 
-    // Up to three words, because "The Hague" and "Sint-Niklaas Centrum" exist —
+    // Up to three words, because "The Hague" and "Sint-Niklaas Centrum" exist,
     // then trim back off the end, because "near Ghent this weekend" would
     // otherwise geocode "Ghent this weekend" and find nothing.
     const words = match[1].split(/\s+/);
@@ -446,7 +446,7 @@ function spansWeekend(todayWeekday: number, daysAhead: number, spanDays: number)
 /**
  * Which symbolic windows an hour range touches.
  *
- * A whole day touches all of them, which is correct — "Saturday" really does
+ * A whole day touches all of them, which is correct, "Saturday" really does
  * mean any time on Saturday, and narrowing it further would invent a preference
  * the member never expressed.
  */
@@ -475,7 +475,7 @@ const NUMBER_WORDS: Record<string, number> = {
 /**
  * How many people, counting the member.
  *
- * "A group of five" is five. "With three people" is four — them plus three.
+ * "A group of five" is five. "With three people" is four, them plus three.
  * The reading is a guess either way, so it is written into `notes` and the
  * screen makes it editable (§2: "Change group size").
  */
@@ -585,7 +585,7 @@ function takeInterests(
 /**
  * The proper noun after "play", when the catalogue had nothing to say about it.
  *
- * Returned in the member's own capitalisation — a bunch called "Zomboid
+ * Returned in the member's own capitalisation, a bunch called "Zomboid
  * tonight" reads like a person wrote it, "zomboid tonight" does not.
  */
 function takeUnknownGame(

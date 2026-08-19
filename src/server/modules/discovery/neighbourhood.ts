@@ -9,7 +9,7 @@ import { db } from "@/server/db/client";
  * turn the same emptiness into a position in a queue: still nothing to click,
  * but now it is obvious what has to happen next and who can make it happen.
  *
- * No names, no profiles, no map — a number and a place label. Someone learning
+ * No names, no profiles, no map, a number and a place label. Someone learning
  * "3 people near Antwerp" learns nothing about who they are.
  */
 

@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
  * so a logo change ships here in the same deploy rather than leaving somebody
  * advertising with last year's mark.
  *
- * Note on layout: `Panel` puts padding on its header and none on its children —
+ * Note on layout: `Panel` puts padding on its header and none on its children,
  * every other admin page either passes `className="p-5"` or fills it with a
  * DataTable that brings its own. An earlier version of this page did neither,
  * which is why it rendered flush against the panel edges.
@@ -43,7 +43,7 @@ export default async function AdminBrandPage() {
         <Panel title="The logo" note="light, dark and the mark alone">
           {/*
             Fixed swatch colours, not tokens. These panels demonstrate the logo
-            *on light* and *on dark* — so they have to stay light and dark. With
+            *on light* and *on dark*, so they have to stay light and dark. With
             `bg-canvas`/`bg-ink` the pair swapped in dark mode and the knockout
             logo was rendered white on a near-white panel, i.e. invisible, on the
             one page whose job is showing people what the logo looks like.
@@ -289,7 +289,7 @@ export default async function AdminBrandPage() {
  * PNG: identical artwork, no extra request per row, and it renders under the
  * CSP because `img-src` already allows `data:`.
  *
- * Transparent assets get a checkerboard in two mid-greys — light enough that the
+ * Transparent assets get a checkerboard in two mid-greys, light enough that the
  * ink artwork reads, dark enough that the white knockout does too, which a plain
  * white or plain dark backdrop would each fail at for half the set.
  */

@@ -30,7 +30,7 @@ import { SITE_LINKS } from "@/components/site-links";
  * without anybody choosing.
  *
  * The masthead and footer sit on `band-deep`, which is the same navy in both
- * themes — so the white on them is not a theme decision either.
+ * themes, so the white on them is not a theme decision either.
  */
 
 const display = Plus_Jakarta_Sans({
@@ -68,7 +68,7 @@ export function LegalPage({
     <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
       {/*
         A `div` rather than a `section` so the `<header>` inside it keeps its
-        banner role — inside a section it is demoted, and the logo and the skip
+        banner role, inside a section it is demoted, and the logo and the skip
         link end up in no landmark at all.
       */}
       <div className="bg-band-deep text-white">
@@ -215,7 +215,7 @@ export function Clause({
       </div>
 
       {/*
-        The measure comes from the typography plugin now — 65ch, rather than the
+        The measure comes from the typography plugin now, 65ch, rather than the
         62ch of the "0" glyph this file used to hand-roll. Same intent, one
         fewer bespoke rule: body copy here ran ~100 characters a line before
         either existed, which is a document people bounce off, and this one
@@ -228,7 +228,7 @@ export function Clause({
   );
 }
 
-/** A plain list of facts — what we hold, what we don't. */
+/** A plain list of facts, what we hold, what we don't. */
 export function Facts({ items }: { items: Array<[string, string]> }) {
   return (
     // Outside the prose: the plugin styles `dl` for definition lists in running

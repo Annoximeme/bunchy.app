@@ -7,7 +7,7 @@
  *
  * Everything arriving here is a query parameter, which is to say it is a string
  * an attacker chooses. `resolveIntent` looks values up in these tables and
- * returns null for anything it does not recognise — so the sign-up page renders
+ * returns null for anything it does not recognise, so the sign-up page renders
  * labels this file owns, never text from the URL. That is the whole reason the
  * lookup exists rather than titlecasing the raw parameter.
  */

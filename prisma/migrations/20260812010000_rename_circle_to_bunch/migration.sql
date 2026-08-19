@@ -2,7 +2,7 @@
 --
 -- Written by hand as renames rather than generated as drop/create, so existing
 -- rows survive. Postgres does not rename a table's constraints or indexes when
--- the table is renamed, so every one is renamed explicitly — otherwise Prisma
+-- the table is renamed, so every one is renamed explicitly, otherwise Prisma
 -- would report drift and a later `migrate dev` would try to "fix" it.
 --
 -- The two new SocialGoal values (spec §10) ride along here because they are the

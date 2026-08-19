@@ -9,7 +9,7 @@ import { PLANS } from "@/server/modules/supporter/service";
  * /about promises that "a tier that makes the matching better for people who
  * pay would break the only thing this product is for". That sentence is the
  * product's whole pitch about itself, and the pressure on it will not come from
- * somebody deciding to break it — it will come from a reasonable-looking change
+ * somebody deciding to break it, it will come from a reasonable-looking change
  * two years from now that gives supporters a slightly bigger radius, or skips
  * them past a rate limit, in a file nobody thinks of as the paywall.
  *
@@ -70,7 +70,7 @@ describe("what a supporter buys", () => {
     const { NO_COSMETICS } = await import(
       "@/server/modules/supporter/service"
     );
-    // The *shape* is the contract, and asserting it needs no database — which
+    // The *shape* is the contract, and asserting it needs no database, which
     // matters now that `supporterCosmetics` reads the role, because staff get
     // the cosmetics complimentary and that must not depend on a Stripe key.
     expect(Object.keys(NO_COSMETICS).sort()).toEqual([

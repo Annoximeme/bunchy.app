@@ -22,7 +22,7 @@ import {
  * The MVP scorer: deterministic, explainable, fast enough to rank a few
  * thousand candidates per request without leaving the process.
  *
- * It implements `CompatibilityScorer`, which is the entire point — when there
+ * It implements `CompatibilityScorer`, which is the entire point, when there
  * is enough interaction data to train something better, an embedding index or
  * an LLM re-ranker drops into the same slot and every caller is unchanged.
  * Because each recommendation records the scorer `id` that produced it, the two
@@ -39,7 +39,7 @@ import {
  *
  * The 40% for interests is split between `shared_interests` (26) and
  * `complementary_interests` (14) rather than spent entirely on overlap, because
- * the same spec requires complementary matching — a photographer and someone
+ * the same spec requires complementary matching, a photographer and someone
  * who wants to learn photography must be able to match. Spending the whole
  * budget on shared tags would make that impossible.
  *
@@ -47,7 +47,7 @@ import {
  * activities and how present someone actually is.
  *
  * These six sum to exactly 1.0. Age is deliberately *not* in the additive
- * budget — see AGE_PENALTY below.
+ * budget, see AGE_PENALTY below.
  */
 const BASE_WEIGHTS: Record<SignalName, number> = {
   shared_interests: 0.26,
@@ -66,7 +66,7 @@ const BASE_WEIGHTS: Record<SignalName, number> = {
  *
  * The spec's six dimensions account for the whole score, so adding age as a
  * seventh additive term would quietly change every other weight. It still
- * matters though — a 25-year gap is real information — so it scales the final
+ * matters though, a 25-year gap is real information, so it scales the final
  * score by at most 15%. Enough to break a tie, never enough to overrule a
  * genuinely good match, and it never becomes the headline reason on a card.
  */
@@ -120,7 +120,7 @@ function locationImportance(a: MatchProfile, b: MatchProfile): number {
  * every card read "62%" and tell a member nothing. The exponent stretches the
  * top of the distribution, where the real differences are. It is strictly
  * monotonic, so it changes what a number *looks* like and never changes who
- * ranks above whom — and there is no artificial floor, so a weak match is
+ * ranks above whom, and there is no artificial floor, so a weak match is
  * still allowed to look weak.
  */
 const DISPLAY_EXPONENT = 0.6;
@@ -233,7 +233,7 @@ const HIGHLIGHT_FLOOR: Partial<Record<SignalName, number>> = {
 const DEFAULT_HIGHLIGHT_FLOOR = 0.45;
 
 /**
- * The two or three things worth printing on a card. Never padded with filler —
+ * The two or three things worth printing on a card. Never padded with filler,
  * if only one signal is genuinely worth saying, the card says one thing.
  */
 function buildHighlights(signals: SignalResult[]): string[] {

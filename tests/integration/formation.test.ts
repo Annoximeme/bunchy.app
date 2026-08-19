@@ -7,7 +7,7 @@ import type { StaffViewer } from "@/server/modules/admin/guard";
 
 /**
  * Formation exercised against the real scorer and the real database, because
- * the unit tests feed it a synthetic score table — this is the only place that
+ * the unit tests feed it a synthetic score table, this is the only place that
  * proves the two halves fit together.
  */
 
@@ -114,7 +114,7 @@ describe("bunch formation", () => {
     expect(report.proposals).toHaveLength(1);
     const [proposal] = report.proposals;
     expect(proposal!.members.length).toBeGreaterThanOrEqual(5);
-    // The weakest pair is the number that matters — a good mean can hide one
+    // The weakest pair is the number that matters, a good mean can hide one
     // person nobody in the group actually matches.
     expect(proposal!.weakestPair).toBeGreaterThanOrEqual(45);
     expect(proposal!.rationale.join(" ")).toMatch(/not in any bunch yet/);

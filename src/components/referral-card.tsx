@@ -10,7 +10,7 @@ import { Button, Card, ErrorNotice } from "@/components/ui";
  * What is deliberately absent: no reward for inviting three people, no
  * leaderboard, no "import your contacts", no reminder emails, and no list of
  * who joined. A member sees a count, because the moment a referral pays out the
- * incentive is to send the link to strangers — and a product about finding
+ * incentive is to send the link to strangers, and a product about finding
  * people you belong with is the last place that should reward volume.
  */
 export function ReferralCard() {

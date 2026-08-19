@@ -6,7 +6,7 @@ import type { AnnouncementTier } from "@/generated/prisma/enums";
 import type { AnnouncementBlock } from "@/server/modules/announcements/blocks";
 
 /**
- * Announcements — the things the operator did that affect you.
+ * Announcements, the things the operator did that affect you.
  *
  * ## Why this exists at all
  *
@@ -31,7 +31,7 @@ import type { AnnouncementBlock } from "@/server/modules/announcements/blocks";
  * /about promises there are "no notifications designed to pull you back" and
  * that you are only told about "something a person actually did that involves
  * you". An announcement sits inside that promise only while it is genuinely the
- * operator acting on you — a policy change, an outage, the site going down on
+ * operator acting on you, a policy change, an outage, the site going down on
  * Sunday. "We shipped a thing, come back and look" is the other kind, and the
  * moment it is pushed the sentence on /about stops being true.
  *
@@ -235,7 +235,7 @@ export async function getAnnouncement(
 /**
  * What to interrupt this member with, if anything.
  *
- * Only CRITICAL, only unread, oldest first — so somebody who has been away
+ * Only CRITICAL, only unread, oldest first, so somebody who has been away
  * meets the changes in the order they happened rather than in reverse. One at a
  * time: a stack of banners is a wall, and a wall gets dismissed without reading,
  * which defeats the entire promise this exists to keep.

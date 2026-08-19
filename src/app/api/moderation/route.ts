@@ -48,8 +48,8 @@ const schema = z.discriminatedUnion("action", [
 /**
  * Block, unblock and report on one endpoint.
  *
- * Kept together because they are the same moment for a member — something is
- * wrong and they want it to stop — and the UI presents them as one flow.
+ * Kept together because they are the same moment for a member, something is
+ * wrong and they want it to stop, and the UI presents them as one flow.
  */
 export async function POST(request: Request) {
   return handleAuthed(async (viewer) => {

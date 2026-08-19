@@ -18,7 +18,7 @@ export const ANALYTICS_EVENTS = {
   // --- Acquisition ---------------------------------------------------------
   ACCOUNT_CREATED: "account.created",
   EMAIL_VERIFIED: "account.email_verified",
-  /// Carries no profile reference — the profile is being erased in the same
+  /// Carries no profile reference, the profile is being erased in the same
   /// breath, and an event that outlived it pointing at a person would defeat
   /// the deletion. It counts departures and nothing else.
   ACCOUNT_DELETED: "account.deleted",
@@ -67,7 +67,7 @@ export const ANALYTICS_EVENTS = {
   // --- Introductions --------------------------------------------------------
   /// Offered, then acted on. The ratio between them is the only measure of
   /// whether the product's unprompted suggestions are wanted, and the dismissed
-  /// count is the one that matters — an introduction people keep waving away is
+  /// count is the one that matters, an introduction people keep waving away is
   /// a feature to fix or remove, not to tune.
   INTRODUCTION_OFFERED: "introduction.offered",
   INTRODUCTION_ACCEPTED: "introduction.accepted",
@@ -78,21 +78,21 @@ export const ANALYTICS_EVENTS = {
   PLAN_VOTED: "plan.voted",
   ICEBREAKER_ASKED: "icebreaker.asked",
   /// Started and completed, with no event in between. There is deliberately no
-  /// "challenge progressed" — progress tracking is what turns an optional bit
+  /// "challenge progressed", progress tracking is what turns an optional bit
   /// of fun into a chore with a bar to fill (§12).
   CHALLENGE_STARTED: "challenge.started",
   CHALLENGE_COMPLETED: "challenge.completed",
 
   // --- Bunch health ---------------------------------------------------------
   /// Written by the scheduled job, not by anything a member does. Carries the
-  /// bunch, never a member — chemistry is a property of a group, and §7 is
+  /// bunch, never a member, chemistry is a property of a group, and §7 is
   /// explicit that individuals are never ranked by it.
   CHEMISTRY_UPDATED: "bunch.chemistry_updated",
 
   // --- Who's Up -------------------------------------------------------------
   /// Note there is no "availability viewed" event to pair with these. Looking
   /// at who is around is not an action, and an event for it would be
-  /// attention-tracking wearing a feature name — see the taxonomy test, and
+  /// attention-tracking wearing a feature name, see the taxonomy test, and
   /// the privacy policy's "No page views", which is a promise this file keeps.
   AVAILABILITY_SET: "availability.set",
   AVAILABILITY_CLEARED: "availability.cleared",
@@ -110,7 +110,7 @@ export type AnalyticsEventName =
  *
  * Retention is measured against these rather than against any request, because
  * a member who loaded a page and left did not come back in any sense worth
- * counting. Onboarding steps are excluded — finishing signup is activation, not
+ * counting. Onboarding steps are excluded, finishing signup is activation, not
  * a return visit.
  */
 export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [

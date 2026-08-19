@@ -5,7 +5,7 @@ import { person } from "@/lib/example-people";
  * The hero visual: separate people, drawn as a bunch.
  *
  * A server component with no JavaScript at all. Every animation here is a
- * transform loop, which is what CSS keyframes are for — see `.float` in
+ * transform loop, which is what CSS keyframes are for, see `.float` in
  * globals.css, which is itself behind `prefers-reduced-motion`. This used to
  * run on framer-motion, and paying ~50KB of client bundle to drift six circles
  * on the page a first-time visitor lands on was the wrong trade.
@@ -94,7 +94,7 @@ export function BunchCluster() {
           centres itself on its coordinate with `-translate-*`; the inner one
           floats. Both cannot live on the same element, because the float
           keyframe animates the `translate` property and would overwrite the
-          centring outright — which silently shifts every avatar half its own
+          centring outright, which silently shifts every avatar half its own
           width away from the line drawn to it.
         */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -180,7 +180,7 @@ export function BunchCluster() {
       </div>
 
       {/*
-        On a phone there is no room for cards to float around the cluster — they
+        On a phone there is no room for cards to float around the cluster, they
         land on top of the people. Same three plans, stacked underneath, where
         they can be read.
       */}
@@ -214,8 +214,8 @@ export function BunchCluster() {
       </div>
 
       {/*
-        Said once, quietly, under the whole composition. Every number in here —
-        the match percentages, the counts going — is invented, and Bunchy has
+        Said once, quietly, under the whole composition. Every number in here,
+        the match percentages, the counts going, is invented, and Bunchy has
         not launched, so leaving them unlabelled would be claiming traction that
         does not exist on the one page most people will only ever see.
       */}

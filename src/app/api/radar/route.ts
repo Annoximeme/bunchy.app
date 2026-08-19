@@ -5,8 +5,8 @@ import { scanRadar } from "@/server/modules/discovery/radar";
 /**
  * The radar, re-scanned with new filters.
  *
- * POST because nothing about the answer is cacheable — it depends entirely on
- * who is asking and roughly where they are — and because a GET whose query
+ * POST because nothing about the answer is cacheable, it depends entirely on
+ * who is asking and roughly where they are, and because a GET whose query
  * string described someone's search radius would end up in access logs.
  */
 

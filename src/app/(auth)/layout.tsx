@@ -94,7 +94,7 @@ export default function AuthLayout({
           </div>
 
           {/*
-            The half you came here to use. No card styling here — each form
+            The half you came here to use. No card styling here, each form
             already brings its own `card-surface`, and wrapping a card in a card
             is how you get two borders and a shadow inside a shadow. This adds
             only the width, the centring and the lift off the dark ground.
@@ -106,7 +106,7 @@ export default function AuthLayout({
 
         {/*
           Plain links rather than the old "By joining you agree to our terms",
-          which was on every page in here — including Sign in and Reset your
+          which was on every page in here, including Sign in and Reset your
           password, where nobody is joining anything. The signup form makes that
           statement itself, where it is true.
         */}

@@ -7,13 +7,13 @@ import { NOTIFICATION_TYPE_INFO } from "@/lib/notifications";
  * Every notification a member can switch off must be one they could receive.
  *
  * This exists because two of them weren't. `BUNCH_RECOMMENDATION` and
- * `ACTIVITY_REMINDER` shipped as rows in the settings table — with copy
- * describing exactly when they would arrive — and nothing in the codebase ever
+ * `ACTIVITY_REMINDER` shipped as rows in the settings table, with copy
+ * describing exactly when they would arrive, and nothing in the codebase ever
  * produced either. A member could carefully switch on "a reminder shortly
  * before an activity you joined" and wait forever.
  *
  * A toggle for something that cannot happen is worse than a missing feature: it
- * is a claim. This test is the thing that stops it happening again — add a type
+ * is a claim. This test is the thing that stops it happening again, add a type
  * to the settings screen without wiring a sender and the suite fails.
  */
 
@@ -54,7 +54,7 @@ describe("every notification type has a sender", () => {
       expect(
         producers.length,
         `No code calls notify() with type "${type}". Either wire a sender or ` +
-          `remove it from NOTIFICATION_TYPE_INFO — a settings toggle for a ` +
+          `remove it from NOTIFICATION_TYPE_INFO, a settings toggle for a ` +
           `notification that cannot arrive is a promise the product does not keep.`,
       ).toBeGreaterThan(0);
     },

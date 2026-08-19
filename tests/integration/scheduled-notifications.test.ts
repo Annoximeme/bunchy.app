@@ -139,7 +139,7 @@ describe("activity reminders", () => {
     expect(await listNotifications(bystander)).toHaveLength(0);
   });
 
-  it("is idempotent — running the job twice sends one reminder", async () => {
+  it("is idempotent, running the job twice sends one reminder", async () => {
     const organizer = await member("organizer");
     const going = await member("going");
     await activity({ startsAt: inHours(20), going: [going], organizerId: organizer });
@@ -180,7 +180,7 @@ describe("bunch recommendations", () => {
     const me = await member("uninterested");
     await bunchFor(me);
 
-    // The default is off, so an absent preference row is a no — this must not
+    // The default is off, so an absent preference row is a no, this must not
     // fall back to the "person is waiting" default.
     expect(await sendBunchRecommendations(NOW)).toBe(0);
     expect(await listNotifications(me)).toHaveLength(0);

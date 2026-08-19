@@ -16,14 +16,14 @@ import {
  * **The confirmation page**, via a normal form post, which wants a redirect so
  * the browser lands somewhere with a result on it.
  *
- * The two are told apart by where the token came from — query for one-click
+ * The two are told apart by where the token came from, query for one-click
  * (it is baked into the header URL), form field for the page.
  *
  * No rate limit and no session. Both would be actively harmful here: a token
  * is already an unforgeable capability for one address, and the failure mode
  * of a false positive is somebody who cannot stop the email. That is a worse
  * outcome for us than any amount of pointless posting by a bot, which achieves
- * nothing anyway — the only thing this endpoint can do with a valid token is
+ * nothing anyway, the only thing this endpoint can do with a valid token is
  * the thing the token's holder was invited to do.
  */
 

@@ -9,7 +9,7 @@ import { recommendActivities } from "@/server/modules/matching/activities";
 import { findPeople } from "@/server/modules/discovery/find-people";
 
 /**
- * Do Something — an evening, from constraints.
+ * Do Something, an evening, from constraints.
  *
  * Two sources, kept visibly separate because they have different truth values.
  *
@@ -34,7 +34,7 @@ export interface DoSomethingConstraints {
   hours?: number;
   withinKm?: number;
   mood?: Mood;
-  /** Who it is for — changes whether people are searched for at all. */
+  /** Who it is for, changes whether people are searched for at all. */
   people?: "alone" | "friends" | "find";
 }
 
@@ -51,7 +51,7 @@ export interface DoSomethingResult {
  * A small deterministic shuffle.
  *
  * "Try another" has to move, but the same constraints on the same day should
- * not reshuffle on every render — a page that changes under somebody while they
+ * not reshuffle on every render, a page that changes under somebody while they
  * are reading it is a page they stop trusting. The seed is the caller's, so the
  * client advances it explicitly.
  */

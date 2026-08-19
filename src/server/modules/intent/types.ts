@@ -4,7 +4,7 @@ import type { AvailabilityWindow, SocialGoal } from "@/generated/prisma/enums";
  * What somebody meant when they typed "I want to play Warhammer tonight".
  *
  * Every field here is either something the member wrote or something resolved
- * against data that already exists — an interest row, an enum value, a place in
+ * against data that already exists, an interest row, an enum value, a place in
  * the gazetteer. Nothing is generated. That is the structural answer to §23's
  * "never fabricate": the parser has no vocabulary of its own to invent from, and
  * the AI path (see `resolve.ts`) can only *select* from the same catalogue, so
@@ -26,7 +26,7 @@ export interface IntentWhen {
   /**
    * Whether a time of day was actually named.
    *
-   * "tonight" and "Friday evening" are `part` — there is a real hour in there.
+   * "tonight" and "Friday evening" are `part`, there is a real hour in there.
    * "Saturday" and "this weekend" are `day`, and their `from` is local midnight
    * purely because a range has to start somewhere. Callers that need a *moment*
    * rather than a window must not treat the two the same: scheduling "hiking
@@ -39,7 +39,7 @@ export interface SocialIntent {
   /** Verbatim. Kept so a member can see what was parsed, and for the audit trail. */
   raw: string;
   /**
-   * A short human label for the thing itself — "Warhammer", "Hiking",
+   * A short human label for the thing itself, "Warhammer", "Hiking",
    * "Helldivers". Names the bunch an Instant Bunch creates.
    */
   topic: string | null;

@@ -9,7 +9,7 @@ import type { StaffViewer } from "@/server/modules/admin/guard";
  * Every staff action writes one of these, and the write happens in the same
  * transaction as the action wherever the action is transactional. Moderation
  * power without a record of who used it is how a platform quietly becomes
- * unaccountable — so this module has no "skip audit" path, and callers cannot
+ * unaccountable, so this module has no "skip audit" path, and callers cannot
  * mutate moderated state without going through a service that records first.
  *
  * The actor is denormalized into `actorLabel` alongside the foreign key so the
@@ -19,7 +19,7 @@ import type { StaffViewer } from "@/server/modules/admin/guard";
 export interface AuditInput {
   actor: StaffViewer;
   action: ModerationAction;
-  /** "SITE" is the platform itself — currently only the public on/off gate. */
+  /** "SITE" is the platform itself, currently only the public on/off gate. */
   targetType:
     | "USER"
     | "PROFILE"

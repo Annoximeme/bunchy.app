@@ -7,7 +7,7 @@ import { Button, LinkButton } from "@/components/ui";
  * Top-level error boundary.
  *
  * Says what happened in plain language and offers the two things that actually
- * help — retry, or go somewhere that works. No stack traces, no error codes
+ * help, retry, or go somewhere that works. No stack traces, no error codes
  * nobody can act on.
  */
 export default function GlobalError({

@@ -65,8 +65,8 @@ export default async function AppLayout({
       {/*
         The same two washes the landing hero opens with, carried into the app so
         the product does not go flat the moment somebody signs in. Kept far
-        weaker than the landing's — that page is a poster and this one is read
-        for an hour at a time — and `fixed` so it stays a property of the room
+        weaker than the landing's, that page is a poster and this one is read
+        for an hour at a time, and `fixed` so it stays a property of the room
         rather than something that scrolls away with the first screen.
       */}
       <div
@@ -102,7 +102,7 @@ export default async function AppLayout({
         {/*
           The only route from inside the product to the pages that explain it.
           Without this, signing in made About, Safety, Volunteer, Privacy and
-          Terms unreachable — they were linked from the landing page footer
+          Terms unreachable, they were linked from the landing page footer
           alone, and a signed-in visitor to the landing page is redirected to
           Discover before they ever see it.
         */}

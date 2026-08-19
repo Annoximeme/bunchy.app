@@ -188,7 +188,7 @@ describe("the opt-out", () => {
     });
 
     // Milan not wanting introductions offered *to him* does not make him
-    // undiscoverable — that is what `discoverable` is for.
+    // undiscoverable, that is what `discoverable` is for.
     expect(await nextIntroduction(viewer.profileId)).not.toBeNull();
   });
 });
@@ -210,7 +210,7 @@ describe("acting on one", () => {
     });
 
     // Pending, not accepted. Bunchy does not introduce two people behind
-    // their backs — it asks on your behalf and the other person decides.
+    // their backs, it asks on your behalf and the other person decides.
     expect(connection.status).toBe("PENDING");
     expect(connection.note).toBe("What army are you painting?");
   });
@@ -241,7 +241,7 @@ describe("acting on one", () => {
 
     await respondToIntroduction(viewer.profileId, other.profileId, "dismiss");
 
-    // Dismissed, but no permanent feedback — they stay in the pool.
+    // Dismissed, but no permanent feedback, they stay in the pool.
     expect(await db.matchFeedback.count()).toBe(0);
     const rec = await db.recommendation.findFirstOrThrow({
       where: { profileId: viewer.profileId, targetId: other.profileId },

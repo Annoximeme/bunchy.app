@@ -1,4 +1,4 @@
-# Bunchy — the whole stack.
+# Bunchy, the whole stack.
 #
 #   docker compose up -d --build
 #
@@ -6,7 +6,7 @@
 # serves, `caddy` terminates TLS. `jobs` is the fifth and runs the hourly work.
 #
 # Nothing here publishes a port except Caddy. Postgres in particular is on the
-# internal network only — a VPS with 5432 open to the internet is found by a
+# internal network only, a VPS with 5432 open to the internet is found by a
 # scanner within hours, and the usual "it's behind a firewall" assumption is
 # how it ends up not being.
 
@@ -15,8 +15,8 @@ name: bunchy
 # Resource ceilings, so no one service can take the machine down with it.
 #
 # One host runs all of this, and until now nothing bounded any of it: a memory
-# spike in the web process — a burst of password hashing, a query that returns
-# more than expected — was free to consume everything, and the first thing the
+# spike in the web process, a burst of password hashing, a query that returns
+# more than expected, was free to consume everything, and the first thing the
 # kernel's OOM killer reaches for is not necessarily the process at fault. It
 # might be Postgres, which is the one process here holding data.
 #
@@ -62,7 +62,7 @@ services:
       # The parts, not the URL. The container's entrypoint assembles
       # DATABASE_URL and percent-encodes each part, so a password containing
       # `/`, `@`, `#` or `?` connects instead of producing `P1013: invalid port
-      # number` — an error that names the port, which was never the problem.
+      # number`, an error that names the port, which was never the problem.
       #
       # Compose cannot encode, which is why this moved out of the compose file
       # rather than being written more carefully in it.
@@ -88,7 +88,7 @@ services:
       context: .
       target: runner
       args:
-        # Baked into the pages at build time — see the Dockerfile for why the
+        # Baked into the pages at build time, see the Dockerfile for why the
         # public origin cannot wait until boot.
         APP_URL: ${APP_URL:?APP_URL is required}
     restart: unless-stopped
@@ -127,7 +127,7 @@ services:
       # and /admin/site are one mechanism rather than two that can disagree.
       - ./docker/flags:/srv/flags
     # Both: `backend` to reach Postgres, `egress` to reach the SMTP provider.
-    # Publishing no ports is what keeps it unreachable from outside — being on
+    # Publishing no ports is what keeps it unreachable from outside, being on
     # a bridge network does not expose it.
     networks: [backend, egress]
 
@@ -183,7 +183,7 @@ services:
       DOMAIN: ${DOMAIN:?DOMAIN is required}
       TLS_EMAIL: ${TLS_EMAIL:?TLS_EMAIL is required}
       # Bypass for the manual gate. Unset means the empty string, which would
-      # make the cookie check match nobody — the gate still works, you just
+      # make the cookie check match nobody, the gate still works, you just
       # cannot get behind it, so it fails closed rather than open.
       PREVIEW_TOKEN: ${PREVIEW_TOKEN:-}
     volumes:
@@ -193,12 +193,12 @@ services:
       # maintenance page that lives inside the container it is meant to cover
       # for is a page nobody can reach at the moment it is needed.
       - ./docker/maintenance.html:/srv/pages/maintenance.html:ro
-      # The manual switches. Read-write is deliberate but unused by Caddy — it
+      # The manual switches. Read-write is deliberate but unused by Caddy, it
       # only ever tests for the files' existence; ./maintenance.sh writes them
       # from the host.
       - ./docker/flags:/srv/flags:ro
       # Certificates and the ACME account key. Losing this volume means
-      # re-issuing on next start, which Let's Encrypt rate-limits — it is the
+      # re-issuing on next start, which Let's Encrypt rate-limits, it is the
       # one volume people forget to back up.
       - caddy-data:/data
       - caddy-config:/config

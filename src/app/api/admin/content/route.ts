@@ -11,7 +11,7 @@ import {
 /**
  * Content actions: bunches, activities and individual messages.
  *
- * One endpoint because they are one job — a moderator working a report acts on
+ * One endpoint because they are one job, a moderator working a report acts on
  * whatever the report points at, and splitting these across three routes would
  * only mean three places to forget the guard.
  */

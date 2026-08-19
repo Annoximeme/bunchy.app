@@ -31,7 +31,7 @@ export interface MetricGroup {
  * The spec is explicit that a single click must not count. So this requires an
  * accepted connection *plus* evidence the two people actually engaged: a
  * conversation both of them spoke in, or an activity they both attended. That
- * is stricter than most engagement metrics and it is the point — it is the one
+ * is stricter than most engagement metrics and it is the point, it is the one
  * number that should be hard to game.
  */
 async function countMeaningfulConnections(): Promise<number> {

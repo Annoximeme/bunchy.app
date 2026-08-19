@@ -12,7 +12,7 @@ import {
 /**
  * Per-type notification settings.
  *
- * Saved the moment a switch moves — a settings screen with a Save button is a
+ * Saved the moment a switch moves, a settings screen with a Save button is a
  * settings screen people abandon half-changed, and the whole point of granular
  * control is that it is actually used.
  *
@@ -62,7 +62,7 @@ export function NotificationPreferences({
         json: { type, inApp: next.inApp, email: next.email },
       });
     } catch (cause) {
-      // Put it back — a switch that looks changed but was not saved is a lie.
+      // Put it back, a switch that looks changed but was not saved is a lie.
       setValues((prev) => new Map(prev).set(type, current));
       setError(errorMessage(cause));
     } finally {

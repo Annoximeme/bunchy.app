@@ -7,7 +7,7 @@ import type { UserRole } from "@/generated/prisma/enums";
  *
  * This is the rule that stops one compromised moderator session from locking
  * out every other staff member, so it is covered exhaustively rather than by
- * example. The table below is the whole permission model — if a cell changes,
+ * example. The table below is the whole permission model, if a cell changes,
  * a test fails.
  */
 

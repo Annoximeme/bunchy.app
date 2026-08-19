@@ -3,7 +3,7 @@ import { ageFrom } from "@/server/modules/profile/serialize";
 
 /**
  * The bug this pins: age was a subtraction of years, which is right after
- * someone's birthday and a year too high before it — so roughly half of all
+ * someone's birthday and a year too high before it, so roughly half of all
  * members saw an age that was not theirs.
  */
 describe("ageFrom", () => {

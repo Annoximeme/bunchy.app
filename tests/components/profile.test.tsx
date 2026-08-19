@@ -8,7 +8,7 @@ import { OverlapSection } from "@/components/profile/overlap";
  * What the profile pieces promise, rather than what they look like.
  *
  * The visual pass is not testable here and should not be faked with a snapshot
- * — a snapshot of markup passes forever and fails on every intentional change,
+ *, a snapshot of markup passes forever and fails on every intentional change,
  * which trains people to accept diffs unread. What is worth pinning is the
  * handful of places where these components make a claim on the product's
  * behalf: the fact line cannot print a stray separator, an empty prompt panel
@@ -32,7 +32,7 @@ const BASE = {
 describe("the identity header", () => {
   it("never prints a separator with nothing on one side of it", () => {
     // The old JSX chained `&&` per fact, so a profile with no age and no
-    // location rendered "@sam · " — invisible in the source, because every
+    // location rendered "@sam · ", invisible in the source, because every
     // line looked right on its own.
     render(<ProfileHero profile={BASE} />);
     expect(screen.getByText("@sam")).toBeInTheDocument();

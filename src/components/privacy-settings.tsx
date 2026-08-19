@@ -27,7 +27,7 @@ const AUDIENCES = [
  *
  * Every switch here does exactly what its label says, immediately. There is no
  * "recommended" nudge next to the private option and no warning that turning
- * something off will make the product worse for you — that framing exists to
+ * something off will make the product worse for you, that framing exists to
  * talk people out of privacy, and we don't use it.
  */
 export function PrivacySettings({ initial }: { initial: PrivacyValues }) {

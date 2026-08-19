@@ -15,7 +15,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
  *
  * The engine deliberately returns a *small* number of strong suggestions rather
  * than an endless ranked list. There is no "load more" here and that is a
- * product decision, not a missing feature — a page that can always show you one
+ * product decision, not a missing feature, a page that can always show you one
  * more person is a feed, and the point of Bunchy is to send you to talk to
  * someone instead.
  */
@@ -89,7 +89,7 @@ export async function recommendPeople(
 
 /**
  * Recommendations are cached so a member sees a stable set through a session
- * rather than a reshuffling list — and so we can measure which suggestions
+ * rather than a reshuffling list, and so we can measure which suggestions
  * actually led to a connection.
  */
 async function persistPersonRecommendations(
@@ -156,7 +156,7 @@ const GOAL_LABELS: Record<string, string> = {
 
 /**
  * Attaches the display fields. Reads only from the already-loaded candidate
- * set plus public profile columns — nothing from the `User` table reaches this
+ * set plus public profile columns, nothing from the `User` table reaches this
  * payload.
  */
 async function decorate(
@@ -181,7 +181,7 @@ async function decorate(
        *
        * Read straight from the role and the subscription row rather than
        * through the supporter module, which this file is forbidden from
-       * importing — a guard test enforces it, because code that decides who you
+       * importing, a guard test enforces it, because code that decides who you
        * meet must not be able to see who paid. These two booleans leave this
        * function as decoration and are never read by anything above.
        */
@@ -256,8 +256,8 @@ export async function recordMatchFeedback(
 /**
  * Take back a "not for me".
  *
- * The exclusion is meant to be instant and permanent — a member will only tell
- * us what they do not want if it is — but permanent applies to the *engine*,
+ * The exclusion is meant to be instant and permanent, a member will only tell
+ * us what they do not want if it is, but permanent applies to the *engine*,
  * not to a mis-tap. The button is small, it sits next to "Connect", and on a
  * phone the two are a thumb apart. Without a way back, the cost of a slip is a
  * person the member never sees again and no way to know it happened.
@@ -270,7 +270,7 @@ export async function recordMatchFeedback(
  * One known skew: the dismissal already emitted RECOMMENDATION_DISMISSED, and
  * an analytics event cannot be retracted. So the quality loop counts an undone
  * dismissal as a dismissal. It over-reports dismissals slightly, which is the
- * safe direction to be wrong in — it makes the engine look worse than it is
+ * safe direction to be wrong in, it makes the engine look worse than it is
  * rather than better.
  */
 export async function undoMatchFeedback(

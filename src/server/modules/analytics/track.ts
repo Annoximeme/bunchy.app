@@ -12,7 +12,7 @@ import type { AnalyticsEventName } from "@/server/modules/analytics/events";
  * chart.
  *
  * The sink is an interface so a queue or warehouse can replace direct inserts
- * without touching a single call site — and so tests can assert on events
+ * without touching a single call site, and so tests can assert on events
  * without a database.
  */
 
@@ -71,7 +71,7 @@ export function setAnalyticsSink(next: AnalyticsSink): void {
 }
 
 /**
- * Records an event. Fire-and-forget by design — callers do not await it and it
+ * Records an event. Fire-and-forget by design, callers do not await it and it
  * cannot reject.
  */
 export function track(event: AnalyticsEvent): void {
@@ -82,7 +82,7 @@ export function track(event: AnalyticsEvent): void {
 }
 
 /**
- * Awaitable variant, for the rare caller that needs the write to have landed —
+ * Awaitable variant, for the rare caller that needs the write to have landed,
  * a test, or a backfill. Still never throws.
  */
 export async function trackAndWait(event: AnalyticsEvent): Promise<void> {

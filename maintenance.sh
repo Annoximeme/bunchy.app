@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bunchy — turn the public site off and on.
+# Bunchy, turn the public site off and on.
 #
 #   ./maintenance.sh soon     hide the site behind "coming soon" (pre-launch)
 #   ./maintenance.sh on       hide the site behind "maintenance"
@@ -8,7 +8,7 @@
 #   ./maintenance.sh link     print the preview link that gets you past the gate
 #
 # The switches are flag files that Caddy tests for on every request, so
-# flipping one takes effect immediately — no restart, no deploy, no downtime.
+# flipping one takes effect immediately, no restart, no deploy, no downtime.
 # Nothing here touches the app or the database; the site keeps running behind
 # the gate, which is what makes the preview link work.
 set -euo pipefail
@@ -36,7 +36,7 @@ preview_link() {
   local t
   t="$(token)"
   if [ -z "$t" ]; then
-    echo "  No PREVIEW_TOKEN in .env — you would lock yourself out too." >&2
+    echo "  No PREVIEW_TOKEN in .env, you would lock yourself out too." >&2
     echo "  Add one:  echo \"PREVIEW_TOKEN=\$(head -c 24 /dev/urandom | base64 | tr -d '/+=')\" >> .env" >&2
     return 1
   fi
@@ -63,18 +63,18 @@ case "${1:-status}" in
     ;;
   off)
     rm -f "$FLAGS/ON" "$FLAGS/SOON"
-    echo "Gate is OFF — the site is public."
+    echo "Gate is OFF, the site is public."
     ;;
   link)
     preview_link
     ;;
   status)
     if [ -f "$FLAGS/SOON" ]; then
-      echo "COMING SOON — the public sees the coming-soon page (503)."
+      echo "COMING SOON, the public sees the coming-soon page (503)."
     elif [ -f "$FLAGS/ON" ]; then
-      echo "MAINTENANCE — the public sees the maintenance page (503)."
+      echo "MAINTENANCE, the public sees the maintenance page (503)."
     else
-      echo "OFF — the site is public."
+      echo "OFF, the site is public."
     fi
     ;;
   *)

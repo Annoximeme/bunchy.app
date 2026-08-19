@@ -9,7 +9,7 @@ import {
 import { findPeople, type FindPeopleResult } from "@/server/modules/discovery/find-people";
 
 /**
- * Bunchy Now — what people are up for, right now.
+ * Bunchy Now, what people are up for, right now.
  *
  * A composition, not a new subsystem. The counts come from the availability
  * clusters that already exist, and the people come from `findPeople`, which
@@ -34,7 +34,7 @@ import { findPeople, type FindPeopleResult } from "@/server/modules/discovery/fi
  *
  * These strings are load-bearing. "someone to do something with" reads as
  * neutral and parses to `goals: [ACTIVITY_PARTNERS]`, which silently filtered
- * the default board down to people who had ticked that one goal — a member
+ * the default board down to people who had ticked that one goal, a member
  * three streets away with a live status simply did not appear, and the only
  * clue was a "try dropping: goals" hint under an empty state.
  *

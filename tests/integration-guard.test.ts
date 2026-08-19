@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
  *
  * This lives in the *unit* suite deliberately. Its whole job is to fire when
  * something goes wrong with how the integration suite is invoked, so it cannot
- * be verified by the integration suite — that one only runs when everything is
+ * be verified by the integration suite, that one only runs when everything is
  * already correct.
  *
  * The history: the unit config's `tests/**` glob once swept the integration

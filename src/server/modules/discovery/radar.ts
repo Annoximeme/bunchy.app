@@ -8,7 +8,7 @@ import {
 } from "@/server/modules/availability/service";
 
 /**
- * Bunch Radar — what is going on around here.
+ * Bunch Radar, what is going on around here.
  *
  * "Radar" is a metaphor that has to be handled carefully, because the obvious
  * implementation of one is a map with dots on it, and this product does not
@@ -18,7 +18,7 @@ import {
  * So this returns *bands*, not positions: "Board games · 3 km away" rather than
  * a pin. Distance is computed from grid centre to grid centre and then rounded
  * outward to a band, which means the number on screen cannot be triangulated
- * back into a location even in principle — three readings from three accounts
+ * back into a location even in principle, three readings from three accounts
  * would still only intersect a cell.
  *
  * The people layer is counts only, and inherits the k-anonymity threshold from
@@ -138,7 +138,7 @@ async function nearbyBunches(
   const where: Prisma.BunchWhereInput = {
     archivedAt: null,
     // Private bunches are invite-only and have no business on a discovery
-    // surface — being findable is the entire difference between the two.
+    // surface, being findable is the entire difference between the two.
     visibility: "PUBLIC",
     // Already in it: the radar is for things you are not part of yet.
     memberships: { none: { profileId, status: "ACTIVE" } },

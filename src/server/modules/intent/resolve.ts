@@ -12,15 +12,15 @@ import type {
  * The parser, wired to the world.
  *
  * Two things happen here that cannot happen in a pure function: the interest
- * catalogue is loaded, and a named place is geocoded. Both read local data — a
- * database table and a built-in gazetteer — so resolving a request costs a
+ * catalogue is loaded, and a named place is geocoded. Both read local data, a
+ * database table and a built-in gazetteer, so resolving a request costs a
  * couple of indexed queries and nothing else. There is no metered call on this
  * path, or on any path.
  *
  * An earlier version asked a hosted model for a second reading when the grammar
  * came up empty. That is gone: it billed per request for a question the grammar
  * answers correctly nearly all the time, and the failure mode it was meant to
- * cover — a sentence with no recognisable interest in it — is now handled by
+ * cover, a sentence with no recognisable interest in it, is now handled by
  * saying so and offering the interest picker, which is both free and clearer.
  */
 
@@ -63,7 +63,7 @@ export async function resolveIntent(
 // --- The catalogue ----------------------------------------------------------
 
 /**
- * Interests change rarely — a member adding a custom one is the only writer —
+ * Interests change rarely, a member adding a custom one is the only writer,
  * so the list is held in process for a few minutes rather than queried on every
  * keystroke. The cost is that a brand-new custom interest is not searchable for
  * up to five minutes, which is a fair trade against a query per parse.

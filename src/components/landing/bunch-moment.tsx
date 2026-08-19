@@ -8,7 +8,7 @@ import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
  *
  * Four states, driven by a click rather than by scroll position. Scroll-driven
  * would play it once, unseen, while somebody was still reading the sentence
- * above it — and this is the one thing on the page worth replaying, so it has a
+ * above it, and this is the one thing on the page worth replaying, so it has a
  * button that says so.
  *
  * The fourth state is the point. Three states stop at "here are some compatible
@@ -77,7 +77,7 @@ export function BunchMoment() {
         {/*
           At rest the stage holds one circle and a lot of dark. This ring is the
           only thing saying the section is waiting for a press rather than
-          broken — it stops the moment anything else starts happening.
+          broken, it stops the moment anything else starts happening.
         */}
         {stage === "alone" && (
           <span

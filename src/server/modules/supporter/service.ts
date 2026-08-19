@@ -5,14 +5,14 @@ import { AppError, validationFailed } from "@/server/errors";
 import type { SupporterStatus } from "@/generated/prisma/enums";
 
 /**
- * Supporters — the tip jar.
+ * Supporters, the tip jar.
  *
  * ## What money may and may not buy
  *
  * Cosmetics, exhaustively: a badge, a ring on an avatar, a choice of app icon.
  * Nothing this module writes is read by the matching engine, by notifications,
  * by rate limits or by moderation, and `supporterCosmetics` is the only thing
- * it exports for the rest of the product to consume — a shape with three
+ * it exports for the rest of the product to consume, a shape with three
  * booleans in it and no way to express an advantage.
  *
  * That constraint is published: /about says a tier that makes the matching
@@ -23,7 +23,7 @@ import type { SupporterStatus } from "@/generated/prisma/enums";
  * ## Where the money goes, in the order promised
  *
  * /about also says that if Bunchy earns money, paying the volunteers who keep
- * it safe is the first thing that money should do — before features, before
+ * it safe is the first thing that money should do, before features, before
  * marketing, before anyone takes a salary. The page built on top of this module
  * lists the three destinations in that order rather than in the order a pitch
  * deck would.
@@ -31,7 +31,7 @@ import type { SupporterStatus } from "@/generated/prisma/enums";
  * ## Off unless fully configured
  *
  * Every entry point checks `supporterEnabled()`. A deploy with a secret key but
- * no webhook secret would take payments whose confirmation never arrives — a
+ * no webhook secret would take payments whose confirmation never arrives, a
  * subscription that exists at Stripe and not here, where the member has paid
  * and the product does not know. All five variables or none.
  */
@@ -121,7 +121,7 @@ export async function supporterCosmetics(
    * to say thank you, and a moderator's cosmetics should not switch off because
    * a Stripe key is missing.
    *
-   * They still get the *staff* mark rather than the supporter one — see
+   * They still get the *staff* mark rather than the supporter one, see
    * `NameMarks`. Complimentary means the perks, not the claim.
    */
   if (user.role !== "MEMBER") {
@@ -176,7 +176,7 @@ async function customerFor(
   const customer = await stripe().customers.create({
     email,
     // The only identifier that leaves here. No display name, no location, no
-    // interests — Stripe is a payment processor and has no reason to hold a
+    // interests, Stripe is a payment processor and has no reason to hold a
     // social graph.
     metadata: { userId },
   });
@@ -194,7 +194,7 @@ async function customerFor(
  * `default_incomplete` is what makes this safe: Stripe creates the subscription
  * in a state that grants nothing until the payment actually succeeds, and the
  * webhook is what flips this side over. Nothing in this function marks anybody
- * a supporter — a code path that did would be one that could be reached by a
+ * a supporter, a code path that did would be one that could be reached by a
  * request that never paid.
  */
 export async function startSubscription(
@@ -334,7 +334,7 @@ export async function applySubscriptionState(subscription: {
     select: { userId: true, status: true },
   });
   // A customer we have never seen is not an error worth failing the webhook
-  // over — Stripe would retry it forever. Logged and acknowledged.
+  // over, Stripe would retry it forever. Logged and acknowledged.
   if (!row) {
     console.warn(
       `stripe webhook: no supporter row for customer ${subscription.customer}`,

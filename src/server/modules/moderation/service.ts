@@ -10,7 +10,7 @@ import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
  *
  * A block is symmetric in effect: neither person sees the other in Discover,
  * neither can message or invite the other, and existing conversations go
- * read-only. It is enforced here, in the service layer, rather than in the UI —
+ * read-only. It is enforced here, in the service layer, rather than in the UI,
  * every other module calls `assertNotBlocked` before it acts, so there is no
  * route that can accidentally route around it.
  */
@@ -118,7 +118,7 @@ export interface ReportInput {
  * Files a report for human review.
  *
  * Reports are never auto-actioned. Automatic enforcement on an unreviewed
- * report is a harassment vector — a coordinated group could mute anyone — so
+ * report is a harassment vector, a coordinated group could mute anyone, so
  * this records the case and, for profile reports, applies the one remedy that
  * is safe and immediate: the reporter stops seeing the reported member.
  */
@@ -134,7 +134,7 @@ export async function fileReport(
   );
 
   // A report about something that does not exist is a client mistake, not a
-  // server fault — without this the insert fails a foreign key and surfaces
+  // server fault, without this the insert fails a foreign key and surfaces
   // as a 500.
   if (input.targetType === "PROFILE" && reportedProfileId === null) {
     throw notFound("We couldn't find who you're reporting.");

@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Join" };
  * Sign-up, optionally carrying an intent from the landing page.
  *
  * "What are you up for?" submits `want`, `where` and `when` here. Showing them
- * back is what makes that form a real step rather than a decorated link — the
+ * back is what makes that form a real step rather than a decorated link, the
  * choice visibly survives the click.
  *
  * The labels come from `resolveIntent`, which looks each value up in a fixed

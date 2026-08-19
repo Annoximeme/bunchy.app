@@ -128,7 +128,7 @@ export async function decideApplication(
 
   // Deliberately does not grant the role. Accepting an application is a
   // decision to talk to somebody; making them staff is `npm run role`, which
-  // needs database access — the same bar as the first admin, and the same
+  // needs database access, the same bar as the first admin, and the same
   // reason. A queue that can promote people is a queue worth compromising.
 }
 

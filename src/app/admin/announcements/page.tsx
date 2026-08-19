@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
  * Admin-only, and for the same reason the site gate is: a moderator recruited
  * to work the report queue has no business interrupting the whole membership.
  *
- * This page is the operator's half of two promises made in the policies —
+ * This page is the operator's half of two promises made in the policies,
  * Privacy §14 and Terms §14 both say a member is told in the product before a
  * change takes effect. The composer is shaped by that: the effective date is a
  * field rather than a sentence somebody remembers to write, and the tier is

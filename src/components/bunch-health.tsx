@@ -5,7 +5,7 @@ import { Card, cn } from "@/components/ui";
  *
  * An earlier version of this component showed the observations and deliberately
  * hid the number, on the grounds that scoring a group's friendships invites
- * people to perform for it. §7 asks for the number, so it is here — but the
+ * people to perform for it. §7 asks for the number, so it is here, but the
  * shape of what surrounds it is doing the work that argument was worried about:
  *
  * - **The observations come first and are the point.** The score is a small

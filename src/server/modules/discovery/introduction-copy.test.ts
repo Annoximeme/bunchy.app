@@ -9,7 +9,7 @@ import type { PersonMatch, SignalResult } from "@/server/modules/matching/types"
  * An introduction is the most load-bearing sentence in the product: it is
  * Bunchy telling one member something about another, unprompted. §5 forbids
  * fabricating compatibility and §23 forbids leaking anything private, and both
- * are enforced here by the copy having no vocabulary of its own — it can only
+ * are enforced here by the copy having no vocabulary of its own, it can only
  * repeat evidence a signal actually produced.
  *
  * These tests are mostly attempts to make it lie.
@@ -143,7 +143,7 @@ describe("what it refuses to say", () => {
 
   it("carries nothing but interests and goals", () => {
     // Age, location detail and anything behind a privacy switch are not
-    // available to this function at all — it is given a match, not a profile.
+    // available to this function at all, it is given a match, not a profile.
     const copy = composeIntroduction("Sarah", "Milan", match({
       signals: [
         signal("shared_interests", 0.9, ["Gaming"]),

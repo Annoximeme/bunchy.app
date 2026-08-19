@@ -120,7 +120,7 @@ export default async function ActivityPage({
             {/*
               A plain link, not a button: it is a file download, and the browser
               already knows how to do that. Offered to everyone who can see the
-              activity rather than only to people who joined — deciding whether
+              activity rather than only to people who joined, deciding whether
               an evening fits often means putting it next to the rest of the
               week first.
             */}
