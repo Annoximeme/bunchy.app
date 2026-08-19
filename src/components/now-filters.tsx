@@ -81,7 +81,7 @@ export function NowFilters({
                 : "border border-line text-muted hover:bg-surface-sunken",
             )}
           >
-            {score}%+
+            {score === 85 ? "Strong fit" : "Good fit"}
           </Link>
         ))}
       </div>

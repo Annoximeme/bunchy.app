@@ -267,8 +267,7 @@ export function DoSomething() {
                     href={`/u/${person.username}`}
                     className="rounded-full border border-line px-3.5 py-2 text-sm transition-colors hover:bg-surface-sunken"
                   >
-                    {person.displayName}{" "}
-                    <span className="text-muted">{person.score}%</span>
+                    {person.displayName}
                   </Link>
                 ))}
               </div>

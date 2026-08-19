@@ -178,9 +178,6 @@ function Answer({ reply }: { reply: Reply }) {
                 {person.availability && (
                   <Chip tone="positive">{person.availability.label}</Chip>
                 )}
-                <span className="text-sm font-medium tabular-nums text-accent-ink">
-                  {person.score}%
-                </span>
               </Link>
             </li>
           ))}
@@ -200,9 +197,6 @@ function Answer({ reply }: { reply: Reply }) {
                   <span className="block text-xs text-muted">
                     {bunch.memberCount} {bunch.memberCount === 1 ? "member" : "members"}
                   </span>
-                </span>
-                <span className="text-sm font-medium tabular-nums text-accent-ink">
-                  {bunch.score}%
                 </span>
               </Link>
             </li>

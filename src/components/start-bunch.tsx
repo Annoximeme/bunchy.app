@@ -481,9 +481,6 @@ function Candidate({
             >
               {person.displayName}
             </Link>
-            <span className="text-sm font-medium tabular-nums text-accent-ink">
-              {person.score}% match
-            </span>
           </div>
           {meta && <p className="text-sm text-muted">{meta}</p>}
 

@@ -142,12 +142,9 @@ export function SurpriseMe() {
                   .join(" · ")}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-semibold tabular-nums text-purple-ink">
-                {match!.score}%
-              </p>
-              <p className="text-xs text-muted">unexpected compatibility</p>
-            </div>
+            <p className="shrink-0 text-xs font-medium uppercase tracking-wider text-purple-ink">
+              Unexpected
+            </p>
           </div>
 
           {person.bio && (

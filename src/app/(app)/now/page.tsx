@@ -246,9 +246,6 @@ function NowPerson({
           >
             {person.displayName}
           </Link>
-          <span className="text-sm font-semibold text-accent-ink tabular-nums">
-            {person.score}%
-          </span>
         </div>
 
         <p className="text-sm text-muted">

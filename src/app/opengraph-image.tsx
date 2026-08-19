@@ -219,7 +219,7 @@ export default function OpengraphImage() {
               fontWeight: 600,
             }}
           >
-            93% match
+            Both free Thursday
           </div>
         </div>
 
