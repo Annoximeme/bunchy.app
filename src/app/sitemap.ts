@@ -20,6 +20,9 @@ const PUBLIC_PATHS = [
   { path: "/moderators", changeFrequency: "monthly" as const, priority: 0.4 },
   { path: "/privacy", changeFrequency: "yearly" as const, priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly" as const, priority: 0.3 },
+  // Changes more often than the documents it tracks, which is the whole reason
+  // it exists as a separate page.
+  { path: "/changelog", changeFrequency: "monthly" as const, priority: 0.3 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

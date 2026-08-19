@@ -1,6 +1,7 @@
 import { runScheduledNotifications } from "@/server/modules/notifications/scheduled";
 import { purgeExpiredAvailability } from "@/server/modules/availability/service";
 import { recomputeAllChemistry } from "@/server/modules/bunches/health";
+import { deliverAnnouncementEmails } from "@/server/modules/announcements/delivery";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -23,13 +24,20 @@ async function main() {
   // Precomputed here rather than per render: a full reading scores every pair
   // in the bunch, which is 78ms of work against 4ms for the page itself.
   const chemistry = await recomputeAllChemistry();
+  // Notice of a change to somebody's rights or data, to the address we have,
+  // because a banner only reaches a member who happens to sign in. Resumable
+  // and idempotent: it selects members with no delivery row, so an hourly pass
+  // that overlaps or crashes sends nothing twice.
+  const announcements = await deliverAnnouncementEmails();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
       `follow-ups: ${result.activityFollowUps}, ` +
       `bunch recommendations: ${result.bunchRecommendations}, ` +
       `expired statuses purged: ${purged}, ` +
-      `bunches scored: ${chemistry.scored} ` +
+      `bunches scored: ${chemistry.scored}, ` +
+      `announcement notices: ${announcements.notices}, ` +
+      `announcement reminders: ${announcements.reminders} ` +
       `(${Date.now() - started}ms)`,
   );
 }

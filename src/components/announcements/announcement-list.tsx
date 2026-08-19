@@ -50,6 +50,54 @@ function formatDate(value: Date) {
   });
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * How many calendar days until a change lands.
+ *
+ * Both dates are flattened to local midnight before subtracting, so the answer
+ * counts sleeps rather than hours. A change effective tomorrow at 09:00 reads
+ * "tomorrow" whether it is looked at over breakfast or at half past eleven at
+ * night; subtracting the raw timestamps would call the second one "today".
+ *
+ * `Math.round` on the result rather than a plain division: across a daylight
+ * saving boundary two local midnights are 23 or 25 hours apart, which divides
+ * to 0.96 of a day and would truncate a real day away.
+ */
+function daysUntil(date: Date, now: Date): number {
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  ).getTime();
+  const startOfThen = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+  return Math.round((startOfThen - startOfToday) / DAY_MS);
+}
+
+/**
+ * The sentence a member actually wants: how long they have.
+ *
+ * A date on its own makes the reader do arithmetic to answer the only question
+ * they came with, which is whether this has already happened to them. Terms §14
+ * promises "a fair chance to leave with your data if you disagree", and a fair
+ * chance is one you can tell you still have.
+ */
+export function effectiveNotice(
+  effectiveAt: Date,
+  now: Date,
+): { text: string; pending: boolean } {
+  const days = daysUntil(effectiveAt, now);
+
+  if (days < 0) return { text: `Took effect ${formatDate(effectiveAt)}`, pending: false };
+  if (days === 0) return { text: "Takes effect today", pending: true };
+  if (days === 1) return { text: "Takes effect tomorrow", pending: true };
+  return { text: `Takes effect in ${days} days`, pending: true };
+}
+
 export function TierChip({ tier }: { tier: AnnouncementTier }) {
   const meta = TIER[tier];
   const Icon = meta.icon;
@@ -73,22 +121,33 @@ export function TierChip({ tier }: { tier: AnnouncementTier }) {
 export function WhenLine({
   publishedAt,
   effectiveAt,
+  now = new Date(),
 }: {
   publishedAt: Date;
   effectiveAt: Date | null;
+  now?: Date;
 }) {
+  const effective = effectiveAt ? effectiveNotice(effectiveAt, now) : null;
+
   return (
     <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
       <time dateTime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
-      {effectiveAt && (
+      {effectiveAt && effective && (
         <>
           <span aria-hidden>·</span>
-          <span>
-            Takes effect{" "}
-            <time dateTime={effectiveAt.toISOString()} className="font-medium">
-              {formatDate(effectiveAt)}
-            </time>
-          </span>
+          <time
+            dateTime={effectiveAt.toISOString()}
+            // A change still ahead is the one thing on this line worth acting
+            // on, so it is the one thing that is not grey.
+            className={
+              effective.pending
+                ? "font-semibold text-accent-ink"
+                : "font-medium"
+            }
+            title={formatDate(effectiveAt)}
+          >
+            {effective.text}
+          </time>
         </>
       )}
     </span>

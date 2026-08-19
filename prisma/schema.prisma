@@ -320,7 +320,8 @@ model Profile {
   matchFeedbackGiven      MatchFeedback[]       @relation("FeedbackAuthor")
   matchFeedbackReceived   MatchFeedback[]       @relation("FeedbackSubject")
   analyticsEvents         AnalyticsEvent[]
-  announcementReads AnnouncementRead[]
+  announcementReads  AnnouncementRead[]
+  announcementEmails AnnouncementEmail[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -1462,18 +1463,32 @@ model Announcement {
   linkHref  String?
   linkLabel String?
 
+  /// Null while it is a draft. A date in the future is a scheduled publish:
+  /// every read filters on `publishedAt <= now`, so the row can sit here fully
+  /// written and invisible until its moment.
   publishedAt DateTime?
   /// When the change takes effect. Never earlier than `publishedAt`, which is
   /// the whole point of telling people first.
   effectiveAt DateTime?
 
+  /// Whether this belongs on the signed-out changelog.
+  ///
+  /// A policy change is exactly the thing somebody deciding whether to join
+  /// should be able to read before they join, so the default is true. An
+  /// announcement about the inside of the product — a bunch feature, a
+  /// scheduled outage that only affects people already here — is held back by
+  /// turning this off, and stays on the member-facing record either way.
+  publicVisible Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  reads AnnouncementRead[]
+  reads  AnnouncementRead[]
+  emails AnnouncementEmail[]
 
   @@index([publishedAt])
   @@index([tier, publishedAt])
+  @@index([publicVisible, publishedAt])
 }
 
 /// Who has seen it. Dismissing a banner is the same act as reading it.
@@ -1487,6 +1502,38 @@ model AnnouncementRead {
 
   @@id([announcementId, profileId])
   @@index([profileId])
+}
+
+/// Which announcement email has already gone to whom.
+///
+/// Written *after* a successful send, one row per recipient, so the delivery
+/// job is resumable: it selects the members with no row and picks up exactly
+/// where a crash or a timeout left it. That is also why the primary key is the
+/// three parts together — the same announcement legitimately sends twice, once
+/// as notice and once as a reminder before the effective date, and those must
+/// not collide.
+///
+/// Never deleted. "Were we told?" is a question a member is entitled to ask
+/// about a change to their rights, and this is the only row that answers it.
+model AnnouncementEmail {
+  announcementId String
+  profileId      String
+  kind           AnnouncementEmailKind
+  sentAt         DateTime              @default(now())
+
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  profile      Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([announcementId, profileId, kind])
+  @@index([profileId])
+}
+
+/// The two moments an announcement is allowed to reach somebody's inbox.
+enum AnnouncementEmailKind {
+  /// When it is published. The notice itself.
+  NOTICE
+  /// Shortly before `effectiveAt`, for a change that has not landed yet.
+  REMINDER
 }
 
 /// Where a supporter's subscription is, as Stripe last told us.
