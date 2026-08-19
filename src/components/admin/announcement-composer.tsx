@@ -191,9 +191,9 @@ export function AnnouncementComposer({
             onChange={(e) => setTier(e.target.value)}
             className="mt-1.5 w-full rounded-[var(--radius-control)] border border-line bg-surface px-3 py-2 text-sm"
           >
-            <option value="NOTED">Noted — archive only</option>
-            <option value="NOTABLE">New — findable, no push</option>
-            <option value="CRITICAL">Important — banner and email</option>
+            <option value="NOTED">Noted: archive only</option>
+            <option value="NOTABLE">New: findable, no push</option>
+            <option value="CRITICAL">Important: banner and email</option>
           </select>
         </label>
         <Field label="Link" value={linkHref} onChange={setLinkHref} hint="e.g. /privacy" />

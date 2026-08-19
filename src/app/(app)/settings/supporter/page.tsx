@@ -36,7 +36,7 @@ export default async function SupporterSettingsPage() {
                   : support.status === "ACTIVE"
                     ? "Active"
                     : support.status === "PAST_DUE"
-                      ? "Payment failed — Stripe is retrying"
+                      ? "Payment failed, Stripe is retrying"
                       : "Ended"}
               </dd>
             </div>
@@ -51,7 +51,7 @@ export default async function SupporterSettingsPage() {
                       month: "long",
                       year: "numeric",
                     })
-                  : "—"}
+                  : "Not set"}
               </dd>
             </div>
           </dl>
@@ -71,7 +71,7 @@ export default async function SupporterSettingsPage() {
         <section className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-7">
           <p className="font-semibold">You are not supporting Bunchy.</p>
           <p className="mt-2 max-w-[60ch] leading-relaxed text-ink-soft">
-            Which is completely fine — the whole app works the same either way.
+            Which is completely fine. The whole app works the same either way.
           </p>
           <div className="mt-6">
             <LinkButton href="/supporter">Read the pitch</LinkButton>

@@ -12,7 +12,7 @@ import {
 import { loadMatchProfile } from "@/server/modules/matching/repository";
 
 /**
- * Bunchy AI — the concierge.
+ * Ask Bunchy: the concierge.
  *
  * **It cannot write anything.** Not "it is careful about writing", not "it asks
  * first" — there is no code path from here to a mutation. Every next step it

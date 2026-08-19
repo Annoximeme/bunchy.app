@@ -72,7 +72,7 @@ export default async function AdminAnnouncementsPage({
               [
                 "Important",
                 "CRITICAL",
-                "A banner on every page until dismissed, and one email to every member with a verified address. Rights, data, or whether the site is up — nothing else.",
+                "A banner on every page until dismissed, and one email to every member with a verified address. Rights, data, or whether the site is up, and nothing else.",
               ],
               [
                 "New",

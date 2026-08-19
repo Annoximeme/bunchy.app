@@ -200,7 +200,7 @@ export function JoinRequestList({
 }
 
 /**
- * Bunchy AI, on request only.
+ * Ask Bunchy, on request only.
  *
  * Both buttons are things a member chooses to press. Nothing here runs on a
  * timer or arrives unasked, which is the whole difference between an assistant
@@ -242,7 +242,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
           aria-hidden
           className="inline-block size-2 shrink-0 rounded-full bg-purple"
         />
-        Bunchy AI
+        Ask Bunchy
       </h2>
       <p className="mt-1 text-sm text-muted">
         Ask for a catch-up, or an idea for something to do.

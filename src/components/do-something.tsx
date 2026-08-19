@@ -231,7 +231,7 @@ export function DoSomething() {
                     <div className="flex flex-wrap items-center gap-1.5">
                       <Chip tone="teal">{COST_LABELS[idea.cost]}</Chip>
                       <Chip>{idea.hours}h</Chip>
-                      {idea.mode === "ONLINE" && <Chip tone="ai">Online</Chip>}
+                      {idea.mode === "ONLINE" && <Chip tone="suggested">Online</Chip>}
                     </div>
                     <h3 className="mt-3 font-semibold tracking-tight">
                       {idea.title}

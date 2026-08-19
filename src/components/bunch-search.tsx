@@ -29,7 +29,7 @@ export function BunchSearch({ initialQuery }: { initialQuery: string }) {
         id="bunch-search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Board games, hiking, AI…"
+        placeholder="Board games, hiking, film…"
         className="flex-1"
       />
       <Button type="submit" variant="secondary">

@@ -8,7 +8,7 @@ import { assistant } from "@/server/modules/ai";
 const schema = z.object({ task: z.enum(["summary", "activity_idea"]) });
 
 /**
- * Bunchy AI, scoped to one bunch.
+ * Ask Bunchy, scoped to one bunch.
  *
  * Both tasks are pull-only: a member asks, and gets an answer about their own
  * bunch. Nothing here runs on a schedule or arrives unrequested.

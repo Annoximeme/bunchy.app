@@ -197,11 +197,11 @@ export default function PrivacyPage() {
           have no reason to trust.
         </p>
         <p>
-          Today this runs as a deterministic algorithm on our own servers, and
-          nothing you write is sent to an external AI provider. If that changes,
-          for example if a language model starts generating conversation
-          starters remotely. We will say so here before it does, and name the
-          provider.
+          All of it runs on our own servers, as ordinary code we wrote and can
+          read. Nothing you write is sent to anybody else to be processed, and
+          no outside service is involved in deciding who you are shown. If that
+          ever changes we will say so on this page before it does, and name the
+          company.
         </p>
         <p>
           None of this produces a decision with legal or similarly significant

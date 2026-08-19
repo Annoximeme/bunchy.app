@@ -3,7 +3,7 @@ import { requireViewer } from "@/server/auth/current-user";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { Assistant } from "@/components/assistant";
 
-export const metadata: Metadata = { title: "Bunchy AI" };
+export const metadata: Metadata = { title: "Ask Bunchy" };
 
 /**
  * The concierge.
@@ -23,7 +23,7 @@ export default async function AssistantPage({
     <PageShell>
       <div className="mx-auto max-w-3xl">
         <PageHeader
-          title="Bunchy AI"
+          title="Ask Bunchy"
           subtitle="Ask about people, bunches, activities or your own recommendations."
         />
         <Assistant initialQuery={q?.slice(0, 280) ?? ""} />

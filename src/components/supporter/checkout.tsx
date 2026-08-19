@@ -140,7 +140,7 @@ export function SupporterCheckout({
         know how they stop.
       */}
       <p className="mt-3 text-center text-xs leading-relaxed text-muted">
-        Secure processing by Stripe — your card details never touch Bunchy&rsquo;s
+        Secure processing by Stripe. Your card details never touch Bunchy&rsquo;s
         servers. Cancel in one click from your settings, any time, with nothing
         to email and nobody to ask.
       </p>

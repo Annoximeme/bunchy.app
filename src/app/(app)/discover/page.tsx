@@ -213,7 +213,7 @@ export default async function DiscoverPage() {
             <section id="people" className="scroll-mt-20">
               <SectionHeading
                 eyebrow="Matched for you"
-                eyebrowTone="ai"
+                eyebrowTone="suggested"
                 title="People you might connect with"
                 subtitle="Ranked on interests, goals, availability and how you like to spend time."
               />

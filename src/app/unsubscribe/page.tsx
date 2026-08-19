@@ -64,7 +64,7 @@ function Confirm({
       </h1>
       <p className="mt-3 text-muted">
         {target === "waitlist"
-          ? `You're on the ${brand.name} waiting list. Unsubscribing removes your address from it — we won't have it any more, and you won't hear from us when it opens.`
+          ? `You're on the ${brand.name} waiting list. Unsubscribing removes your address from it. We won't have it any more, and you won't hear from us when it opens.`
           : `This turns off every notification email. You'll still see notifications inside ${brand.name} when you're there, and you can turn any of them back on in your settings.`}
       </p>
 
@@ -92,7 +92,7 @@ function Done({ kind }: { kind: string }) {
       <p className="mt-3 text-muted">
         {kind === "waitlist"
           ? "Your address is off the waiting list. There's nothing left to unsubscribe from."
-          : `No more notification emails. Your ${brand.name} account and everything in it is untouched — turn any of them back on in your settings whenever you like.`}
+          : `No more notification emails. Your ${brand.name} account and everything in it is untouched. Turn any of them back on in your settings whenever you like.`}
       </p>
       <p className="mt-6 text-sm text-muted">
         Sorry to have bothered you. {brand.tagline}

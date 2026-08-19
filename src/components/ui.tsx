@@ -125,14 +125,14 @@ export function SectionHeading({
   action,
 }: {
   eyebrow?: string;
-  eyebrowTone?: "accent" | "ai" | "positive" | "teal";
+  eyebrowTone?: "accent" | "suggested" | "positive" | "teal";
   title: string;
   subtitle?: string;
   action?: ReactNode;
 }) {
   const tones = {
     accent: "text-accent-ink",
-    ai: "text-purple-ink",
+    suggested: "text-purple-ink",
     positive: "text-positive",
     teal: "text-teal",
   } as const;
@@ -166,16 +166,17 @@ export function Chip({
   className,
 }: {
   children: ReactNode;
-  tone?: "neutral" | "accent" | "teal" | "positive" | "ai";
+  tone?: "neutral" | "accent" | "teal" | "positive" | "suggested";
   className?: string;
 }) {
   /**
-   * Each tone is a meaning, not a colour choice at the call site: `ai` marks
-   * something the system inferred, `positive`/`teal` a state that went well.
+   * Each tone is a meaning, not a colour choice at the call site: `suggested`
+   * marks something the software worked out rather than something a person
+   * wrote, `positive`/`teal` a state that went well.
    * Picking a chip colour because it looks nice next to the one above it is how
    * a palette stops meaning anything.
    *
-   * Yellow has no chip because it has no chip-shaped job yet — it marks
+   * Yellow has no chip because it has no chip-shaped job yet. It marks
    * activities as the date on an activity card. When something genuinely needs
    * a yellow chip it is `bg-yellow-soft text-yellow-ink`; adding the tone
    * before there is a caller would just be unused API.
@@ -185,7 +186,7 @@ export function Chip({
     accent: "bg-accent-soft text-accent-ink",
     teal: "bg-teal-soft text-teal",
     positive: "bg-positive-soft text-positive",
-    ai: "bg-purple-soft text-purple-ink",
+    suggested: "bg-purple-soft text-purple-ink",
   } as const;
 
   return (

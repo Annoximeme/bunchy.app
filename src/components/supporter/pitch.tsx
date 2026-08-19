@@ -38,7 +38,7 @@ const DESTINATIONS = [
   {
     icon: ShieldCheck,
     title: "Paying the moderators",
-    body: "The volunteers who read the report queue and keep this place safe. The About page promises they are paid first — before features, before marketing, before anyone takes a salary out of it — so that is the order this list is in.",
+    body: "The volunteers who read the report queue and keep this place safe. The About page promises they are paid first, before features, before marketing, before anyone takes a salary out of it, so that is the order this list is in.",
   },
   {
     icon: Server,
@@ -157,7 +157,7 @@ export function SupporterPitch({
         </h2>
         <p className="mt-3 max-w-[62ch] leading-relaxed text-ink-soft">
           <strong className="text-ink">You are not buying better matching, more
-          messages, or anything at all that changes who you meet</strong> — the
+          messages, or anything at all that changes who you meet</strong>. The
           whole app is free for everybody and stays that way. The code enforces
           it: the parts of Bunchy that decide anything are forbidden from even
           importing the module that knows who paid.
@@ -167,7 +167,7 @@ export function SupporterPitch({
           <article className="rounded-[var(--radius-card)] border border-line bg-surface p-7">
             <h3 className="font-bold tracking-tight">A ring, and a small mark</h3>
             <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-              The mark is the Bunchy cluster rather than a tick, on purpose — a
+              The mark is the Bunchy cluster rather than a tick, on purpose. A
               verified badge would sort members into two kinds of people, which
               is the opposite of what the money is for.
             </p>
@@ -224,9 +224,9 @@ export function SupporterPitch({
           <StaffMark size={18} />
           <p className="min-w-0 flex-1 text-[15px] leading-relaxed text-ink-soft">
             <strong className="text-ink">Staff carry a shield, not this mark.</strong>{" "}
-            Moderators and the operator get the cosmetics complimentary — they
-            work the report queue for nothing — but their badge is a different
-            shape on purpose, because &ldquo;this person chipped in&rdquo; and
+            Moderators and the operator get the cosmetics complimentary,
+            because they work the report queue for nothing, but their badge is a
+            different shape on purpose, because &ldquo;this person chipped in&rdquo; and
             &ldquo;this person can suspend your account&rdquo; are not the same
             claim. Neither can be typed into a display name.
           </p>
@@ -279,7 +279,7 @@ export function SupporterPitch({
             <div className="rounded-[var(--radius-control)] border border-line bg-surface-sunken p-5 text-center">
               <p className="font-semibold">Not open yet.</p>
               <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-soft">
-                The tip jar is built but not switched on — Bunchy has not
+                The tip jar is built but not switched on. Bunchy has not
                 launched, and taking money before that would be taking it for
                 something nobody is using yet.
               </p>

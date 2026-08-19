@@ -1,5 +1,5 @@
 /**
- * Bunchy AI — the assistant contract.
+ * Ask Bunchy: the assistant contract.
  *
  * **Nothing behind this interface costs money.** The one implementation is
  * `BunchyAssistant`, which is deterministic: templates, lexicons and the

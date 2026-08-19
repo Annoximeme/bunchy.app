@@ -126,7 +126,7 @@ export function AppNav({
           <li>
             <NavLink
               href="/assistant"
-              label="Bunchy AI"
+              label="Ask Bunchy"
               icon={SparkIcon}
               active={isActive("/assistant")}
               badge={0}

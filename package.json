@@ -2,7 +2,7 @@
   "name": "bunchy",
   "version": "0.1.0",
   "private": true,
-  "description": "Bunchy — find your people. An AI-assisted social discovery platform for real friendships, small circles and offline activities.",
+  "description": "Bunchy. Find your people: a social discovery platform for real friendships, small circles and offline activities.",
   "engines": {
     "node": ">=22"
   },

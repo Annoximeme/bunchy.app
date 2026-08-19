@@ -215,7 +215,7 @@ export default async function PublicProfilePage({
                 <ul className="mt-3 flex flex-wrap gap-1.5">
                   {profile.traits.map((trait) => (
                     <li key={trait}>
-                      <Chip tone="ai">{trait}</Chip>
+                      <Chip tone="suggested">{trait}</Chip>
                     </li>
                   ))}
                 </ul>

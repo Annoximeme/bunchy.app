@@ -2,7 +2,7 @@
 
 **Find your people.**
 
-Bunchy is an AI-assisted social discovery platform for making real friendships,
+Bunchy is a social discovery platform for making real friendships,
 joining small bunches, and actually doing things together — online, in
 person, or both.
 
