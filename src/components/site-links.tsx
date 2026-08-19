@@ -31,6 +31,10 @@ export const SITE_LINKS: readonly SiteLink[] = [
   { href: "/moderators", label: "Volunteer" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
+  // Next to the two documents it is the history of, which is the only place it
+  // makes sense: on its own it reads as a product changelog, and beside them it
+  // reads as what it is, the record of how those two have changed.
+  { href: "/changelog", label: "Changelog" },
 ] as const;
 
 /**

@@ -154,3 +154,63 @@ export function waitlistLaunchEmail(
     footnote: `You are getting this because you asked to be told when ${brand.name} opened.`,
   }, unsubscribe);
 }
+
+/**
+ * The operator changed something that affects you.
+ *
+ * The email half of Privacy §14 and Terms §14. Both promise a member is told
+ * before a change takes effect, and until this existed that promise was kept
+ * only inside the product: somebody who did not sign in during the notice
+ * window was never told at all, which is the case the promise was written for.
+ *
+ * ## Why there is no unsubscribe link
+ *
+ * Deliberate, and the same reasoning `EmailMessage.unsubscribeUrl` already
+ * gives for verification and password-reset mail: this is not a subscription,
+ * so there is nothing to unsubscribe from. Only the CRITICAL tier reaches this
+ * template, and CRITICAL is reserved for rights, data and availability. An
+ * opt-out of being told that the terms governing your account are changing
+ * would not be a preference, it would be the product quietly withdrawing the
+ * commitment it made in order to get you to sign up.
+ *
+ * That is a narrow exemption and it stays narrow because the tier does. The
+ * moment a second tier is allowed to mail, the reasoning above stops holding
+ * and this template needs an `unsubscribe` argument like every other bulk
+ * message. `DELIVERY` is the enforcement, and there is a test asserting that
+ * exactly one tier may mail.
+ *
+ * The body is carried in full rather than teased with a link. A notice that
+ * requires signing in to read is a notice that has not been given, and the
+ * people most likely to be affected by a data change are the least likely to
+ * be signed in.
+ */
+export function announcementEmail(input: {
+  title: string;
+  /** The body, already flattened to paragraph-sized strings. */
+  paragraphs: string[];
+  /** Absolute URL of the announcement in the product. */
+  link: string;
+  /** When the change takes effect, if it has not already. */
+  effectiveAt?: Date | null;
+  /** Absolute URL of the archive, where every notice is kept. */
+  archiveUrl: string;
+}): Body {
+  const effective = input.effectiveAt
+    ? `This takes effect on ${input.effectiveAt.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}.`
+    : null;
+
+  return message(input.title, {
+    preheader: effective ?? "A change to your account, before it takes effect.",
+    heading: input.title,
+    body: [...(effective ? [effective] : []), ...input.paragraphs],
+    action: { label: "Read it in full", href: input.link },
+    fine: [
+      `If the button does not work, paste this into your browser: ${input.link}`,
+    ],
+    footnote: `You are getting this because ${brand.name} said it would tell you before changing anything that affects your rights or your data. It is not a newsletter and there is nothing to unsubscribe from. Every notice is kept at ${input.archiveUrl}`,
+  });
+}
