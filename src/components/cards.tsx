@@ -6,13 +6,7 @@ import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { activityWhen } from "@/lib/format";
 import { NameMarks, SupporterRing } from "@/components/supporter/marks";
-import {
-  Avatar,
-  Button,
-  Chip,
-  CompatibilityBadge,
-  cn,
-} from "@/components/ui";
+import { Avatar, Button, Chip, cn } from "@/components/ui";
 
 /**
  * The three cards Discover is built from.
@@ -125,6 +119,7 @@ export function PersonCard({ person }: { person: PersonCardData }) {
   }
 
   const meta = [person.age, person.locationLabel].filter(Boolean).join(" · ");
+  const [lead, ...rest] = person.highlights;
 
   return (
     <article className="card-surface flex flex-col p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]">
@@ -158,7 +153,6 @@ export function PersonCard({ person }: { person: PersonCardData }) {
               </span>
               {meta && <p className="truncate text-sm text-muted">{meta}</p>}
             </div>
-            <CompatibilityBadge score={person.score} />
           </div>
 
           {person.sharedInterests.length > 0 && (
@@ -171,11 +165,31 @@ export function PersonCard({ person }: { person: PersonCardData }) {
         </div>
       </div>
 
-      {person.highlights.length > 0 && (
-        <ul className="mt-4 space-y-1.5 border-t border-line pt-4">
-          {person.highlights.map((highlight) => (
+      {/*
+        The reason, where the percentage used to be.
+
+        A number stamped on a person did three things and all of them worked
+        against the product: it quantified people, on a page whose own About
+        text spends six paragraphs refusing to; it invited comparison shopping,
+        so the lowest card on the grid was never read; and it implied a
+        precision the scorer does not have, because the gap between 74 and 77
+        is noise wearing a decimal point.
+
+        The reasons were always the honest part and they were always already
+        written. The strongest one leads the card now, at a size that says it
+        is the point, and the rest follow underneath.
+      */}
+      {lead && (
+        <p className="mt-4 border-t border-line pt-4 font-medium leading-snug text-ink">
+          {lead}
+        </p>
+      )}
+
+      {rest.length > 0 && (
+        <ul className={`space-y-1.5 ${lead ? "mt-2.5" : "mt-4 border-t border-line pt-4"}`}>
+          {rest.map((highlight) => (
             /* Purple, because these lines are the one thing on the card the
-               system inferred rather than the member wrote. */
+               system worked out rather than the member wrote. */
             <li key={highlight} className="flex gap-2 text-sm text-ink-soft">
               <span aria-hidden className="text-purple-ink">
                 ·
@@ -250,7 +264,6 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
             {bunch.locationLabel && ` · ${bunch.locationLabel}`}
           </p>
         </div>
-        {bunch.score !== undefined && <CompatibilityBadge score={bunch.score} />}
       </div>
 
       <p className="mt-3 line-clamp-2 text-sm text-ink-soft">{bunch.description}</p>
