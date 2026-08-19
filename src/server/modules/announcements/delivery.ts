@@ -15,8 +15,8 @@ import {
  *
  * `DELIVERY` has said `mayEmail: true` for CRITICAL since the module was
  * written, and nothing read it. So notice existed only inside the product, and
- * the member it was written for — the one who is not signed in, has not been
- * for weeks, and whose data is about to be treated differently — was the exact
+ * the member it was written for, the one who is not signed in, has not been
+ * for weeks, and whose data is about to be treated differently, was the exact
  * member it never reached. Privacy §14 and Terms §14 both promise notice
  * *before* a change takes effect, and a banner cannot keep that promise on its
  * own because it waits to be visited.
@@ -25,7 +25,7 @@ import {
  *
  * Sending inside the publish request would put a loop over the whole
  * membership in the path of an admin pressing a button. It would time out,
- * and worse, a failure halfway leaves no record of who was reached — so the
+ * and worse, a failure halfway leaves no record of who was reached, so the
  * retry either sends nothing or sends everything twice.
  *
  * Instead the send is driven off `AnnouncementEmail`, one row written after
@@ -42,9 +42,9 @@ import {
 /**
  * How many messages one pass will send.
  *
- * A ceiling rather than a target. It bounds the damage from a mistake — a
+ * A ceiling rather than a target. It bounds the damage from a mistake: a
  * notice published with the wrong tier stops after this many rather than
- * reaching everybody before anyone notices — and it keeps one run from holding
+ * reaching everybody before anyone notices. It also keeps one run from holding
  * an SMTP connection open for an hour. The remainder goes out on the next pass,
  * and the whole point of the delivery table is that the next pass knows where
  * it got to.
@@ -108,7 +108,7 @@ async function recipientsWithout(
       user: { emailVerifiedAt: { not: null } },
       // `AND` rather than spreading `extraWhere` alongside the `none` clause.
       // Both conditions are about the same relation, so as sibling keys the
-      // second silently replaces the first — and the failure is invisible:
+      // second silently replaces the first, and the failure is invisible:
       // the reminder query would drop its "not already sent" guard and mail
       // the same person every hour.
       AND: [

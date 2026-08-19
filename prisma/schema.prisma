@@ -1475,8 +1475,8 @@ model Announcement {
   ///
   /// A policy change is exactly the thing somebody deciding whether to join
   /// should be able to read before they join, so the default is true. An
-  /// announcement about the inside of the product — a bunch feature, a
-  /// scheduled outage that only affects people already here — is held back by
+  /// announcement about the inside of the product, such as a bunch feature or
+  /// a scheduled outage that only affects people already here, is held back by
   /// turning this off, and stays on the member-facing record either way.
   publicVisible Boolean @default(true)
 
@@ -1509,7 +1509,7 @@ model AnnouncementRead {
 /// Written *after* a successful send, one row per recipient, so the delivery
 /// job is resumable: it selects the members with no row and picks up exactly
 /// where a crash or a timeout left it. That is also why the primary key is the
-/// three parts together — the same announcement legitimately sends twice, once
+/// three parts together: the same announcement legitimately sends twice, once
 /// as notice and once as a reminder before the effective date, and those must
 /// not collide.
 ///
