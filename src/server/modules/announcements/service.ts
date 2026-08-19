@@ -404,7 +404,7 @@ export interface PublishInput {
  * Three refusals, all of them the promise made concrete:
  *
  * An effective date that lands before the announcement does is rejected,
- * because an announcement that arrives after the change is not notice — it is
+ * because an announcement that arrives after the change is not notice. It is
  * a changelog entry, and the policies specifically promise the other thing.
  * The comparison is against the publish moment rather than against now, or
  * scheduling would open a hole: a notice scheduled for Friday about a change
@@ -473,7 +473,7 @@ export async function publishAnnouncement(
   });
 
   // A draft writes no audit entry. The trail records what reached members, and
-  // a draft reaches nobody — logging it would bury the entries that matter
+  // a draft reaches nobody, and logging it would bury the entries that matter
   // under every save of a half-written sentence. The entry lands when it
   // publishes, which is the act worth attributing.
   if (!isDraft) {

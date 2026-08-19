@@ -45,7 +45,7 @@ export const dynamic = "force-dynamic";
  *
  * No unread marks, no "new since your last visit", no counts. There is no
  * viewer here, and inventing one would mean tracking an anonymous reader in
- * order to know what new meant — on the page whose entire subject is how
+ * order to know what new meant, on the page whose entire subject is how
  * carefully this product handles people's data.
  *
  * `publicVisible` is what holds something back. It defaults to true because

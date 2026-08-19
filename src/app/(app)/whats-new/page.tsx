@@ -31,9 +31,9 @@ export const dynamic = "force-dynamic";
  *
  * Every control on this page is an anchor with a query string, and the whole
  * screen is a server component. No client state, no fetch on click. That is
- * partly because a record is a thing you link somebody to — "the unread ones"
- * and "everything that interrupted us" should both be URLs you can paste — and
- * partly because this is the page a member lands on when they want to check
+ * partly because a record is a thing you link somebody to. "The unread ones"
+ * and "everything that interrupted us" should both be URLs you can paste. It is
+ * also because this is the page a member lands on when they want to check
  * whether they were told something, which is not a moment to depend on
  * JavaScript having loaded.
  */
