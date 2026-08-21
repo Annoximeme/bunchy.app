@@ -4,6 +4,7 @@ import { recomputeAllChemistry } from "@/server/modules/bunches/health";
 import { deliverAnnouncementEmails } from "@/server/modules/announcements/delivery";
 import { materialiseDueOccurrences } from "@/server/modules/activities/series";
 import { expireStaleCalls } from "@/server/modules/activities/quick";
+import { pruneExpiredLinkCodes } from "@/server/modules/discord/link";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -40,6 +41,9 @@ async function main() {
   // one other person joining makes it a real plan, and closing that because a
   // clock ran out would be cancelling somebody else's evening.
   const calls = await expireStaleCalls();
+  // Not needed for correctness, redeem checks the expiry itself. This is so a
+  // spent five-minute credential is not still sitting in a backup next week.
+  const codes = await pruneExpiredLinkCodes();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -50,7 +54,8 @@ async function main() {
       `announcement notices: ${announcements.notices}, ` +
       `announcement reminders: ${announcements.reminders}, ` +
       `occurrences created: ${series.created}, ` +
-      `calls expired: ${calls.expired} ` +
+      `calls expired: ${calls.expired}, ` +
+      `link codes pruned: ${codes} ` +
       `(${Date.now() - started}ms)`,
   );
 }

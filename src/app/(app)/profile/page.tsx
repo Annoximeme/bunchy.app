@@ -15,6 +15,8 @@ import { ResendVerification } from "@/components/resend-verification";
 import { ProfileHero } from "@/components/profile/identity";
 import { ProfileCompleteness } from "@/components/profile/completeness";
 import { Avatar, Card, Chip, LinkButton, SectionHeading } from "@/components/ui";
+import { linkedAccount } from "@/server/modules/discord/link";
+import { DiscordLinkPanel } from "@/components/discord-link";
 
 export const metadata: Metadata = { title: "Your profile" };
 export const dynamic = "force-dynamic";
@@ -38,10 +40,11 @@ export const dynamic = "force-dynamic";
  */
 export default async function ProfilePage() {
   const viewer = await requireViewer();
-  const [profile, blocked, notificationPreferences] = await Promise.all([
+  const [profile, blocked, notificationPreferences, discord] = await Promise.all([
     getOwnProfile(viewer.profileId),
     listBlocked(viewer.profileId),
     getPreferences(viewer.profileId),
+    linkedAccount(viewer.profileId),
   ]);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
@@ -278,6 +281,11 @@ export default async function ProfilePage() {
             <div id="invite" className="scroll-mt-24">
               <ReferralCard />
             </div>
+
+            {/* Above the data controls, below the invite: connecting an
+                account is a thing you set up once, and exporting or deleting
+                is a thing you do last. */}
+            <DiscordLinkPanel linked={discord} />
 
             <AccountData />
           </div>

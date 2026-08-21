@@ -165,6 +165,42 @@ services:
     # Same as `app`: the jobs process sends activity reminders by email.
     networks: [backend, egress]
 
+  # The Discord bot. A gateway process holding a websocket open, which is why
+  # it is not another pass inside `jobs`: that container is a cron that exits.
+  #
+  # Reaches the database like `jobs` does, and needs `egress` to talk to
+  # Discord. Without DISCORD_BOT_TOKEN it logs and exits zero, so this is a
+  # quiet container rather than a restarting one until the token exists.
+  bot:
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+        reservations:
+          memory: 96m
+    build:
+      context: .
+      target: bot
+      args:
+        APP_URL: ${APP_URL:?APP_URL is required}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      POSTGRES_USER: ${POSTGRES_USER:-bunchy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bunchy}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required}
+      APP_URL: ${APP_URL:?APP_URL is required}
+      # All three optional. Absent means the bot does not start, which is the
+      # correct behaviour for a checkout without Discord credentials.
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_GUILD_ID: ${DISCORD_GUILD_ID:-}
+      DISCORD_ANNOUNCE_CHANNEL_ID: ${DISCORD_ANNOUNCE_CHANNEL_ID:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [backend, egress]
+
   caddy:
     deploy:
       resources:
