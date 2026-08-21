@@ -62,29 +62,30 @@ const IDEAS: Idea[] = [
   },
 ];
 
-const STAGGER = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-};
-
-const CHILD = {
-  hidden: { opacity: 0, y: 10 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-} as const;
-
 export function PebbleBoard() {
   const still = useReducedMotion();
 
   return (
-    <motion.ul
-      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      variants={still ? undefined : STAGGER}
-      initial={still ? undefined : "hidden"}
-      whileInView={still ? undefined : "shown"}
-      viewport={{ once: true, amount: 0.25 }}
-    >
+    /*
+      `reveal-stagger`, not a framer-motion `whileInView`.
+
+      The motion version set the children to opacity 0 and raised them when an
+      IntersectionObserver fired. That makes the content conditional on
+      JavaScript: before hydration, with scripting off, or any time the observer
+      does not fire, three cards are in the DOM and invisible. A screenshot pass
+      caught exactly that, a 400px hole where the board should be.
+
+      globals.css says this out loud already, and the hero was moved off
+      framer-motion for the same reason. The CSS version cannot hide anything:
+      where the scroll timeline is unsupported the rule does not exist and the
+      cards are simply there.
+
+      The hover lift stays on framer-motion. It only ever adds, so it has no
+      state in which it can remove something from the page.
+    */
+    <ul className="reveal-stagger grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {IDEAS.map((idea) => (
-        <motion.li key={idea.title} variants={still ? undefined : CHILD}>
+        <li key={idea.title}>
           <motion.article
             className="h-full rounded-squircle bg-surface p-8 shadow-pebble"
             whileHover={
@@ -125,8 +126,8 @@ export function PebbleBoard() {
               </span>
             </div>
           </motion.article>
-        </motion.li>
+        </li>
       ))}
-    </motion.ul>
+    </ul>
   );
 }

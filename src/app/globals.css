@@ -110,10 +110,13 @@
      object rising rather than as a different shadow being swapped in. */
   --shadow-pebble-lift: 0 14px 40px rgba(28, 25, 23, 0.08);
 
-  /* Warm near-black. Distinct from `--color-ink`, which is the product's navy
-     #172033 and stays the ink of the app. This one is scoped to the tactile
-     surfaces on the landing page, where the ground is cream and a navy that
-     reads correctly on a dashboard reads slightly cold on paper. */
+  /* The warm ink of the tactile surfaces.
+     
+     It moves with the theme, and the first version did not, which put a warm
+     near-black on a near-black surface at night: three card headings and the
+     line the comparison section exists to deliver, all invisible in dark mode.
+     An axe pass caught it. A token is not automatically safe just because it is
+     a token; it is safe when it is defined in all three theme states. */
   --color-ink-text: #1c1917;
 
   /* The only colour in the system chosen to look bad. It exists for the
@@ -214,6 +217,7 @@
     --color-surface: #24211e;
     --color-surface-sunken: #2c2824;
     --color-ink: #e8e4df;
+    --color-ink-text: #e8e4df;
     --color-ink-soft: #c8c1b8;
     --color-muted: #9a9289;
     --color-line: #35302b;
@@ -280,6 +284,7 @@
     --color-surface: #24211e;
     --color-surface-sunken: #2c2824;
     --color-ink: #e8e4df;
+    --color-ink-text: #e8e4df;
     --color-ink-soft: #c8c1b8;
     --color-muted: #9a9289;
     --color-line: #35302b;
@@ -501,6 +506,26 @@ body {
       animation-timeline: view();
       animation-range: entry 4% cover 20%;
     }
+
+    /*
+     * A stagger, done the scroll-driven way.
+     *
+     * Children reveal at progressively later scroll positions rather than on
+     * progressively later timers, which is the honest translation: the thing
+     * driving the animation is where the reader is, not a clock. It reads the
+     * same as `staggerChildren` and it inherits the two guards above, so where
+     * the timeline is unsupported or motion is unwelcome every child is simply
+     * visible.
+     */
+    .reveal-stagger > * {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 2% cover 16%;
+    }
+    .reveal-stagger > *:nth-child(2) { animation-range: entry 6% cover 22%; }
+    .reveal-stagger > *:nth-child(3) { animation-range: entry 10% cover 28%; }
+    .reveal-stagger > *:nth-child(4) { animation-range: entry 14% cover 34%; }
+    .reveal-stagger > *:nth-child(5) { animation-range: entry 18% cover 40%; }
   }
 }
 

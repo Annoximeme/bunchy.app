@@ -1,7 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-
 /**
  * Everywhere else, and here, side by side.
  *
@@ -24,22 +20,14 @@ import { motion, useReducedMotion } from "framer-motion";
  *
  * ## Motion
  *
- * The right column staggers in at 0.15s per child, which is slow enough to read
- * as a room filling rather than a list loading. `useReducedMotion` collapses
- * the whole thing to a static render rather than a fast one, because a
- * stagger played quickly is exactly the frantic feeling the section exists to
- * argue against.
+ * The right column reveals its parts one after another as the section scrolls
+ * in, which reads as a room filling rather than a list loading. It is CSS on a
+ * scroll timeline, so it cannot leave anything hidden: where the timeline is
+ * unsupported, or the reader has asked for less motion, the rule does not
+ * exist and every part is simply there.
+ *
+ * A server component. It had been a client one only to hold the animation.
  */
-
-const STAGGER = {
-  hidden: {},
-  shown: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-};
-
-const CHILD = {
-  hidden: { opacity: 0, y: 10 },
-  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-} as const;
 
 const BUNCH = [
   { fill: "#FF5C6C", initial: "M" },
@@ -49,8 +37,6 @@ const BUNCH = [
 ];
 
 export function TheDifference() {
-  const still = useReducedMotion();
-
   return (
     <section className="bg-canvas px-5 py-24 text-ink">
       <div className="mx-auto max-w-6xl">
@@ -79,14 +65,14 @@ export function TheDifference() {
               <div className="flex items-center gap-2 rounded-none border border-gray-sterile bg-white p-2.5">
                 <span className="size-9 rounded-none bg-gray-sterile" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-bold text-ink-text">
+                  <p className="text-[13px] font-bold text-neutral-900">
                     someone_you_met_once
                   </p>
                   <p className="text-[11px] text-neutral-500">
                     1,284 followers · 312 following
                   </p>
                 </div>
-                <span className="rounded-none border border-gray-sterile px-2 py-1 text-[11px] font-bold text-ink-text">
+                <span className="rounded-none border border-gray-sterile px-2 py-1 text-[11px] font-bold text-neutral-900">
                   Follow
                 </span>
               </div>
@@ -122,38 +108,31 @@ export function TheDifference() {
               On Bunchy
             </p>
 
-            <motion.div
-              className="rounded-squircle bg-surface p-8 shadow-pebble"
-              variants={still ? undefined : STAGGER}
-              initial={still ? undefined : "hidden"}
-              // Plays once, when it comes into view, and never replays. A
-              // section that re-animates every time it scrolls past is asking
-              // for attention, which is the thing being argued against.
-              whileInView={still ? undefined : "shown"}
-              viewport={{ once: true, amount: 0.4 }}
-            >
-              <motion.div variants={still ? undefined : CHILD}>
+            {/*
+              `reveal-stagger` rather than a framer-motion whileInView. The
+              motion version left this card at opacity 0 until an observer
+              fired, so the one thing this section exists to show was missing
+              from a screenshot pass and from any render without JavaScript.
+              The CSS version has no state in which it hides anything.
+            */}
+            <div className="reveal-stagger rounded-squircle bg-surface p-8 shadow-pebble">
+              <div>
                 <span className="inline-flex items-center gap-2 rounded-full bg-mint-soft px-3.5 py-1.5 text-sm font-semibold text-mint-ink">
                   <span aria-hidden>🥾</span> Hiking
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.p
-                variants={still ? undefined : CHILD}
-                className="mt-6 text-2xl font-extrabold leading-snug tracking-tight text-ink-text"
+              <p className="mt-6 text-2xl font-extrabold leading-snug tracking-tight text-ink-text"
               >
                 We&rsquo;re going Saturday.
-              </motion.p>
+              </p>
 
               {/*
                 The cluster. Negative spacing so they overlap, and a thick ring
                 in the surface colour so each one cuts a clean hole in the one
                 behind rather than muddying into it.
               */}
-              <motion.div
-                variants={still ? undefined : CHILD}
-                className="mt-7 flex items-center"
-              >
+              <div className="mt-7 flex items-center">
                 <div className="flex -space-x-3">
                   {BUNCH.map((person) => (
                     <span
@@ -172,15 +151,12 @@ export function TheDifference() {
                 <span className="ml-4 text-[15px] font-medium text-muted">
                   4 going
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.p
-                variants={still ? undefined : CHILD}
-                className="mt-7 text-[15px] leading-relaxed text-ink-soft"
-              >
+              <p className="mt-7 text-[15px] leading-relaxed text-ink-soft">
                 That is the whole screen. There is nothing under it.
-              </motion.p>
-            </motion.div>
+              </p>
+            </div>
 
             <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
               You said you were free. Four people who like walking said the same
