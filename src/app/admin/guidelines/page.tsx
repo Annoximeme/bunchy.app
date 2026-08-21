@@ -81,7 +81,7 @@ export default async function GuidelinesPage() {
           tabIndex={0}
           role="region"
           aria-label="Which actions each staff role may take"
-          className="overflow-x-auto rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="overflow-x-auto rounded-[var(--radius-card)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           <table className="w-full min-w-[34rem] text-sm">
             <caption className="sr-only">

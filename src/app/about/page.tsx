@@ -291,7 +291,7 @@ export default async function AboutPage() {
                   before every heading in the list. */}
               <span
                 aria-hidden
-                className="flex h-11 w-11 items-center justify-center rounded-full text-xl font-black"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-xl font-bold"
                 style={{ backgroundColor: CORAL, color: ON_CORAL }}
               >
                 ✕

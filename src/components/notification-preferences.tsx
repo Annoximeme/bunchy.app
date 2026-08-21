@@ -183,7 +183,7 @@ function Switch({
       */}
       <span
         className={cn(
-          "absolute left-0 top-0.5 size-4 rounded-full bg-white shadow-sm transition-transform duration-200 ease-[var(--ease-out-soft)]",
+          "absolute left-0 top-0.5 size-4 rounded-full bg-surface shadow-pebble transition-transform duration-300 ease-[var(--ease-out-soft)]",
           checked ? "translate-x-[1.125rem]" : "translate-x-0.5",
         )}
       />

@@ -411,7 +411,11 @@ body {
     color-mix(in srgb, var(--color-surface) 60%, transparent),
     transparent
   );
-  animation: shimmer 1.6s infinite;
+  /* Three seconds, not 1.6. A skeleton is the product admitting it is not
+     ready, and a fast sweep across it reads as urgency about the wait. Slow
+     enough that the eye does not track it, which is the point: a loading
+     state should be ignorable. */
+  animation: shimmer 3s infinite;
 }
 
 /* --- Landing bands ---------------------------------------------------------
