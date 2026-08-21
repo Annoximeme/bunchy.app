@@ -5,6 +5,8 @@ import { recommendActivities } from "@/server/modules/matching/activities";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityCard } from "@/components/cards";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+import { seriesForProfile } from "@/server/modules/activities/series";
+import { YourRegulars } from "@/components/your-regulars";
 
 export const metadata: Metadata = { title: "Activities" };
 export const dynamic = "force-dynamic";
@@ -12,10 +14,11 @@ export const dynamic = "force-dynamic";
 export default async function ActivitiesPage() {
   const viewer = await requireViewer();
 
-  const [mine, suggested, upcoming] = await Promise.all([
+  const [mine, suggested, upcoming, regulars] = await Promise.all([
     listActivities(viewer.profileId, { scope: "mine", limit: 10 }),
     recommendActivities(viewer.profileId, 6),
     listActivities(viewer.profileId, { scope: "upcoming", limit: 20 }),
+    seriesForProfile(viewer.profileId),
   ]);
 
   const mineIds = new Set(mine.map((a) => a.id));
@@ -27,6 +30,14 @@ export default async function ActivitiesPage() {
         subtitle="The point of all this. Somewhere to actually turn up."
         action={<LinkButton href="/activities/new">Plan something</LinkButton>}
       />
+
+      {/*
+        Above the one-offs, because a standing arrangement is a different kind
+        of thing: an occurrence is on your calendar, a regular is something you
+        are part of. Listed together they would look like eight copies of one
+        activity rather than one Thursday.
+      */}
+      <YourRegulars regulars={regulars} />
 
       <div className="space-y-12">
         <section>

@@ -462,3 +462,52 @@ export async function repeatActivity(
 
   return series;
 }
+
+/**
+ * The standing arrangements this member holds.
+ *
+ * Ordered by when the next one falls rather than by when they joined, because
+ * the question somebody has looking at this list is "what have I got coming",
+ * not "what did I sign up to first".
+ */
+export async function seriesForProfile(profileId: string) {
+  const rows = await db.activitySeriesMember.findMany({
+    where: { series: { endedAt: null } , profileId },
+    orderBy: { series: { nextAt: "asc" } },
+    select: {
+      series: {
+        select: {
+          id: true,
+          title: true,
+          cadence: true,
+          nextAt: true,
+          mode: true,
+          locationLabel: true,
+          organizerId: true,
+          bunch: { select: { slug: true, name: true } },
+          _count: { select: { members: true, occurrences: true } },
+        },
+      },
+    },
+  });
+
+  return rows.map((row) => ({
+    id: row.series.id,
+    title: row.series.title,
+    cadence: row.series.cadence,
+    nextAt: row.series.nextAt,
+    mode: row.series.mode,
+    locationLabel: row.series.locationLabel,
+    bunch: row.series.bunch,
+    members: row.series._count.members,
+    /**
+     * How many times it has come round. Shown as a plain count of evenings,
+     * never as a streak: a streak is a thing you can break, and the moment a
+     * number can be broken the product has given somebody a reason to turn up
+     * that is not the people.
+     */
+    occurrences: row.series._count.occurrences,
+    /** Only the organiser can end it, so only they are offered the control. */
+    isOrganiser: row.series.organizerId === profileId,
+  }));
+}
