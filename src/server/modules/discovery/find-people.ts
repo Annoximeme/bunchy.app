@@ -1,6 +1,7 @@
 import { db } from "@/server/db/client";
 import type { AvailabilityKind } from "@/generated/prisma/enums";
 import { scorer } from "@/server/modules/matching/index";
+import { diversifyLeads } from "@/server/modules/matching/diversify";
 import {
   buildScoringContext,
   loadCandidates,
@@ -189,7 +190,13 @@ async function search(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 
-  return ranked.length > 0 ? decorate(ranked, viewerProfileId, now) : [];
+  // After the slice, never before: which reasons repeat is a property of the
+  // page somebody actually sees, and deduplicating across candidates who were
+  // then cut would hold back a sentence to avoid clashing with a card that is
+  // not there.
+  const varied = diversifyLeads(ranked);
+
+  return varied.length > 0 ? decorate(varied, viewerProfileId, now) : [];
 }
 
 /** Just the count, for working out which constraint is the blocker. */
