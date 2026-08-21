@@ -1,5 +1,5 @@
 import { PageSkeleton } from "@/components/page-skeleton";
 
 export default function Loading() {
-  return <PageSkeleton shape="grid" label="Finding people for you" />;
+  return <PageSkeleton shape="detail" label="Opening the announcement" />;
 }
