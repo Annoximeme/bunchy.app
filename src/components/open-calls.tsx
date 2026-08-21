@@ -30,6 +30,31 @@ import { Avatar, Button, Input, Select } from "@/components/ui";
  * how a board fills with evenings that already happened.
  */
 
+/**
+ * One-tap starts, weighted towards company rather than shared interest.
+ *
+ * The first three need nothing in common at all. Two strangers who share no
+ * interest, no game and no conversation can still usefully be in the same room
+ * at two in the afternoon, and that is the lowest bar anything in this product
+ * clears. Everything else here needs at least a shared taste, which is a
+ * constraint that has to be satisfied by a membership that does not exist yet.
+ *
+ * So they are first, and they are the reason this row exists: the fastest path
+ * from "I am bored" to somebody else being present is not a recommendation, it
+ * is a button that posts one of these.
+ *
+ * The window differs per preset because the shape of the thing differs. Company
+ * while you work is an hour. "Anyone gaming tonight" is an evening.
+ */
+const PRESETS: Array<{ label: string; title: string; minutes: number }> = [
+  { label: "Co-working hour", title: "Co-working hour, cameras off", minutes: 60 },
+  { label: "Study session", title: "Study session, quiet company", minutes: 120 },
+  { label: "Body doubling", title: "Working on something, want company", minutes: 60 },
+  { label: "Gaming tonight", title: "Anyone gaming tonight?", minutes: 360 },
+  { label: "Watch something", title: "Watch something together?", minutes: 180 },
+  { label: "Just talk", title: "Anyone want to talk?", minutes: 120 },
+];
+
 const WINDOWS: Array<[number, string]> = [
   [60, "for the next hour"],
   [180, "for the next 3 hours"],
@@ -69,16 +94,18 @@ export function OpenCalls({ calls }: { calls: OpenCall[] }) {
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function post() {
-    setPending("new");
+  async function post(preset?: { title: string; minutes: number }) {
+    setPending(preset ? preset.title : "new");
     setError(null);
     try {
       await api("/api/activities/quick", {
         method: "POST",
         json: {
-          title: title.trim(),
-          windowMinutes: Number(windowMinutes),
-          mode,
+          title: preset ? preset.title : title.trim(),
+          windowMinutes: preset ? preset.minutes : Number(windowMinutes),
+          // Presets are online, always. The whole reason they work at this
+          // membership size is that they ask for nobody nearby.
+          mode: preset ? "ONLINE" : mode,
         },
       });
       setTitle("");
@@ -119,6 +146,26 @@ export function OpenCalls({ calls }: { calls: OpenCall[] }) {
           </Button>
         )}
       </div>
+
+      {/*
+        One tap, no form. Somebody who opened this because they were bored
+        should not have to compose a sentence before anything happens.
+      */}
+      {!asking && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              disabled={pending !== null}
+              onClick={() => post(preset)}
+              className="rounded-full border border-line px-3.5 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-ink-soft hover:text-ink disabled:opacity-50"
+            >
+              {pending === preset.title ? "Posting…" : preset.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {error && (
         <p role="alert" className="mb-3 text-sm text-danger">
@@ -177,7 +224,7 @@ export function OpenCalls({ calls }: { calls: OpenCall[] }) {
               size="sm"
               loading={pending === "new"}
               disabled={title.trim().length < 3}
-              onClick={post}
+              onClick={() => post()}
             >
               Ask
             </Button>
