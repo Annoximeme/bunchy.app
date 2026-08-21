@@ -61,7 +61,7 @@ const PROFILE_SELECT = {
   // filter rather than fetching the row and testing it here: an unanswered
   // outcome and a "no" are both silence as far as matching is concerned, and
   // neither should cost a query's worth of rows to discover.
-  outcomes: {
+  activityOutcomes: {
     where: { metSomeone: true },
     select: { activityId: true },
   },
@@ -88,7 +88,7 @@ type ProfileRow = {
   personality: MatchProfile["personality"];
   bunchMemberships: Array<{ bunchId: string }>;
   activityEntries: Array<{ activityId: string }>;
-  outcomes: Array<{ activityId: string }>;
+  activityOutcomes: Array<{ activityId: string }>;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -136,7 +136,7 @@ function toMatchProfile(row: ProfileRow, now: Date): MatchProfile {
     personality: row.personality,
     bunchIds: row.bunchMemberships.map((m) => m.bunchId),
     attendedActivityIds: row.activityEntries.map((a) => a.activityId),
-    provenActivityIds: row.outcomes.map((o) => o.activityId),
+    provenActivityIds: row.activityOutcomes.map((o) => o.activityId),
     participationScore: participationScore(row, now),
   };
 }
