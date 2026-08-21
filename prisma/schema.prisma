@@ -324,6 +324,8 @@ model Profile {
   announcementEmails AnnouncementEmail[]
   seriesOrganised    ActivitySeries[]       @relation("SeriesOrganizer")
   seriesMemberships  ActivitySeriesMember[]
+  discordLink        DiscordLink?
+  discordLinkCodes   DiscordLinkCode[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -843,6 +845,56 @@ model ActivitySeriesMember {
 
   @@id([seriesId, profileId])
   @@index([profileId])
+}
+
+/// A Discord account somebody has proved is theirs.
+///
+/// The foundation the rest of the bot needs. Announcing activities needs no
+/// link, but a slash command that sets *your* status, or voice presence that
+/// says *who* is in a channel, is impossible without knowing which Discord user
+/// is which member. Building those first and bolting identity on afterwards is
+/// how a bot ends up trusting a username.
+///
+/// ## How the proof works
+///
+/// The member asks for a code in Bunchy and types it at the bot, rather than
+/// the reverse. That direction matters: the session is the thing that already
+/// proves who they are, so the code only has to carry that proof outward. A
+/// bot-issued code redeemed on the site would instead be proving Discord
+/// identity to Bunchy, which is the same problem pointed the wrong way and
+/// needs OAuth to do properly.
+///
+/// Codes are short-lived and single-use, stored hashed like every other token
+/// in this codebase, and one link per member and per Discord account.
+model DiscordLink {
+  profileId String @id
+  /// The Discord snowflake. Unique, so one Discord account cannot claim two
+  /// members, which is what would make presence ambiguous.
+  discordId String @unique
+  /// Kept for display in staff tooling only. Discord handles change; the id
+  /// does not, and nothing is ever matched on this.
+  username  String?
+
+  linkedAt DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+/// A short-lived code proving a Bunchy session, to be typed at the bot.
+///
+/// Hashed at rest, like sessions and email tokens, so the table is not a list
+/// of working credentials. Deleted on redemption rather than marked used: an
+/// unredeemed code that has expired is worth nothing and the row is noise.
+model DiscordLinkCode {
+  codeHash  String   @id
+  profileId String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([expiresAt])
 }
 
 enum ActivityMode {
