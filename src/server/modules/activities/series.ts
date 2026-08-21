@@ -363,3 +363,102 @@ export async function upcomingForProfile(
     recurring: row.activity.seriesId !== null,
   }));
 }
+
+/**
+ * Turn an evening that worked into a standing arrangement.
+ *
+ * The shortest path in the product from "that was good" to "that is our
+ * Thursday", and the reason it exists at the outcome prompt rather than as a
+ * menu item: the moment somebody has just said the evening worked is the moment
+ * the question makes sense, and it is the only moment they are thinking about
+ * it.
+ *
+ * Everything is copied from the activity, so the answer is a single tap. The
+ * first occurrence is one cadence step after the original rather than the
+ * original itself, because the original already happened and materialising it
+ * again would produce an activity in the past.
+ *
+ * Organiser only, and refused when the activity already belongs to a series.
+ * Anyone can enjoy an evening; only the person who arranged it can commit to
+ * arranging it again, and four attendees each starting their own Thursday
+ * would produce four Thursdays.
+ */
+export async function repeatActivity(
+  activityId: string,
+  profileId: string,
+  cadence: SeriesCadence,
+) {
+  const activity = await db.activity.findUnique({
+    where: { id: activityId },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      startsAt: true,
+      endsAt: true,
+      mode: true,
+      locationLabel: true,
+      onlineUrl: true,
+      maxParticipants: true,
+      organizerId: true,
+      bunchId: true,
+      seriesId: true,
+      participants: {
+        where: { status: "JOINED" },
+        select: { profileId: true },
+      },
+    },
+  });
+
+  if (!activity) throw notFound("There is no such activity.");
+  if (activity.organizerId !== profileId) {
+    throw forbidden("Only whoever arranged it can make it a regular thing.");
+  }
+  if (activity.seriesId) {
+    throw validationFailed("That one already repeats.");
+  }
+
+  const durationMinutes = activity.endsAt
+    ? Math.round((activity.endsAt.getTime() - activity.startsAt.getTime()) / 60_000)
+    : null;
+
+  // One step on from the evening that worked, then caught up if that is still
+  // behind us, which it will be for a monthly cadence on an old activity.
+  const firstNext = advanceToFuture(
+    nextOccurrence(activity.startsAt, cadence),
+    cadence,
+    new Date(),
+  );
+
+  const series = await db.activitySeries.create({
+    data: {
+      title: activity.title,
+      description: activity.description,
+      cadence,
+      nextAt: firstNext,
+      durationMinutes,
+      mode: activity.mode,
+      locationLabel: activity.locationLabel,
+      onlineUrl: activity.onlineUrl,
+      maxParticipants: activity.maxParticipants,
+      organizerId: activity.organizerId,
+      bunchId: activity.bunchId,
+      // Everyone who actually turned up is carried in. They are the people the
+      // arrangement is with; making them each opt in again would lose the
+      // group the evening just proved.
+      members: {
+        create: activity.participants.map((p) => ({ profileId: p.profileId })),
+      },
+    },
+    select: { id: true, nextAt: true },
+  });
+
+  // The activity that started it keeps a link back, so the record shows where
+  // the ritual came from.
+  await db.activity.update({
+    where: { id: activity.id },
+    data: { seriesId: series.id },
+  });
+
+  return series;
+}

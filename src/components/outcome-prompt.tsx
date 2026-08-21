@@ -17,7 +17,9 @@ import type { OutcomePrompt as Prompt } from "@/server/modules/activities/outcom
  */
 export function OutcomePrompt({ prompt }: { prompt: Prompt }) {
   const router = useRouter();
-  const [step, setStep] = useState<"attended" | "met" | "done">("attended");
+  const [step, setStep] = useState<"attended" | "met" | "done" | "repeat">(
+    "attended",
+  );
   const [pending, setPending] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,12 +44,70 @@ export function OutcomePrompt({ prompt }: { prompt: Prompt }) {
         return;
       }
 
+      /*
+        A good evening is the one moment the question "should this be a
+        regular thing?" makes sense, and the only moment somebody is thinking
+        about it. Offered to the organiser, and only when the answer was that
+        they met someone: asking after an evening that did not work would be
+        the product not listening.
+      */
+      setStep(metSomeone && prompt.canRepeat ? "repeat" : "done");
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause));
+      setPending(false);
+    }
+  }
+
+  async function makeItRegular(cadence: string) {
+    setPending(true);
+    setError(null);
+    try {
+      await api(`/api/activities/${prompt.activityId}/repeat`, {
+        method: "POST",
+        json: { cadence },
+      });
       setStep("done");
       router.refresh();
     } catch (cause) {
       setError(errorMessage(cause));
       setPending(false);
     }
+  }
+
+  if (step === "repeat") {
+    return (
+      <Card className="border-positive/30 bg-positive-soft/40">
+        <p className="font-semibold">That one worked. Make it a regular thing?</p>
+        <p className="mt-1.5 text-sm text-ink-soft">
+          Everyone who turned up comes with it. They can miss a week without
+          leaving, and you can stop it whenever you like.
+        </p>
+        {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {[
+            ["WEEKLY", "Every week"],
+            ["BIWEEKLY", "Every two weeks"],
+            ["MONTHLY", "Every month"],
+          ].map(([value, label]) => (
+            <Button
+              key={value}
+              size="sm"
+              variant="secondary"
+              loading={pending}
+              onClick={() => makeItRegular(value!)}
+            >
+              {label}
+            </Button>
+          ))}
+          {/* Client-side only, like the dismiss above: nothing is written, so
+              declining is not recorded as a preference against repeating. */}
+          <Button size="sm" variant="ghost" onClick={() => setStep("done")}>
+            Not now
+          </Button>
+        </div>
+      </Card>
+    );
   }
 
   if (step === "done") {

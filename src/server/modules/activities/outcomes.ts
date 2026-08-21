@@ -35,6 +35,18 @@ export interface OutcomePrompt {
   endedAt: string;
   /** Everyone else who was there, so "met someone" has faces attached. */
   others: Array<{ id: string; username: string; displayName: string; avatarUrl: string | null }>;
+  /**
+   * Whether this evening could become a standing arrangement, and whether
+   * this person is the one who could make it so.
+   *
+   * Offered to the organiser only. Anyone can say the evening worked; only the
+   * person who arranged it can commit to arranging it again, and letting four
+   * attendees each start their own Thursday would produce four Thursdays.
+   *
+   * False when the activity already belongs to a series, because then it
+   * already repeats and the question is answered.
+   */
+  canRepeat: boolean;
 }
 
 /**
@@ -70,6 +82,8 @@ export async function pendingOutcome(
           title: true,
           startsAt: true,
           endsAt: true,
+          organizerId: true,
+          seriesId: true,
           participants: {
             where: { status: "JOINED", profileId: { not: profileId } },
             select: {
@@ -97,6 +111,7 @@ export async function pendingOutcome(
     title: activity.title,
     endedAt: (activity.endsAt ?? activity.startsAt).toISOString(),
     others: activity.participants.map((p) => p.profile),
+    canRepeat: activity.organizerId === profileId && activity.seriesId === null,
   };
 }
 
