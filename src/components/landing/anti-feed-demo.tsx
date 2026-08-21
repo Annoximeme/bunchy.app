@@ -20,29 +20,36 @@ export function AntiFeedDemo() {
   return (
     <div
       aria-hidden
-      className="relative mx-auto w-full max-w-[248px] select-none"
+      className="relative mx-auto w-[15.5rem] max-w-full select-none"
     >
       {/*
         The frame. A phone drawn in two rounded rectangles rather than an image:
         it costs no request, scales without going soft, and picks up the band
         colours so it belongs to whichever section it is dropped into.
       */}
-      <div className="rounded-[2.25rem] border border-white/15 bg-white/[0.04] p-2.5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)]">
-        <div className="relative aspect-[9/17] overflow-hidden rounded-[1.7rem] bg-[#0F1524]">
-          {/* Status bar. Fixed, because a clock that ticked would be one more
-              thing moving on a panel about stillness. */}
-          <div className="flex items-center justify-between px-4 pt-3.5 text-[9px] font-medium text-white/35">
-            <span>20:14</span>
-            <span className="flex gap-1">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/30" />
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/30" />
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/20" />
-            </span>
-          </div>
+      {/*
+        Styled for the band it actually stands on. This was built with
+        white-on-transparent borders and a heavy black shadow, which is what a
+        dark stage wants; the Five Stages section is the cream reading ground,
+        so the frame had no visible edge at all and the shadow was a smudge.
+      */}
+      <div className="rounded-[2.25rem] border border-line bg-surface p-2.5 shadow-pebble">
+        {/* `band-deep`, the token, rather than the navy literal this shipped
+            with. That hex predated the warm palette and was the one cold thing
+            left on the page. */}
+        <div className="relative aspect-[9/17] overflow-hidden rounded-[1.7rem] bg-band-deep">
+          {/*
+            No fake status bar.
 
+            It held a 20:14 clock and three dots at `white/35`, which is
+            decoration on top of decoration. It cost a real contrast violation
+            once the frame was large enough for axe to measure, and it was the
+            thing the message collided with when the frame was too small. The
+            screen is the message.
+          */}
           {/* Every beat is absolutely positioned in the same box so they
               cross-fade in place instead of reflowing the frame. */}
-          <div className="absolute inset-x-0 bottom-0 top-9">
+          <div className="absolute inset-0">
             {/* 1. The press. */}
             <div
               className="af-stage absolute inset-0 flex flex-col items-center justify-center gap-3 px-5"
@@ -112,12 +119,8 @@ export function AntiFeedDemo() {
               className="af-stage absolute inset-0 flex items-center justify-center px-6"
               style={{ animationName: "af-done" }}
             >
-              <p className="text-center text-[12px] font-medium leading-relaxed text-white/70">
-                You&rsquo;re all set.
-                <br />
-                Close the app and go
-                <br />
-                enjoy your Thursday.
+              <p className="text-balance text-center text-[12px] font-medium leading-relaxed text-white/70">
+                You&rsquo;re all set. Close the app and go enjoy your Thursday.
               </p>
             </div>
           </div>

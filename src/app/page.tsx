@@ -539,7 +539,17 @@ export default async function LandingPage({
               phone beside it is the first place the product actually shows the
               thing it keeps asserting.
             */}
-            <div className="reveal mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-14">
+            {/*
+              A fixed track for the phone, not `auto`.
+
+              `auto` sized the column to the demo's own content, and the demo
+              asks for `w-full`, which resolves against that column, which is
+              sized by the content. The circle collapses to the widest
+              unbreakable word inside it: the phone rendered about 80px across,
+              the frames overlapped, and the last line of the message was cut
+              off. A named width breaks the loop.
+            */}
+            <div className="reveal mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_17rem] md:gap-14">
               <p className="max-w-2xl text-lg text-ink-soft">
                 Most social products are built to keep you at stage one. Bunchy
                 is built to get you to stage five and then leave you alone.
