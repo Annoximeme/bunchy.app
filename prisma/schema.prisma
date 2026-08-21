@@ -846,6 +846,15 @@ enum ActivityStatus {
   SCHEDULED
   CANCELLED
   COMPLETED
+  /// An open call that nobody took up before its window closed.
+  ///
+  /// A status rather than a deletion, and that is the whole design. `instant.ts`
+  /// refuses to make bunches temporary because "adding a temporary flag would
+  /// mean writing the code that deletes people's groups", and that reasoning
+  /// holds. This is not a group: it is an offer somebody made for one evening,
+  /// and an offer that goes unanswered can quietly close without anything
+  /// anybody built being removed. The row, and the fact that they asked, stay.
+  EXPIRED
 }
 
 model Activity {
@@ -870,6 +879,14 @@ model Activity {
 
   /// The ritual this is an occurrence of, if it is one. Null for a one-off.
   seriesId        String?
+
+  /// When an open call stops being open. Null for an ordinary plan.
+  ///
+  /// Only set on a quick call: "anyone want to play right now". Those are made
+  /// on impulse for a window that closes, and one left lying around a week
+  /// later is worse than no answer at all, because it reads as a room nobody
+  /// came to. Reaching this with nobody joined moves the status to EXPIRED.
+  expiresAt       DateTime?
 
   organizer    Profile               @relation("ActivityOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   series       ActivitySeries?       @relation(fields: [seriesId], references: [id], onDelete: SetNull)

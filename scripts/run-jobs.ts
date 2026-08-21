@@ -3,6 +3,7 @@ import { purgeExpiredAvailability } from "@/server/modules/availability/service"
 import { recomputeAllChemistry } from "@/server/modules/bunches/health";
 import { deliverAnnouncementEmails } from "@/server/modules/announcements/delivery";
 import { materialiseDueOccurrences } from "@/server/modules/activities/series";
+import { expireStaleCalls } from "@/server/modules/activities/quick";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -35,6 +36,10 @@ async function main() {
   // filling the horizon and then stop. No duplicates under repetition, because
   // nextAt moves in the same transaction as the occurrence.
   const series = await materialiseDueOccurrences();
+  // Open calls nobody took up. Only the ones still holding just their author:
+  // one other person joining makes it a real plan, and closing that because a
+  // clock ran out would be cancelling somebody else's evening.
+  const calls = await expireStaleCalls();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -44,7 +49,8 @@ async function main() {
       `bunches scored: ${chemistry.scored}, ` +
       `announcement notices: ${announcements.notices}, ` +
       `announcement reminders: ${announcements.reminders}, ` +
-      `occurrences created: ${series.created} ` +
+      `occurrences created: ${series.created}, ` +
+      `calls expired: ${calls.expired} ` +
       `(${Date.now() - started}ms)`,
   );
 }
