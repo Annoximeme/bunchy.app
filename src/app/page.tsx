@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { AntiFeedDemo } from "@/components/landing/anti-feed-demo";
 import { WaysInTabs } from "@/components/landing/ways-in-tabs";
 import { ModerationBanner } from "@/components/landing/moderation-banner";
+import { TheDifference } from "@/components/landing/the-difference";
+import { PebbleBoard } from "@/components/landing/pebble-board";
 import { redirect } from "next/navigation";
 import { env } from "@/server/env";
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -398,6 +400,28 @@ export default async function LandingPage({
               An audience is not a social life. The number that matters is the
               one you could text tonight.
             </p>
+          </div>
+        </section>
+
+        {/*
+          The argument above is prose. This is the same argument as a picture,
+          placed immediately after it so the section reads as claim then proof.
+        */}
+        <TheDifference />
+
+        {/* 4b: The board, as objects */}
+        <section className="bg-canvas px-5 pb-24 text-ink">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="reveal max-w-2xl text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">
+              This is what fills up instead of a feed.
+            </h2>
+            <p className="reveal mt-3 max-w-2xl text-ink-soft">
+              Three real evenings, with the people already going. Nothing under
+              them, and nothing arriving while you read.
+            </p>
+            <div className="mt-10">
+              <PebbleBoard />
+            </div>
           </div>
         </section>
 

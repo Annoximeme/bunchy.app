@@ -91,6 +91,35 @@
   --radius-card: 1.25rem;
   --radius-control: 0.75rem;
 
+  /* --- The tactile set ----------------------------------------------------
+   *
+   * Tailwind v4, so these are `@theme` tokens rather than a config file. Each
+   * generates the utility its name implies: `rounded-squircle`,
+   * `shadow-pebble`, `bg-gray-sterile`, `text-ink-text`.
+   *
+   * `cream-bg` is deliberately absent. It would be a second name for
+   * `--color-canvas`, which is already #FFF9F3 and already themed, and two
+   * names for one colour is how a palette starts drifting. Use `bg-canvas`.
+   */
+  --radius-squircle: 2rem;
+
+  /* Ambient rather than directional: no hard edge, no visible offset, just
+     enough to lift an object off the ground it rests on. */
+  --shadow-pebble: 0 8px 30px rgba(28, 25, 23, 0.04);
+  /* The lifted state. Same character, more distance, so a hover reads as the
+     object rising rather than as a different shadow being swapped in. */
+  --shadow-pebble-lift: 0 14px 40px rgba(28, 25, 23, 0.08);
+
+  /* Warm near-black. Distinct from `--color-ink`, which is the product's navy
+     #172033 and stays the ink of the app. This one is scoped to the tactile
+     surfaces on the landing page, where the ground is cream and a navy that
+     reads correctly on a dashboard reads slightly cold on paper. */
+  --color-ink-text: #1c1917;
+
+  /* The only colour in the system chosen to look bad. It exists for the
+     "everywhere else" column and must never appear anywhere else. */
+  --color-gray-sterile: #e5e7eb;
+
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
     "Helvetica Neue", Arial, sans-serif;
