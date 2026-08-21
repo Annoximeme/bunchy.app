@@ -322,6 +322,8 @@ model Profile {
   analyticsEvents         AnalyticsEvent[]
   announcementReads  AnnouncementRead[]
   announcementEmails AnnouncementEmail[]
+  seriesOrganised    ActivitySeries[]       @relation("SeriesOrganizer")
+  seriesMemberships  ActivitySeriesMember[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -649,6 +651,7 @@ model Bunch {
   chemistry   BunchChemistry?
   messages    BunchMessage[]
   activities  Activity[]
+  series      ActivitySeries[]
   plans       SocialPlan[]
   icebreakers IcebreakerAsk[]
   challenges  BunchChallenge[]
@@ -750,6 +753,90 @@ model MessageMention {
 // Activities, the point of the product is that people actually do things
 // ---------------------------------------------------------------------------
 
+/// How often a ritual comes round.
+///
+/// Deliberately short. A schedule expressive enough to describe anything is a
+/// schedule nobody can read back, and the thing being modelled here is "our
+/// Thursday", not a calendar system.
+enum SeriesCadence {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+/// A thing a group does again and again.
+///
+/// The product had no way to say "every Thursday". Every activity was a
+/// separate one-off, so a group that met weekly had to recreate it weekly, and
+/// the fact that these were the same people doing the same thing existed only
+/// in their heads. This is the row that holds it.
+///
+/// ## Why `nextAt` rather than a weekday and a time
+///
+/// Storing "Thursdays at 20:00" means resolving a weekday and a wall-clock time
+/// against somebody's timezone every time an occurrence is generated, which is
+/// where recurring-event systems go wrong: the hour drifts across daylight
+/// saving, or the day does. `nextAt` is a concrete instant, the same kind of
+/// value `Activity.startsAt` already is. The job materialises it and advances
+/// it by one cadence step. There is no second representation of time to keep
+/// in agreement with the first.
+///
+/// ## Membership is separate from attendance
+///
+/// Joining the series says "this is my Thursday". Joining an occurrence says
+/// "I am coming this week". They are different promises and the product needs
+/// both, so `ActivitySeriesMember` is not the same thing as
+/// `ActivityParticipant`. Someone can hold the ritual and miss a week without
+/// leaving, which is how a standing arrangement actually works.
+model ActivitySeries {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+
+  cadence SeriesCadence
+  /// The instant the next occurrence starts. Advanced by the job as it goes.
+  nextAt  DateTime
+  /// How long an occurrence runs, carried onto each one.
+  durationMinutes Int?
+
+  mode          ActivityMode @default(OFFLINE)
+  locationLabel String?
+  onlineUrl     String?
+  maxParticipants Int        @default(8)
+
+  organizerId String
+  bunchId     String?
+
+  /// Set when the ritual is ended. The row and its history stay: a bunch that
+  /// met every Thursday for a year did that, and deleting the series would
+  /// delete the only record of it.
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  organizer   Profile                @relation("SeriesOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  bunch       Bunch?                 @relation(fields: [bunchId], references: [id], onDelete: SetNull)
+  occurrences Activity[]
+  members     ActivitySeriesMember[]
+
+  @@index([nextAt])
+  @@index([organizerId])
+  @@index([bunchId])
+}
+
+/// Somebody who holds a standing arrangement, rather than one evening of it.
+model ActivitySeriesMember {
+  seriesId  String
+  profileId String
+  joinedAt  DateTime @default(now())
+
+  series  ActivitySeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  profile Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([seriesId, profileId])
+  @@index([profileId])
+}
+
 enum ActivityMode {
   ONLINE
   OFFLINE
@@ -781,7 +868,11 @@ model Activity {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
+  /// The ritual this is an occurrence of, if it is one. Null for a one-off.
+  seriesId        String?
+
   organizer    Profile               @relation("ActivityOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  series       ActivitySeries?       @relation(fields: [seriesId], references: [id], onDelete: SetNull)
   bunch       Bunch?               @relation(fields: [bunchId], references: [id], onDelete: SetNull)
   participants ActivityParticipant[]
   outcomes     ActivityOutcome[]

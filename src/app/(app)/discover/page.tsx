@@ -15,6 +15,8 @@ import { pendingOutcome } from "@/server/modules/activities/outcomes";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageShell } from "@/components/page-header";
+import { YourWeek } from "@/components/your-week";
+import { upcomingForProfile } from "@/server/modules/activities/series";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { IntroductionCard } from "@/components/introduction-card";
 import { WhosUp } from "@/components/whos-up";
@@ -77,6 +79,7 @@ export default async function DiscoverPage() {
     neighbourhood,
     outcome,
     introduction,
+    week,
   ] = await Promise.all([
     recommendPeople(viewer.profileId, { limit: 8 }),
     recommendBunches(viewer.profileId, 6),
@@ -95,6 +98,10 @@ export default async function DiscoverPage() {
     // recommendations this page already loaded, and a route that hands them
     // out on request is a route somebody polls for a fresh one.
     nextIntroduction(viewer.profileId),
+    // What they have already decided to do. Loaded alongside the
+    // recommendations rather than after them, because it renders above them
+    // and a sequential fetch would hold the whole page on the shorter query.
+    upcomingForProfile(viewer.profileId)
   ]);
 
   if (introduction) {
@@ -118,6 +125,13 @@ export default async function DiscoverPage() {
           activities: activities.length,
         }}
       />
+
+      {/*
+        Their own week, above everything the product is guessing at. Somebody
+        with three plans should not have to scroll past eight strangers to
+        reach their own commitments.
+      */}
+      <YourWeek items={week} />
 
       {/*
         Unfinished business, as a line rather than a card. Both of these are

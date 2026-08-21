@@ -2,6 +2,7 @@ import { runScheduledNotifications } from "@/server/modules/notifications/schedu
 import { purgeExpiredAvailability } from "@/server/modules/availability/service";
 import { recomputeAllChemistry } from "@/server/modules/bunches/health";
 import { deliverAnnouncementEmails } from "@/server/modules/announcements/delivery";
+import { materialiseDueOccurrences } from "@/server/modules/activities/series";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -29,6 +30,10 @@ async function main() {
   // and idempotent: it selects members with no delivery row, so an hourly pass
   // that overlaps or crashes sends nothing twice.
   const announcements = await deliverAnnouncementEmails();
+  // Rituals become real activities a fortnight ahead. Idempotent like the rest:
+  // nextAt advances in the same transaction that creates the occurrence, so an
+  // overlapping run finds nothing due and creates no duplicates.
+  const series = await materialiseDueOccurrences();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -37,7 +42,8 @@ async function main() {
       `expired statuses purged: ${purged}, ` +
       `bunches scored: ${chemistry.scored}, ` +
       `announcement notices: ${announcements.notices}, ` +
-      `announcement reminders: ${announcements.reminders} ` +
+      `announcement reminders: ${announcements.reminders}, ` +
+      `occurrences created: ${series.created} ` +
       `(${Date.now() - started}ms)`,
   );
 }
