@@ -36,7 +36,15 @@ export function ActivityForm({
   defaultCountry: string | null;
 }) {
   const router = useRouter();
-  const [mode, setMode] = useState<"OFFLINE" | "ONLINE">("OFFLINE");
+  /*
+    Online first, matching the schema default.
+
+    Most people never change a default, so this is the strongest opinion the
+    form has. An online plan needs fewer things to line up than an in-person
+    one, which makes it the one that can actually fill while the membership is
+    small.
+  */
+  const [mode, setMode] = useState<"OFFLINE" | "ONLINE">("ONLINE");
   const [cadence, setCadence] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);

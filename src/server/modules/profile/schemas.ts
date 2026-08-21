@@ -42,8 +42,22 @@ export const basicsSchema = z.object({
    * answer stored and must not be blocked from editing anything else.
    */
   birthMonth: z.number().int().min(1).max(12).optional(),
-  cityLabel: z.string().trim().min(1).max(80),
-  countryCode: z.string().trim().length(2).toUpperCase(),
+  /**
+   * Where they are, if it is relevant to them.
+   *
+   * Optional, and that is a deliberate reversal. It used to be required on the
+   * first onboarding step, which asked somebody who came for a weekly online
+   * co-op night to name their town before being shown anything, on a product
+   * they would never meet anyone locally through.
+   *
+   * Nothing downstream needs it. `locationSignal` returns null rather than zero
+   * when either side has no coordinates, so the scorer already handles an
+   * absent location by leaving the signal out instead of scoring it badly. And
+   * the thing online genuinely needs, the timezone, is detected from the
+   * browser below and never asked for at all.
+   */
+  cityLabel: z.string().trim().min(1).max(80).optional(),
+  countryCode: z.string().trim().length(2).toUpperCase().optional(),
   avatarUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
   /**
    * The browser's IANA zone, read from `Intl` and sent without being shown.

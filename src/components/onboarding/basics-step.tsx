@@ -92,8 +92,20 @@ export function BasicsStep({
     event.preventDefault();
     setError(null);
 
-    if (!place) {
-      setError("Pick your city from the list so we can find people nearby.");
+    /*
+      No longer a gate.
+
+      This used to refuse to continue without a city, on the first screen of a
+      product that half the time is a voice channel. Somebody who came for a
+      weekly online co-op night was asked to name their town before being shown
+      anything. The timezone the product actually needs for online is detected
+      from the browser a few lines below and never asked for.
+
+      Somebody who types a city and does not pick one from the list still gets
+      told, because a half-entered city is a mistake rather than a choice.
+    */
+    if (placeQuery.trim().length > 0 && !place) {
+      setError("Pick your city from the list, or clear the box to skip it.");
       return;
     }
 
@@ -113,8 +125,12 @@ export function BasicsStep({
           birthMonth: data.get("birthMonth")
             ? Number(data.get("birthMonth"))
             : undefined,
-          cityLabel: place.cityLabel,
-          countryCode: place.countryCode,
+          // Omitted entirely when they skipped it, rather than sent empty. The
+          // schema treats absent as "no location", and an empty string would be
+          // a location that fails validation.
+          ...(place
+            ? { cityLabel: place.cityLabel, countryCode: place.countryCode }
+            : {}),
           // Sent, never shown. The browser already knows the zone; asking would
           // put a 400-entry dropdown in front of someone still deciding whether
           // to join. Undefined on a runtime without `Intl`, which the server
@@ -203,7 +219,7 @@ export function BasicsStep({
         <Field
           label="Where are you based?"
           htmlFor="city"
-          hint="We only ever store the area, never an address."
+          hint="Optional. Only needed for meeting people in person, and we only ever store the area, never an address."
         >
           <Input
             id="city"

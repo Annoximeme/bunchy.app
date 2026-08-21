@@ -799,7 +799,15 @@ model ActivitySeries {
   /// How long an occurrence runs, carried onto each one.
   durationMinutes Int?
 
-  mode          ActivityMode @default(OFFLINE)
+  /// Online by default.
+  ///
+  /// Defaults are the strongest opinion a product has, because most people
+  /// never change them, and this one used to say the quiet part: in person is
+  /// the real thing and online is the variant. Online activities need fewer
+  /// things to line up (somebody awake, rather than somebody nearby AND free
+  /// AND willing to travel), so they are the ones that can actually fill at
+  /// launch density. The default should point at the one that works.
+  mode          ActivityMode @default(ONLINE)
   locationLabel String?
   onlineUrl     String?
   maxParticipants Int        @default(8)
@@ -863,7 +871,7 @@ model Activity {
   description String
   startsAt    DateTime
   endsAt      DateTime?
-  mode        ActivityMode   @default(OFFLINE)
+  mode        ActivityMode   @default(ONLINE)
   /// Venue-level label only ("Bar Bassin, Antwerp"), never a home address.
   locationLabel String?
   countryCode   String?

@@ -72,7 +72,12 @@ export async function saveBasics(
   });
   if (taken) throw conflict("That username is already taken.");
 
-  const place = findPlace(input.cityLabel, input.countryCode);
+  // Both optional now. Somebody who never gave a city has no place, no
+  // coordinates and no country, and every read below already copes with that.
+  const place =
+    input.cityLabel && input.countryCode
+      ? findPlace(input.cityLabel, input.countryCode)
+      : null;
   // Detected, then derived, then unknown.
   //
   // Still not asked for, a timezone question is one most people answer wrongly.
@@ -86,7 +91,7 @@ export async function saveBasics(
   // never been sent.
   const timezone =
     (input.timezone && isValidTimezone(input.timezone) ? input.timezone : null) ??
-    timezoneForCountry(place?.countryCode ?? input.countryCode);
+    timezoneForCountry(place?.countryCode ?? input.countryCode ?? null);
   // Coordinates are snapped before they are ever written, the database has no
   // opportunity to hold a precise location.
   const approx = place ? snapToGrid(place.lat, place.lng) : null;
@@ -111,10 +116,10 @@ export async function saveBasics(
         ...(input.avatarUrl === undefined
           ? {}
           : { avatarUrl: input.avatarUrl || null }),
-        cityLabel: place?.cityLabel ?? input.cityLabel,
+        cityLabel: place?.cityLabel ?? input.cityLabel ?? null,
         regionLabel: place?.regionLabel ?? null,
         ...(timezone ? { timezone } : {}),
-        countryCode: place?.countryCode ?? input.countryCode,
+        countryCode: place?.countryCode ?? input.countryCode ?? null,
         approxLat: approx?.approxLat ?? null,
         approxLng: approx?.approxLng ?? null,
         onboardingStage: advance(profile.onboardingStage, "BASICS"),
