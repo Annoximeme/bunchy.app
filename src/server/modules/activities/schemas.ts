@@ -16,6 +16,16 @@ export const activityCreateSchema = z
     onlineUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
     maxParticipants: z.number().int().min(2).max(50).default(8),
     bunchId: z.string().trim().min(1).max(40).optional(),
+    /**
+     * Turn this into a standing arrangement rather than one evening.
+     *
+     * On the create schema rather than a separate endpoint, because to the
+     * person filling the form it is one more answer about the same plan, not a
+     * different act. "Every Thursday" is a property of the Thursday they were
+     * already describing. The route branches on it; nothing else in the form
+     * changes shape.
+     */
+    cadence: z.enum(["WEEKLY", "BIWEEKLY", "MONTHLY"]).optional(),
   })
   .refine((v) => v.mode === "ONLINE" || Boolean(v.locationLabel), {
     message: "Where is it happening?",

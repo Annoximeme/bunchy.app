@@ -37,6 +37,7 @@ export function ActivityForm({
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<"OFFLINE" | "ONLINE">("OFFLINE");
+  const [cadence, setCadence] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +50,10 @@ export function ActivityForm({
     const bunchId = String(data.get("bunchId") ?? "");
 
     try {
-      const result = await api<{ activity: { id: string } }>("/api/activities", {
+      const result = await api<{
+        activity?: { id: string };
+        series?: { id: string };
+      }>("/api/activities", {
         method: "POST",
         json: {
           title: String(data.get("title") ?? ""),
@@ -68,9 +72,20 @@ export function ActivityForm({
               }
             : { onlineUrl: String(data.get("onlineUrl") ?? "") || undefined }),
           ...(bunchId ? { bunchId } : {}),
+          ...(cadence ? { cadence } : {}),
         },
       });
-      router.push(`/activities/${result.activity.id}`);
+
+      /*
+        A series has no occurrence yet. The job materialises the first one
+        within the hour, so there is nothing to navigate to and sending
+        somebody to a 404 would be worse than sending them nowhere. The
+        activities list is where it will appear, and it is the honest
+        destination.
+      */
+      router.push(
+        result.activity ? `/activities/${result.activity.id}` : "/activities",
+      );
       router.refresh();
     } catch (cause) {
       setError(errorMessage(cause));
@@ -174,6 +189,33 @@ export function ActivityForm({
           />
         </Field>
       )}
+
+      {/*
+        Repeat, as one more answer about the same plan.
+
+        Deliberately not a separate "create a recurring activity" flow. To the
+        person filling this in, "every Thursday" is a property of the Thursday
+        they are already describing, and a second entry point would mean two
+        forms to keep in agreement. The default is a one-off, because most
+        plans are.
+      */}
+      <Field
+        label="Does it repeat?"
+        htmlFor="cadence"
+        hint="A repeating plan becomes a standing arrangement. Anyone who joins it is in for every one, and can still miss a week without leaving."
+      >
+        <Select
+          id="cadence"
+          name="cadence"
+          value={cadence}
+          onChange={(event) => setCadence(event.target.value)}
+        >
+          <option value="">Just this once</option>
+          <option value="WEEKLY">Every week</option>
+          <option value="BIWEEKLY">Every two weeks</option>
+          <option value="MONTHLY">Every month</option>
+        </Select>
+      </Field>
 
       {bunches.length > 0 && (
         <Field

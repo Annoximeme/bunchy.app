@@ -212,10 +212,20 @@ export interface MaterialiseResult {
 /**
  * Turn the rituals that are due into real activities.
  *
- * Runs from `run-jobs.ts`, and is idempotent in the way everything there is:
- * it only acts on series whose `nextAt` falls inside the horizon, and it
- * advances `nextAt` in the same transaction that creates the occurrence, so a
- * second pass finds nothing to do. An overlapping run creates no duplicates.
+ * Runs from `run-jobs.ts`. Convergent rather than idempotent, and the
+ * difference is worth stating because a probe caught me claiming the wrong
+ * one: each pass materialises the next occurrence that falls inside the
+ * horizon and advances `nextAt` by one cadence step, so repeated passes keep
+ * going until the horizon is full and then do nothing. A weekly series three
+ * days out produces two occurrences over two passes, a week apart, which is
+ * the fortnight of visibility the horizon exists to give.
+ *
+ * It creates no duplicates under repetition because `nextAt` moves in the same
+ * transaction as the occurrence. It is not safe under genuine concurrency: the
+ * read happens outside that transaction, so two workers starting together
+ * could both see the same `nextAt` and both write it. `run-jobs.ts` is a single
+ * cron process by design, for exactly this class of reason. A second runner
+ * would need a row lock here first.
  *
  * Members of the series are added to the occurrence as participants, because
  * holding the ritual is the RSVP. That is the whole point of the distinction:

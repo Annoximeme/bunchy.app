@@ -30,9 +30,10 @@ async function main() {
   // and idempotent: it selects members with no delivery row, so an hourly pass
   // that overlaps or crashes sends nothing twice.
   const announcements = await deliverAnnouncementEmails();
-  // Rituals become real activities a fortnight ahead. Idempotent like the rest:
-  // nextAt advances in the same transaction that creates the occurrence, so an
-  // overlapping run finds nothing due and creates no duplicates.
+  // Rituals become real activities a fortnight ahead. Convergent: each pass
+  // materialises one occurrence per series and advances nextAt, so passes keep
+  // filling the horizon and then stop. No duplicates under repetition, because
+  // nextAt moves in the same transaction as the occurrence.
   const series = await materialiseDueOccurrences();
 
   console.log(
