@@ -4,6 +4,7 @@ import { recordModerationEvent } from "@/server/modules/admin/audit";
 import type { StaffViewer } from "@/server/modules/admin/guard";
 import type { AnnouncementTier } from "@/generated/prisma/enums";
 import type { AnnouncementBlock } from "@/server/modules/announcements/blocks";
+import type { AnnouncementSelect } from "@/generated/prisma/models/Announcement";
 
 /**
  * Announcements, the things the operator did that affect you.
@@ -103,7 +104,7 @@ const SUMMARY_SELECT = {
   linkLabel: true,
   publishedAt: true,
   effectiveAt: true,
-} as const;
+} as const satisfies AnnouncementSelect;
 
 type SummaryRow = {
   slug: string;

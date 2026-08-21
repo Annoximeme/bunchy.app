@@ -7,6 +7,7 @@ import { markRecommendationActed } from "@/server/modules/matching/engine";
 import type { AudienceScope } from "@/generated/prisma/enums";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
+import type { ProfileSelect } from "@/generated/prisma/models/Profile";
 
 /**
  * Connections, mutual consent, always.
@@ -301,7 +302,7 @@ const CONNECTION_PROFILE_SELECT = {
   bio: true,
   cityLabel: true,
   privacy: { select: { showApproxLocation: true } },
-} as const;
+} as const satisfies ProfileSelect;
 
 export async function listConnections(profileId: string) {
   const rows = await db.connection.findMany({

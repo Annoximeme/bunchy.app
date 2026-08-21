@@ -5,6 +5,7 @@ import { notify } from "@/server/modules/notifications/service";
 import type { BunchMessageInput } from "@/server/modules/bunches/schemas";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
+import type { BunchMessageSelect } from "@/generated/prisma/models/BunchMessage";
 
 /**
  * Bunch chat.
@@ -50,7 +51,7 @@ const MESSAGE_SELECT = {
   },
   reactions: { select: { emoji: true, profileId: true } },
   mentions: { select: { profileId: true } },
-} as const;
+} as const satisfies BunchMessageSelect;
 
 async function requireActiveMember(bunchId: string, profileId: string) {
   const membership = await db.bunchMembership.findUnique({

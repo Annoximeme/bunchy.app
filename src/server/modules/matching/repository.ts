@@ -7,6 +7,7 @@ import type {
 } from "@/generated/prisma/enums";
 import { distanceKm } from "@/server/modules/geo/distance";
 import type { MatchProfile, ScoringContext } from "@/server/modules/matching/types";
+import type { ProfileSelect } from "@/generated/prisma/models/Profile";
 
 /**
  * Turns database rows into the plain shapes the scorer understands.
@@ -16,6 +17,21 @@ import type { MatchProfile, ScoringContext } from "@/server/modules/matching/typ
  * database and reused from a batch job.
  */
 
+/**
+ * `satisfies` rather than a bare object.
+ *
+ * This is load-bearing. A select constant declared on its own and spread into
+ * a query later is never seen by Prisma in the position where it validates
+ * field names against the model, so TypeScript checks it as a plain object
+ * literal and is satisfied by anything. `PROFILE_SELECT` once asked for
+ * `outcomes` on Profile, which is the relation name on Activity, and it
+ * typechecked, passed the whole unit suite because that suite mocks the
+ * database, shipped, and broke every Discover render with a runtime
+ * PrismaClientValidationError.
+ *
+ * The annotation puts the object back in argument position at compile time. It
+ * costs one line and it is the only thing here that would have caught that.
+ */
 const PROFILE_SELECT = {
   id: true,
   displayName: true,
@@ -65,7 +81,7 @@ const PROFILE_SELECT = {
     where: { metSomeone: true },
     select: { activityId: true },
   },
-} as const;
+} as const satisfies ProfileSelect;
 
 type ProfileRow = {
   id: string;

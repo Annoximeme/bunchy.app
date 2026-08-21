@@ -1,4 +1,5 @@
 import type { PersonalityVector } from "@/server/modules/matching/types";
+import type { ProfileSelect } from "@/generated/prisma/models/Profile";
 
 /**
  * The single sanctioned path from a profile row to something another member can
@@ -305,4 +306,4 @@ export const PUBLIC_PROFILE_SELECT = {
     },
   },
   _count: { select: { bunchMemberships: { where: { status: "ACTIVE" } } } },
-} as const;
+} as const satisfies ProfileSelect;
