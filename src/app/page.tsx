@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
+import { AntiFeedDemo } from "@/components/landing/anti-feed-demo";
+import { WaysInTabs } from "@/components/landing/ways-in-tabs";
+import { ModerationBanner } from "@/components/landing/moderation-banner";
 import { redirect } from "next/navigation";
 import { env } from "@/server/env";
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -506,10 +509,19 @@ export default async function LandingPage({
               />
             </ol>
 
-            <p className="reveal mt-12 max-w-2xl text-lg text-ink-soft">
-              Most social products are built to keep you at stage one. Bunchy is
-              built to get you to stage five and then leave you alone.
-            </p>
+            {/*
+              The claim and its demonstration, side by side. The sentence has
+              carried this section on its own since the page was written; the
+              phone beside it is the first place the product actually shows the
+              thing it keeps asserting.
+            */}
+            <div className="reveal mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-14">
+              <p className="max-w-2xl text-lg text-ink-soft">
+                Most social products are built to keep you at stage one. Bunchy
+                is built to get you to stage five and then leave you alone.
+              </p>
+              <AntiFeedDemo />
+            </div>
           </div>
         </section>
 
@@ -520,70 +532,15 @@ export default async function LandingPage({
               WHAT YOU CAN ACTUALLY DO
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Seven ways in. All of them end in the same place.
+              Three ways in, depending on what you turned up for.
             </h2>
             <p className="reveal mt-4 max-w-2xl text-white/60">
-              Different starting points for different moods, whether you know
-              exactly what you want, or only that you don&rsquo;t want another
-              evening in.
+              Seven features, grouped by the reason you opened the app rather
+              than by what each one is called.
             </p>
 
-            <div className="mt-14 flex flex-col gap-12">
-              <Band
-                label="Find people"
-                colour="#FF5C6C"
-                blurb="Three different answers to “who is out there”."
-              >
-                <Feature
-                  colour="#FF5C6C"
-                  name="Discover"
-                  line="People, bunches and activities ranked by how well they actually fit, and finite, so it ends."
-                />
-                <Feature
-                  colour="#55D6BE"
-                  name="Bunchy Now"
-                  line="Who is up for something, and when. Counts are approximate and never name anyone."
-                />
-                <Feature
-                  colour="#7657FF"
-                  name="Surprise me"
-                  line="The opposite of a recommendation: someone whose interests don't look like yours, but whose evenings do."
-                />
-              </Band>
-
-              <Band
-                label="Work out what to do"
-                colour="#FFC857"
-                blurb="For when the group chat has gone quiet on the question."
-              >
-                <Feature
-                  colour="#FFC857"
-                  name="Do something"
-                  line="Say what you have (money, time, energy) and get an evening back. Five taps, no typing."
-                />
-                <Feature
-                  colour="#FF5C6C"
-                  name="Radar"
-                  line="Bunches and activities around you. Areas, never addresses."
-                />
-              </Band>
-
-              <Band
-                label="Make it real"
-                colour="#55D6BE"
-                blurb="The half that most products never build."
-              >
-                <Feature
-                  colour="#7657FF"
-                  name="Start a bunch"
-                  line="Say what you'd like to do. We'll find people who might be up for it. No form to fill in first."
-                />
-                <Feature
-                  colour="#55D6BE"
-                  name="Plans"
-                  line="Turn “we should do something” into a date, a place and a count of who is coming."
-                />
-              </Band>
+            <div className="reveal">
+              <WaysInTabs />
             </div>
           </div>
         </section>
@@ -751,6 +708,8 @@ export default async function LandingPage({
           </div>
         </section>
 
+        <ModerationBanner />
+
         {/* 7: Final CTA */}
         {/* py, not just pb: this section had no top padding, so the card began
             at the exact pixel the cream section ended and the two collided at
@@ -915,72 +874,6 @@ function Stage({
       </h3>
       <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{body}</p>
     </li>
-  );
-}
-
-/**
- * A group of features that answer the same question.
- *
- * The brief asked for seven features that read as one ecosystem rather than
- * seven unrelated cards. Banding them by the question they answer is what does
- * that: the reader sees three decisions, not seven products.
- */
-function Band({
-  label,
-  colour,
-  blurb,
-  children,
-}: {
-  label: string;
-  colour: string;
-  blurb: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="reveal grid gap-6 lg:grid-cols-[15rem_1fr]">
-      <div className="lg:pt-1">
-        <span
-          className="inline-flex items-center gap-2 text-sm font-bold tracking-wide"
-          style={{ color: colour }}
-        >
-          <span
-            className="size-2.5 rounded-full"
-            style={{ background: colour }}
-          />
-          {label}
-        </span>
-        <p className="mt-2 max-w-xs text-sm text-white/55">{blurb}</p>
-      </div>
-      {/*
-        auto-fit rather than a fixed three columns: two of the three bands hold
-        two cards, and in a locked 3-column grid they left a third of the row
-        empty, which reads as a layout that failed rather than one that fits.
-      */}
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))]">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Feature({
-  colour,
-  name,
-  line,
-}: {
-  colour: string;
-  name: string;
-  line: string;
-}) {
-  return (
-    <div className="rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6 transition-colors duration-200 hover:border-white/20 hover:bg-white/[0.06]">
-      <span
-        className="block h-1 w-9 rounded-full"
-        style={{ background: colour }}
-      />
-      <h3 className="mt-4 text-lg font-bold tracking-tight">{name}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-white/60">{line}</p>
-    </div>
   );
 }
 

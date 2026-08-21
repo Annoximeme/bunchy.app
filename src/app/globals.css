@@ -578,3 +578,72 @@ body {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
+
+/* --- The anti-feed loop ------------------------------------------------------
+ *
+ * A four-beat sequence in a phone frame: press, wait, match, then an empty
+ * screen telling you to leave. It argues the manifesto instead of restating it.
+ *
+ * Pure CSS on a shared timeline rather than a JavaScript animation library.
+ * Three reasons, and the third is the one that decided it. It needs no
+ * dependency on a page that server-renders in about 150ms. It keeps working
+ * with JavaScript off, which matters for the one page a stranger judges the
+ * product by. And the global reduced-motion rule above already governs every
+ * animation in the product from one place; an imperative library would run its
+ * own timers straight past it.
+ *
+ * Every beat shares one duration and one delay so the frames cannot drift out
+ * of step. Percentages are the script.
+ */
+
+@keyframes af-press {
+  0%, 6% { transform: scale(1); }
+  9% { transform: scale(0.94); }
+  13%, 100% { transform: scale(1); }
+}
+
+@keyframes af-button {
+  0%, 13% { opacity: 1; }
+  16%, 100% { opacity: 0; }
+}
+
+@keyframes af-spinner {
+  0%, 14% { opacity: 0; }
+  18%, 27% { opacity: 1; }
+  31%, 100% { opacity: 0; }
+}
+
+@keyframes af-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes af-card {
+  0%, 29% { opacity: 0; transform: translateY(6px); }
+  34%, 56% { opacity: 1; transform: translateY(0); }
+  62%, 100% { opacity: 0; transform: translateY(-4px); }
+}
+
+@keyframes af-done {
+  0%, 62% { opacity: 0; }
+  70%, 96% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.af-stage {
+  animation-duration: 6.4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease-out-soft);
+}
+
+/*
+ * Reduced motion gets the argument without the movement.
+ *
+ * The global rule collapses every duration to 0.01ms, which on a looping
+ * sequence would leave whichever frame happens to end last, and flicker. So the
+ * loop is switched off entirely here and the final beat is shown as a still.
+ * That is the frame carrying the point.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .af-stage { animation: none !important; opacity: 0; }
+  .af-stage[data-final="true"] { opacity: 1 !important; }
+}
