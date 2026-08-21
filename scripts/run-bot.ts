@@ -4,6 +4,7 @@ import {
   GatewayIntentBits,
   MessageFlags,
   type ChatInputCommandInteraction,
+  type Guild,
 } from "discord.js";
 import { env } from "@/server/env";
 import {
@@ -77,10 +78,35 @@ async function main() {
   client.once("clientReady", async () => {
     console.info(`[bot] connected as ${client.user?.tag}`);
 
-    // Registered per guild rather than globally: guild commands appear
-    // immediately, where global ones take up to an hour to propagate, and this
-    // bot serves exactly one server.
-    const guild = await client.guilds.fetch(guildId);
+    /*
+      Registered per guild rather than globally: guild commands appear
+      immediately, where global ones take up to an hour to propagate, and this
+      bot serves exactly one server.
+
+      Wrapped, because the first thing that happens to a new bot is that this
+      throws. A token can be perfectly valid while the bot has not been invited
+      anywhere yet, and Discord answers "Unknown Guild" to the fetch. Unhandled,
+      that became an 'error' event on the client and killed a process that had
+      just successfully connected, which is a confusing way to be told to press
+      the invite link.
+    */
+    try {
+      const guild = await client.guilds.fetch(guildId);
+      await registerCommands(guild);
+      console.info("[bot] commands registered");
+    } catch (error) {
+      const code = (error as { code?: number }).code;
+      if (code === 10004) {
+        console.info(
+          "[bot] connected, but not a member of that server yet. Invite it, then restart this container. See /admin/discord for the link.",
+        );
+      } else {
+        console.error("[bot] could not register commands:", error);
+      }
+    }
+  });
+
+  async function registerCommands(guild: Guild) {
     await guild.commands.set([
       {
         name: "link",
@@ -121,8 +147,7 @@ async function main() {
         ],
       },
     ]);
-    console.info("[bot] commands registered");
-  });
+  }
 
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
