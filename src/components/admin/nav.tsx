@@ -29,6 +29,9 @@ const ITEMS: NavItem[] = [
   { href: "/admin/guidelines", label: "Guidelines" },
   { href: "/admin/announcements", label: "Announcements", adminOnly: true },
   { href: "/admin/site", label: "Public site", adminOnly: true },
+  // Admin only: it shows the server's channel list and the state of a
+  // credential.
+  { href: "/admin/discord", label: "Discord bot", adminOnly: true },
   { href: "/admin/waitlist", label: "Waiting list", adminOnly: true },
   { href: "/admin/brand", label: "Brand" },
   { href: "/admin/audit", label: "Audit log" },

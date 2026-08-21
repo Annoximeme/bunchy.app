@@ -1,0 +1,371 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Check, Circle, TriangleAlert } from "lucide-react";
+import { requireAdmin } from "@/server/modules/admin/guard";
+import { brand } from "@/lib/brand";
+import { AdminHeader, Panel } from "@/components/admin/primitives";
+import {
+  REQUIRED_PERMISSIONS,
+  checkAnnounceChannel,
+  checkGuild,
+  checkToken,
+  inviteUrl,
+  linkedMemberCount,
+} from "@/server/modules/discord/setup";
+
+export const metadata: Metadata = { title: "Discord bot" };
+export const dynamic = "force-dynamic";
+
+/**
+ * Setting the bot up, and finding out what is actually wrong when it is not.
+ *
+ * Admin only, like the site gate and announcements, because it displays the
+ * server's channel list and the state of a credential.
+ *
+ * ## Why it makes live calls rather than reading config
+ *
+ * A setup page that reports whether an environment variable is set will say
+ * "configured" while the token is revoked, the bot has been kicked, or the
+ * channel id belongs to a different server. Those three are indistinguishable
+ * from inside the process and they are what actually goes wrong, so every check
+ * here asks Discord and reports the answer.
+ *
+ * ## Why the steps stay visible once they pass
+ *
+ * A wizard that hides completed steps is useless the second time, and the
+ * second time is when somebody is debugging. Every step stays, with its state
+ * next to it.
+ */
+
+type State = "ok" | "bad" | "todo";
+
+function Status({ state, children }: { state: State; children: React.ReactNode }) {
+  const icon =
+    state === "ok" ? (
+      <Check size={16} className="text-teal" aria-hidden />
+    ) : state === "bad" ? (
+      <TriangleAlert size={16} className="text-danger" aria-hidden />
+    ) : (
+      <Circle size={16} className="text-muted" aria-hidden />
+    );
+
+  return (
+    <p className="flex items-start gap-2 text-sm">
+      <span className="mt-0.5 shrink-0">{icon}</span>
+      <span className={state === "bad" ? "text-danger" : "text-ink-soft"}>
+        {children}
+      </span>
+      <span className="sr-only">
+        {state === "ok" ? "Done" : state === "bad" ? "Problem" : "Not done yet"}
+      </span>
+    </p>
+  );
+}
+
+function Step({
+  n,
+  title,
+  state,
+  children,
+}: {
+  n: number;
+  title: string;
+  state: State;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="border-b border-line p-5 last:border-b-0">
+      <div className="flex items-baseline gap-3">
+        <span
+          className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+            state === "ok"
+              ? "bg-teal-soft text-teal"
+              : state === "bad"
+                ? "bg-danger-soft text-danger"
+                : "bg-surface-sunken text-muted"
+          }`}
+        >
+          {state === "ok" ? "✓" : n}
+        </span>
+        <h3 className="font-semibold text-ink">{title}</h3>
+      </div>
+      <div className="mt-2.5 space-y-2 pl-9 text-sm text-ink-soft">{children}</div>
+    </li>
+  );
+}
+
+const Code = ({ children }: { children: React.ReactNode }) => (
+  <code className="rounded bg-surface-sunken px-1.5 py-0.5 font-mono text-[13px]">
+    {children}
+  </code>
+);
+
+export default async function DiscordSetupPage() {
+  await requireAdmin();
+
+  // In parallel: three round trips to Discord, and this page is behind an
+  // admin guard rather than in front of a member.
+  const [token, guild, channel, linked] = await Promise.all([
+    checkToken(),
+    checkGuild(),
+    checkAnnounceChannel(),
+    linkedMemberCount(),
+  ]);
+
+  const invite = token.applicationId ? inviteUrl(token.applicationId) : null;
+
+  return (
+    <>
+      <AdminHeader
+        title="Discord bot"
+        subtitle="Set it up, and see what is actually wrong when it is not working."
+      />
+
+      <Panel
+        title="Where it stands"
+        note="Checked against Discord just now, not read from configuration. A revoked token and a kicked bot both look fine from inside the app."
+      >
+        <div className="space-y-2 p-5">
+          <Status state={token.configured ? (token.ok ? "ok" : "bad") : "todo"}>
+            {!token.configured
+              ? "No bot token set. The bot container starts, logs that, and exits."
+              : token.ok
+                ? `Token works. Connected as ${token.botName}.`
+                : `Token set but rejected. ${token.error}`}
+          </Status>
+
+          <Status state={guild.configured ? (guild.ok ? "ok" : "bad") : "todo"}>
+            {!guild.configured
+              ? "No server id set."
+              : guild.ok
+                ? `In ${guild.guildName}, and can see ${guild.channels?.length ?? 0} text channels.`
+                : (guild.error ?? "Cannot reach the server.")}
+          </Status>
+
+          <Status
+            state={channel.configured ? (channel.ok ? "ok" : "bad") : "todo"}
+          >
+            {!channel.configured
+              ? "No announce channel set. Commands still work; nothing is posted."
+              : channel.ok
+                ? `Announcing to #${channel.channelName}.`
+                : (channel.error ?? "Cannot see that channel.")}
+          </Status>
+
+          <Status state={linked > 0 ? "ok" : "todo"}>
+            {linked === 0
+              ? "Nobody has connected an account yet. Members do that from their profile."
+              : `${linked} ${linked === 1 ? "member has" : "members have"} connected an account.`}
+          </Status>
+        </div>
+      </Panel>
+
+      <Panel title="Setting it up" className="mt-6">
+        <ol className="text-sm">
+          <Step n={1} title="Create the application" state={token.ok ? "ok" : "todo"}>
+            <p>
+              Go to{" "}
+              <a
+                href="https://discord.com/developers/applications"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent-ink underline underline-offset-2"
+              >
+                discord.com/developers/applications
+              </a>
+              , press New Application and name it {brand.name}. Open the{" "}
+              <strong>Bot</strong> tab and press Reset Token to reveal one. It is
+              shown once.
+            </p>
+          </Step>
+
+          <Step n={2} title="Turn on the one intent it needs" state={token.ok ? "ok" : "todo"}>
+            <p>
+              Still on the Bot tab, under Privileged Gateway Intents, enable{" "}
+              <strong>Server Members Intent</strong> off and{" "}
+              <strong>Presence Intent</strong> off, and leave{" "}
+              <strong>Message Content Intent</strong> off.
+            </p>
+            <p>
+              The bot asks for <Code>Guilds</Code> and <Code>GuildVoiceStates</Code>{" "}
+              only. Voice states are not a privileged intent. Message content is
+              deliberately not requested: the bot never reads what anybody types,
+              only slash commands addressed to it, and asking for message content
+              would mean asking to read the whole server in order to run four
+              commands.
+            </p>
+          </Step>
+
+          <Step
+            n={3}
+            title="Put the token in the environment"
+            state={token.configured ? (token.ok ? "ok" : "bad") : "todo"}
+          >
+            <p>
+              Add it to <Code>.env</Code> on the server, then redeploy. The value
+              is never shown on this page, and this page never sends it to your
+              browser.
+            </p>
+            <pre className="overflow-x-auto rounded-[var(--radius-control)] bg-surface-sunken p-3 font-mono text-[13px] leading-relaxed">
+              {`DISCORD_BOT_TOKEN=your-token-here
+DISCORD_GUILD_ID=your-server-id`}
+            </pre>
+            <p>
+              For the server id, turn on Developer Mode in Discord under Settings,
+              Advanced, then right-click the server and Copy Server ID.
+            </p>
+          </Step>
+
+          <Step n={4} title="Invite it to the server" state={guild.ok ? "ok" : "todo"}>
+            {invite ? (
+              <>
+                <p>
+                  This link is built from the application id inside your token, so
+                  it is the right one for this bot and asks for exactly the two
+                  permissions it uses.
+                </p>
+                <p>
+                  <a
+                    href={invite}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex rounded-full bg-accent px-4 py-2 text-sm font-bold text-[var(--color-on-accent)]"
+                  >
+                    Invite {token.botName ?? "the bot"} to your server
+                  </a>
+                </p>
+                <p className="text-muted">
+                  Permissions <Code>{REQUIRED_PERMISSIONS}</Code>: View Channels
+                  and Send Messages. Not Administrator, which most guides suggest
+                  and which would give a bot that posts one message a minute the
+                  power to delete the server. Voice presence needs no permission
+                  beyond seeing the channel, because it reads voice state through
+                  the gateway rather than the API.
+                </p>
+              </>
+            ) : (
+              <p className="text-muted">
+                The invite link appears here once the token is set and working. It
+                is derived from the application id inside the token, so there is
+                no second value to copy.
+              </p>
+            )}
+          </Step>
+
+          <Step
+            n={5}
+            title="Choose where it announces"
+            state={channel.configured ? (channel.ok ? "ok" : "bad") : "todo"}
+          >
+            <p>
+              Optional. Leave it unset and the commands still work while nothing
+              is posted, which is the safer default until you have picked a
+              channel.
+            </p>
+            {guild.ok && guild.channels && guild.channels.length > 0 ? (
+              <>
+                <p>Channels the bot can currently see:</p>
+                <ul className="divide-y divide-line rounded-[var(--radius-control)] border border-line">
+                  {guild.channels.map((c) => (
+                    <li
+                      key={c.id}
+                      className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+                    >
+                      <span className="font-medium text-ink">#{c.name}</span>
+                      <code className="font-mono text-[12px] text-muted">{c.id}</code>
+                    </li>
+                  ))}
+                </ul>
+                <p>
+                  Put the id in <Code>DISCORD_ANNOUNCE_CHANNEL_ID</Code> and
+                  redeploy.
+                </p>
+              </>
+            ) : (
+              <p className="text-muted">
+                The list of channels appears here once the bot is in the server.
+              </p>
+            )}
+          </Step>
+
+          <Step n={6} title="Connect your own account" state={linked > 0 ? "ok" : "todo"}>
+            <p>
+              Members get a six-digit code from their{" "}
+              <Link
+                href="/profile"
+                className="text-accent-ink underline underline-offset-2"
+              >
+                profile
+              </Link>{" "}
+              and type <Code>/link 123456</Code> at the bot. The code lasts five
+              minutes and is single use.
+            </p>
+            <p>
+              The code goes outward rather than inward on purpose: the session
+              already proves who somebody is, so it only has to carry that proof
+              to Discord. A code issued by the bot and pasted into Bunchy would be
+              proving Discord identity to us, which needs OAuth and would let
+              anybody who can post in the server hand a code to somebody else.
+            </p>
+          </Step>
+        </ol>
+      </Panel>
+
+      <Panel title="What it does once it is running" className="mt-6">
+        <div className="space-y-3 p-5 text-sm text-ink-soft">
+          <p>
+            <strong className="text-ink">Commands.</strong> <Code>/link</Code>,{" "}
+            <Code>/tonight</Code>, <Code>/up-for</Code> and <Code>/call</Code>.
+            Every reply is ephemeral, so only the person who ran it sees the
+            answer. Bunchy Now shows counts and never names anybody, and routing
+            the same fact through Discord must not become the loophole.
+          </p>
+          <p>
+            <strong className="text-ink">Announcements.</strong> Every five
+            minutes it posts open calls made since the last pass, and only ones
+            with spare capacity. Nothing from a private bunch, because that is a
+            group&rsquo;s own business and Discord is a different room with
+            different people in it. A restart does not replay the afternoon.
+          </p>
+          <p>
+            <strong className="text-ink">Voice presence.</strong> A linked member
+            joining a voice channel is marked as around for two hours, and leaving
+            clears it. It shows as a count on Bunchy Now and never a name, the
+            channel is not recorded, there is no history, and anybody hidden from
+            that board is hidden from this too. Unlinked accounts are ignored
+            entirely.
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title="When it stops working" className="mt-6">
+        <div className="space-y-3 p-5 text-sm text-ink-soft">
+          <p>
+            <strong className="text-ink">The container exits straight away.</strong>{" "}
+            That is correct with no token. It uses{" "}
+            <Code>restart: on-failure</Code> rather than{" "}
+            <Code>unless-stopped</Code>, so a clean exit is left alone instead of
+            looping.
+          </p>
+          <p>
+            <strong className="text-ink">Commands do not appear.</strong> They are
+            registered per server on connect, which is immediate, but only once
+            the bot has actually connected. Check the first line above.
+          </p>
+          <p>
+            <strong className="text-ink">
+              Somebody says a command does nothing.
+            </strong>{" "}
+            Almost always an unlinked account. Everything except{" "}
+            <Code>/link</Code> needs one.
+          </p>
+          <p>
+            <strong className="text-ink">Logs.</strong>{" "}
+            <Code>docker compose logs bot</Code> on the server. Every line is
+            prefixed <Code>[bot]</Code>.
+          </p>
+        </div>
+      </Panel>
+    </>
+  );
+}
