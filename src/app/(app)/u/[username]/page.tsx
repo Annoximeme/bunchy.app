@@ -12,6 +12,8 @@ import { BlockButton, ReportButton } from "@/components/moderation-actions";
 import { ProfileHero } from "@/components/profile/identity";
 import { OverlapSection } from "@/components/profile/overlap";
 import { Card, Chip, SectionHeading } from "@/components/ui";
+import { CalendarCheck } from "lucide-react";
+import { hostLine, hostStats } from "@/server/modules/activities/hosting";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +64,7 @@ export default async function PublicProfilePage({
     throw error;
   }
 
-  const [blocked, match] = await Promise.all([
+  const [blocked, match, hosting] = await Promise.all([
     // Always false in practice: `getProfileByUsername` above throws not-found
     // for a blocked profile, so a blocked person's page is never reached.
     // Kept rather than hardcoded because the Block button below renders from
@@ -73,6 +75,9 @@ export default async function PublicProfilePage({
     // unfinished, so the section below simply does not appear rather than
     // showing a score built from nothing.
     scorePair(viewer.profileId, profile.id),
+    // Evidence from other people about evenings this person arranged. Returns
+    // counts; `hostLine` decides whether there is anything worth saying.
+    hostStats(profile.id),
   ]);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
@@ -123,6 +128,26 @@ export default async function PublicProfilePage({
           />
 
           <div className="space-y-4">
+            {/*
+              What they have arranged, as a sentence rather than a badge.
+
+              Above the interests because it is the only line on this page that
+              is evidence rather than self-description: everything else here is
+              what somebody typed about themselves, and this is what other
+              people said happened. It renders nothing at all below three
+              evenings, so being new is silence rather than a zero.
+            */}
+            {hostLine(hosting) && (
+              <p className="flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-soft">
+                <CalendarCheck
+                  size={17}
+                  aria-hidden
+                  className="mt-0.5 shrink-0 text-teal"
+                />
+                {hostLine(hosting)}
+              </p>
+            )}
+
             {practices.length > 0 && (
               <Card>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-teal">
