@@ -152,7 +152,8 @@ RUN chmod 0755 /usr/local/bin/entrypoint.sh
 USER node
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # A gateway process, not a cron: it holds a websocket open and is restarted by
-# compose if it drops. Without a token it logs and exits zero, so a deploy
-# without Discord credentials leaves one quiet container rather than a
-# restarting one.
+# compose if it drops. Without a token it logs and exits zero, which compose
+# leaves alone because the service uses `restart: on-failure` rather than
+# `unless-stopped`. With the latter, a clean exit is restarted too and the
+# container loops.
 CMD ["node", "--enable-source-maps", "node_modules/.bin/tsx", "scripts/run-bot.ts"]

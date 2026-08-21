@@ -183,7 +183,15 @@ services:
       target: bot
       args:
         APP_URL: ${APP_URL:?APP_URL is required}
-    restart: unless-stopped
+    # `on-failure`, not `unless-stopped`, and the difference is the whole
+    # no-token behaviour. `unless-stopped` restarts on any exit including a
+    # clean one, so a bot with no token exits zero, gets restarted, exits zero,
+    # and the container sits in a restart loop forever. This was written and
+    # deployed claiming the opposite; the logs said otherwise within a minute.
+    #
+    # `on-failure` leaves a clean exit alone and still restarts a gateway that
+    # actually dropped, which is the pair of behaviours wanted.
+    restart: on-failure
     environment:
       NODE_ENV: production
       POSTGRES_USER: ${POSTGRES_USER:-bunchy}
