@@ -565,6 +565,21 @@ export async function listMyBunches(profileId: string) {
           maxMembers: true,
           interests: { select: { interest: { select: { label: true } } } },
           _count: { select: { memberships: { where: { status: "ACTIVE" } } } },
+          // The soonest evening, so the card can lead with what is happening
+          // rather than with how many seats are spare. One row per bunch.
+          activities: {
+            where: { status: "SCHEDULED", startsAt: { gte: new Date() } },
+            orderBy: { startsAt: "asc" },
+            take: 1,
+            select: { startsAt: true },
+          },
+          // And whichever standing arrangement comes round next.
+          series: {
+            where: { endedAt: null },
+            orderBy: { nextAt: "asc" },
+            take: 1,
+            select: { nextAt: true },
+          },
         },
       },
     },
@@ -597,6 +612,8 @@ export async function listMyBunches(profileId: string) {
     locationLabel: row.bunch.cityLabel,
     memberCount: row.bunch._count.memberships,
     maxMembers: row.bunch.maxMembers,
+    nextActivityAt: row.bunch.activities[0]?.startsAt ?? null,
+    nextSeriesAt: row.bunch.series[0]?.nextAt ?? null,
     interests: row.bunch.interests.map((i) => i.interest.label),
     role: row.role,
     membershipStatus: row.status,

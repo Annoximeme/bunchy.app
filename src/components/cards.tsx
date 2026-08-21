@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { activityWhen } from "@/lib/format";
+import { lifecycleOf } from "@/server/modules/bunches/lifecycle";
 import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 import { Avatar, Button, Chip, cn } from "@/components/ui";
 
@@ -244,10 +245,42 @@ export interface BunchCardData {
   score?: number;
   highlights?: string[];
   membershipStatus?: string | null;
+  /** The next evening this bunch has, if the caller knows of one. */
+  nextActivityAt?: Date | null;
+  /** When its standing arrangement next comes round, if it has one. */
+  nextSeriesAt?: Date | null;
+  /** Evenings that have been and gone. */
+  completedCount?: number;
 }
 
+const LIFECYCLE_TONE: Record<string, string> = {
+  live: "text-accent-ink font-semibold",
+  soon: "text-purple-ink font-medium",
+  open: "text-muted",
+  settled: "text-teal font-medium",
+  quiet: "text-muted",
+};
+
 export function BunchCard({ bunch }: { bunch: BunchCardData }) {
-  const spotsLeft = bunch.maxMembers - bunch.memberCount;
+  /*
+    Where the bunch is in its life, worked out rather than stored.
+
+    This used to be "N spots left" or "Full", which is one fact out of several
+    and not usually the most useful one: a bunch with an evening on Thursday is
+    a bunch with an evening on Thursday, whether or not it also has two spare
+    seats. `lifecycleOf` picks whichever is actually worth saying, in that
+    order, and degrades to the seat count when nothing else is known, so a
+    caller that has not plumbed the extra facts through loses nothing.
+  */
+  const state = lifecycleOf(
+    {
+      memberCount: bunch.memberCount,
+      maxMembers: bunch.maxMembers,
+      nextActivityAt: bunch.nextActivityAt ?? null,
+      nextSeriesAt: bunch.nextSeriesAt ?? null,
+      completedCount: bunch.completedCount,
+    },
+  );
 
   return (
     <Link
@@ -302,10 +335,8 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
       )}
 
       <div className="mt-4 flex items-center justify-between text-sm">
-        <span className={cn(spotsLeft > 0 ? "text-muted" : "text-danger")}>
-          {spotsLeft > 0
-            ? `${spotsLeft} ${spotsLeft === 1 ? "spot" : "spots"} left`
-            : "Full"}
+        <span className={cn(LIFECYCLE_TONE[state.tone] ?? "text-muted")}>
+          {state.label}
         </span>
         {bunch.membershipStatus === "ACTIVE" && (
           <Chip tone="positive">You&rsquo;re in</Chip>
