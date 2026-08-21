@@ -56,12 +56,25 @@ export function SignUpForm() {
   });
 
   return (
-    <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
-      <p className="mt-1.5 text-sm text-muted">
+    /*
+      Not a boxed auth card. The heading carries the same argument as the
+      landing page, so the page it leads into should not suddenly look like a
+      settings dialog. Squircle and ambient shadow instead of a bordered panel,
+      and the headline is the size of a statement rather than a form label.
+
+      The form itself already asked for the minimum: two fields, and the
+      interests, personality, goals and availability questions all live behind
+      the door rather than in front of it. That was the existing design and it
+      is what the copy below is describing.
+    */
+    <div className="rounded-squircle bg-surface p-8 shadow-pebble">
+      <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-ink">
+        Let&rsquo;s get you off this app. First, the basics.
+      </h1>
+      <p className="mt-3 leading-relaxed text-ink-soft">
         {referralCode
-          ? "Someone invited you. Two fields now. The interesting questions come next."
-          : "Two fields now. The interesting questions come next."}
+          ? "Someone invited you. Two fields now, then your name and your city. The interesting questions come once you are inside."
+          : "Two fields now, then your name and your city. The interesting questions come once you are inside."}
       </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4">

@@ -160,7 +160,15 @@
    * The two must stay clearly apart at night, or the alternation the public
    * pages are built out of flattens into one sheet.
    */
-  --color-band-deep: #0A0E1A;
+  /* Warm, to match the espresso dark mode. It was navy #0A0E1A, which was
+     coherent while the whole product was navy and reads as a cold slab beside
+     a cream page and a warm dark theme. Same value as `ink-text`: the stage
+     the product stands on and the ink it is written in are close relatives.
+
+     Not `ink-text` exactly: the deep band has to stay darker than the dark
+     theme's own canvas, or the alternation the public pages are built from
+     inverts at night, and #1C1917 is fractionally lighter than #181614. */
+  --color-band-deep: #14110f;
   /* Aliases, not copies. The reading ground of a public page and the canvas of
      a signed-in page are the same surface doing the same job, and writing the
      hex twice is how they drift apart the first time one of them is tuned. */
@@ -193,15 +201,22 @@
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    /* Navy all the way down rather than neutral grey, the dark mode is the
-       brand's own colour dimmed, not a different product at night. */
-    --color-canvas: #101826;
-    --color-surface: #182231;
-    --color-surface-sunken: #1f2a3b;
-    --color-ink: #f5f7fa;
-    --color-ink-soft: #c3cad6;
-    --color-muted: #8c97a8;
-    --color-line: #29344a;
+    /* Warm dark rather than navy. The dark mode used to be the brand's own
+       blue dimmed, which was internally consistent and read as cold: a navy
+       screen at night is a dashboard, and this product is arguing for a
+       coffee shop. Espresso and oatmeal instead, never pure black, which is
+       what causes the halation that makes light text on dark hard to read.
+
+       The ramp is deliberately narrow. canvas, surface and sunken sit within
+       twenty points of each other so elevation reads as a whisper rather than
+       as a set of stacked panels. */
+    --color-canvas: #181614;
+    --color-surface: #24211e;
+    --color-surface-sunken: #2c2824;
+    --color-ink: #e8e4df;
+    --color-ink-soft: #c8c1b8;
+    --color-muted: #9a9289;
+    --color-line: #35302b;
 
     /* Stronger on navy, where the landing's own washes live and where the
        gradient has room to be seen without competing with the text. */
@@ -244,7 +259,7 @@
        here. The deep band goes a step darker than it is in light: it has to
        stay clearly darker than the reading ground, and the reading ground at
        night is already navy. */
-    --color-band-deep: #05080F;
+    --color-band-deep: #0f0d0c;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);
@@ -252,15 +267,22 @@
 }
 
 :root[data-theme="dark"] {
-    /* Navy all the way down rather than neutral grey, the dark mode is the
-       brand's own colour dimmed, not a different product at night. */
-    --color-canvas: #101826;
-    --color-surface: #182231;
-    --color-surface-sunken: #1f2a3b;
-    --color-ink: #f5f7fa;
-    --color-ink-soft: #c3cad6;
-    --color-muted: #8c97a8;
-    --color-line: #29344a;
+    /* Warm dark rather than navy. The dark mode used to be the brand's own
+       blue dimmed, which was internally consistent and read as cold: a navy
+       screen at night is a dashboard, and this product is arguing for a
+       coffee shop. Espresso and oatmeal instead, never pure black, which is
+       what causes the halation that makes light text on dark hard to read.
+
+       The ramp is deliberately narrow. canvas, surface and sunken sit within
+       twenty points of each other so elevation reads as a whisper rather than
+       as a set of stacked panels. */
+    --color-canvas: #181614;
+    --color-surface: #24211e;
+    --color-surface-sunken: #2c2824;
+    --color-ink: #e8e4df;
+    --color-ink-soft: #c8c1b8;
+    --color-muted: #9a9289;
+    --color-line: #35302b;
 
     /* Stronger on navy, where the landing's own washes live and where the
        gradient has room to be seen without competing with the text. */
@@ -303,7 +325,7 @@
        here. The deep band goes a step darker than it is in light: it has to
        stay clearly darker than the reading ground, and the reading ground at
        night is already navy. */
-    --color-band-deep: #05080F;
+    --color-band-deep: #0f0d0c;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -20px rgb(0 0 0 / 0.75);

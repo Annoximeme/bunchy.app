@@ -112,11 +112,11 @@ export default async function BunchesPage({
           {browse.length === 0 ? (
             <EmptyState
               icon="🔍"
-              title={q ? `Nothing matching "${q}"` : "No public bunches yet"}
+              title={q ? `Nothing matching "${q}"` : "Quiet night in your city"}
               description={
                 q
                   ? "Try a broader word, or start a bunch for it yourself."
-                  : "Be the first. A bunch with one thoughtful description attracts better people than an empty search page."
+                  : "Be the first to start a bunch. One with a thoughtful description attracts better people than an empty search page ever will."
               }
               action={<LinkButton href="/bunches/new">Start a bunch</LinkButton>}
             />

@@ -78,7 +78,7 @@ export default async function ConnectionsPage() {
           {connections.length === 0 ? (
             <EmptyState
               icon="🤝"
-              title="No connections yet"
+              title="Nobody here yet, and that is the normal beginning"
               description="Discover suggests a handful of people at a time. Send a request to anyone who looks like your kind of person."
               action={<LinkButton href="/discover">Find people</LinkButton>}
             />

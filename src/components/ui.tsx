@@ -443,12 +443,26 @@ export function EmptyState({
   level?: 2 | 3;
 }) {
   const Heading = level === 2 ? "h2" : "h3";
+  /*
+    Tactile rather than boxed.
+
+    An empty state is the screen somebody sees on their worst day on the
+    product: nothing has happened, nobody is around, and the interface is about
+    to tell them so. A dashed grey box reads as a fault. A soft object with
+    room around it reads as a quiet room, which is what this usually is.
+
+    Squircle, ambient shadow, no border. Boundaries come from the shadow and
+    the space, which is the same rule the landing page's cards follow, so the
+    two halves of the product feel like one thing.
+  */
   return (
-    <div className="card-surface flex flex-col items-center px-6 py-14 text-center">
+    <div className="flex flex-col items-center rounded-squircle bg-surface px-6 py-16 text-center shadow-pebble">
       {icon && <div className="mb-4 text-3xl">{icon}</div>}
-      <Heading className="text-base font-semibold text-ink">{title}</Heading>
-      <p className="mt-1.5 max-w-md text-sm text-muted">{description}</p>
-      {action && <div className="mt-5">{action}</div>}
+      <Heading className="text-lg font-bold tracking-tight text-ink">
+        {title}
+      </Heading>
+      <p className="mt-2 max-w-md leading-relaxed text-ink-soft">{description}</p>
+      {action && <div className="mt-6">{action}</div>}
     </div>
   );
 }

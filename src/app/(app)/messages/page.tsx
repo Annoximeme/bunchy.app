@@ -23,8 +23,8 @@ export default async function MessagesPage() {
       {conversations.length === 0 ? (
         <EmptyState
           icon="💬"
-          title="No conversations yet"
-          description="A conversation opens as soon as someone accepts your connection request, or you accept theirs."
+          title="Nothing to read, which is the point"
+          description="A conversation opens the moment someone accepts your request, or you accept theirs. Until then there is nothing here to check."
           action={<LinkButton href="/discover">Find people</LinkButton>}
         />
       ) : (
