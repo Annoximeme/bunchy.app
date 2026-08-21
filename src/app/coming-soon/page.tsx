@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, MessagesSquare } from "lucide-react";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { person } from "@/lib/example-people";
@@ -344,6 +344,48 @@ export default async function ComingSoonPage({
               </a>
             </section>
           )}
+
+          {/*
+            The Discord, and this is the page that most needs it.
+
+            Behind the gate there is nothing to do here: the waiting list takes
+            an address and then the page is over, which is a strange thing to
+            hand somebody who just decided they were interested. The Discord is
+            the one place where the thing this product is about can actually
+            happen before the product exists, so it is offered to everybody,
+            including the people who already left an address. Those two are
+            different promises: the list tells you when, the Discord is where
+            people already are.
+
+            A link, not an embedded widget. A widget is a third-party iframe
+            and a set of requests the reader did not ask for, on a site whose
+            About page promises no third-party anything.
+          */}
+          <section className="mt-6 flex flex-col items-center gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-6 py-10 text-center">
+            <span
+              aria-hidden
+              className="inline-flex size-11 items-center justify-center rounded-2xl bg-white/[0.06] text-white/70"
+            >
+              <MessagesSquare size={22} />
+            </span>
+            <h2 className="max-w-lg text-balance text-xl font-bold tracking-tight sm:text-2xl">
+              There are already people here
+            </h2>
+            <p className="max-w-md text-white/60">
+              {brand.name} has a Discord. It is where the people waiting for
+              this are talking to each other in the meantime, which is rather
+              the point.
+            </p>
+            <a
+              href={brand.discordUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-7 py-3.5 text-base font-bold tracking-wide transition-colors duration-200 hover:bg-white/[0.07]"
+            >
+              Join the Discord
+              <ArrowRight size={18} aria-hidden />
+            </a>
+          </section>
         </main>
 
         <footer className="mt-16 border-t border-white/10 pt-8 text-sm text-white/50">

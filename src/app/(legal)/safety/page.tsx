@@ -145,6 +145,26 @@ export default function SafetyPage() {
           until you have met them a few times, because that is what they are.
         </p>
       </Clause>
+
+      <Clause n={8} title="The Discord is somewhere else">
+        <p>
+          {brand.name} has an{" "}
+          <a href={brand.discordUrl} target="_blank" rel="noopener noreferrer">
+            official Discord
+          </a>
+          . It is genuinely ours, and it is genuinely not this site. Everything
+          on the rest of this page describes what happens here: our moderators,
+          our reports, our blocking, our audit trail. None of that reaches
+          Discord.
+        </p>
+        <p>
+          Over there you are covered by Discord&rsquo;s own rules and whoever is
+          moderating that server at the time, and reporting somebody to us does
+          not remove them from it. Blocking somebody here does not block them
+          there either. If something happens on the Discord, tell us and tell
+          Discord, because only one of those has the buttons.
+        </p>
+      </Clause>
     </LegalPage>
   );
 }

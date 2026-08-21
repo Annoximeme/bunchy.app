@@ -9,6 +9,15 @@
 export const brand = {
   name: "Bunchy",
   domain: "bunchy.app",
+  /**
+   * The official Discord.
+   *
+   * Here rather than typed into the two or three pages that link it, for the
+   * same reason the name and tagline are: an invite URL is the one piece of
+   * brand identity that can be revoked, and when it is, it should be one line
+   * to change rather than a grep.
+   */
+  discordUrl: "https://discord.gg/2XBrCVWCsa",
   /** The primary line. Spec §40: this is the one that stays. */
   tagline: "Find your bunch.",
   positioning: "You don't need more followers. You need a bunch.",

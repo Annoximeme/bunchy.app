@@ -87,15 +87,27 @@ export function LegalPage({
             aria-label={`${brand.name} pages`}
             className="flex flex-wrap gap-x-5 gap-y-1 text-sm"
           >
-            {SITE_LINKS.filter((link) => link.href !== path).map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-white/60 transition-colors hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {SITE_LINKS.filter((link) => link.href !== path).map((link) =>
+              link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/60 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-white/60 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
           </nav>
         </header>
       </div>
@@ -156,12 +168,23 @@ export function LegalPage({
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {SITE_LINKS.filter((link) => link.href !== path).map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
               <li>

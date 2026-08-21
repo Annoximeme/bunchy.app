@@ -23,6 +23,16 @@ import { cn } from "@/components/ui";
 interface SiteLink {
   href: string;
   label: string;
+  /**
+   * Leaves the site.
+   *
+   * Rendered as a plain anchor with `rel="noopener noreferrer"` rather than a
+   * `next/link`, because a client-side router cannot navigate off the origin
+   * and prefetching a third party's page is a request the reader did not ask
+   * for. The flag also tells the link test to check the URL rather than to
+   * look for a page file that will never exist.
+   */
+  external?: boolean;
 }
 
 export const SITE_LINKS: readonly SiteLink[] = [
@@ -39,6 +49,9 @@ export const SITE_LINKS: readonly SiteLink[] = [
   // straight back to Discover. Without it this link would look broken from
   // inside the product, which is the only place this footer renders.
   { href: "/?home=1", label: "Home" },
+  // Last, and deliberately. It is the only entry that takes somebody off the
+  // site, and the product's whole argument is that leaving is the point.
+  { href: brand.discordUrl, label: "Discord", external: true },
 ] as const;
 
 /**
@@ -67,12 +80,23 @@ export function SiteFooter({ className }: { className?: string }) {
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {SITE_LINKS.map((link) => (
               <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </Link>
+                {link.external ? (
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-ink"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    href={link.href}
+                    className="transition-colors hover:text-ink"
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

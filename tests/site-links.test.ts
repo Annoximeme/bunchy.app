@@ -44,8 +44,17 @@ function routeExists(path: string): boolean {
 
 describe("the shared site links", () => {
   it("point at pages that exist", () => {
-    for (const link of SITE_LINKS) {
+    for (const link of SITE_LINKS.filter((l) => !l.external)) {
       expect(routeExists(link.href), `${link.href} has no page`).toBe(true);
+    }
+  });
+
+  it("send people off-site only over https", () => {
+    // An external entry is exempt from the file check above, so this is the
+    // only thing standing between a typo and a footer link on every page
+    // pointing somewhere unencrypted.
+    for (const link of SITE_LINKS.filter((l) => l.external)) {
+      expect(link.href).toMatch(/^https:\/\//);
     }
   });
 
