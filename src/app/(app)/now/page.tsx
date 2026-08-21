@@ -9,6 +9,8 @@ import { Card, Chip, EmptyState, LinkButton } from "@/components/ui";
 import { Avatar } from "@/components/ui";
 import { NowFilters } from "@/components/now-filters";
 import { WhosUp } from "@/components/whos-up";
+import { openCalls } from "@/server/modules/activities/quick";
+import { OpenCalls } from "@/components/open-calls";
 
 export const metadata: Metadata = { title: "Bunchy Now" };
 export const dynamic = "force-dynamic";
@@ -63,11 +65,16 @@ export default async function BunchyNowPage({
   const horizon = (HORIZONS.find((h) => h.value === params.horizon)?.value ??
     "all") as Horizon | "all";
 
-  const board = await bunchyNow(viewer.profileId, {
-    horizon,
-    withinKm: params.withinKm ? Number(params.withinKm) : null,
-    minScore: params.minScore ? Number(params.minScore) : undefined,
-  });
+  const [board, calls] = await Promise.all([
+    bunchyNow(viewer.profileId, {
+      horizon,
+      withinKm: params.withinKm ? Number(params.withinKm) : null,
+      minScore: params.minScore ? Number(params.minScore) : undefined,
+    }),
+    // Loaded alongside the board rather than after it: it renders above the
+    // filters and a sequential fetch would hold the page on the shorter query.
+    openCalls(viewer.profileId),
+  ]);
 
   const totalUp = board.clusters.reduce((sum, c) => sum + c.count, 0);
 
@@ -91,6 +98,13 @@ export default async function BunchyNowPage({
           disabled={board.hidden}
         />
       </div>
+
+      {/*
+        Above the filters, because a call is a thing you can act on and the
+        board below is a thing you have to read. Somebody who came here bored
+        should meet the answerable question first.
+      */}
+      <OpenCalls calls={calls} />
 
       <NowFilters horizons={HORIZONS} active={horizon} />
 
