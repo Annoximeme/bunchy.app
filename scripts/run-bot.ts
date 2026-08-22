@@ -11,17 +11,21 @@ import { env } from "@/server/env";
 import {
   UP_FOR_CHOICES,
   announceable,
+  announceableSeries,
   aroundCommand,
   callCommand,
   joinByReaction,
   linkCommand,
+  markAnnounced,
   tonightCommand,
   unlinkCommand,
   upForCommand,
   weekCommand,
 } from "@/server/modules/discord/commands";
 import { setVoicePresence } from "@/server/modules/discord/presence";
-import { announceTarget } from "@/server/modules/discord/settings";
+import { profileForDiscordId } from "@/server/modules/discord/link";
+import { dueDirectMessages } from "@/server/modules/discord/dm";
+import { announceTarget, botSettings } from "@/server/modules/discord/settings";
 
 /**
  * The Bunchy Discord bot.
@@ -52,6 +56,12 @@ import { announceTarget } from "@/server/modules/discord/settings";
  */
 
 const ANNOUNCE_EVERY_MS = 5 * 60 * 1000;
+/*
+  Tighter than the announce pass, because a reminder has a deadline. The window
+  is thirty minutes and a five-minute poll would deliver some of them with four
+  minutes to spare.
+*/
+const DM_EVERY_MS = 2 * 60 * 1000;
 
 function ephemeral(interaction: ChatInputCommandInteraction, content: string) {
   return interaction.reply({ content, flags: MessageFlags.Ephemeral });
@@ -265,6 +275,8 @@ async function main() {
     Discord user is nobody as far as Bunchy is concerned, and guessing from a
     username is exactly the trust failure account linking exists to prevent.
   */
+  const NUDGED = new Set<string>();
+
   client.on("voiceStateUpdate", async (before, after) => {
     const discordId = after.member?.id ?? before.member?.id;
     if (!discordId) return;
@@ -273,6 +285,49 @@ async function main() {
     } catch (error) {
       console.error("[bot] presence update failed:", error);
     }
+
+    /*
+      A channel that is already busy is the easiest thing in the product to
+      fill, and nobody ever thinks to post it.
+
+      When a second person joins, whoever is linked gets one DM offering to
+      turn it into an open call. It converts something already happening into
+      something joinable, which is the whole shape of the product, and it costs
+      the people in the channel nothing if they ignore it.
+
+      Once per channel per process. Somebody who declined does not get asked
+      again every time a fourth person walks in, and a bot that nags is worse
+      than one that never offered.
+    */
+    const channel = after.channel;
+    if (!channel || channel.members.size < 2) return;
+    if (NUDGED.has(channel.id)) return;
+    NUDGED.add(channel.id);
+
+    try {
+      const profile = await profileForDiscordId(discordId);
+      // Only somebody who has linked. An unlinked account cannot create a call
+      // and being DMed about one would be noise from a stranger.
+      if (!profile) return;
+
+      const user = await client.users.fetch(discordId);
+      await user
+        .send(
+          `There are ${channel.members.size} of you in ${channel.name}. Want others to be able to join? ` +
+            `Post it with \`/call\` and it shows up on Bunchy and in the channel. It closes on its own.`,
+        )
+        .catch(() => {
+          // Closed DMs are common and are not an error.
+        });
+    } catch (error) {
+      console.error("[bot] voice nudge failed:", error);
+    }
+  });
+
+  // Cleared when a channel empties, so tomorrow's session can be offered again.
+  client.on("voiceStateUpdate", (before) => {
+    const channel = before.channel;
+    if (channel && channel.members.size === 0) NUDGED.delete(channel.id);
   });
 
   /*
@@ -284,25 +339,32 @@ async function main() {
     over what was actually posted, so a failed send is retried rather than lost,
     and a restart does not replay the afternoon.
   */
-  let since = new Date();
-
   /*
-    The target is read on every pass rather than captured at boot, so changing
-    the channel or switching announcements off on the admin page takes effect
-    within five minutes instead of at the next deploy. That is the whole reason
-    those two moved out of the environment.
+    Announcements.
+
+    Polled rather than pushed, because the thing that creates a call is the web
+    process and this is a different container: a queue between them would be
+    real infrastructure for a message every few minutes.
+
+    Exactly-once now comes from a column on the activity rather than a
+    timestamp in this process, so a restart replays nothing and an occurrence
+    that sits in "on today" for hours is still posted only once. The marker is
+    written after a successful send, so a failed post is retried.
+
+    The target and the series switch are read every pass, so changing either on
+    the admin page lands within five minutes.
   */
   setInterval(async () => {
     try {
       const channelId = await announceTarget();
       if (!channelId) return;
 
-      const calls = await announceable(since);
-      if (calls.length === 0) return;
-
       const channel = await client.channels.fetch(channelId);
       if (!channel?.isTextBased() || !("send" in channel)) return;
 
+      const settings = await botSettings();
+
+      const calls = await announceable();
       for (const call of calls) {
         const message = await channel.send(
           `**${call.title}**, ${call.spotsLeft} ${
@@ -310,15 +372,56 @@ async function main() {
           } left. React ${JOIN_EMOJI} to join, or ${call.url}`,
         );
         ANNOUNCED.set(message.id, call.id);
-        // Pre-added so the reaction is one tap rather than two: nobody has to
-        // find the emoji picker to answer.
         await message.react(JOIN_EMOJI).catch(() => {});
+        await markAnnounced(call.id);
       }
-      since = new Date();
+
+      if (!settings.announceSeries) return;
+
+      const occurrences = await announceableSeries();
+      for (const occurrence of occurrences) {
+        const when = occurrence.startsAt.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        // Worded as a standing thing rather than as a request. Nobody is
+        // asking; it is on.
+        const message = await channel.send(
+          `**${occurrence.title}** is on tonight at ${when}, ${occurrence.going} going. React ${JOIN_EMOJI} to come, or ${occurrence.url}`,
+        );
+        ANNOUNCED.set(message.id, occurrence.id);
+        await message.react(JOIN_EMOJI).catch(() => {});
+        await markAnnounced(occurrence.id);
+      }
     } catch (error) {
       console.error("[bot] announce pass failed:", error);
     }
   }, ANNOUNCE_EVERY_MS);
+
+  /*
+    Direct messages: reminders for things somebody joined, and the outcome
+    question for something they went to.
+
+    Every one is tied to an action the member took. Nothing fires because
+    somebody has been quiet or because there is something new to look at, which
+    are the messages /about promises do not exist, and a private channel is
+    where it would be easiest to break that promise quietly.
+
+    A closed DM is not an error and is not retried differently: the mark is
+    written either way, because somebody who has closed their DMs has already
+    said what they want.
+  */
+  setInterval(async () => {
+    try {
+      for (const message of await dueDirectMessages()) {
+        const user = await client.users.fetch(message.discordId).catch(() => null);
+        if (user) await user.send(message.content).catch(() => {});
+        await message.mark();
+      }
+    } catch (error) {
+      console.error("[bot] direct message pass failed:", error);
+    }
+  }, DM_EVERY_MS);
 
   await client.login(token);
   // `env()` after login so a misconfigured APP_URL fails loudly at startup

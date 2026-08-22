@@ -83,7 +83,16 @@ function closesIn(expiresAt: Date, now: Date): string {
   return `closes in ${hours} ${hours === 1 ? "hour" : "hours"}`;
 }
 
-export function OpenCalls({ calls }: { calls: OpenCall[] }) {
+export function OpenCalls({
+  calls,
+  around = 0,
+  discordUrl,
+}: {
+  calls: OpenCall[];
+  /** How many linked members are in a voice channel. A count, never names. */
+  around?: number;
+  discordUrl: string;
+}) {
   const router = useRouter();
   const now = new Date();
 
@@ -138,6 +147,26 @@ export function OpenCalls({ calls }: { calls: OpenCall[] }) {
           <h2 className="text-lg font-bold tracking-tight">Open calls</h2>
           <p className="text-sm text-muted">
             Somebody asking, right now. They close on their own.
+            {/*
+              The reverse link. Presence already flows from Discord into the
+              count on this page; this is the sentence that tells somebody the
+              room exists and how to walk into it. A count, never names, the
+              same rule the rest of this board follows.
+            */}
+            {around > 0 && (
+              <>
+                {" "}
+                <a
+                  href={discordUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent-ink underline underline-offset-2"
+                >
+                  {around} in voice on Discord
+                </a>{" "}
+                now.
+              </>
+            )}
           </p>
         </div>
         {!asking && (

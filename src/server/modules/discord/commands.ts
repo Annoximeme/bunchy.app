@@ -151,16 +151,15 @@ export async function callCommand(
  * Three of them, and each removes a different way this goes wrong.
  *
  * Only calls with room, because announcing a full one is noise nobody can act
- * on. Only calls made in the last few minutes, so a restart of the bot does not
- * replay the afternoon into the channel. And nothing from a call inside a
- * private bunch, because that is a group's own business and Discord is a
- * different room with different people in it.
+ * on. Only ones never posted before, tracked by a column rather than by a
+ * timestamp in the process, so a restart replays nothing. And nothing from a
+ * call inside a private bunch, because that is a group's own business and
+ * Discord is a different room with different people in it.
  *
- * The caller is expected to remember what it has posted. This returns
- * candidates; it does not decide twice.
+ * `markAnnounced` is the caller's job and happens after a successful send, so a
+ * failed post is retried on the next pass rather than lost.
  */
 export async function announceable(
-  since: Date,
   now = new Date(),
 ): Promise<
   Array<{ id: string; title: string; going: number; spotsLeft: number; url: string }>
@@ -169,7 +168,7 @@ export async function announceable(
     where: {
       status: "SCHEDULED",
       expiresAt: { not: null, gt: now },
-      createdAt: { gt: since },
+      discordAnnouncedAt: null,
       // A private group's plans are not the Discord's business.
       OR: [{ bunchId: null }, { bunch: { visibility: "PUBLIC" } }],
     },
@@ -288,4 +287,67 @@ export async function unlinkCommand(ctx: CommandContext): Promise<string> {
 
   await unlinkDiscord(profile.id);
   return "Disconnected. Voice presence stops counting you, and the commands will need linking again.";
+}
+
+/**
+ * Occurrences of a standing arrangement, worth one message on the day.
+ *
+ * Separate from `announceable` because they are a different kind of thing and
+ * deserve different rules. A quick call is an offer that closes; an occurrence
+ * is a ritual that was already agreed, so the message is not "somebody is
+ * asking" but "this is on tonight". It goes out once, on the day, rather than
+ * as soon as the occurrence is created a fortnight ahead, because a fortnight
+ * of notice in a chat channel is noise by the time it matters.
+ *
+ * Only ones with room, and never from a private bunch, matching the rules for
+ * quick calls: a group's own Thursday is not the Discord's business.
+ */
+export async function announceableSeries(
+  now = new Date(),
+): Promise<
+  Array<{ id: string; title: string; going: number; spotsLeft: number; url: string; startsAt: Date }>
+> {
+  const endOfDay = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+
+  const rows = await db.activity.findMany({
+    where: {
+      status: "SCHEDULED",
+      seriesId: { not: null },
+      // On today, and still ahead. Something that started an hour ago is not an
+      // invitation any more.
+      startsAt: { gt: now, lte: endOfDay },
+      // Once, ever. Without this an occurrence at 20:00 is posted on every
+      // pass from the moment it enters the window.
+      discordAnnouncedAt: null,
+      OR: [{ bunchId: null }, { bunch: { visibility: "PUBLIC" } }],
+    },
+    orderBy: { startsAt: "asc" },
+    take: 5,
+    select: {
+      id: true,
+      title: true,
+      startsAt: true,
+      maxParticipants: true,
+      _count: { select: { participants: true } },
+    },
+  });
+
+  return rows
+    .map((row) => ({
+      id: row.id,
+      title: row.title,
+      startsAt: row.startsAt,
+      going: row._count.participants,
+      spotsLeft: row.maxParticipants - row._count.participants,
+      url: appUrl(`/activities/${row.id}`),
+    }))
+    .filter((row) => row.spotsLeft > 0);
+}
+
+/** Written after a successful post, so a failed one is retried rather than lost. */
+export async function markAnnounced(activityId: string): Promise<void> {
+  await db.activity.update({
+    where: { id: activityId },
+    data: { discordAnnouncedAt: new Date() },
+  });
 }

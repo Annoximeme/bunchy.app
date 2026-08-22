@@ -11,6 +11,8 @@ import { NowFilters } from "@/components/now-filters";
 import { WhosUp } from "@/components/whos-up";
 import { openCalls } from "@/server/modules/activities/quick";
 import { OpenCalls } from "@/components/open-calls";
+import { brand } from "@/lib/brand";
+import { presentCount } from "@/server/modules/discord/presence";
 
 export const metadata: Metadata = { title: "Bunchy Now" };
 export const dynamic = "force-dynamic";
@@ -65,7 +67,7 @@ export default async function BunchyNowPage({
   const horizon = (HORIZONS.find((h) => h.value === params.horizon)?.value ??
     "all") as Horizon | "all";
 
-  const [board, calls] = await Promise.all([
+  const [board, calls, around] = await Promise.all([
     bunchyNow(viewer.profileId, {
       horizon,
       withinKm: params.withinKm ? Number(params.withinKm) : null,
@@ -74,6 +76,7 @@ export default async function BunchyNowPage({
     // Loaded alongside the board rather than after it: it renders above the
     // filters and a sequential fetch would hold the page on the shorter query.
     openCalls(viewer.profileId),
+    presentCount(),
   ]);
 
   const totalUp = board.clusters.reduce((sum, c) => sum + c.count, 0);
@@ -104,7 +107,7 @@ export default async function BunchyNowPage({
         board below is a thing you have to read. Somebody who came here bored
         should meet the answerable question first.
       */}
-      <OpenCalls calls={calls} />
+      <OpenCalls calls={calls} around={around} discordUrl={brand.discordUrl} />
 
       <NowFilters horizons={HORIZONS} active={horizon} />
 

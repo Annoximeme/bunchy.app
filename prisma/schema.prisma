@@ -975,6 +975,15 @@ model Activity {
   /// The ritual this is an occurrence of, if it is one. Null for a one-off.
   seriesId        String?
 
+  /// When this was posted to Discord, if it was.
+  ///
+  /// Exactly-once, and restart-safe, which an in-memory marker is not. The
+  /// announcer previously kept a `since` timestamp in the process: good enough
+  /// for quick calls, which enter the window once, and wrong for an occurrence
+  /// of a standing arrangement, which sits in "on today" for hours and would
+  /// have been posted on every five-minute pass until it started.
+  discordAnnouncedAt DateTime?
+
   /// When an open call stops being open. Null for an ordinary plan.
   ///
   /// Only set on a quick call: "anyone want to play right now". Those are made
@@ -1008,6 +1017,13 @@ model ActivityParticipant {
   profileId  String
   status     ParticipationStatus @default(JOINED)
   joinedAt   DateTime            @default(now())
+
+  /// When a Discord reminder went out for this person and this activity.
+  ///
+  /// On the participant rather than the activity, because the reminder is to a
+  /// person about their own commitment: two people joining the same evening
+  /// each get one, and one of them unlinking does not silence the other.
+  discordRemindedAt DateTime?
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
