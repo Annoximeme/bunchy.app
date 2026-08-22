@@ -1,7 +1,7 @@
 import { AppError } from "@/server/errors";
 import { recordModerationEvent } from "@/server/modules/admin/audit";
 import type { StaffViewer } from "@/server/modules/admin/guard";
-import { rulesEmbed } from "@/server/modules/discord/messages";
+import { rulesEmbeds } from "@/server/modules/discord/messages";
 import { botSettings, rememberRulesMessage } from "@/server/modules/discord/settings";
 
 /**
@@ -67,7 +67,7 @@ export async function publishRules(actor: StaffViewer): Promise<PublishResult> {
     );
   }
 
-  const body = JSON.stringify({ embeds: [rulesEmbed()] });
+  const body = JSON.stringify({ embeds: rulesEmbeds() });
   let edited = false;
   let messageId: string | null = null;
 

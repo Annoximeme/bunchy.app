@@ -31,7 +31,7 @@ import {
   rememberRulesMessage,
   welcomeTarget,
 } from "@/server/modules/discord/settings";
-import { rulesEmbed, welcomeMessage } from "@/server/modules/discord/messages";
+import { rulesEmbeds, welcomeMessage } from "@/server/modules/discord/messages";
 
 /**
  * The Bunchy Discord bot.
@@ -465,7 +465,7 @@ async function main() {
       return "I cannot post in that channel.";
     }
 
-    const embeds = [rulesEmbed()];
+    const embeds = rulesEmbeds();
 
     if (settings.rulesMessageId) {
       try {
