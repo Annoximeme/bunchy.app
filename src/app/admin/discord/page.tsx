@@ -202,18 +202,25 @@ export default async function DiscordSetupPage() {
 
           <Step n={2} title="Turn on the one intent it needs" state={token.ok ? "ok" : "todo"}>
             <p>
-              Still on the Bot tab, under Privileged Gateway Intents, enable{" "}
-              <strong>Server Members Intent</strong> off and{" "}
-              <strong>Presence Intent</strong> off, and leave{" "}
+              Still on the Bot tab, under Privileged Gateway Intents, turn{" "}
+              <strong>Server Members Intent</strong> <strong>on</strong>. Leave{" "}
+              <strong>Presence Intent</strong> and{" "}
               <strong>Message Content Intent</strong> off.
             </p>
             <p>
-              The bot asks for <Code>Guilds</Code>, <Code>GuildVoiceStates</Code>{" "}
-              and <Code>GuildMessageReactions</Code>. None of those is
-              privileged. Message content is deliberately not among them: the
-              reaction intent says who reacted to which message and never what
-              anybody wrote, and asking for message content would mean asking to
-              read the whole server in order to run a handful of commands.
+              Server Members is what tells the bot somebody joined, so the
+              welcome message is impossible without it. Discord refuses the
+              connection outright rather than degrading when a declared
+              privileged intent is not enabled, so if the first line of this
+              page says the token works, it is already on.
+            </p>
+            <p>
+              The other three, <Code>Guilds</Code>, <Code>GuildVoiceStates</Code>{" "}
+              and <Code>GuildMessageReactions</Code>, are not privileged.
+              Message content is deliberately not among them: the reaction
+              intent says who reacted to which message and never what anybody
+              wrote, and asking for message content would mean asking to read
+              the whole server in order to run a handful of commands.
             </p>
           </Step>
 
