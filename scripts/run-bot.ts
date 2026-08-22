@@ -21,6 +21,7 @@ import {
   weekCommand,
 } from "@/server/modules/discord/commands";
 import { setVoicePresence } from "@/server/modules/discord/presence";
+import { announceTarget } from "@/server/modules/discord/settings";
 
 /**
  * The Bunchy Discord bot.
@@ -284,37 +285,40 @@ async function main() {
     and a restart does not replay the afternoon.
   */
   let since = new Date();
-  const channelId = process.env.DISCORD_ANNOUNCE_CHANNEL_ID;
 
-  if (channelId) {
-    setInterval(async () => {
-      try {
-        const calls = await announceable(since);
-        if (calls.length === 0) return;
+  /*
+    The target is read on every pass rather than captured at boot, so changing
+    the channel or switching announcements off on the admin page takes effect
+    within five minutes instead of at the next deploy. That is the whole reason
+    those two moved out of the environment.
+  */
+  setInterval(async () => {
+    try {
+      const channelId = await announceTarget();
+      if (!channelId) return;
 
-        const channel = await client.channels.fetch(channelId);
-        if (!channel?.isTextBased() || !("send" in channel)) return;
+      const calls = await announceable(since);
+      if (calls.length === 0) return;
 
-        for (const call of calls) {
-          const message = await channel.send(
-            `**${call.title}** — ${call.spotsLeft} ${
-              call.spotsLeft === 1 ? "spot" : "spots"
-            } left. React ${JOIN_EMOJI} to join, or ${call.url}`,
-          );
-          ANNOUNCED.set(message.id, call.id);
-          // Pre-added so the reaction is one tap rather than two: nobody has to
-          // find the emoji picker to answer.
-          await message.react(JOIN_EMOJI).catch(() => {});
-        }
-        since = new Date();
-      } catch (error) {
-        console.error("[bot] announce pass failed:", error);
+      const channel = await client.channels.fetch(channelId);
+      if (!channel?.isTextBased() || !("send" in channel)) return;
+
+      for (const call of calls) {
+        const message = await channel.send(
+          `**${call.title}**, ${call.spotsLeft} ${
+            call.spotsLeft === 1 ? "spot" : "spots"
+          } left. React ${JOIN_EMOJI} to join, or ${call.url}`,
+        );
+        ANNOUNCED.set(message.id, call.id);
+        // Pre-added so the reaction is one tap rather than two: nobody has to
+        // find the emoji picker to answer.
+        await message.react(JOIN_EMOJI).catch(() => {});
       }
-    }, ANNOUNCE_EVERY_MS);
-    console.info("[bot] announcing to", channelId);
-  } else {
-    console.info("[bot] DISCORD_ANNOUNCE_CHANNEL_ID not set, not announcing");
-  }
+      since = new Date();
+    } catch (error) {
+      console.error("[bot] announce pass failed:", error);
+    }
+  }, ANNOUNCE_EVERY_MS);
 
   await client.login(token);
   // `env()` after login so a misconfigured APP_URL fails loudly at startup

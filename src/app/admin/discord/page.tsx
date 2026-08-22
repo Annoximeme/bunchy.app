@@ -6,12 +6,13 @@ import { brand } from "@/lib/brand";
 import { AdminHeader, Panel } from "@/components/admin/primitives";
 import {
   REQUIRED_PERMISSIONS,
-  checkAnnounceChannel,
   checkGuild,
   checkToken,
   inviteUrl,
   linkedMemberCount,
 } from "@/server/modules/discord/setup";
+import { botSettings } from "@/server/modules/discord/settings";
+import { DiscordControls } from "@/components/admin/discord-controls";
 
 export const metadata: Metadata = { title: "Discord bot" };
 export const dynamic = "force-dynamic";
@@ -105,12 +106,17 @@ export default async function DiscordSetupPage() {
 
   // In parallel: three round trips to Discord, and this page is behind an
   // admin guard rather than in front of a member.
-  const [token, guild, channel, linked] = await Promise.all([
+  const [token, guild, linked, settings] = await Promise.all([
     checkToken(),
     checkGuild(),
-    checkAnnounceChannel(),
     linkedMemberCount(),
+    botSettings(),
   ]);
+
+  // Everything up and running, so the setup steps are folded away by default.
+  // A wizard that stays open forever is a page that never stops looking
+  // unfinished.
+  const ready = token.ok && guild.ok;
 
   const invite = token.applicationId ? inviteUrl(token.applicationId) : null;
 
@@ -143,13 +149,17 @@ export default async function DiscordSetupPage() {
           </Status>
 
           <Status
-            state={channel.configured ? (channel.ok ? "ok" : "bad") : "todo"}
+            state={
+              settings.announceChannelId && settings.announcementsEnabled
+                ? "ok"
+                : "todo"
+            }
           >
-            {!channel.configured
-              ? "No announce channel set. Commands still work; nothing is posted."
-              : channel.ok
-                ? `Announcing to #${channel.channelName}.`
-                : (channel.error ?? "Cannot see that channel.")}
+            {!settings.announceChannelId
+              ? "Announcing nowhere. Commands still work; nothing is posted."
+              : !settings.announcementsEnabled
+                ? `Announcements are switched off. The channel is still #${settings.announceChannelName ?? settings.announceChannelId}.`
+                : `Announcing to #${settings.announceChannelName ?? settings.announceChannelId}.`}
           </Status>
 
           <Status state={linked > 0 ? "ok" : "todo"}>
@@ -160,8 +170,19 @@ export default async function DiscordSetupPage() {
         </div>
       </Panel>
 
-      <Panel title="Setting it up" className="mt-6">
-        <ol className="text-sm">
+      <Panel
+        title="Controls"
+        note="Changed here rather than in a file on the server. The bot re-reads these every pass, so a change lands within five minutes."
+        className="mt-6"
+      >
+        <DiscordControls
+          settings={settings}
+          channels={guild.channels ?? []}
+        />
+      </Panel>
+
+      <Panel title={ready ? "Setup, for reference" : "Setting it up"} className="mt-6">
+        <ol className={`text-sm ${ready ? "opacity-70" : ""}`}>
           <Step n={1} title="Create the application" state={token.ok ? "ok" : "todo"}>
             <p>
               Go to{" "}
@@ -260,40 +281,21 @@ DISCORD_GUILD_ID=your-server-id`}
             )}
           </Step>
 
+          {/*
+            Step five used to be "paste a channel id into .env and redeploy".
+            That is the Controls panel above now, so this step is a pointer
+            rather than a set of instructions to a thing that no longer works
+            that way.
+          */}
           <Step
             n={5}
             title="Choose where it announces"
-            state={channel.configured ? (channel.ok ? "ok" : "bad") : "todo"}
+            state={settings.announceChannelId ? "ok" : "todo"}
           >
             <p>
-              Optional. Leave it unset and the commands still work while nothing
-              is posted, which is the safer default until you have picked a
-              channel.
+              In the Controls panel at the top of this page. It takes effect
+              within five minutes and needs no deploy.
             </p>
-            {guild.ok && guild.channels && guild.channels.length > 0 ? (
-              <>
-                <p>Channels the bot can currently see:</p>
-                <ul className="divide-y divide-line rounded-[var(--radius-control)] border border-line">
-                  {guild.channels.map((c) => (
-                    <li
-                      key={c.id}
-                      className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
-                    >
-                      <span className="font-medium text-ink">#{c.name}</span>
-                      <code className="font-mono text-[12px] text-muted">{c.id}</code>
-                    </li>
-                  ))}
-                </ul>
-                <p>
-                  Put the id in <Code>DISCORD_ANNOUNCE_CHANNEL_ID</Code> and
-                  redeploy.
-                </p>
-              </>
-            ) : (
-              <p className="text-muted">
-                The list of channels appears here once the bot is in the server.
-              </p>
-            )}
           </Step>
 
           <Step n={6} title="Connect your own account" state={linked > 0 ? "ok" : "todo"}>

@@ -37,11 +37,19 @@ export default async function AdminLayout({
         </Link>
       </header>
 
-      <AdminNav openReports={openReports} canManageAccounts={isAdmin(viewer)} />
+      {/*
+        Nav beside the content rather than above it. Sixteen destinations do
+        not fit across a page, and the previous horizontal bar solved that by
+        scrolling, which hid five of them at most widths. A column has room for
+        headings, and headings are what make sixteen items findable.
+      */}
+      <div className="mx-auto flex w-full max-w-[80rem] flex-col md:flex-row">
+        <AdminNav openReports={openReports} canManageAccounts={isAdmin(viewer)} />
 
-      <main id="main" className="mx-auto w-full max-w-6xl px-5 py-8">
-        {children}
-      </main>
+        <main id="main" className="min-w-0 flex-1 px-5 py-8">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

@@ -897,6 +897,41 @@ model DiscordLinkCode {
   @@index([expiresAt])
 }
 
+/// Bot settings an admin can change without a deploy.
+///
+/// A single row, because there is one bot. The alternative is a generic
+/// key-value settings table, which is a schema that describes nothing and a
+/// place every future feature dumps a string into.
+///
+/// ## Why these are not environment variables
+///
+/// The token and the guild id stay in the environment: they are secrets or
+/// near-secrets, they are set once, and changing them is a deploy anyway.
+/// These two are neither. Choosing where to announce and switching
+/// announcements off are things an operator wants to do at the moment the
+/// channel is wrong or the noise is unwelcome, which is exactly when editing a
+/// file on a server and redeploying is the least likely thing to happen.
+model BotSettings {
+  /// Always "default". A guard against a second row appearing and the product
+  /// quietly reading whichever came back first.
+  id String @id @default("default")
+
+  /// Where open calls are posted. Null means announcements are off.
+  announceChannelId String?
+  /// Kept for display so the admin page can name the channel without a round
+  /// trip to Discord. Never matched on.
+  announceChannelName String?
+
+  /// Off without clearing the channel, so switching announcements back on does
+  /// not mean choosing where all over again.
+  announcementsEnabled Boolean @default(true)
+
+  /// Whether occurrences of a standing arrangement are announced as well.
+  announceSeries Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+}
+
 enum ActivityMode {
   ONLINE
   OFFLINE
