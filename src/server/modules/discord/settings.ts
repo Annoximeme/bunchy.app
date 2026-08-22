@@ -21,6 +21,11 @@ export interface BotSettingsView {
   announceChannelName: string | null;
   announcementsEnabled: boolean;
   announceSeries: boolean;
+  welcomeChannelId: string | null;
+  welcomeChannelName: string | null;
+  rulesChannelId: string | null;
+  rulesChannelName: string | null;
+  rulesMessageId: string | null;
 }
 
 export async function botSettings(): Promise<BotSettingsView> {
@@ -63,6 +68,8 @@ export async function updateBotSettings(
       announceChannelName: updated.announceChannelName,
       announcementsEnabled: updated.announcementsEnabled,
       announceSeries: updated.announceSeries,
+      welcomeChannelId: updated.welcomeChannelId,
+      rulesChannelId: updated.rulesChannelId,
     },
   });
 
@@ -74,4 +81,22 @@ export async function announceTarget(): Promise<string | null> {
   const settings = await botSettings();
   if (!settings.announcementsEnabled) return null;
   return settings.announceChannelId;
+}
+
+/** Where to greet somebody, and where the rules live. Read by the bot. */
+export async function welcomeTarget(): Promise<{
+  welcomeChannelId: string | null;
+  rulesChannelId: string | null;
+}> {
+  const settings = await botSettings();
+  return {
+    welcomeChannelId: settings.welcomeChannelId,
+    rulesChannelId: settings.rulesChannelId,
+  };
+}
+
+/** Remember which message holds the rules, so the next publish edits it. */
+export async function rememberRulesMessage(messageId: string): Promise<void> {
+  await botSettings();
+  await db.botSettings.update({ where: { id: ID }, data: { rulesMessageId: messageId } });
 }

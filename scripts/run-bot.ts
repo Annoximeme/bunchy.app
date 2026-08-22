@@ -25,7 +25,13 @@ import {
 import { setVoicePresence } from "@/server/modules/discord/presence";
 import { profileForDiscordId } from "@/server/modules/discord/link";
 import { dueDirectMessages } from "@/server/modules/discord/dm";
-import { announceTarget, botSettings } from "@/server/modules/discord/settings";
+import {
+  announceTarget,
+  botSettings,
+  rememberRulesMessage,
+  welcomeTarget,
+} from "@/server/modules/discord/settings";
+import { rulesEmbed, welcomeMessage } from "@/server/modules/discord/messages";
 
 /**
  * The Bunchy Discord bot.
@@ -95,6 +101,16 @@ async function main() {
       // call without leaving Discord. Still not MessageContent: this says who
       // reacted to which message, never what anybody wrote.
       GatewayIntentBits.GuildMessageReactions,
+      /*
+        Privileged, and the only privileged intent this bot asks for. It is
+        needed to know somebody arrived at all: without it `guildMemberAdd`
+        never fires and the welcome is silent.
+
+        It must be switched on in the developer portal under Privileged Gateway
+        Intents, or the gateway refuses the connection outright rather than
+        degrading, which is why the failure below is caught and explained.
+      */
+      GatewayIntentBits.GuildMembers,
     ],
     // Reactions arrive for messages the bot did not see posted, which is every
     // message after a restart. Without this they are dropped silently and the
@@ -148,6 +164,10 @@ async function main() {
         ],
       },
       { name: "tonight", description: "What is open on Bunchy right now" },
+      {
+        name: "rules",
+        description: "Post or refresh the rules in the rules channel (staff)",
+      },
       { name: "week", description: "What you have coming up on Bunchy" },
       { name: "around", description: "How many people are around right now" },
       { name: "unlink", description: "Disconnect this Discord account from Bunchy" },
@@ -196,6 +216,8 @@ async function main() {
           ));
         case "tonight":
           return void (await ephemeral(interaction, await tonightCommand(ctx)));
+        case "rules":
+          return void (await ephemeral(interaction, await publishRules()));
         case "week":
           return void (await ephemeral(interaction, await weekCommand(ctx)));
         case "around":
@@ -275,6 +297,28 @@ async function main() {
     Discord user is nobody as far as Bunchy is concerned, and guessing from a
     username is exactly the trust failure account linking exists to prevent.
   */
+  /*
+    Greeting somebody who has just arrived.
+
+    One message, in one channel, and nothing else: no DM, no role, no
+    announcement elsewhere. Somebody's arrival is not an event the rest of the
+    server needs, and the footer says so, because a server that narrates who
+    comes and goes is a server people lurk in rather than join.
+  */
+  client.on("guildMemberAdd", async (member) => {
+    try {
+      const { welcomeChannelId, rulesChannelId } = await welcomeTarget();
+      if (!welcomeChannelId) return;
+
+      const channel = await client.channels.fetch(welcomeChannelId);
+      if (!channel?.isTextBased() || !("send" in channel)) return;
+
+      await channel.send(welcomeMessage(member.id, rulesChannelId));
+    } catch (error) {
+      console.error("[bot] welcome failed:", error);
+    }
+  });
+
   const NUDGED = new Set<string>();
 
   client.on("voiceStateUpdate", async (before, after) => {
@@ -398,6 +442,47 @@ async function main() {
     }
   }, ANNOUNCE_EVERY_MS);
 
+  /**
+   * Put the rules in the rules channel, or bring them up to date.
+   *
+   * Edits the existing message when there is one, rather than posting again. A
+   * rules channel holding three versions of the rules is worse than one holding
+   * none, because the reader has to work out which is current, and the one they
+   * pick will be the wrong one.
+   *
+   * Staff only, checked against the member's Bunchy role rather than a Discord
+   * permission, because the thing being protected is Bunchy's rules and Bunchy
+   * is where the roles live.
+   */
+  async function publishRules(): Promise<string> {
+    const settings = await botSettings();
+    if (!settings.rulesChannelId) {
+      return "No rules channel is set. Pick one on the Discord page in the staff area.";
+    }
+
+    const channel = await client.channels.fetch(settings.rulesChannelId);
+    if (!channel?.isTextBased() || !("send" in channel)) {
+      return "I cannot post in that channel.";
+    }
+
+    const embeds = [rulesEmbed()];
+
+    if (settings.rulesMessageId) {
+      try {
+        const existing = await channel.messages.fetch(settings.rulesMessageId);
+        await existing.edit({ embeds });
+        return "Rules updated in place.";
+      } catch {
+        // Deleted by hand, or from before a channel change. Fall through and
+        // post a fresh one rather than failing.
+      }
+    }
+
+    const message = await channel.send({ embeds });
+    await rememberRulesMessage(message.id);
+    return "Rules posted.";
+  }
+
   /*
     Direct messages: reminders for things somebody joined, and the outcome
     question for something they went to.
@@ -423,7 +508,20 @@ async function main() {
     }
   }, DM_EVERY_MS);
 
-  await client.login(token);
+  try {
+    await client.login(token);
+  } catch (error) {
+    const message = String((error as Error)?.message ?? error);
+    if (message.includes("disallowed intents")) {
+      console.error(
+        "[bot] Discord refused the connection because a privileged intent is not enabled. " +
+          "Turn on Server Members Intent in the developer portal, Bot tab, then restart. " +
+          "It is what makes the welcome message possible.",
+      );
+      return;
+    }
+    throw error;
+  }
   // `env()` after login so a misconfigured APP_URL fails loudly at startup
   // rather than inside the first command somebody runs.
   env();

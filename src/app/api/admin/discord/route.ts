@@ -8,6 +8,11 @@ const schema = z.object({
   announceChannelName: z.string().trim().max(120).nullable().optional(),
   announcementsEnabled: z.boolean().optional(),
   announceSeries: z.boolean().optional(),
+  welcomeChannelId: z.string().trim().max(40).nullable().optional(),
+  welcomeChannelName: z.string().trim().max(120).nullable().optional(),
+  rulesChannelId: z.string().trim().max(40).nullable().optional(),
+  rulesChannelName: z.string().trim().max(120).nullable().optional(),
+  rulesMessageId: z.string().trim().max(40).nullable().optional(),
 });
 
 /**

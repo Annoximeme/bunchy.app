@@ -929,6 +929,20 @@ model BotSettings {
   /// Whether occurrences of a standing arrangement are announced as well.
   announceSeries Boolean @default(true)
 
+  /// Where somebody new is greeted. Null means nobody is greeted.
+  welcomeChannelId   String?
+  welcomeChannelName String?
+
+  /// Where the rules live.
+  rulesChannelId   String?
+  rulesChannelName String?
+  /// The message the rules were posted as.
+  ///
+  /// Kept so re-publishing edits that message rather than posting a second
+  /// copy. A rules channel with three versions of the rules in it is worse
+  /// than one with none, because the reader has to work out which is current.
+  rulesMessageId   String?
+
   updatedAt DateTime @updatedAt
 }
 

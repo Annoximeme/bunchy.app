@@ -20,6 +20,11 @@ export interface Settings {
   announceChannelName: string | null;
   announcementsEnabled: boolean;
   announceSeries: boolean;
+  welcomeChannelId: string | null;
+  welcomeChannelName: string | null;
+  rulesChannelId: string | null;
+  rulesChannelName: string | null;
+  rulesMessageId: string | null;
 }
 
 export function DiscordControls({
@@ -122,6 +127,74 @@ export function DiscordControls({
             An occurrence of a weekly thing gets one message on the day, rather
             than only one-off calls being posted.
           </span>
+        </span>
+      </label>
+
+      {/*
+        Welcome and rules. Both are "which channel", so they use the same
+        control as announcements rather than inventing a second way to pick one.
+      */}
+      <label className="block max-w-md">
+        <span className="text-sm font-medium text-ink">Greet new members in</span>
+        <Select
+          className="mt-1.5"
+          value={settings.welcomeChannelId ?? ""}
+          disabled={pending !== null || channels.length === 0}
+          onChange={(event) => {
+            const id = event.target.value || null;
+            save(
+              {
+                welcomeChannelId: id,
+                welcomeChannelName: channels.find((c) => c.id === id)?.name ?? null,
+              },
+              "welcome",
+            );
+          }}
+        >
+          <option value="">Nowhere. Nobody is greeted.</option>
+          {channels.map((channel) => (
+            <option key={channel.id} value={channel.id}>
+              #{channel.name}
+            </option>
+          ))}
+        </Select>
+        <span className="mt-1 block text-xs text-muted">
+          Needs the Server Members intent switched on in the developer portal.
+          Without it Discord never tells the bot somebody arrived.
+        </span>
+      </label>
+
+      <label className="block max-w-md">
+        <span className="text-sm font-medium text-ink">Rules live in</span>
+        <Select
+          className="mt-1.5"
+          value={settings.rulesChannelId ?? ""}
+          disabled={pending !== null || channels.length === 0}
+          onChange={(event) => {
+            const id = event.target.value || null;
+            save(
+              {
+                rulesChannelId: id,
+                rulesChannelName: channels.find((c) => c.id === id)?.name ?? null,
+                // A new channel means the remembered message is in the old one,
+                // so forget it and let the next publish post a fresh one.
+                rulesMessageId: null,
+              },
+              "rules",
+            );
+          }}
+        >
+          <option value="">Not set</option>
+          {channels.map((channel) => (
+            <option key={channel.id} value={channel.id}>
+              #{channel.name}
+            </option>
+          ))}
+        </Select>
+        <span className="mt-1 block text-xs text-muted">
+          {settings.rulesMessageId
+            ? "Posted. Run /rules in Discord to bring it up to date; it edits the same message rather than posting again."
+            : "Run /rules in Discord to post them once a channel is chosen."}
         </span>
       </label>
 
