@@ -231,7 +231,7 @@ export default async function DiscoverPage() {
                 title="People you might connect with"
                 subtitle="Ranked on interests, goals, availability and how you like to spend time."
               />
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {people.map((person) => (
                   <PersonCard
                     key={person.profileId}
@@ -267,7 +267,7 @@ export default async function DiscoverPage() {
                   </LinkButton>
                 }
               />
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {bunches.map((bunch) => (
                   <BunchCard key={bunch.id} bunch={bunch} />
                 ))}

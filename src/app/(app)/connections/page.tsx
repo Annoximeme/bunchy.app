@@ -83,7 +83,7 @@ export default async function ConnectionsPage() {
               action={<LinkButton href="/discover">Find people</LinkButton>}
             />
           ) : (
-            <ul className="grid gap-3 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {connections.map((connection) => (
                 <li key={connection.connectionId}>
                   <Link

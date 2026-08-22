@@ -57,6 +57,7 @@ export default async function AdminAnalyticsPage() {
           note="share who came back and did something real"
         >
           <DataTable
+            label="Weekly signup cohorts and how many of each came back"
             headers={["Cohort", "Size", "Came back after 1d", "after 7d", "after 30d"]}
             empty="No signups recorded in the last 8 weeks."
           >
@@ -94,7 +95,7 @@ export default async function AdminAnalyticsPage() {
           </p>
         </Panel>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title="Onboarding funnel" note="conversion from previous step">
             <ol className="divide-y divide-line">
               {funnel.map((step) => (
@@ -150,35 +151,58 @@ export default async function AdminAnalyticsPage() {
           <Panel title="Network health">
             <dl className="divide-y divide-line">
               {health.map((metric) => (
-                <div key={metric.label} className="px-4 py-3">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <dt className="text-sm text-ink-soft">{metric.label}</dt>
-                    <dd className="text-lg font-semibold tabular-nums">
-                      {metric.value}
-                    </dd>
-                  </div>
-                  {metric.hint && (
-                    <p className="mt-0.5 text-xs text-muted">{metric.hint}</p>
-                  )}
+                /*
+                  A description list may wrap each pair in one div, and only
+                  one. This used to nest a second div for the flex row and put
+                  the hint in a sibling paragraph, which put the dt and dd two
+                  levels down and left a <p> where the grammar allows only a
+                  term or a description. The grid does the same job in one
+                  level, and the hint belongs to the term it qualifies.
+                */
+                <div
+                  key={metric.label}
+                  className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 px-4 py-3"
+                >
+                  <dt className="text-sm text-ink-soft">
+                    {metric.label}
+                    {metric.hint && (
+                      <span className="mt-0.5 block text-xs text-muted">
+                        {metric.hint}
+                      </span>
+                    )}
+                  </dt>
+                  <dd className="text-lg font-semibold tabular-nums">
+                    {metric.value}
+                  </dd>
                 </div>
               ))}
             </dl>
           </Panel>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title="Event volume" note="last 14 days">
             {volume.length === 0 ? (
               <p className="px-4 py-10 text-center text-sm text-muted">
                 Nothing recorded yet.
               </p>
             ) : (
-              <div className="flex h-32 items-end gap-1 px-4 py-4">
+              <div className="flex h-32 items-end gap-0.5 px-4 py-4">
                 {volume.map((day) => (
                   <div
                     key={day.day}
-                    className="flex-1 rounded-t bg-teal/60"
-                    style={{ height: `${Math.max(4, (day.count / peak) * 100)}%` }}
+                    // A silent day is a hairline in the line colour, not a
+                    // short teal bar. This chart is read to find the days
+                    // where nothing fired, so those have to look like nothing.
+                    className={
+                      day.count === 0 ? "flex-1 rounded-t bg-line" : "flex-1 rounded-t bg-teal/60"
+                    }
+                    style={{
+                      height:
+                        day.count === 0
+                          ? "2px"
+                          : `${Math.max(6, (day.count / peak) * 100)}%`,
+                    }}
                     title={`${day.day}: ${day.count}`}
                   >
                     <span className="sr-only">
@@ -194,7 +218,11 @@ export default async function AdminAnalyticsPage() {
             title="Events firing"
             note="last 30 days. A zero usually means a missing call site"
           >
-            <DataTable headers={["Event", "Count"]} empty="Nothing recorded yet.">
+            <DataTable
+              label="Recorded events and how many of each"
+              headers={["Event", "Count"]}
+              empty="Nothing recorded yet."
+            >
               {breakdown.map((event) => (
                 <tr key={event.name}>
                   <Cell>

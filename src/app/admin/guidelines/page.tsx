@@ -35,7 +35,7 @@ export default async function GuidelinesPage() {
         title="The short version"
         note="If you remember nothing else on this page, remember these."
       >
-        <ol className="grid gap-3 sm:grid-cols-2">
+        <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Rule n={1} title="Act on behaviour, not on people">
             You are deciding whether something that happened is allowed to
             stand, not whether you like the person who did it. Read the content
@@ -187,7 +187,7 @@ export default async function GuidelinesPage() {
         note="A starting point, not a tariff. The reason a member picked is their description of the problem, not your finding."
         className="mt-6"
       >
-        <dl className="grid gap-4 sm:grid-cols-2">
+        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Reason
             name="Harassment"
             what="Repeated unwanted contact, following someone between bunches, pile-ons."

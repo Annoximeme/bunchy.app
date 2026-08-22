@@ -148,7 +148,7 @@ export function AnnouncementComposer({
         </p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Title" value={title} onChange={setTitle} required />
         <Field
           label="Slug"
@@ -183,7 +183,7 @@ export function AnnouncementComposer({
         </span>
       </label>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <label className="block">
           <span className="text-sm font-medium text-ink">Tier</span>
           <select
@@ -222,7 +222,7 @@ export function AnnouncementComposer({
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium text-ink">Takes effect</span>
           <input

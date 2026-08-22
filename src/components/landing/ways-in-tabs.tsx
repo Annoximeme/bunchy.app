@@ -98,7 +98,7 @@ function Features({ way }: { way: Way }) {
   return (
     <>
       <p className="max-w-2xl text-white/60">{way.blurb}</p>
-      <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {way.features.map((feature) => (
           <li
             key={feature.name}

@@ -83,7 +83,7 @@ export function PebbleBoard() {
       The hover lift stays on framer-motion. It only ever adds, so it has no
       state in which it can remove something from the page.
     */
-    <ul className="reveal-stagger grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="reveal-stagger grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {IDEAS.map((idea) => (
         <li key={idea.title}>
           <motion.article

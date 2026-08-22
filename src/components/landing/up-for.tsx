@@ -45,7 +45,7 @@ export function UpFor() {
         </div>
       </fieldset>
 
-      <div className="mt-8 grid gap-8 sm:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <fieldset>
           <legend className="text-xs font-bold tracking-widest text-white/55">
             WHERE

@@ -112,7 +112,7 @@ export function SupporterPitch({
         <h2 className="mt-3 max-w-[22ch] text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">
           Three places, in the order we promised
         </h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
           {DESTINATIONS.map(({ icon: Icon, title, body }) => (
             <article
               key={title}
@@ -163,7 +163,7 @@ export function SupporterPitch({
           importing the module that knows who paid.
         </p>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+        <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
           <article className="rounded-[var(--radius-card)] border border-line bg-surface p-7">
             <h3 className="font-bold tracking-tight">A ring, and a small mark</h3>
             <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">

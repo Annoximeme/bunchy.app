@@ -43,7 +43,7 @@ export default async function AdminWaitlistPage() {
 
       <div className="space-y-6">
         <Panel title="The list">
-          <dl className="grid gap-4 p-5 sm:grid-cols-3">
+          <dl className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-3">
             <Stat label="Waiting" value={total} note="Addresses on the list." />
             <Stat
               label="Told"
@@ -87,7 +87,7 @@ export default async function AdminWaitlistPage() {
           title="Undeliverable"
           note="fed by the provider's webhook, and never written to again"
         >
-          <dl className="grid gap-4 p-5 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
             <Stat
               label="Bounced"
               value={suppressed.bounced}
@@ -141,9 +141,16 @@ function Stat({
     <div>
       <dt className="text-sm font-semibold text-ink">{label}</dt>
       {/* Tabular figures, so the number does not jog sideways on refresh
-          while a send is running. */}
-      <dd className="mt-1 text-3xl font-bold tabular-nums text-ink">{value}</dd>
-      <p className="mt-1 text-sm text-muted">{note}</p>
+          while a send is running.
+
+          The note sits inside the description rather than in a paragraph
+          beside it: a div inside a description list may hold a term and its
+          description and nothing else, and the note is part of what the
+          number means rather than a separate remark. */}
+      <dd className="mt-1 text-3xl font-bold tabular-nums text-ink">
+        {value}
+        <span className="mt-1 block text-sm font-normal text-muted">{note}</span>
+      </dd>
     </div>
   );
 }

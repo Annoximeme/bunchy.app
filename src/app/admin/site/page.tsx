@@ -37,7 +37,7 @@ export default async function AdminSitePage() {
       </Panel>
 
       <Panel title="What the public sees" className="mt-6">
-        <dl className="grid gap-4 text-sm sm:grid-cols-3">
+        <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
           <div>
             <dt className="font-semibold text-ink">Public</dt>
             <dd className="mt-1 text-muted">

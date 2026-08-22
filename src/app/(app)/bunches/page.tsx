@@ -44,7 +44,7 @@ export default async function BunchesPage({
               title="You've been invited"
               subtitle="Someone thought you'd fit."
             />
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {invitations.map((bunch) => (
                 <BunchCard key={bunch.id} bunch={bunch} />
               ))}
@@ -62,7 +62,7 @@ export default async function BunchesPage({
               action={<LinkButton href="/bunches/new">Start one</LinkButton>}
             />
           ) : (
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {active.map((bunch) => (
                 <BunchCard key={bunch.id} bunch={bunch} />
               ))}
@@ -76,7 +76,7 @@ export default async function BunchesPage({
               title="Waiting on a moderator"
               subtitle="You'll hear back when someone reviews your request."
             />
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {pending.map((bunch) => (
                 <BunchCard key={bunch.id} bunch={bunch} />
               ))}
@@ -90,7 +90,7 @@ export default async function BunchesPage({
               title="Bunches that fit you"
               subtitle="Based on your interests, where you are and when you're free."
             />
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {suggested
                 .filter((c) => !suggestedIds.has(c.id))
                 .map((bunch) => (
@@ -121,7 +121,7 @@ export default async function BunchesPage({
               action={<LinkButton href="/bunches/new">Start a bunch</LinkButton>}
             />
           ) : (
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {browse.map((bunch) => (
                 <BunchCard key={bunch.id} bunch={bunch} />
               ))}

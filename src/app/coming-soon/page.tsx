@@ -222,7 +222,7 @@ export default async function ComingSoonPage({
             <h2 className="text-sm font-bold uppercase tracking-widest text-[#9B85FF]">
               How it works
             </h2>
-            <div className="mt-6 grid gap-5 sm:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
               <Beat
                 n="01"
                 tone="#FF5C6C"
@@ -245,7 +245,7 @@ export default async function ComingSoonPage({
           </section>
 
           {/* The differentiator, stated as a refusal. */}
-          <section className="mt-16 grid gap-5 md:grid-cols-2">
+          <section className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7">
               <h2 className="text-xl font-bold tracking-tight">
                 What you won&rsquo;t find

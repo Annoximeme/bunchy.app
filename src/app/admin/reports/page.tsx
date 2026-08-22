@@ -51,7 +51,7 @@ export default async function AdminReportsPage({
               href={tab.status ? `/admin/reports?status=${tab.status}` : "/admin/reports?status=ALL"}
               className={
                 active
-                  ? "rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white"
+                  ? "rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-[var(--color-on-accent)]"
                   : "rounded-full px-3 py-1.5 text-sm text-ink-soft hover:bg-surface"
               }
             >

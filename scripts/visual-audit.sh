@@ -101,10 +101,15 @@ mkdir -p "$OUT_DIR"
 OUT_ABS="$(cd "$OUT_DIR" && pwd)"
 
 echo "==> Auditing"
+# The audit exits non-zero when it finds something or could not finish looking.
+# That is a result rather than a crash, so `set -e` must not eat it before the
+# output path is printed.
+STATUS=0
 docker run --rm --network "$NETWORK" \
   -v "$PWD":/app -v "$OUT_ABS":/out -w /app \
   -e BASE_URL="http://${CONTAINER}:3000" -e OUT_DIR=/out \
   --user "$(id -u):$(id -g)" \
-  "$PLAYWRIGHT_IMAGE" node_modules/.bin/tsx scripts/visual-audit.ts
+  "$PLAYWRIGHT_IMAGE" node_modules/.bin/tsx scripts/visual-audit.ts || STATUS=$?
 
-echo "==> Screenshots and axe.json are in $OUT_ABS"
+echo "==> Screenshots, axe.json and overflow.json are in $OUT_ABS"
+exit "$STATUS"

@@ -57,6 +57,35 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/safety", name: "safety", signedOut: true },
   { path: "/terms", name: "terms", signedOut: true },
   { path: "/privacy", name: "privacy", signedOut: true },
+
+  /*
+    The staff area, which had never been in here.
+
+    It is the part of the product least likely to get looked at and most likely
+    to drift: nobody arrives at it by accident, so a broken layout or an
+    unreadable contrast pair can sit there for months. It is also the densest
+    thing in the codebase, tables and filter rows and status chips, which is
+    exactly the shape that breaks first at 390px.
+
+    The demo seed makes sarah@example.com an admin, so the session the audit
+    already holds reaches all of it with no second sign-in.
+  */
+  { path: "/admin", name: "admin-overview" },
+  { path: "/admin/analytics", name: "admin-analytics" },
+  { path: "/admin/audit", name: "admin-audit" },
+  { path: "/admin/reports", name: "admin-reports" },
+  { path: "/admin/moderators", name: "admin-moderators" },
+  { path: "/admin/guidelines", name: "admin-guidelines" },
+  { path: "/admin/users", name: "admin-users" },
+  { path: "/admin/waitlist", name: "admin-waitlist" },
+  { path: "/admin/bunches", name: "admin-bunches" },
+  { path: "/admin/activities", name: "admin-activities" },
+  { path: "/admin/formation", name: "admin-formation" },
+  { path: "/admin/interests", name: "admin-interests" },
+  { path: "/admin/announcements", name: "admin-announcements" },
+  { path: "/admin/site", name: "admin-site" },
+  { path: "/admin/discord", name: "admin-discord" },
+  { path: "/admin/brand", name: "admin-brand" },
 ];
 
 const VIEWPORTS = [
@@ -111,6 +140,143 @@ async function runAxe(page: Page, pageName: string, theme: string) {
       impact: v.impact,
       help: v.help,
       nodes: v.nodes.slice(0, 4).map((n) => `${n.target.join(" ")}, ${n.html.slice(0, 160)}`),
+    });
+  }
+}
+
+interface Overflow {
+  page: string;
+  viewport: string;
+  documentWidth: number;
+  /**
+   * The widest right edge any element actually reaches.
+   *
+   * Separate from `documentWidth` because an `overflow-x: hidden` anywhere up
+   * the tree clamps `scrollWidth` to the viewport while the element still
+   * sticks out and still gets cut off. The page then does not scroll sideways,
+   * which looks like the problem is solved, and the content is simply missing
+   * instead. Playwright's full-page capture uses the CSS content size and
+   * ignores the clip, which is why the screenshots were coming out wider than
+   * the viewport while `scrollWidth` insisted everything was fine.
+   */
+  contentWidth: number;
+  viewportWidth: number;
+  /** The outermost elements that overflow: where the fix usually goes. */
+  containers: Array<{ tag: string; className: string; width: number; right: number; text: string }>;
+  culprits: Array<{ tag: string; className: string; width: number; right: number; text: string }>;
+}
+
+const overflows: Overflow[] = [];
+
+/** Pages the audit could not finish checking. Never silently empty. */
+const probeFailures: string[] = [];
+
+/**
+ * Does the page scroll sideways, and if so, what is sticking out.
+ *
+ * axe does not check this and it is one of the few layout faults that is
+ * unambiguously a bug rather than a matter of taste: a body that scrolls
+ * horizontally on a phone makes every vertical swipe feel broken and pushes
+ * half the design off the edge.
+ *
+ * It was found here by accident. Playwright captures a full-page screenshot at
+ * the document width rather than the viewport width, so an overflowing page
+ * silently produces a wider PNG, and the landing page had been coming out at
+ * 672px instead of 390px without anybody noticing. Detecting it on purpose is
+ * better than noticing an odd image size.
+ *
+ * Only the innermost offender is reported. An element that is too wide makes
+ * every ancestor too wide as well, so listing all of them buries the one line
+ * that matters under its own parents.
+ *
+ * Anything inside a container that scrolls on its own is skipped: a wide table
+ * in an `overflow-x: auto` wrapper is the fix for this problem, not an
+ * instance of it.
+ */
+async function checkOverflow(page: Page, pageName: string, viewportName: string, viewportWidth: number) {
+  const found = await page.evaluate((vw) => {
+    const CLIPPING = ["auto", "scroll", "hidden", "clip"];
+
+    /*
+      Everything here is written without a named inner function on purpose.
+      This body is serialised and run in the browser, and tsx compiles with
+      esbuild's keepNames, which wraps anything that gets an inferred name in a
+      __name() helper that exists in the bundle and not in the page. A single
+      `const isThing = (el) => ...` is enough to throw ReferenceError on every
+      page, which is how this probe came to report a clean result while never
+      running at all.
+    */
+    const offenders = Array.from(document.querySelectorAll("body *")).filter((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return false;
+      if (getComputedStyle(el).position === "fixed") return false;
+      if (rect.right + window.scrollX <= vw + 1) return false;
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        if (CLIPPING.includes(getComputedStyle(p).overflowX)) return false;
+      }
+      return true;
+    });
+
+    const offenderSet = new Set(offenders);
+    /*
+      Both ends of the chain, because they answer different questions.
+
+      The innermost offender is the content that is too wide. The outermost is
+      the container that let it happen, and that is usually where the fix goes:
+      a flex row missing `flex-wrap`, or a grid item without `min-w-0`. Reporting
+      only the innermost pointed at four footer links and hid the row holding
+      them, which is the thing that actually needed changing.
+    */
+    const innermost = offenders.filter(
+      (el) => !Array.from(el.children).some((c) => offenderSet.has(c)),
+    );
+    const outermost = offenders.filter(
+      (el) => !(el.parentElement && offenderSet.has(el.parentElement)),
+    );
+
+    const widest = offenders.reduce(
+      (max, el) => Math.max(max, Math.round(el.getBoundingClientRect().right + window.scrollX)),
+      0,
+    );
+
+    return {
+      documentWidth: Math.max(
+        document.documentElement.scrollWidth,
+        document.body.scrollWidth,
+      ),
+      contentWidth: widest,
+      containers: outermost.slice(0, 4).map((el) => {
+        const rect = el.getBoundingClientRect();
+        return {
+          tag: el.tagName.toLowerCase(),
+          className: String(el.className ?? "").slice(0, 140),
+          width: Math.round(rect.width),
+          right: Math.round(rect.right + window.scrollX),
+          text: "",
+        };
+      }),
+      culprits: innermost.slice(0, 8).map((el) => {
+        const rect = el.getBoundingClientRect();
+        return {
+          tag: el.tagName.toLowerCase(),
+          className: String(el.className ?? "").slice(0, 140),
+          width: Math.round(rect.width),
+          right: Math.round(rect.right + window.scrollX),
+          text: (el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 70),
+        };
+      }),
+    };
+  }, viewportWidth);
+
+  if (found.contentWidth > viewportWidth + 1 || found.documentWidth > viewportWidth + 1) {
+    overflows.push({
+      page: pageName,
+      viewport: viewportName,
+      documentWidth: found.documentWidth,
+      contentWidth: found.contentWidth,
+      viewportWidth,
+      containers: found.containers,
+      culprits: found.culprits,
     });
   }
 }
@@ -248,8 +414,20 @@ async function main() {
           if (viewport.name === "desktop") {
             await runAxe(page, target.name, theme);
           }
+
+          // Once per width, in one theme: a page either scrolls sideways or it
+          // does not, and that does not depend on the palette.
+          if (theme === "light") {
+            await checkOverflow(page, target.name, viewport.name, viewport.width);
+          }
         } catch (error) {
-          console.error(`  ✗ ${target.name} ${viewport.name} ${theme}: ${String(error).slice(0, 120)}`);
+          // Recorded, not just printed. A crashed probe used to leave the
+          // summary saying "None", which is the most expensive kind of wrong:
+          // a report that looks like a pass. The run now says what it failed
+          // to check and exits non-zero.
+          const message = String(error).slice(0, 200);
+          probeFailures.push(`${target.name} ${viewport.name} ${theme}: ${message}`);
+          console.error(`  ✗ ${target.name} ${viewport.name} ${theme}: ${message}`);
         }
       }
 
@@ -271,9 +449,38 @@ async function main() {
   });
 
   writeFileSync(`${OUT}/axe.json`, JSON.stringify(unique, null, 2));
+  writeFileSync(`${OUT}/overflow.json`, JSON.stringify(overflows, null, 2));
+
+  console.log("\n=== horizontal overflow ===");
+  if (overflows.length === 0) {
+    console.log("None. Nothing reaches past the viewport at either width.");
+  } else {
+    for (const o of overflows) {
+      console.log(
+        `\n[${o.viewport}] ${o.page}: content reaches ${o.contentWidth}px, document ${o.documentWidth}px, viewport ${o.viewportWidth}px`,
+      );
+      console.log("  outermost container:");
+      for (const c of o.containers) {
+        console.log(`    <${c.tag} class="${c.className}"> ${c.width}px wide, right edge ${c.right}`);
+      }
+      console.log("  innermost content:");
+      for (const c of o.culprits) {
+        console.log(`    <${c.tag} class="${c.className}"> ${c.width}px wide, right edge ${c.right}`);
+        if (c.text) console.log(`      ${c.text}`);
+      }
+    }
+  }
 
   const bySeverity = { critical: 0, serious: 0, moderate: 0, minor: 0 } as Record<string, number>;
   for (const v of unique) bySeverity[v.impact] = (bySeverity[v.impact] ?? 0) + 1;
+
+  console.log("\n=== probe health ===");
+  if (probeFailures.length === 0) {
+    console.log(`Every page was checked at both widths in both themes.`);
+  } else {
+    console.log(`${probeFailures.length} checks did not complete:`);
+    for (const failure of probeFailures) console.log(`  ! ${failure}`);
+  }
 
   console.log("\n=== accessibility ===");
   console.log(
@@ -283,6 +490,12 @@ async function main() {
     console.log(`\n[${v.impact}] ${v.page} (${v.theme}), ${v.id}`);
     console.log(`  ${v.help}`);
     for (const node of v.nodes) console.log(`    ${node}`);
+  }
+
+  // Non-zero when the run found something or could not look. The wrapper does
+  // not swallow this, so it is usable from CI without reading the output.
+  if (probeFailures.length > 0 || overflows.length > 0 || unique.length > 0) {
+    process.exitCode = 1;
   }
 }
 

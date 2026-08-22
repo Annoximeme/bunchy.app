@@ -57,6 +57,7 @@ export default async function AdminActivitiesPage({
 
       <Panel>
         <DataTable
+          label="Activities, with their host, when they are and how many are going"
           headers={["Activity", "When", "Where", "Going", "Status", "Actions"]}
           empty="No activities match."
         >

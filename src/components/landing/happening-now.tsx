@@ -29,7 +29,7 @@ export async function HappeningNow() {
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
               {pulse.peopleGoing} people have something in the diary.
             </h2>
-            <div className="reveal mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="reveal mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <Count n={pulse.online} label="online" tone="#55D6BE" />
               <Count n={pulse.inPerson} label="in person" tone="#FFC857" />
               <Count n={pulse.peopleGoing} label="people going" tone="#FF5C6C" />
@@ -47,7 +47,7 @@ export async function HappeningNow() {
               once people are on it.
             </p>
 
-            <ul className="reveal mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="reveal mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Example
                 icon="🎮"
                 line="4 people are looking for a gaming bunch"

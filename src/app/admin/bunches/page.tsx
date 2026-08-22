@@ -59,6 +59,7 @@ export default async function AdminBunchesPage({
 
       <Panel>
         <DataTable
+          label="Bunches, with size, recent activity and the actions available on each"
           headers={["Bunch", "Type", "Members", "Chat", "Created", "Actions"]}
           empty="No bunches match."
         >

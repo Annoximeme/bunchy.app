@@ -183,7 +183,7 @@ export function DoSomething() {
                 Real activities somebody has already created. These have a time
                 and a place because a member put them there.
               </p>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {result.happening.map((activity) => (
                   <Link key={activity.id} href={`/activities/${activity.id}`}>
                     <Card className="h-full transition-transform duration-200 hover:-translate-y-0.5">
@@ -225,7 +225,7 @@ export function DoSomething() {
                 </p>
               </Card>
             ) : (
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {result.ideas.map((idea) => (
                   <Card key={idea.slug} className="flex h-full flex-col">
                     <div className="flex flex-wrap items-center gap-1.5">

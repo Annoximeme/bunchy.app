@@ -164,9 +164,20 @@ export function Chip({
   children,
   tone = "neutral",
   className,
+  wrap = false,
 }: {
   children: ReactNode;
   tone?: "neutral" | "accent" | "teal" | "positive" | "suggested";
+  /**
+   * Let the label wrap onto a second line.
+   *
+   * Off by default, because a chip is a label and "6 going" breaking in half
+   * inside a pill reads as a broken layout. On for the few callers that put a
+   * whole sentence in one, where holding it on one line is not a tidier
+   * version of the same thing: it is 397px of pill in a 390px phone, pushing
+   * the entire page sideways.
+   */
+  wrap?: boolean;
   className?: string;
 }) {
   /**
@@ -192,10 +203,12 @@ export function Chip({
   return (
     <span
       className={cn(
-        // `whitespace-nowrap`: a chip is a label, not a paragraph. "6 going"
-        // wrapping to two lines inside a pill at phone width reads as a broken
-        // layout rather than as a tight column.
-        "inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium",
+        // A chip is a label, not a paragraph. "6 going" wrapping to two lines
+        // inside a pill at phone width reads as a broken layout rather than as
+        // a tight column, so it stays on one line unless a caller says
+        // otherwise. See `wrap`.
+        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+        wrap ? "max-w-full text-left" : "whitespace-nowrap",
         tones[tone],
         className,
       )}

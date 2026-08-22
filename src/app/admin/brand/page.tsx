@@ -48,7 +48,7 @@ export default async function AdminBrandPage() {
             logo was rendered white on a near-white panel, i.e. invisible, on the
             one page whose job is showing people what the logo looks like.
           */}
-          <div className="grid gap-4 p-5 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-3">
             <div
               className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-black/10"
               style={{ background: "#FFF9F3" }}
@@ -80,7 +80,7 @@ export default async function AdminBrandPage() {
               these are the files to reach for when you are setting up an account
               or running an ad.
             </p>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {uploads.map((asset) => (
                 <li
                   key={asset.slug}
@@ -113,7 +113,7 @@ export default async function AdminBrandPage() {
 
         <Panel title="Vectors" note="print, and rebuilding an asset">
           <div className="p-5">
-            <ul className="grid gap-2.5 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {vectors.map((asset) => (
                 <li
                   key={asset.slug}
@@ -137,7 +137,7 @@ export default async function AdminBrandPage() {
         </Panel>
 
         <Panel title="Colours">
-          <ul className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
             {BRAND_PALETTE.map((colour) => (
               <li
                 key={colour.hex}
@@ -158,7 +158,7 @@ export default async function AdminBrandPage() {
           </ul>
         </Panel>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Panel title="Using it">
             <dl className="divide-y divide-line">
               {[

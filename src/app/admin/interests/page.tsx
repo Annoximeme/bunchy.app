@@ -82,6 +82,7 @@ export default async function AdminInterestsPage({
 
       <Panel>
         <DataTable
+          label="Interests awaiting review, with how many members chose each"
           headers={["Interest", "Category", "Used by", "Status", "Actions"]}
           empty="No interests match."
         >

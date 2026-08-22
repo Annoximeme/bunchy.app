@@ -95,10 +95,16 @@ export function DataTable({
   headers,
   children,
   empty,
+  label,
 }: {
   headers: string[];
   children: ReactNode;
   empty?: string;
+  /**
+   * What the table is, for somebody who reaches it with a keyboard or a screen
+   * reader and gets told only "region".
+   */
+  label: string;
 }) {
   const hasRows = Array.isArray(children) ? children.length > 0 : Boolean(children);
 
@@ -106,9 +112,33 @@ export function DataTable({
     return <p className="px-4 py-10 text-center text-sm text-muted">{empty}</p>;
   }
 
+  /*
+    Wide enough that the columns keep their own widths, and scrolled rather
+    than squeezed.
+
+    `w-full` on its own does not make six columns fit a phone. It makes them
+    fight: the role chip was being clipped in the middle of the word MODERATOR,
+    and the actions column wrapped its buttons into a stack that made every row
+    three times taller than the name inside it. A table that scrolls sideways
+    inside its own box is the normal answer to this, and the scroll has to be
+    deliberate for the columns to keep their shape.
+
+    Seven rem a column is a rough figure that tracks the real need better than
+    one number would across a three-column table and a six-column one.
+  */
+  const minWidth = `${Math.max(30, headers.length * 7)}rem`;
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+    <div
+      // Focusable, because a region that only a mouse can pan is a region a
+      // keyboard user cannot read. Same treatment as the roles table on the
+      // guidelines page, which had this right before the shared primitive did.
+      tabIndex={0}
+      role="region"
+      aria-label={label}
+      className="overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+    >
+      <table className="w-full text-sm" style={{ minWidth }}>
         <thead>
           <tr className="border-b border-line text-left">
             {headers.map((h) => (

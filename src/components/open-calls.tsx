@@ -218,7 +218,7 @@ export function OpenCalls({
             />
           </label>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="block">
               <span className="text-sm font-medium text-ink">Stays open</span>
               <Select

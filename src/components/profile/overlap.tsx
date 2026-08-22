@@ -80,8 +80,16 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
           {highlights.length > 0 ? (
             <ul className="flex min-w-0 flex-wrap gap-1.5">
               {highlights.map((highlight) => (
-                <li key={highlight}>
-                  <Chip tone="suggested">{highlight}</Chip>
+                <li key={highlight} className="min-w-0">
+                  {/*
+                    These highlights are sentences the matching engine wrote,
+                    not one-word labels, so they wrap. One of them measured
+                    397px on a 390px phone and took the whole page sideways
+                    with it.
+                  */}
+                  <Chip tone="suggested" wrap>
+                    {highlight}
+                  </Chip>
                 </li>
               ))}
             </ul>
@@ -104,7 +112,7 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
         </div>
 
         {hasLists && (
-          <div className="grid gap-5 border-t border-line pt-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 border-t border-line pt-5 sm:grid-cols-2">
             {shared.length > 0 && (
               <OverlapList label="Both into" tone="teal" items={shared} />
             )}

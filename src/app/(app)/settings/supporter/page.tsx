@@ -27,7 +27,7 @@ export default async function SupporterSettingsPage() {
 
       {support ? (
         <section className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-7">
-          <dl className="grid gap-4 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <dt className="text-sm text-muted">Status</dt>
               <dd className="mt-1 font-semibold">

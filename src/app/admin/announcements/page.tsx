@@ -66,7 +66,7 @@ export default async function AdminAnnouncementsPage({
         title="Who each tier reaches"
         note="The tier picks the route in code, not in the copy. Nothing outside Important is allowed to interrupt anybody."
       >
-        <dl className="grid gap-4 p-5 text-sm sm:grid-cols-3">
+        <dl className="grid grid-cols-1 gap-4 p-5 text-sm sm:grid-cols-3">
           {(
             [
               [

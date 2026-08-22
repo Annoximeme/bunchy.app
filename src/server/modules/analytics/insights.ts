@@ -243,19 +243,30 @@ export async function socialHealth(): Promise<SocialHealth[]> {
   ];
 }
 
-/** Event volume per day, for spotting instrumentation gaps. */
+/**
+ * Event volume per day, for spotting instrumentation gaps.
+ *
+ * Every day in the window, including the empty ones, which is the whole point.
+ * Grouping alone returns only the days that recorded something, so the one
+ * thing this chart exists to show, a day where nothing fired, was the one
+ * thing it could not draw: three days of events came out as three fat bars
+ * filling a panel labelled "last 14 days", and eleven silent days were simply
+ * absent rather than visibly empty.
+ */
 export async function eventVolume(days = 14) {
-  const rows = await db.$queryRaw<Array<{ day: Date; count: bigint }>>`
-    SELECT date_trunc('day', "occurredAt") AS day, COUNT(*)::bigint AS count
-    FROM "AnalyticsEvent"
-    WHERE "occurredAt" >= now() - (${days} * interval '1 day')
-    GROUP BY 1
-    ORDER BY 1 ASC
+  const rows = await db.$queryRaw<Array<{ day: string; count: bigint }>>`
+    SELECT to_char(d.day, 'YYYY-MM-DD') AS day, COUNT(e.id)::bigint AS count
+    FROM generate_series(
+      date_trunc('day', now() - (${days} * interval '1 day')),
+      date_trunc('day', now()),
+      interval '1 day'
+    ) AS d(day)
+    LEFT JOIN "AnalyticsEvent" e
+      ON date_trunc('day', e."occurredAt") = d.day
+    GROUP BY d.day
+    ORDER BY d.day ASC
   `;
-  return rows.map((r) => ({
-    day: r.day.toISOString().slice(0, 10),
-    count: Number(r.count),
-  }));
+  return rows.map((r) => ({ day: r.day, count: Number(r.count) }));
 }
 
 /** Which events are firing at all. A zero here usually means a missing call site. */

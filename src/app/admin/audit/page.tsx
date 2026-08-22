@@ -29,6 +29,7 @@ export default async function AdminAuditPage() {
 
       <Panel>
         <DataTable
+          label="Staff actions, most recent first, with who took each one"
           headers={["When", "Who", "Action", "Target", "Reason"]}
           empty="No staff actions recorded yet."
         >

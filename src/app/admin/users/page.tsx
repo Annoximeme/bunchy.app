@@ -90,6 +90,7 @@ export default async function AdminUsersPage({
 
       <Panel>
         <DataTable
+          label="Accounts, with status, role and the actions available on each"
           headers={["Member", "Status", "Role", "Joined", "Activity", "Actions"]}
           empty={params.q ? `Nobody matching "${params.q}".` : "No accounts yet."}
         >

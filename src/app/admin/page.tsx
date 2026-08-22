@@ -51,7 +51,7 @@ export default async function AdminOverviewPage() {
         <p className="mt-2 max-w-2xl text-sm text-muted">{northStar.definition}</p>
       </Panel>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {groups.map((group) => (
           <Panel
             key={group.label}
@@ -85,12 +85,26 @@ export default async function AdminOverviewPage() {
               No signups in the last 30 days.
             </p>
           ) : (
-            <div className="flex h-40 items-end gap-1 px-4 py-4">
+            /*
+              One bar per day in the window, empty days included. A day with
+              nothing gets a hairline in the line colour rather than a short
+              coral bar, so "no signups" cannot be misread as "a few".
+            */
+            <div className="flex h-40 items-end gap-0.5 px-4 py-4">
               {trend.map((day) => (
                 <div
                   key={day.day}
-                  className="group relative flex-1 rounded-t bg-accent/70 transition-colors hover:bg-accent"
-                  style={{ height: `${Math.max(4, (day.count / peak) * 100)}%` }}
+                  className={
+                    day.count === 0
+                      ? "flex-1 rounded-t bg-line"
+                      : "flex-1 rounded-t bg-accent/70 transition-colors hover:bg-accent"
+                  }
+                  style={{
+                    height:
+                      day.count === 0
+                        ? "2px"
+                        : `${Math.max(6, (day.count / peak) * 100)}%`,
+                  }}
                   title={`${day.day}: ${day.count}`}
                 >
                   <span className="sr-only">

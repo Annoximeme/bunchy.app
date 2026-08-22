@@ -183,7 +183,7 @@ export default async function BunchyNowPage({
                 }
               />
             ) : (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {board.people.people.map((person) => (
                   <NowPerson key={person.profileId} person={person} />
                 ))}

@@ -214,17 +214,34 @@ function percent(part: number, whole: number): string {
   return `${Math.round((part / whole) * 100)}%`;
 }
 
-/** Signups per day, for a simple trend line on the dashboard. */
+/**
+ * Signups per day, for the trend on the dashboard.
+ *
+ * Every day in the window, including the ones with nothing in them.
+ *
+ * Grouping alone returns only the days that had a signup, which is the right
+ * answer to a different question. Drawn as a bar chart it is actively
+ * misleading: twelve accounts created on one day came out as a single bar
+ * stretched across the full width of a panel labelled "last 30 days", which
+ * reads as either a solid block of colour or a month of steady growth,
+ * depending on how carefully you look. Neither is what happened.
+ *
+ * The series is built in SQL rather than patched up afterwards so that every
+ * caller gets the same shape, and so the count of rows is the count of days by
+ * construction instead of by convention.
+ */
 export async function signupTrend(days = 30) {
-  const rows = await db.$queryRaw<Array<{ day: Date; count: bigint }>>`
-    SELECT date_trunc('day', "createdAt") AS day, COUNT(*)::bigint AS count
-    FROM "User"
-    WHERE "createdAt" >= ${since(days)}
-    GROUP BY 1
-    ORDER BY 1 ASC
+  const rows = await db.$queryRaw<Array<{ day: string; count: bigint }>>`
+    SELECT to_char(d.day, 'YYYY-MM-DD') AS day, COUNT(u.id)::bigint AS count
+    FROM generate_series(
+      date_trunc('day', ${since(days)}::timestamptz),
+      date_trunc('day', now()),
+      interval '1 day'
+    ) AS d(day)
+    LEFT JOIN "User" u
+      ON date_trunc('day', u."createdAt") = d.day
+    GROUP BY d.day
+    ORDER BY d.day ASC
   `;
-  return rows.map((r) => ({
-    day: r.day.toISOString().slice(0, 10),
-    count: Number(r.count),
-  }));
+  return rows.map((r) => ({ day: r.day, count: Number(r.count) }));
 }

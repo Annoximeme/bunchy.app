@@ -263,7 +263,7 @@ export default async function LandingPage({
               matching the cluster's height to the card would put it back in an
               invisible box.
             */}
-            <div className="reveal mt-14 grid items-center gap-12 md:grid-cols-2 md:gap-10">
+            <div className="reveal mt-14 grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-10">
               {/* Everywhere else. Sterile on purpose. */}
               <div className="rounded-2xl border border-line bg-band-warm p-8">
                 <p className="text-xs font-semibold tracking-widest text-muted">
@@ -459,7 +459,7 @@ export default async function LandingPage({
               A sequence, drawn as one. The connector is the point: these are
               not five features, they are five positions along the same evening.
             */}
-            <ol className="reveal relative mt-14 grid gap-8 md:grid-cols-5 md:gap-4">
+            <ol className="reveal relative mt-14 grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-4">
               {/*
                 Ends on the last dot rather than the container. The dots sit at
                 the left edge of five equal columns, so the span between the
@@ -808,7 +808,13 @@ export default async function LandingPage({
               {brand.name}. {brand.tagline}
             </span>
           </div>
-          <div className="flex items-center gap-5">
+          {/*
+            Wrapping, like the row that holds it. Ten links and a theme toggle
+            in a row that could not wrap came to 672px at phone width, which
+            made the whole landing page scroll sideways: the one layout fault
+            that makes every vertical swipe feel broken.
+          */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link href="/login" className="transition-colors hover:text-white">
               Sign in
             </Link>

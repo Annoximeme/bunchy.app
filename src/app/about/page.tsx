@@ -445,7 +445,7 @@ export default async function AboutPage() {
 
       {/* ---------------------------------------------------------------- 6 */}
       <Band>
-        <div className="reveal mx-auto grid max-w-6xl gap-x-12 gap-y-14 lg:grid-cols-3">
+        <div className="reveal mx-auto grid grid-cols-1 max-w-6xl gap-x-12 gap-y-14 lg:grid-cols-3">
           <article>
             <Eyebrow tone="coral">Money</Eyebrow>
             <ColumnHeading>There isn&rsquo;t any, and here is the plan</ColumnHeading>
