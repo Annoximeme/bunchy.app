@@ -109,6 +109,13 @@ services:
       # that takes the site down. Unset means the dashboard refuses to turn the
       # gate on at all, rather than locking whoever tried out of the off switch.
       PREVIEW_TOKEN: ${PREVIEW_TOKEN:-}
+      # The staff Discord page checks the bot against Discord itself rather than
+      # reporting whether a variable is set, and it publishes the rules post. Both
+      # need the credential here, not only in the bot container. Without it the
+      # page cannot list the server's channels, so every channel picker on it is
+      # empty and disabled with no visible reason why.
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_GUILD_ID: ${DISCORD_GUILD_ID:-}
     depends_on:
       migrate:
         condition: service_completed_successfully

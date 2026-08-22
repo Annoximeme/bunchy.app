@@ -109,6 +109,15 @@ export interface GuildCheck {
   guildName?: string;
   /** Text channels the bot can see, for choosing where to announce. */
   channels?: Array<{ id: string; name: string }>;
+  /**
+   * Set when the bot is in the server but listing its channels failed.
+   *
+   * Separate from `error` because it is a different situation with a different
+   * fix, and collapsing the two is what made this hard to diagnose: an empty
+   * list rendered identically whether the server genuinely had no text channels
+   * or the request for them had been rejected.
+   */
+  channelError?: string;
   error?: string;
 }
 
@@ -144,13 +153,26 @@ export async function checkGuild(): Promise<GuildCheck> {
 
     const info = (await guild.json()) as { name: string };
     const channelsResponse = await call(`/guilds/${guildId}/channels`, token);
-    const raw = channelsResponse.ok
-      ? ((await channelsResponse.json()) as Array<{
-          id: string;
-          name: string;
-          type: number;
-        }>)
-      : [];
+
+    if (!channelsResponse.ok) {
+      // Reported rather than swallowed into an empty array. Returning `[]` here
+      // meant the page said "can see 0 text channels" and the pickers went
+      // quietly blank, which reads as a server with nothing in it rather than
+      // as a request that was refused.
+      return {
+        configured: true,
+        ok: true,
+        guildName: info.name,
+        channels: [],
+        channelError: `Discord answered ${channelsResponse.status} when asked for the channel list.`,
+      };
+    }
+
+    const raw = (await channelsResponse.json()) as Array<{
+      id: string;
+      name: string;
+      type: number;
+    }>;
 
     return {
       configured: true,
@@ -162,54 +184,6 @@ export async function checkGuild(): Promise<GuildCheck> {
         .filter((c) => c.type === 0)
         .map((c) => ({ id: c.id, name: c.name })),
     };
-  } catch {
-    return {
-      configured: true,
-      ok: false,
-      error: "Could not reach Discord from the server.",
-    };
-  }
-}
-
-export interface ChannelCheck {
-  configured: boolean;
-  ok: boolean;
-  channelName?: string;
-  error?: string;
-}
-
-/** Does the announce channel exist, and is it in the right server. */
-export async function checkAnnounceChannel(): Promise<ChannelCheck> {
-  const token = process.env.DISCORD_BOT_TOKEN;
-  const channelId = process.env.DISCORD_ANNOUNCE_CHANNEL_ID;
-  const guildId = process.env.DISCORD_GUILD_ID;
-  if (!token || !channelId) return { configured: false, ok: false };
-
-  try {
-    const response = await call(`/channels/${channelId}`, token);
-    if (!response.ok) {
-      return {
-        configured: true,
-        ok: false,
-        error: "The bot cannot see that channel, or the id is wrong.",
-      };
-    }
-    const channel = (await response.json()) as {
-      name: string;
-      guild_id?: string;
-    };
-
-    // A channel in a different guild answers 200 and would look fine. This is
-    // the check that catches an id pasted from the wrong server.
-    if (guildId && channel.guild_id && channel.guild_id !== guildId) {
-      return {
-        configured: true,
-        ok: false,
-        error: "That channel is in a different server from DISCORD_GUILD_ID.",
-      };
-    }
-
-    return { configured: true, ok: true, channelName: channel.name };
   } catch {
     return {
       configured: true,

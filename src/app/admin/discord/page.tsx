@@ -140,11 +140,21 @@ export default async function DiscordSetupPage() {
                 : `Token set but rejected. ${token.error}`}
           </Status>
 
-          <Status state={guild.configured ? (guild.ok ? "ok" : "bad") : "todo"}>
+          <Status
+            state={
+              !guild.configured
+                ? "todo"
+                : !guild.ok || guild.channelError
+                  ? "bad"
+                  : "ok"
+            }
+          >
             {!guild.configured
               ? "No server id set."
               : guild.ok
-                ? `In ${guild.guildName}, and can see ${guild.channels?.length ?? 0} text channels.`
+                ? guild.channelError
+                  ? `In ${guild.guildName}, but the channel list did not come back. ${guild.channelError}`
+                  : `In ${guild.guildName}, and can see ${guild.channels?.length ?? 0} text channels.`
                 : (guild.error ?? "Cannot reach the server.")}
           </Status>
 
@@ -160,6 +170,28 @@ export default async function DiscordSetupPage() {
               : !settings.announcementsEnabled
                 ? `Announcements are switched off. The channel is still #${settings.announceChannelName ?? settings.announceChannelId}.`
                 : `Announcing to #${settings.announceChannelName ?? settings.announceChannelId}.`}
+          </Status>
+
+          <Status state={settings.welcomeChannelId ? "ok" : "todo"}>
+            {settings.welcomeChannelId
+              ? `Greeting new members in #${settings.welcomeChannelName ?? settings.welcomeChannelId}.`
+              : "Nobody is greeted. New members arrive to nothing."}
+          </Status>
+
+          <Status
+            state={
+              settings.rulesChannelId
+                ? settings.rulesMessageId
+                  ? "ok"
+                  : "todo"
+                : "todo"
+            }
+          >
+            {!settings.rulesChannelId
+              ? "No rules channel chosen."
+              : settings.rulesMessageId
+                ? `Rules posted in #${settings.rulesChannelName ?? settings.rulesChannelId}.`
+                : `Rules channel is #${settings.rulesChannelName ?? settings.rulesChannelId}, but nothing has been posted there yet.`}
           </Status>
 
           <Status state={linked > 0 ? "ok" : "todo"}>
@@ -178,6 +210,7 @@ export default async function DiscordSetupPage() {
         <DiscordControls
           settings={settings}
           channels={guild.channels ?? []}
+          channelError={guild.channelError}
         />
       </Panel>
 
@@ -248,9 +281,9 @@ DISCORD_GUILD_ID=your-server-id`}
             {invite ? (
               <>
                 <p>
-                  This link is built from the application id inside your token, so
-                  it is the right one for this bot and asks for exactly the two
-                  permissions it uses.
+                  This link is built from the application id inside your token,
+                  so it is the right one for this bot and asks for exactly the
+                  permissions it uses and no others.
                 </p>
                 <p>
                   <a
@@ -296,12 +329,24 @@ DISCORD_GUILD_ID=your-server-id`}
           */}
           <Step
             n={5}
-            title="Choose where it announces"
-            state={settings.announceChannelId ? "ok" : "todo"}
+            title="Choose the channels"
+            state={
+              settings.announceChannelId &&
+              settings.welcomeChannelId &&
+              settings.rulesChannelId
+                ? "ok"
+                : "todo"
+            }
           >
             <p>
-              In the Controls panel at the top of this page. It takes effect
-              within five minutes and needs no deploy.
+              Three of them, all in the Controls panel at the top of this page:
+              where open calls are announced, where new members are greeted, and
+              where the rules live. Each takes effect within five minutes and
+              none needs a deploy.
+            </p>
+            <p>
+              The rules are posted from that panel too. Publishing a second time
+              edits the message already there rather than adding another copy.
             </p>
           </Step>
 
@@ -332,8 +377,9 @@ DISCORD_GUILD_ID=your-server-id`}
         <div className="space-y-3 p-5 text-sm text-ink-soft">
           <p>
             <strong className="text-ink">Commands.</strong> <Code>/link</Code>,{" "}
-            <Code>/tonight</Code>, <Code>/up-for</Code> and <Code>/call</Code>.
-            Every reply is ephemeral, so only the person who ran it sees the
+            <Code>/tonight</Code>, <Code>/up-for</Code>, <Code>/call</Code>,{" "}
+            <Code>/week</Code>, <Code>/around</Code>, <Code>/rules</Code> and{" "}
+            <Code>/unlink</Code>. Every reply is ephemeral, so only the person who ran it sees the
             answer. Bunchy Now shows counts and never names anybody, and routing
             the same fact through Discord must not become the loophole.
           </p>
@@ -343,6 +389,27 @@ DISCORD_GUILD_ID=your-server-id`}
             with spare capacity. Nothing from a private bunch, because that is a
             group&rsquo;s own business and Discord is a different room with
             different people in it. A restart does not replay the afternoon.
+          </p>
+          <p>
+            <strong className="text-ink">Welcome.</strong> Somebody joining the
+            server gets one message in the welcome channel: what the place is
+            for, a pointer at the rules, and one thing to do. Nobody is told
+            when a member arrives or leaves, and there is no direct message,
+            because a greeting that arrives in private from a bot is the kind of
+            thing people mute the server over.
+          </p>
+          <p>
+            <strong className="text-ink">Rules.</strong> One message, edited in
+            place whenever they change. A rules channel holding three versions is
+            worse than one holding none, because the reader has to work out which
+            is current and will pick wrong.
+          </p>
+          <p>
+            <strong className="text-ink">Direct messages.</strong> Only two, and
+            each follows something the member did: a reminder half an hour before
+            a thing they joined, and the question about how it went afterwards.
+            Nothing fires because somebody has been quiet or because there is
+            something new to look at.
           </p>
           <p>
             <strong className="text-ink">Voice presence.</strong> A linked member
@@ -375,6 +442,14 @@ DISCORD_GUILD_ID=your-server-id`}
             </strong>{" "}
             Almost always an unlinked account. Everything except{" "}
             <Code>/link</Code> needs one.
+          </p>
+          <p>
+            <strong className="text-ink">
+              The channel pickers are empty and greyed out.
+            </strong>{" "}
+            They are filled from a live call to Discord made by the web process,
+            not by the bot, so the two can disagree. The line at the top of this
+            page says which one failed and why.
           </p>
           <p>
             <strong className="text-ink">Logs.</strong>{" "}

@@ -30,22 +30,54 @@ export interface Settings {
 export function DiscordControls({
   settings,
   channels,
+  channelError,
 }: {
   settings: Settings;
   channels: Array<{ id: string; name: string }>;
+  /** Why the list is empty, when the reason is known and is not "no channels". */
+  channelError?: string;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<string | null>(null);
+
+  const noChannels = channels.length === 0;
+
+  /*
+    One sentence for each reason the list can be empty, because they need
+    different things done about them and the old copy asserted the first one
+    whatever the cause. It said the bot was not in the server while the bot was
+    in the server, which sends you off to re-invite a bot that is already there.
+  */
+  const emptyReason = channelError
+    ? channelError
+    : "The bot is not in the server yet, or it cannot see any text channel there.";
 
   async function save(patch: Partial<Settings>, key: string) {
     setPending(key);
     setError(null);
-    setSaved(false);
+    setSaved(null);
     try {
       await api("/api/admin/discord", { method: "PATCH", json: patch });
-      setSaved(true);
+      setSaved("Saved. The bot picks it up on its next pass.");
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause));
+    } finally {
+      setPending(null);
+    }
+  }
+
+  async function publish() {
+    setPending("publish");
+    setError(null);
+    setSaved(null);
+    try {
+      const result = await api<{ message: string }>("/api/admin/discord", {
+        method: "POST",
+      });
+      setSaved(result.message);
       router.refresh();
     } catch (cause) {
       setError(errorMessage(cause));
@@ -67,7 +99,7 @@ export function DiscordControls({
         <Select
           className="mt-1.5"
           value={settings.announceChannelId ?? ""}
-          disabled={pending !== null || channels.length === 0}
+          disabled={pending !== null || noChannels}
           onChange={(event) => {
             const id = event.target.value || null;
             save(
@@ -88,9 +120,7 @@ export function DiscordControls({
           ))}
         </Select>
         <span className="mt-1 block text-xs text-muted">
-          {channels.length === 0
-            ? "The list fills in once the bot is in the server."
-            : "Takes effect within five minutes. No deploy needed."}
+          {noChannels ? emptyReason : "Takes effect within five minutes. No deploy needed."}
         </span>
       </label>
 
@@ -139,7 +169,7 @@ export function DiscordControls({
         <Select
           className="mt-1.5"
           value={settings.welcomeChannelId ?? ""}
-          disabled={pending !== null || channels.length === 0}
+          disabled={pending !== null || noChannels}
           onChange={(event) => {
             const id = event.target.value || null;
             save(
@@ -159,8 +189,9 @@ export function DiscordControls({
           ))}
         </Select>
         <span className="mt-1 block text-xs text-muted">
-          Needs the Server Members intent switched on in the developer portal.
-          Without it Discord never tells the bot somebody arrived.
+          {noChannels
+            ? emptyReason
+            : "Needs the Server Members intent switched on in the developer portal. Without it Discord never tells the bot somebody arrived."}
         </span>
       </label>
 
@@ -169,7 +200,7 @@ export function DiscordControls({
         <Select
           className="mt-1.5"
           value={settings.rulesChannelId ?? ""}
-          disabled={pending !== null || channels.length === 0}
+          disabled={pending !== null || noChannels}
           onChange={(event) => {
             const id = event.target.value || null;
             save(
@@ -192,19 +223,39 @@ export function DiscordControls({
           ))}
         </Select>
         <span className="mt-1 block text-xs text-muted">
-          {settings.rulesMessageId
-            ? "Posted. Run /rules in Discord to bring it up to date; it edits the same message rather than posting again."
-            : "Run /rules in Discord to post them once a channel is chosen."}
+          {noChannels
+            ? emptyReason
+            : settings.rulesMessageId
+              ? "Already posted. Publishing again edits that same message rather than adding a second copy, so the channel never holds two versions."
+              : "Nothing posted yet. Publishing writes one message and remembers it."}
         </span>
       </label>
 
+      {/*
+        The button, rather than an instruction to go and type /rules in Discord.
+        This is the page where the channel gets chosen, and sending somebody
+        elsewhere to use the thing they just set up leaves the job half done.
+      */}
+      <div className="max-w-md">
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={pending !== null || !settings.rulesChannelId}
+          loading={pending === "publish"}
+          onClick={publish}
+        >
+          {settings.rulesMessageId ? "Update the rules post" : "Post the rules"}
+        </Button>
+        {!settings.rulesChannelId && (
+          <p className="mt-1 text-xs text-muted">Choose a channel first.</p>
+        )}
+      </div>
+
       {saved && (
         <p className="text-sm text-positive" role="status">
-          Saved. The bot picks it up on its next pass.
+          {saved}
         </p>
       )}
-
-      {pending && <Button size="sm" loading disabled>Saving</Button>}
     </div>
   );
 }
