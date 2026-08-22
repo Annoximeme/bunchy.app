@@ -326,6 +326,7 @@ model Profile {
   seriesMemberships  ActivitySeriesMember[]
   discordLink        DiscordLink?
   discordLinkCodes   DiscordLinkCode[]
+  productFeedback    ProductFeedback[]
 
   @@index([cityLabel])
   @@index([countryCode, regionLabel])
@@ -1294,6 +1295,10 @@ enum NotificationType {
   /// "Did you go?", the only notification sent after something, rather than
   /// before it. See ActivityOutcome.
   ACTIVITY_FOLLOW_UP
+  /// Somebody answered the feedback you sent. Only ever fires because you
+  /// wrote to us first, which is what keeps it on the right side of the line
+  /// about notifications that exist to pull people back.
+  FEEDBACK_ANSWERED
 }
 
 model Notification {
@@ -1722,9 +1727,105 @@ model Announcement {
   @@index([publishedAt])
   @@index([tier, publishedAt])
   @@index([publicVisible, publishedAt])
+
+  /// Feedback this entry shipped, for the "you asked for this" link.
+  shippedFeedback ProductFeedback[]
 }
 
 /// Who has seen it. Dismissing a banner is the same act as reading it.
+/// What somebody told us about the product itself.
+///
+/// Deliberately not `Report`, which is about a person and carries a safety
+/// record. This is about the software, and the two want opposite things: a
+/// report must outlive its reporter so the queue cannot be cleared by deleting
+/// an account, while a good idea is worth keeping but is nobody's evidence.
+///
+/// Deliberately not `MatchFeedback` either, which is one member saying a
+/// suggestion was wrong for them. That is a signal to the matching engine. This
+/// is a message to the person who builds this.
+///
+/// ## Why there is no voting
+///
+/// A public board where feature requests are upvoted turns feedback into a
+/// popularity contest, and the winner is whichever cohort is loudest rather
+/// than whichever problem is worst. It also ranks people's ideas against each
+/// other in public, which is the same move as ranking people and is refused
+/// here for the same reason. One person reads all of these; the value is in
+/// reading them, not in counting them.
+model ProductFeedback {
+  id String @id @default(cuid())
+
+  /// Null once the author deletes their account. The idea survives, the person
+  /// does not, and the reply loop simply stops: there is nobody left to answer.
+  profileId String?
+
+  kind    FeedbackKind
+  message String
+
+  /// The page they were on when they wrote it, shown to them in the form
+  /// before they send. Enormously useful for "this is broken" and worthless if
+  /// collected quietly, so it is a visible field rather than a hidden one.
+  pagePath String?
+
+  status FeedbackStatus @default(NEW)
+
+  /// What was said back, rendered to the author verbatim. A feedback system
+  /// whose replies are templates is a feedback system nobody writes to twice.
+  reply     String?
+  repliedAt DateTime?
+
+  /// The changelog entry that shipped it, when there is one. This is the whole
+  /// point: "you asked, here it is, on this date" is the only thing that makes
+  /// the next person bother.
+  announcementId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile      Profile?      @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  announcement Announcement? @relation(fields: [announcementId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([profileId, createdAt])
+  @@index([announcementId])
+}
+
+/// What kind of thing this is, chosen by the author.
+///
+/// Four, because a list somebody has to read past four of is a list they pick
+/// the first item from. They are phrased as sentences a person would say rather
+/// than as categories a tracker would use: nobody thinks "this is an
+/// enhancement request".
+enum FeedbackKind {
+  /// "It would be good if..."
+  IDEA
+  /// "This is broken."
+  BROKEN
+  /// "I could not work out how to..."
+  CONFUSING
+  OTHER
+}
+
+/// Where a piece of feedback has got to.
+///
+/// `NEW` and `READ` are separate on purpose, and the difference is shown to the
+/// author. "Nobody has read this yet" is honest and sets an expectation;
+/// silence that might mean either is what makes people stop sending.
+///
+/// There is no `IN_PROGRESS`. One person builds this, and a status that
+/// promises work is underway is a promise that gets broken quietly.
+enum FeedbackStatus {
+  NEW
+  READ
+  /// Actually going to happen. Only set when that is true.
+  PLANNED
+  /// Done. Should carry an `announcementId`.
+  SHIPPED
+  /// Not going to happen, with a reason. Saying no plainly is a feature: an
+  /// idea left open forever is a slower and less respectful no.
+  DECLINED
+}
+
 model AnnouncementRead {
   announcementId String
   profileId      String

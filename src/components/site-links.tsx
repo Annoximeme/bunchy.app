@@ -64,7 +64,25 @@ export const SITE_LINKS: readonly SiteLink[] = [
  * It is here so the pages that explain what Bunchy is are reachable from
  * inside it, which is the least a product like this owes.
  */
-export function SiteFooter({ className }: { className?: string }) {
+/**
+ * The one extra link that only exists for somebody signed in.
+ *
+ * Not in `SITE_LINKS`, because that list renders on the landing page too, and
+ * a link there to a page that answers with a sign-in wall is the door-with-no-
+ * handle this file exists to complain about. Sending feedback needs an account
+ * for a real reason: there is nowhere to put the reply otherwise.
+ */
+const SIGNED_IN_LINKS: readonly SiteLink[] = [{ href: "/feedback", label: "Feedback" }];
+
+export function SiteFooter({
+  className,
+  signedIn = false,
+}: {
+  className?: string;
+  signedIn?: boolean;
+}) {
+  const links = signedIn ? [...SITE_LINKS, ...SIGNED_IN_LINKS] : SITE_LINKS;
+
   return (
     <footer
       className={cn(
@@ -78,7 +96,7 @@ export function SiteFooter({ className }: { className?: string }) {
         </p>
         <nav aria-label="About Bunchy">
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {SITE_LINKS.map((link) => (
+            {links.map((link) => (
               <li key={link.href}>
                 {link.external ? (
                   <a

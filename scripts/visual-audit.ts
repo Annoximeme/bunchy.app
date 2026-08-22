@@ -52,6 +52,7 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/do", name: "do" },
   { path: "/surprise", name: "surprise" },
   { path: "/start", name: "start" },
+  { path: "/feedback", name: "feedback" },
   { path: "/about", name: "about", signedOut: true },
   { path: "/moderators", name: "moderators" },
   { path: "/safety", name: "safety", signedOut: true },
@@ -72,6 +73,7 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   */
   { path: "/admin", name: "admin-overview" },
   { path: "/admin/analytics", name: "admin-analytics" },
+  { path: "/admin/feedback", name: "admin-feedback" },
   { path: "/admin/audit", name: "admin-audit" },
   { path: "/admin/reports", name: "admin-reports" },
   { path: "/admin/moderators", name: "admin-moderators" },

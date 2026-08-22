@@ -15,7 +15,7 @@ export interface NotificationTypeInfo {
   type: NotificationType;
   label: string;
   description: string;
-  group: "People" | "Bunches" | "Activities";
+  group: "People" | "Bunches" | "Activities" | "Your account";
   /** True when a person is waiting, false when it is our idea. */
   person: boolean;
 }
@@ -98,9 +98,44 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     group: "Activities",
     person: true,
   },
+  {
+    /*
+      This was missing, and missing here meant switched off everywhere.
+
+      `defaultPreference` treats a type it does not recognise as a suggestion
+      and returns silent, so every "How was it?" was created and then dropped
+      before it reached anybody. Not one member had a preference row for it,
+      because the row is written from this list at signup and the settings
+      screen is drawn from this list too, so there was no switch to find.
+
+      That mattered more than one quiet notification. The answer to it is what
+      writes ActivityOutcome, which is where the `met_well` signal in the
+      matching engine comes from. The loop that makes the next introduction
+      better was open at both ends.
+    */
+    type: "ACTIVITY_FOLLOW_UP",
+    label: "How did it go?",
+    description:
+      "Asked once after something you went to. It is the only message that comes after an activity rather than before it, and the answer is what makes the next suggestion better.",
+    group: "Activities",
+    person: true,
+  },
+  {
+    type: "FEEDBACK_ANSWERED",
+    label: "We answered your feedback",
+    description:
+      "Only ever because you wrote to us first. Says what happened to it, including when the answer is no.",
+    group: "Your account",
+    person: true,
+  },
 ];
 
-export const NOTIFICATION_GROUPS = ["People", "Bunches", "Activities"] as const;
+export const NOTIFICATION_GROUPS = [
+  "People",
+  "Bunches",
+  "Activities",
+  "Your account",
+] as const;
 
 /**
  * What a member gets before they have ever opened the settings screen.

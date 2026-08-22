@@ -44,6 +44,10 @@ export const RULES = {
   // so a burst of failures against it is visible as a refusal rather than as
   // load nobody attributed.
   tokenSubmission: { limit: 20, windowMs: 60 * 60 * 1000 },
+  // Feedback about the product. Generous on purpose: somebody with five real
+  // things to say in one evening is the best kind of member to have, and
+  // telling them to come back tomorrow is how you get four of them.
+  feedback: { limit: 20, windowMs: 24 * 60 * 60 * 1000 },
   connectionRequest: { limit: 30, windowMs: 24 * 60 * 60 * 1000 },
   message: { limit: 60, windowMs: 60 * 1000 },
   bunchCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },

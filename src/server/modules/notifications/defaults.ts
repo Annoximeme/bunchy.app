@@ -26,4 +26,10 @@ export const NOTIFICATION_DEFAULTS: ReadonlyArray<{
   { type: "ACTIVITY_INVITE", inApp: true, email: false },
   { type: "ACTIVITY_REMINDER", inApp: true, email: false },
   { type: "ACTIVITY_CHANGED", inApp: true, email: false },
+  // Missing until now, which is why it never fired. See the note in
+  // src/lib/notifications.ts.
+  { type: "ACTIVITY_FOLLOW_UP", inApp: true, email: false },
+  // An answer to something the member wrote. Email on, because the whole point
+  // is that it reaches somebody who has stopped checking.
+  { type: "FEEDBACK_ANSWERED", inApp: true, email: true },
 ];

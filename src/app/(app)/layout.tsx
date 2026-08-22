@@ -106,7 +106,7 @@ export default async function AppLayout({
           alone, and a signed-in visitor to the landing page is redirected to
           Discover before they ever see it.
         */}
-        <SiteFooter />
+        <SiteFooter signedIn />
       </main>
     </div>
   );
