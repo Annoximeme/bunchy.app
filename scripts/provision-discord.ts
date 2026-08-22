@@ -358,6 +358,7 @@ interface DiscordChannel {
   type: number;
   parent_id: string | null;
   topic?: string | null;
+  permission_overwrites?: Overwrite[];
 }
 
 interface Overwrite {
@@ -367,7 +368,31 @@ interface Overwrite {
   deny?: string;
 }
 
+
 let writes = 0;
+
+/** Things that could not be done, reported together at the end. */
+const problems: string[] = [];
+
+/**
+ * Do one piece of work, and let the rest continue if it fails.
+ *
+ * A provisioning run is a list of mostly independent changes. Aborting all of
+ * them because one was refused leaves exactly the half-built server this script
+ * is supposed to avoid, and the most likely refusal is the least important
+ * change: Discord will not let a bot grant a permission it does not hold
+ * itself, which is a sane rule and has nothing to do with whether the channels
+ * can be created.
+ */
+async function attempt(description: string, work: () => Promise<unknown>) {
+  try {
+    await work();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.log(`    could not: ${message.slice(0, 160)}`);
+    problems.push(`${description}: ${message.slice(0, 200)}`);
+  }
+}
 
 async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API}${path}`, {
@@ -454,11 +479,13 @@ async function main() {
     if (!existing) {
       act(`create role ${spec.name}  (${spec.why})`);
       if (APPLY) {
-        const created = await call<DiscordRole>(`/guilds/${GUILD}/roles`, {
-          method: "POST",
-          body: JSON.stringify(payload),
+        await attempt(`create role ${spec.name}`, async () => {
+          const created = await call<DiscordRole>(`/guilds/${GUILD}/roles`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          roles.push(created);
         });
-        roles.push(created);
       }
       continue;
     }
@@ -474,10 +501,12 @@ async function main() {
     } else {
       act(`update role ${spec.name}: permissions ${existing.permissions} -> ${payload.permissions}`);
       if (APPLY) {
-        await call<DiscordRole>(`/guilds/${GUILD}/roles/${existing.id}`, {
-          method: "PATCH",
-          body: JSON.stringify(payload),
-        });
+        await attempt(`update role ${spec.name}`, () =>
+          call<DiscordRole>(`/guilds/${GUILD}/roles/${existing.id}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+          }),
+        );
       }
     }
   }
@@ -490,10 +519,12 @@ async function main() {
       `update @everyone: ${everyone.permissions} -> ${EVERYONE_PERMISSIONS}  (drops MENTION_EVERYONE, CREATE_EVENTS, CREATE_GUILD_EXPRESSIONS)`,
     );
     if (APPLY) {
-      await call<DiscordRole>(`/guilds/${GUILD}/roles/${GUILD}`, {
-        method: "PATCH",
-        body: JSON.stringify({ permissions: String(EVERYONE_PERMISSIONS) }),
-      });
+      await attempt("update @everyone", () =>
+        call<DiscordRole>(`/guilds/${GUILD}/roles/${GUILD}`, {
+          method: "PATCH",
+          body: JSON.stringify({ permissions: String(EVERYONE_PERMISSIONS) }),
+        }),
+      );
     }
   } else if (everyone) {
     console.log("  ok    @everyone");
@@ -515,14 +546,68 @@ async function main() {
     if (!parent) {
       act(`create category ${category.name}`);
       if (APPLY) {
-        parent = await call<DiscordChannel>(`/guilds/${GUILD}/channels`, {
-          method: "POST",
-          body: JSON.stringify({ name: category.name, type: 4, position: index }),
+        await attempt(`create category ${category.name}`, async () => {
+          parent = await call<DiscordChannel>(`/guilds/${GUILD}/channels`, {
+            method: "POST",
+            body: JSON.stringify({ name: category.name, type: 4, position: index }),
+          });
+          channels.push(parent);
         });
-        channels.push(parent);
       }
     } else {
       console.log(`  ok    category ${category.name}`);
+    }
+
+    /*
+      A private category has to let the bot in explicitly.
+
+      The staff category denied VIEW_CHANNEL to @everyone, and the bot has no
+      role that overrides it, so it could not see the category it was being
+      asked to create channels inside. Discord answers that with a flat 403 and
+      no hint about which of the several possible permissions is missing.
+
+      Channels inherit this from the category, so fixing it here fixes it for
+      everything created underneath.
+    */
+    if (category.staffOnly && parent) {
+      const wanted: Overwrite[] = [
+        { id: GUILD, type: 0, deny: String(bits("VIEW_CHANNEL", "CONNECT")) },
+      ];
+      if (staffRole) {
+        wanted.push({
+          id: staffRole.id,
+          type: 0,
+          allow: String(bits("VIEW_CHANNEL", "CONNECT", "SEND_MESSAGES", "READ_MESSAGE_HISTORY")),
+        });
+      }
+      if (botRole) {
+        wanted.push({
+          id: botRole.id,
+          type: 0,
+          allow: String(bits("VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "READ_MESSAGE_HISTORY")),
+        });
+      }
+
+      const current = parent.permission_overwrites ?? [];
+      const missing = wanted.filter(
+        (w) => !current.some((c) => c.id === w.id && c.allow === (w.allow ?? "0") && c.deny === (w.deny ?? "0")),
+      );
+
+      if (missing.length === 0) {
+        console.log(`  ok    ${category.name} permissions`);
+      } else {
+        act(`open ${category.name} to staff and the bot, keep it shut to everyone else`);
+        if (APPLY) {
+          const parentId = parent.id;
+          await attempt(`set permissions on ${category.name}`, async () => {
+            const updated = await call<DiscordChannel>(`/channels/${parentId}`, {
+              method: "PATCH",
+              body: JSON.stringify({ permission_overwrites: wanted }),
+            });
+            if (parent) parent.permission_overwrites = updated.permission_overwrites;
+          });
+        }
+      }
     }
 
     for (const spec of category.channels) {
@@ -560,17 +645,20 @@ async function main() {
             (staffOnly ? "  [staff only]" : spec.readOnly ? "  [read only]" : ""),
         );
         if (APPLY && parent) {
-          const created = await call<DiscordChannel>(`/guilds/${GUILD}/channels`, {
-            method: "POST",
-            body: JSON.stringify({
-              name: spec.name,
-              type: spec.type,
-              parent_id: parent.id,
-              topic: spec.type === 0 ? spec.topic : undefined,
-              permission_overwrites: overwrites.length ? overwrites : undefined,
-            }),
+          const parentId = parent.id;
+          await attempt(`create #${spec.name}`, async () => {
+            const created = await call<DiscordChannel>(`/guilds/${GUILD}/channels`, {
+              method: "POST",
+              body: JSON.stringify({
+                name: spec.name,
+                type: spec.type,
+                parent_id: parentId,
+                topic: spec.type === 0 ? spec.topic : undefined,
+                permission_overwrites: overwrites.length ? overwrites : undefined,
+              }),
+            });
+            channels.push(created);
           });
-          channels.push(created);
         }
         continue;
       }
@@ -587,20 +675,34 @@ async function main() {
       } else {
         act(`update #${spec.name}: ${Object.keys(patch).join(", ")}`);
         if (APPLY) {
-          await call<DiscordChannel>(`/channels/${existing.id}`, {
-            method: "PATCH",
-            body: JSON.stringify(patch),
-          });
+          await attempt(`update #${spec.name}`, () =>
+            call<DiscordChannel>(`/channels/${existing.id}`, {
+              method: "PATCH",
+              body: JSON.stringify(patch),
+            }),
+          );
         }
       }
     }
   }
 
-  console.log(
-    APPLY
-      ? `\nDone. ${writes} writes.`
-      : `\nNothing changed. Re-run with --apply to make it so.`,
-  );
+  if (!APPLY) {
+    console.log("\nNothing changed. Re-run with --apply to make it so.");
+    return;
+  }
+
+  console.log(`\nDone. ${writes} writes.`);
+
+  if (problems.length > 0) {
+    console.log(`\n${problems.length} thing(s) could not be done:`);
+    for (const p of problems) console.log(`  ! ${p}`);
+    console.log(
+      "\nA 403 on a role usually means the bot was asked to grant a permission\n" +
+        "it does not hold itself, which Discord refuses. That one has to be set by\n" +
+        "hand in Server Settings, Roles.",
+    );
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error: unknown) => {
