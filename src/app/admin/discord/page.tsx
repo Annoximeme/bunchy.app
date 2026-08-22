@@ -296,15 +296,28 @@ DISCORD_GUILD_ID=your-server-id`}
                   </a>
                 </p>
                 <p className="text-muted">
-                  Permissions <Code>{REQUIRED_PERMISSIONS}</Code>: View Channels,
-                  Send Messages, Add Reactions and Read Message History. The last
-                  two are what make answering a call one tap: the bot pre-adds
-                  the join emoji, and reads reactions on announcements posted
-                  before its last restart. Not Administrator, which most guides
-                  suggest and which would give a bot that posts one message every
-                  few minutes the power to delete the server. Voice presence
-                  needs no permission at all beyond seeing the channel, because
-                  it reads voice state through the gateway rather than the API.
+                  Permissions <Code>{REQUIRED_PERMISSIONS}</Code>. Five of them
+                  are the job: View Channels, Send Messages, Embed Links, Add
+                  Reactions and Read Message History. The last two make
+                  answering a call one tap, because the bot pre-adds the join
+                  emoji and reads reactions on announcements posted before its
+                  last restart. Voice presence needs no permission at all beyond
+                  seeing the channel, because it reads voice state through the
+                  gateway rather than the API.
+                </p>
+                <p className="text-muted">
+                  The other two, <strong>Manage Channels</strong> and{" "}
+                  <strong>Manage Roles</strong>, are a trade rather than a
+                  requirement. They are what builds the server out from a
+                  script, and keeping them means adding a channel later is
+                  running that script rather than re-inviting the bot. Manage
+                  Roles is also what lets the bot grant the Linked role itself,
+                  which is the only thing that keeps that role honest. The cost
+                  is that a bot holding these can restructure the server, so the
+                  token is worth more than it was. It is still not
+                  Administrator, and the bot&rsquo;s role sits below{" "}
+                  <strong>Bunchy Staff</strong> on purpose, so Manage Roles
+                  cannot be used to hand anybody moderator.
                 </p>
                 <p className="text-muted">
                   Re-opening this link on a server the bot is already in updates

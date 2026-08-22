@@ -25,19 +25,35 @@ import { db } from "@/server/db/client";
 const API = "https://discord.com/api/v10";
 
 /**
- * Four permissions, and each one is used.
+ * What the bot is invited with, and why each part is there.
  *
- * View Channel and Send Messages to announce at all. Add Reactions so the bot
- * can pre-add the join emoji, which is what makes answering a call one tap
- * rather than two. Read Message History so a reaction on an announcement posted
- * before the last restart still works, because otherwise the join button
- * quietly stops working after every deploy.
+ * The first five are what it needs to do its job. View Channel and Send
+ * Messages to announce at all. Embed Links because everything it posts is an
+ * embed: it worked without this only because @everyone happened to grant it,
+ * and a server that tightened that permission would have broken the bot for
+ * reasons nobody would have connected. Add Reactions so it can pre-add the join
+ * emoji, which is what makes answering a call one tap rather than two. Read
+ * Message History so a reaction on an announcement posted before the last
+ * restart still works, because otherwise the join button quietly stops working
+ * after every deploy.
  *
- * Not Administrator, which most guides suggest and which would give a bot that
- * posts one message every few minutes the power to delete the server.
+ * The last two are a deliberate trade rather than a requirement.
+ *
+ * Manage Channels and Manage Roles are what `scripts/provision-discord.sh`
+ * needs to build the server out, and they are kept afterwards so that adding a
+ * channel later is running a script rather than re-inviting the bot. Manage
+ * Roles is also what lets it grant the Linked role by itself, which is the only
+ * thing that keeps that role honest.
+ *
+ * The cost is real and worth writing down: a bot holding these can restructure
+ * the server, so the token is now worth more than it was. It still is not
+ * Administrator, which most guides suggest and which would add banning members
+ * and deleting the server itself to that list. The bot's own role also sits
+ * below the staff role on purpose, so Manage Roles cannot be used to hand
+ * anybody moderator.
  */
 export const REQUIRED_PERMISSIONS =
-  (1 << 10) | (1 << 11) | (1 << 6) | (1 << 16);
+  (1 << 10) | (1 << 11) | (1 << 6) | (1 << 16) | (1 << 14) | (1 << 4) | (1 << 28);
 
 export interface TokenCheck {
   configured: boolean;

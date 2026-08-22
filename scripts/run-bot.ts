@@ -33,6 +33,9 @@ import {
 } from "@/server/modules/discord/settings";
 import { rulesEmbeds, welcomeMessage } from "@/server/modules/discord/messages";
 
+/** The role the bot grants to anybody who has connected a Bunchy account. */
+const LINKED_ROLE = "Linked";
+
 /**
  * The Bunchy Discord bot.
  *
@@ -199,6 +202,44 @@ async function main() {
     ]);
   }
 
+  /**
+   * Keep the Linked role matching whether the account is actually linked.
+   *
+   * Driven by the state in the database rather than by what a command replied,
+   * which means it is self-healing: somebody who linked before this role
+   * existed picks it up the next time they run `/link`, and a role removed by
+   * hand comes back rather than drifting out of sync forever.
+   *
+   * A role that nothing assigns is decoration, and decoration that claims to
+   * mean something is worse than no role at all, because people believe it.
+   *
+   * Every failure here is swallowed after a log. The role is a nicety and the
+   * command it is attached to is not: somebody linking their account must not
+   * see an error because the bot sits below the role in the hierarchy, or
+   * because a server has no such role.
+   */
+  async function syncLinkedRole(interaction: ChatInputCommandInteraction) {
+    try {
+      const guild = interaction.guild;
+      if (!guild) return;
+
+      const role = guild.roles.cache.find((r) => r.name === LINKED_ROLE);
+      if (!role) return;
+
+      // Fetched rather than read off the interaction. `interaction.member` is
+      // the raw API shape when the gateway has not cached it, and there `roles`
+      // is a list of ids with no way to add or remove one.
+      const member = await guild.members.fetch(interaction.user.id);
+      const linked = Boolean(await profileForDiscordId(interaction.user.id));
+      const has = member.roles.cache.has(role.id);
+
+      if (linked && !has) await member.roles.add(role);
+      if (!linked && has) await member.roles.remove(role);
+    } catch (error) {
+      console.warn(`[bot] could not update the ${LINKED_ROLE} role:`, String(error).slice(0, 160));
+    }
+  }
+
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -209,11 +250,11 @@ async function main() {
 
     try {
       switch (interaction.commandName) {
-        case "link":
-          return void (await ephemeral(
-            interaction,
-            await linkCommand(ctx, interaction.options.getString("code", true)),
-          ));
+        case "link": {
+          const reply = await linkCommand(ctx, interaction.options.getString("code", true));
+          await ephemeral(interaction, reply);
+          return void (await syncLinkedRole(interaction));
+        }
         case "tonight":
           return void (await ephemeral(interaction, await tonightCommand(ctx)));
         case "rules":
@@ -222,8 +263,11 @@ async function main() {
           return void (await ephemeral(interaction, await weekCommand(ctx)));
         case "around":
           return void (await ephemeral(interaction, await aroundCommand(ctx)));
-        case "unlink":
-          return void (await ephemeral(interaction, await unlinkCommand(ctx)));
+        case "unlink": {
+          const reply = await unlinkCommand(ctx);
+          await ephemeral(interaction, reply);
+          return void (await syncLinkedRole(interaction));
+        }
         case "up-for":
           return void (await ephemeral(
             interaction,
