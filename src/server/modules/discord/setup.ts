@@ -24,8 +24,20 @@ import { db } from "@/server/db/client";
 
 const API = "https://discord.com/api/v10";
 
-/** View Channel and Send Messages. Nothing else, and the page explains why. */
-export const REQUIRED_PERMISSIONS = (1 << 10) | (1 << 11);
+/**
+ * Four permissions, and each one is used.
+ *
+ * View Channel and Send Messages to announce at all. Add Reactions so the bot
+ * can pre-add the join emoji, which is what makes answering a call one tap
+ * rather than two. Read Message History so a reaction on an announcement posted
+ * before the last restart still works, because otherwise the join button
+ * quietly stops working after every deploy.
+ *
+ * Not Administrator, which most guides suggest and which would give a bot that
+ * posts one message every few minutes the power to delete the server.
+ */
+export const REQUIRED_PERMISSIONS =
+  (1 << 10) | (1 << 11) | (1 << 6) | (1 << 16);
 
 export interface TokenCheck {
   configured: boolean;
@@ -210,11 +222,9 @@ export async function checkAnnounceChannel(): Promise<ChannelCheck> {
 /**
  * The invite URL, with exactly the permissions the bot uses.
  *
- * Two: View Channel and Send Messages. Not Administrator, which most guides
- * suggest and which would give a bot that posts one message a minute the power
- * to delete the server. Voice presence needs no permission at all beyond seeing
- * the channel, because it reads voice state through the gateway intent rather
- * than through the REST API.
+ * See `REQUIRED_PERMISSIONS` for what they are and why each is there. Voice
+ * presence needs no permission at all beyond seeing the channel, because it
+ * reads voice state through the gateway intent rather than the REST API.
  */
 export function inviteUrl(applicationId: string): string {
   const params = new URLSearchParams({

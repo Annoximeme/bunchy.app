@@ -187,12 +187,12 @@ export default async function DiscordSetupPage() {
               <strong>Message Content Intent</strong> off.
             </p>
             <p>
-              The bot asks for <Code>Guilds</Code> and <Code>GuildVoiceStates</Code>{" "}
-              only. Voice states are not a privileged intent. Message content is
-              deliberately not requested: the bot never reads what anybody types,
-              only slash commands addressed to it, and asking for message content
-              would mean asking to read the whole server in order to run four
-              commands.
+              The bot asks for <Code>Guilds</Code>, <Code>GuildVoiceStates</Code>{" "}
+              and <Code>GuildMessageReactions</Code>. None of those is
+              privileged. Message content is deliberately not among them: the
+              reaction intent says who reacted to which message and never what
+              anybody wrote, and asking for message content would mean asking to
+              read the whole server in order to run a handful of commands.
             </p>
           </Step>
 
@@ -235,12 +235,20 @@ DISCORD_GUILD_ID=your-server-id`}
                   </a>
                 </p>
                 <p className="text-muted">
-                  Permissions <Code>{REQUIRED_PERMISSIONS}</Code>: View Channels
-                  and Send Messages. Not Administrator, which most guides suggest
-                  and which would give a bot that posts one message a minute the
-                  power to delete the server. Voice presence needs no permission
-                  beyond seeing the channel, because it reads voice state through
-                  the gateway rather than the API.
+                  Permissions <Code>{REQUIRED_PERMISSIONS}</Code>: View Channels,
+                  Send Messages, Add Reactions and Read Message History. The last
+                  two are what make answering a call one tap: the bot pre-adds
+                  the join emoji, and reads reactions on announcements posted
+                  before its last restart. Not Administrator, which most guides
+                  suggest and which would give a bot that posts one message every
+                  few minutes the power to delete the server. Voice presence
+                  needs no permission at all beyond seeing the channel, because
+                  it reads voice state through the gateway rather than the API.
+                </p>
+                <p className="text-muted">
+                  Re-opening this link on a server the bot is already in updates
+                  its permissions rather than adding it twice, which is what to
+                  do if the join reaction is not working.
                 </p>
               </>
             ) : (

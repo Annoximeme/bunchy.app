@@ -1,8 +1,16 @@
 import { db } from "@/server/db/client";
 import { env } from "@/server/env";
 import { isAppError } from "@/server/errors";
-import { redeemLinkCode, requireLinked } from "@/server/modules/discord/link";
+import {
+  profileForDiscordId,
+  redeemLinkCode,
+  requireLinked,
+  unlinkDiscord,
+} from "@/server/modules/discord/link";
 import { openCalls, createQuickCall } from "@/server/modules/activities/quick";
+import { joinActivity } from "@/server/modules/activities/service";
+import { upcomingForProfile } from "@/server/modules/activities/series";
+import { presentCount } from "@/server/modules/discord/presence";
 import { setAvailability } from "@/server/modules/availability/service";
 import type { AvailabilityKind } from "@/generated/prisma/enums";
 
@@ -184,4 +192,100 @@ export async function announceable(
       url: appUrl(`/activities/${row.id}`),
     }))
     .filter((row) => row.spotsLeft > 0);
+}
+
+/**
+ * Joining a call from Discord, without opening anything.
+ *
+ * The friction this removes is the one that actually loses people. Somebody
+ * reading "anyone up for Helldivers, 3 spots left" in a channel has to open a
+ * link, land on a page, and press a button, and every one of those is a place
+ * to stop. A reaction is one tap in the app they are already looking at.
+ *
+ * It is also the shape this product argues for: the answer to seeing something
+ * worth doing should be doing it, not navigating to it.
+ *
+ * Refuses politely rather than silently. A reaction that appears to do nothing
+ * is worse than one that explains itself, so an unlinked account gets told how
+ * to link, and a full call gets told it is full.
+ */
+export async function joinByReaction(
+  ctx: CommandContext,
+  activityId: string,
+): Promise<string> {
+  const result = await guard(async () => {
+    const profile = await requireLinked(ctx.discordId);
+    const { status } = await joinActivity(activityId, profile.id);
+    return status === "WAITLISTED"
+      ? "That one is full, so you are on the waiting list. You will be told if a spot opens."
+      : "You are in. Details are on Bunchy.";
+  }, "Could not join that. Try again in a moment.");
+
+  return typeof result === "string" ? result : String(result);
+}
+
+/** `/week`: what this member has coming, from Discord. */
+export async function weekCommand(ctx: CommandContext): Promise<string> {
+  const result = await guard(async () => {
+    const profile = await requireLinked(ctx.discordId);
+    const items = await upcomingForProfile(profile.id, 7);
+
+    if (items.length === 0) {
+      return `Nothing in your week yet. ${appUrl("/now")} is where that changes.`;
+    }
+
+    const lines = items.slice(0, 7).map((item) => {
+      const day = item.startsAt.toLocaleDateString("en-GB", {
+        weekday: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const repeats = item.recurring ? " (every week)" : "";
+      return `• **${item.title}** — ${day}${repeats}, ${item.going} going`;
+    });
+
+    return ["Your week:", ...lines].join("\n");
+  }, "Could not read your week. Try again in a moment.");
+
+  return typeof result === "string" ? result : String(result);
+}
+
+/**
+ * `/around`: how many people are about, and never who.
+ *
+ * A count, matching what Bunchy Now shows on the site. Naming people would make
+ * this the one place in the product where being around is published, and the
+ * fact that Discord feels casual is not a reason to hold it to a lower standard
+ * than the page that shows the same thing.
+ */
+export async function aroundCommand(ctx: CommandContext): Promise<string> {
+  const result = await guard(async () => {
+    await requireLinked(ctx.discordId);
+    const count = await presentCount();
+
+    if (count === 0) {
+      return `Nobody is marked as around right now. ${appUrl("/now")} if you want to be the first.`;
+    }
+    return count === 1
+      ? "One person is around right now."
+      : `${count} people are around right now.`;
+  }, "Could not check. Try again in a moment.");
+
+  return typeof result === "string" ? result : String(result);
+}
+
+/**
+ * `/unlink`: disconnect, from either side.
+ *
+ * Available here as well as on the profile, because somebody who wants to
+ * disconnect a Discord account is quite likely to be in Discord at the time,
+ * and making them open a website to undo something is the kind of small
+ * hostility that a product either does or does not do.
+ */
+export async function unlinkCommand(ctx: CommandContext): Promise<string> {
+  const profile = await profileForDiscordId(ctx.discordId);
+  if (!profile) return "That account is not linked to anything.";
+
+  await unlinkDiscord(profile.id);
+  return "Disconnected. Voice presence stops counting you, and the commands will need linking again.";
 }

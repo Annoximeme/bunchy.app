@@ -3,6 +3,7 @@ import {
   Client,
   GatewayIntentBits,
   MessageFlags,
+  Partials,
   type ChatInputCommandInteraction,
   type Guild,
 } from "discord.js";
@@ -10,10 +11,14 @@ import { env } from "@/server/env";
 import {
   UP_FOR_CHOICES,
   announceable,
+  aroundCommand,
   callCommand,
+  joinByReaction,
   linkCommand,
   tonightCommand,
+  unlinkCommand,
   upForCommand,
+  weekCommand,
 } from "@/server/modules/discord/commands";
 import { setVoicePresence } from "@/server/modules/discord/presence";
 
@@ -72,7 +77,18 @@ async function main() {
       asking for message content would be asking to read the whole server in
       order to run four commands.
     */
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildVoiceStates,
+      // Reactions on the bot's own announcements, so somebody can answer a
+      // call without leaving Discord. Still not MessageContent: this says who
+      // reacted to which message, never what anybody wrote.
+      GatewayIntentBits.GuildMessageReactions,
+    ],
+    // Reactions arrive for messages the bot did not see posted, which is every
+    // message after a restart. Without this they are dropped silently and the
+    // join button stops working an hour after each deploy.
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   });
 
   client.once("clientReady", async () => {
@@ -121,6 +137,9 @@ async function main() {
         ],
       },
       { name: "tonight", description: "What is open on Bunchy right now" },
+      { name: "week", description: "What you have coming up on Bunchy" },
+      { name: "around", description: "How many people are around right now" },
+      { name: "unlink", description: "Disconnect this Discord account from Bunchy" },
       {
         name: "up-for",
         description: "Say what you are up for, for the next four hours",
@@ -166,6 +185,12 @@ async function main() {
           ));
         case "tonight":
           return void (await ephemeral(interaction, await tonightCommand(ctx)));
+        case "week":
+          return void (await ephemeral(interaction, await weekCommand(ctx)));
+        case "around":
+          return void (await ephemeral(interaction, await aroundCommand(ctx)));
+        case "unlink":
+          return void (await ephemeral(interaction, await unlinkCommand(ctx)));
         case "up-for":
           return void (await ephemeral(
             interaction,
@@ -184,6 +209,51 @@ async function main() {
       if (!interaction.replied) {
         await ephemeral(interaction, "Something went wrong. Try again shortly.");
       }
+    }
+  });
+
+  /*
+    Answering a call by reacting to it.
+
+    The announcement carries the activity id, so the handler needs no state of
+    its own and survives a restart: whatever is in the channel stays joinable.
+    The mapping lives in one place, `ANNOUNCED`, which is filled as messages are
+    posted and re-read from the message itself when the process has forgotten.
+
+    The reply is a DM rather than a channel message. Somebody who joined does
+    not need it announced to the room, and a bot replying in the channel to
+    every reaction is how a useful feature becomes noise.
+  */
+  const JOIN_EMOJI = "✋";
+  const ANNOUNCED = new Map<string, string>();
+
+  client.on("messageReactionAdd", async (reaction, user) => {
+    if (user.bot) return;
+    if (reaction.emoji.name !== JOIN_EMOJI) return;
+
+    try {
+      // A partial reaction has to be fetched before anything on it is readable.
+      if (reaction.partial) await reaction.fetch();
+      if (reaction.message.partial) await reaction.message.fetch();
+
+      const activityId =
+        ANNOUNCED.get(reaction.message.id) ??
+        // Recovered from the message the bot itself wrote, so a restart does
+        // not orphan every announcement already in the channel.
+        reaction.message.content?.match(/\/activities\/([a-z0-9]+)/)?.[1];
+
+      if (!activityId) return;
+
+      const reply = await joinByReaction(
+        { discordId: user.id, username: user.username ?? null },
+        activityId,
+      );
+      await user.send(reply).catch(() => {
+        // Closed DMs are common and are not an error. The reaction stands as
+        // the acknowledgement.
+      });
+    } catch (error) {
+      console.error("[bot] reaction join failed:", error);
     }
   });
 
@@ -226,11 +296,15 @@ async function main() {
         if (!channel?.isTextBased() || !("send" in channel)) return;
 
         for (const call of calls) {
-          await channel.send(
+          const message = await channel.send(
             `**${call.title}** — ${call.spotsLeft} ${
               call.spotsLeft === 1 ? "spot" : "spots"
-            } left. ${call.url}`,
+            } left. React ${JOIN_EMOJI} to join, or ${call.url}`,
           );
+          ANNOUNCED.set(message.id, call.id);
+          // Pre-added so the reaction is one tap rather than two: nobody has to
+          // find the emoji picker to answer.
+          await message.react(JOIN_EMOJI).catch(() => {});
         }
         since = new Date();
       } catch (error) {
