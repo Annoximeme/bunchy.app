@@ -190,9 +190,23 @@ export default async function ComingSoonPage({
                       </p>
                     )}
 
+                    {/*
+                      The link is not decoration. This form is the only place
+                      on the gated site that collects personal data, so the
+                      notice describing what happens to it has to be reachable
+                      from here, at the moment it is given. /privacy is let
+                      through the gate in the Caddyfile for the same reason.
+                    */}
                     <p id="waitlist-note" className="mt-4 text-sm text-white/50">
                       Your email, and nothing else. No name, no tracking, no
-                      newsletter. Unsubscribing is replying once.
+                      newsletter. Unsubscribing is replying once. Here is{" "}
+                      <a
+                        href="/privacy"
+                        className="font-medium text-white/70 underline underline-offset-2 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral-primary"
+                      >
+                        what we do with it
+                      </a>
+                      .
                     </p>
                   </>
                 )}

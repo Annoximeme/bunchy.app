@@ -94,7 +94,24 @@ www.{$DOMAIN} {
 		# that was already sent must not answer with the coming-soon page: to
 		# the reader that is a broken unsubscribe, and the next lever they
 		# reach for is the spam button.
-		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /_next/* /api/waitlist /api/unsubscribe /unsubscribe /api/webhooks/*
+		#
+		# The privacy notice and the terms are here for the same reason the
+		# waitlist endpoint is: the coming-soon page collects an email address,
+		# and a notice describing what happens to it has to be readable at the
+		# moment it is given, not after launch. A form that takes personal data
+		# while the document explaining it answers 503 is the one thing on this
+		# page that was actually a compliance problem rather than a rough edge.
+		#
+		# /sitemap.xml is here because /robots.txt is. Serving the rules and
+		# refusing the sitemap they name is a crawler being sent to a 503 by us,
+		# on purpose, which is worse than not mentioning it at all.
+		#
+		# /api/health is here so that monitoring from outside the host sees the
+		# app rather than the gate. The container check reaches the app directly
+		# on 127.0.0.1 and so has always been honest; anything checking the
+		# public URL was reading a deliberate 503 as a permanent outage, which
+		# is exactly the alarm you need to still mean something on launch day.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /sitemap.xml /_next/* /api/waitlist /api/unsubscribe /unsubscribe /api/health /api/webhooks/* /privacy /terms
 	}
 	handle @soon {
 		# Rewritten to the real page rather than a static file. The coming-soon
