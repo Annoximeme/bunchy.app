@@ -3,6 +3,7 @@ import { sendEmail } from "@/server/email";
 import { notificationEmail } from "@/server/email/templates";
 import { env } from "@/server/env";
 import { defaultPreference } from "@/lib/notifications";
+import { isBlockedBetween } from "@/server/modules/moderation/service";
 import type { NotificationType } from "@/generated/prisma/enums";
 
 /**
@@ -33,6 +34,29 @@ const COLLAPSE_WINDOW_MS = 60 * 60 * 1000;
 
 export async function notify(input: NotifyInput): Promise<void> {
   if (input.actorProfileId && input.actorProfileId === input.profileId) return;
+
+  // A block means you stop hearing from that person, and this is the one place
+  // every producer already passes through, so it is the only place the rule can
+  // be made true for producers that do not exist yet.
+  //
+  // The services that perform a directed action check the block themselves and
+  // refuse before writing anything, which is the right layer for that: an
+  // invite suppressed only here would leave a real membership row the recipient
+  // could still see. This check is the backstop underneath them, and it is what
+  // catches the indirect cases nobody thinks to guard, a shared bunch, a
+  // mention, a reply in a thread the blocked person is also in.
+  //
+  // Checked in both directions, because the blocker is the one owed the
+  // silence and the blocked person is the one owed no signal that anything
+  // happened. Only when an actor is named: a reminder about your own activity
+  // has nobody to be blocked by, and paying for a lookup on every one of those
+  // would be a query per notification for nothing.
+  if (
+    input.actorProfileId &&
+    (await isBlockedBetween(input.profileId, input.actorProfileId))
+  ) {
+    return;
+  }
 
   const preference = await db.notificationPreference.findUnique({
     where: { profileId_type: { profileId: input.profileId, type: input.type } },

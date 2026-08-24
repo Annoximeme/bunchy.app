@@ -6,6 +6,7 @@ import { INTEREST_BY_SLUG, slugifyInterest } from "@/lib/interests";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { snapToGrid } from "@/server/modules/geo/precision";
 import { notify } from "@/server/modules/notifications/service";
+import { assertNotBlocked } from "@/server/modules/moderation/service";
 import { markRecommendationActed } from "@/server/modules/matching/engine";
 import type {
   BunchCreateInput,
@@ -303,6 +304,18 @@ export async function inviteToBunch(
     select: { name: true, maxMembers: true },
   });
   await assertRoom(bunchId, bunch.maxMembers);
+
+  // Before anything is written. A block is supposed to mean neither person can
+  // message or invite the other, and every other directed path honoured that,
+  // connection requests, direct messages, the profile page. This one did not:
+  // it wrote an INVITED membership row and raised a notification naming the
+  // inviter, which is the exact unsolicited approach a block exists to stop,
+  // and it arrived in the one place the recipient could not refuse in advance.
+  //
+  // `assertNotBlocked` throws the deliberately vague error, so the inviter is
+  // told the same thing they would be told about a profile that is not there.
+  // Confirming the block would hand them the one fact they are not owed.
+  await assertNotBlocked(inviterProfileId, targetProfileId);
 
   const target = await db.profile.findUnique({
     where: { id: targetProfileId },
