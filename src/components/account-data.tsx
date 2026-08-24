@@ -34,7 +34,16 @@ export function AccountData() {
       });
       // Full reload rather than a client transition: every cached server
       // component on this session refers to an account that no longer exists.
-      window.location.href = "/";
+      // `router.push` would keep that cache and render it.
+      //
+      // Resolved against the origin rather than written as the bare string "/".
+      // Both navigate to the same place, but the relative form is what the Next
+      // lint rule flags, and it is right to: a relative destination handed to
+      // `location` is the shape that turns into an open redirect the first time
+      // somebody makes it a variable. This one never could, and saying so
+      // explicitly costs nothing and keeps the warning list empty, which is the
+      // only state in which a new warning is worth looking at.
+      window.location.assign(new URL("/", window.location.origin));
     } catch (cause) {
       setError(errorMessage(cause));
       setBusy(false);

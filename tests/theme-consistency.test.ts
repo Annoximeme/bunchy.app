@@ -59,11 +59,20 @@ const ROOTS = ["app", "components"].map((dir) =>
  *                    and the knockout logo was drawn white on a near-white
  *                    panel, invisible, on the one page that exists to show
  *                    people what the logo looks like.
+ *   global-error     the boundary that catches a failure in the root layout,
+ *                    which is the file that loads the stylesheet. A token
+ *                    resolves to nothing when the stylesheet never arrived, so
+ *                    this one page has to carry literal values or render as
+ *                    black on transparent in the only situation it exists for.
+ *                    It still writes both themes, through a
+ *                    `prefers-color-scheme` block of its own, using these same
+ *                    palette values.
  */
 const EXEMPT = [
   "opengraph-image.tsx",
   join("app", "manifest.ts"),
   join("admin", "brand", "page.tsx"),
+  join("app", "global-error.tsx"),
 ];
 
 /** Every one of these has a token, and the token is the only correct spelling. */
