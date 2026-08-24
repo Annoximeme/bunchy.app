@@ -33,6 +33,30 @@ export function NowFilters({
   const distance = params.get("withinKm");
   const minScore = params.get("minScore");
 
+  /**
+   * Two tiers, one colour.
+   *
+   * The horizon is the primary filter and wears the accent as a solid fill.
+   * Distance and compatibility are refinements on top of it and wear the same
+   * accent as a tint, which is what says "selected" without competing with the
+   * row above.
+   *
+   * They used to be selected in teal and purple respectively, which looked fine
+   * and meant nothing: globals.css assigns coral to "brand, primary action,
+   * active state", teal to success and connection, and purple to something the
+   * software worked out rather than something a person wrote. Turning on a 25km
+   * filter is none of those last two. Three colours of "on" in a single row is
+   * how a palette stops carrying meaning, which that file says out loud two
+   * paragraphs above the tokens it was ignoring here.
+   */
+  const refinement = (on: boolean) =>
+    cn(
+      "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+      on
+        ? "bg-accent-soft text-accent-ink"
+        : "border border-line text-muted hover:bg-surface-sunken",
+    );
+
   return (
     <div className="mb-8 space-y-3">
       <div className="flex flex-wrap gap-2">
@@ -58,12 +82,7 @@ export function NowFilters({
           <Link
             key={km}
             href={withParam("withinKm", distance === String(km) ? null : String(km))}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-              distance === String(km)
-                ? "bg-teal-soft text-teal"
-                : "border border-line text-muted hover:bg-surface-sunken",
-            )}
+            className={refinement(distance === String(km))}
           >
             {km} km
           </Link>
@@ -74,12 +93,7 @@ export function NowFilters({
           <Link
             key={score}
             href={withParam("minScore", minScore === String(score) ? null : String(score))}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-              minScore === String(score)
-                ? "bg-purple-soft text-purple-ink"
-                : "border border-line text-muted hover:bg-surface-sunken",
-            )}
+            className={refinement(minScore === String(score))}
           >
             {score === 85 ? "Strong fit" : "Good fit"}
           </Link>

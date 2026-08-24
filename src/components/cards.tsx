@@ -213,7 +213,16 @@ export function PersonCard({ person }: { person: PersonCardData }) {
         </p>
       )}
 
-      <div className="mt-5 flex items-center gap-2">
+      {/*
+        `mt-auto` rather than a fixed top margin. These cards are direct
+        children of a two-column grid, so they stretch to the tallest in the
+        row, and a fixed margin left the action wherever the content happened to
+        end. On Discover that meant the Connect button sat at a different height
+        in the left and right columns of almost every row, because one person
+        had two reasons listed and the other had three. Pinning it to the bottom
+        gives the eye one line to travel along.
+      */}
+      <div className="mt-auto flex items-center gap-2 pt-5">
         {state === "sent" ? (
           <p className="text-sm font-medium text-positive">
             Request sent. You&rsquo;ll hear back here.
@@ -334,7 +343,8 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
         </div>
       )}
 
-      <div className="mt-4 flex items-center justify-between text-sm">
+      {/* Bottom-aligned for the same reason as the person card's action row. */}
+      <div className="mt-auto flex items-center justify-between pt-4 text-sm">
         <span className={cn(LIFECYCLE_TONE[state.tone] ?? "text-muted")}>
           {state.label}
         </span>
