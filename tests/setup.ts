@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { loadEnvFiles } from "@/server/load-env";
 
 /**
  * Test environment bootstrap.
@@ -9,8 +9,8 @@ import { existsSync } from "node:fs";
  * runtime pointed at the same place, and means a future integration suite works
  * without extra setup.
  *
- * `.env.local` wins over `.env`, matching Next.js precedence.
+ * `.env.local` wins over `.env`, matching Next.js precedence. That is the
+ * helper's whole job: the loop this replaced read the two files in the order
+ * that gave `.env` the last word instead.
  */
-for (const file of [".env", ".env.local"]) {
-  if (existsSync(file)) process.loadEnvFile(file);
-}
+loadEnvFiles();

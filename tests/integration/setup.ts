@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { Client } from "pg";
-import { existsSync } from "node:fs";
+import { loadEnvFiles } from "@/server/load-env";
 import { afterAll, beforeAll, beforeEach } from "vitest";
 
 /**
@@ -25,9 +25,7 @@ import { afterAll, beforeAll, beforeEach } from "vitest";
  *    is a flake generator, not a speed-up.
  */
 
-for (const file of [".env", ".env.local"]) {
-  if (existsSync(file)) process.loadEnvFile(file);
-}
+loadEnvFiles();
 
 const source = process.env.DATABASE_URL;
 if (!source) throw new Error("DATABASE_URL must be set to run integration tests");

@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { INTEREST_ALIASES, INTEREST_SEEDS } from "../src/lib/interests";
@@ -6,10 +5,9 @@ import { hashPassword } from "../src/server/auth/password";
 import { findPlace } from "../src/server/modules/geo/gazetteer";
 import { snapToGrid } from "../src/server/modules/geo/precision";
 import { NOTIFICATION_DEFAULTS } from "../src/server/modules/notifications/defaults";
+import { loadEnvFiles } from "../src/server/load-env";
 
-for (const file of [".env", ".env.local"]) {
-  if (existsSync(file)) process.loadEnvFile(file);
-}
+loadEnvFiles();
 
 /**
  * Old enough for chemistry to have something to say.

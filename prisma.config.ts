@@ -1,12 +1,12 @@
-import { existsSync } from "node:fs";
 import { defineConfig } from "prisma/config";
+import { loadEnvFiles } from "./src/server/load-env";
 
 // Prisma 7 no longer loads .env implicitly. Node 22 can do it natively, so we
 // avoid pulling in dotenv just for the CLI. `.env.local` wins over `.env`,
 // matching Next.js precedence so the app and the CLI always agree on a target.
-for (const file of [".env", ".env.local"]) {
-  if (existsSync(file)) process.loadEnvFile(file);
-}
+// The ordering that actually delivers that is not the obvious one; see the
+// helper.
+loadEnvFiles();
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
