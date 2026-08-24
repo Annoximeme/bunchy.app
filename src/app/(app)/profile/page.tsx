@@ -17,6 +17,11 @@ import { ProfileCompleteness } from "@/components/profile/completeness";
 import { Avatar, Card, Chip, LinkButton, SectionHeading } from "@/components/ui";
 import { linkedAccount } from "@/server/modules/discord/link";
 import { DiscordLinkPanel } from "@/components/discord-link";
+import { MobileDestinations } from "@/components/mobile-destinations";
+import { unreadCount } from "@/server/modules/notifications/service";
+import { unreadCount as announcementsUnread } from "@/server/modules/announcements/service";
+import { db } from "@/server/db/client";
+import { Bell, HeartHandshake, Megaphone, Sparkles, Users } from "lucide-react";
 
 export const metadata: Metadata = { title: "Your profile" };
 export const dynamic = "force-dynamic";
@@ -40,11 +45,26 @@ export const dynamic = "force-dynamic";
  */
 export default async function ProfilePage() {
   const viewer = await requireViewer();
-  const [profile, blocked, notificationPreferences, discord] = await Promise.all([
+  const [
+    profile,
+    blocked,
+    notificationPreferences,
+    discord,
+    pendingRequests,
+    unreadNotifications,
+    unreadAnnouncements,
+  ] = await Promise.all([
     getOwnProfile(viewer.profileId),
     listBlocked(viewer.profileId),
     getPreferences(viewer.profileId),
     linkedAccount(viewer.profileId),
+    // The same three counts the navigation rail draws. On a phone this page is
+    // the only route to the pages they belong to, so it has to know them.
+    db.connection.count({
+      where: { addresseeId: viewer.profileId, status: "PENDING" },
+    }),
+    unreadCount(viewer.profileId),
+    announcementsUnread(viewer.profileId),
   ]);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
@@ -63,6 +83,44 @@ export default async function ProfilePage() {
       />
 
       <div className="space-y-10">
+        {/*
+          Above the profile itself, because this is the answer to the badge on
+          the You tab, and somebody who tapped a red count is looking for the
+          thing it counted rather than for their own bio.
+        */}
+        <MobileDestinations
+          destinations={[
+            {
+              href: "/connections",
+              label: "Connections",
+              badge: pendingRequests,
+              icon: <Users className="size-5" />,
+            },
+            {
+              href: "/notifications",
+              label: "Notifications",
+              badge: unreadNotifications,
+              icon: <Bell className="size-5" />,
+            },
+            {
+              href: "/assistant",
+              label: "Ask Bunchy",
+              icon: <Sparkles className="size-5" />,
+            },
+            {
+              href: "/whats-new",
+              label: "What's new",
+              badge: unreadAnnouncements,
+              icon: <Megaphone className="size-5" />,
+            },
+            {
+              href: "/supporter",
+              label: "Support Bunchy",
+              icon: <HeartHandshake className="size-5" />,
+            },
+          ]}
+        />
+
         <div className="space-y-4">
           <ProfileHero
             profile={profile}
