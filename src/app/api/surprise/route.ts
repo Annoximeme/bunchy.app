@@ -22,7 +22,7 @@ const schema = z.object({
  */
 export async function POST(request: Request) {
   return handleAuthed(async (viewer) => {
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
     const { exclude } = await parseJson(request, schema);
 
     const match = await surpriseMe(viewer.profileId, { exclude });

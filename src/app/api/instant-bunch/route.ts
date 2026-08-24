@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     const input = await parseJson(request, schema);
 
     if (input.action === "preview") {
-      await consume("aiAssist", viewer.profileId);
+      await consume("assistant", viewer.profileId);
       return previewInstantBunch(viewer.profileId, input.query, {
         availableNow: input.availableNow,
         withinKm: input.withinKm,

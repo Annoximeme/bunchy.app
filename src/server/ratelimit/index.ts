@@ -53,7 +53,7 @@ export const RULES = {
   bunchCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },
   activityCreate: { limit: 10, windowMs: 24 * 60 * 60 * 1000 },
   report: { limit: 20, windowMs: 24 * 60 * 60 * 1000 },
-  aiAssist: { limit: 40, windowMs: 60 * 60 * 1000 },
+  assistant: { limit: 40, windowMs: 60 * 60 * 1000 },
   // Far more than anyone needs, and still a ceiling on how fast a loop can
   // write 256KB files onto the volume.
   avatarUpload: { limit: 10, windowMs: 24 * 60 * 60 * 1000 },

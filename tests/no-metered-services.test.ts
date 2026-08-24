@@ -102,7 +102,7 @@ describe("no paid service is reachable from the product", () => {
 
   it("resolves an assistant that needs no configuration at all", async () => {
     // The real proof: with a bare environment the assistant still works.
-    const { assistant } = await import("@/server/modules/ai/index");
+    const { assistant } = await import("@/server/modules/assistant/index");
     const instance = assistant();
 
     const starters = await instance.conversationStarters({

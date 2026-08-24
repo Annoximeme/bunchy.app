@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   return handleAuthed(async (viewer) => {
     // Shares the AI budget: a search may consult the assistant, and searches
     // are the cheapest thing on the platform to run in a loop.
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
 
     const input = await parseJson(request, schema);
     return findPeople(viewer.profileId, input.query, {

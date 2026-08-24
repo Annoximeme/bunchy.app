@@ -20,7 +20,7 @@ const schema = z.object({
 export async function GET(request: Request) {
   return handle(async () => {
     const viewer = await requireViewer();
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
     const filters = parseQuery(request, schema);
     return bunchyNow(viewer.profileId, filters);
   });

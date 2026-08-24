@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   return handleAuthed(async (viewer) => {
     // Costs nothing per call, but it runs several searches, so it is metered
     // the same as any other query-heavy endpoint.
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
 
     const { query } = await parseJson(request, schema);
     return ask(viewer.profileId, query);

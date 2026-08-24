@@ -3,7 +3,7 @@ import { handleAuthed, parseJson } from "@/server/http/route";
 import { db } from "@/server/db/client";
 import { forbidden } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
-import { assistant } from "@/server/modules/ai";
+import { assistant } from "@/server/modules/assistant";
 
 const schema = z.object({ task: z.enum(["summary", "activity_idea"]) });
 
@@ -21,7 +21,7 @@ export async function POST(
     const { id } = await context.params;
     const { task } = await parseJson(request, schema);
 
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
 
     const membership = await db.bunchMembership.findUnique({
       where: { bunchId_profileId: { bunchId: id, profileId: viewer.profileId } },

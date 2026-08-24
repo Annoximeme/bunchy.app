@@ -1,6 +1,6 @@
 import { db } from "@/server/db/client";
 import { forbidden } from "@/server/errors";
-import { assistant } from "@/server/modules/ai";
+import { assistant } from "@/server/modules/assistant";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { sendRequest } from "@/server/modules/connections/service";

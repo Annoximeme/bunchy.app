@@ -3,7 +3,7 @@ import { forbidden, notFound } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
 import { isBlockedBetween } from "@/server/modules/moderation/service";
 import { notify } from "@/server/modules/notifications/service";
-import { assistant } from "@/server/modules/ai";
+import { assistant } from "@/server/modules/assistant";
 import { GOAL_LABELS } from "@/server/modules/profile/serialize";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";

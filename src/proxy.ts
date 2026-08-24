@@ -58,13 +58,13 @@ function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean):
   ].join("; ");
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   const nonce = btoa(String.fromCharCode(...bytes));
 
   const isDev = process.env.NODE_ENV === "development";
-  // Read off the request rather than an env var: middleware is bundled, and a
+  // Read off the request rather than an env var: this file is bundled, and a
   // build-time-inlined value would silently drop the directive on the real
   // site. Caddy terminates TLS and sets x-forwarded-proto.
   const isHttps =

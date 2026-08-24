@@ -4,7 +4,7 @@ import type {
   Assistant,
   ConversationSummaryInput,
   StarterContext,
-} from "@/server/modules/ai/provider";
+} from "@/server/modules/assistant/provider";
 import { ONLINE_FIRST_INTERESTS, slugifyInterest } from "@/lib/interests";
 
 /**

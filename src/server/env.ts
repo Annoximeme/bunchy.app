@@ -15,7 +15,7 @@ const schema = z.object({
   AUTH_SECRET: z.string().optional(),
   // No AI keys, by design. Bunchy's assistant is deterministic and runs
   // in-process, so there is no variable here that could put the product on a
-  // metered API, see `modules/ai/provider.ts`.
+  // metered API, see `modules/assistant/provider.ts`.
   EMAIL_PROVIDER: z.enum(["console", "smtp"]).default("console"),
   EMAIL_FROM: z.string().default("Bunchy <hello@bunchy.app>"),
   SMTP_HOST: z.string().optional(),

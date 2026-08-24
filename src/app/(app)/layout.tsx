@@ -16,7 +16,7 @@ import { AnnouncementBanner } from "@/components/announcements/announcement-bann
  * The signed-in shell.
  *
  * Also the onboarding gate: anyone who has not finished is sent back to the
- * step they stopped at. Doing it here rather than in middleware keeps the check
+ * step they stopped at. Doing it here rather than in `proxy.ts` keeps the check
  * next to the session lookup it depends on, and `getViewer` is request-cached
  * so pages below pay nothing for it.
  */
@@ -35,30 +35,21 @@ export default async function AppLayout({
     unreadNotifications,
     banner,
     unreadAnnouncements,
-  ] =
-    await Promise.all([
-      db.conversation.count({
-      where: {
-        participants: { some: { profileId: viewer.profileId } },
-        messages: {
-          some: {
-            senderId: { not: viewer.profileId },
-            deletedAt: null,
-          },
-        },
-      },
-    }),
-      db.connection.count({
+  ] = await Promise.all([
+    // Resolved here rather than awaited inline below, so it runs alongside the
+    // other four instead of after all of them.
+    countTrulyUnread(viewer.profileId),
+    db.connection.count({
       where: { addresseeId: viewer.profileId, status: "PENDING" },
     }),
-      unreadCount(viewer.profileId),
-      // The only thing in this product allowed to interrupt somebody, and it is
-      // here rather than on a page because Privacy §14 and Terms §14 promise
-      // notice *in the product* before a change takes effect. A page nobody
-      // visits cannot keep that promise.
-      bannerFor(viewer.profileId),
-      announcementsUnread(viewer.profileId),
-    ]);
+    unreadCount(viewer.profileId),
+    // The only thing in this product allowed to interrupt somebody, and it is
+    // here rather than on a page because Privacy §14 and Terms §14 promise
+    // notice *in the product* before a change takes effect. A page nobody
+    // visits cannot keep that promise.
+    bannerFor(viewer.profileId),
+    announcementsUnread(viewer.profileId),
+  ]);
 
   return (
     <div className="relative min-h-dvh md:pl-60">
@@ -81,7 +72,7 @@ export default async function AppLayout({
         displayName={viewer.displayName}
         username={viewer.username}
         avatarUrl={viewer.avatarUrl}
-        unreadMessages={await countTrulyUnread(viewer.profileId, unreadMessages)}
+        unreadMessages={unreadMessages}
         pendingRequests={pendingRequests}
         unreadNotifications={unreadNotifications}
         unreadAnnouncements={unreadAnnouncements}
@@ -113,34 +104,51 @@ export default async function AppLayout({
 }
 
 /**
- * The count above is a cheap upper bound; this narrows it to conversations with
- * genuinely unread messages. A badge that lies is worse than no badge.
+ * How many conversations have something in them this member has not read.
+ *
+ * A badge that lies is worse than no badge, so this cannot be answered by
+ * counting conversations that contain any message from somebody else: it has to
+ * compare each conversation's newest incoming message against *this member's*
+ * own read mark for that conversation.
+ *
+ * Two queries, whatever the number of conversations. The previous version ran a
+ * `count` per conversation inside a loop, which is a query per conversation on
+ * every page load in the signed-in app, because this is the layout: someone
+ * with forty conversations paid forty round trips to render Discover. The read
+ * marks live on the participant rows and the timestamps come back in one
+ * grouped query, so the comparison is the one thing left to do in memory.
+ *
+ * `_max.createdAt` rather than a count, because the question is "is there
+ * anything newer than my mark", and the newest message answers it on its own.
  */
-async function countTrulyUnread(
-  profileId: string,
-  upperBound: number,
-): Promise<number> {
-  if (upperBound === 0) return 0;
-
+async function countTrulyUnread(profileId: string): Promise<number> {
   const participants = await db.conversationParticipant.findMany({
     where: { profileId },
     select: { conversationId: true, lastReadAt: true },
   });
+  if (participants.length === 0) return 0;
 
-  let unread = 0;
-  for (const participant of participants) {
-    const count = await db.directMessage.count({
-      where: {
-        conversationId: participant.conversationId,
-        senderId: { not: profileId },
-        deletedAt: null,
-        ...(participant.lastReadAt
-          ? { createdAt: { gt: participant.lastReadAt } }
-          : {}),
-      },
-    });
-    if (count > 0) unread += 1;
-  }
+  const newest = await db.directMessage.groupBy({
+    by: ["conversationId"],
+    where: {
+      conversationId: { in: participants.map((p) => p.conversationId) },
+      senderId: { not: profileId },
+      deletedAt: null,
+    },
+    _max: { createdAt: true },
+  });
 
-  return unread;
+  const newestByConversation = new Map(
+    newest.map((row) => [row.conversationId, row._max.createdAt] as const),
+  );
+
+  return participants.reduce((unread, participant) => {
+    const latest = newestByConversation.get(participant.conversationId);
+    if (!latest) return unread;
+    // No read mark at all means they have never opened it, so anything from the
+    // other person counts.
+    const isUnread =
+      participant.lastReadAt === null || latest > participant.lastReadAt;
+    return isUnread ? unread + 1 : unread;
+  }, 0);
 }

@@ -14,7 +14,7 @@ export async function GET(
 ) {
   return handleAuthed(async (viewer) => {
     const { id } = await context.params;
-    await consume("aiAssist", viewer.profileId);
+    await consume("assistant", viewer.profileId);
     return conversationContext(id, viewer.profileId);
   });
 }

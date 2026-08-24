@@ -1,5 +1,5 @@
-import { BunchyAssistant } from "@/server/modules/ai/assistant";
-import type { Assistant } from "@/server/modules/ai/provider";
+import { BunchyAssistant } from "@/server/modules/assistant/assistant";
+import type { Assistant } from "@/server/modules/assistant/provider";
 
 /**
  * The assistant, resolved.
@@ -30,4 +30,4 @@ export function assistant(): Assistant {
   return cached;
 }
 
-export type * from "@/server/modules/ai/provider";
+export type * from "@/server/modules/assistant/provider";
