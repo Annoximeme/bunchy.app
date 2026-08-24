@@ -24,7 +24,25 @@ import { ICEBREAKERS } from "@/server/modules/bunches/prompts";
  */
 
 let counter = 0;
-const NOW = new Date("2026-08-12T15:00:00Z");
+
+/**
+ * Relative to the real clock, deliberately.
+ *
+ * These were pinned to an absolute date, `2026-08-12`, with the two proposed
+ * times three and four days after it. `createPlan` rejects a time that has
+ * already passed, and it compares against the actual current time rather than
+ * an injected one, so on 16 August 2026 every test in this file that proposes a
+ * time began failing with "Those times have already passed." Eleven of them,
+ * all at once, for a reason that has nothing to do with what they check.
+ *
+ * A fixed clock is the right tool where the code under test accepts one:
+ * `scheduled-notifications.test.ts` hands `sendActivityReminders` its own
+ * `now`, and stays deterministic because of it. This file cannot, so the dates
+ * have to move with the calendar instead. What matters here is only that the
+ * two options are in the future and in a known order, which is exactly what
+ * this expresses and the absolute date never did.
+ */
+const NOW = new Date();
 const SOON = new Date(NOW.getTime() + 3 * 86_400_000);
 const LATER = new Date(NOW.getTime() + 4 * 86_400_000);
 

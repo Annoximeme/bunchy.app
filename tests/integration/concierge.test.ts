@@ -188,7 +188,15 @@ describe("it answers with real data", () => {
     expect(reply.understood).toBe("explain");
     const said = reply.say.join(" ");
     expect(said).toContain("2 interests");
-    expect(said).toContain("nothing is bought, boosted or sponsored");
+    // Case-insensitive on purpose. What has to be true is that the sentence is
+    // said at all: it is the product's central promise about how suggestions
+    // are ranked, and Ask Bunchy is where a member goes to check it. Whether it
+    // lands mid-sentence or opens one is a copy decision, and it moved to the
+    // start of a sentence at some point, which broke this assertion while the
+    // claim it protects was still being made, word for word.
+    expect(said.toLowerCase()).toContain(
+      "nothing is bought, boosted or sponsored",
+    );
     // They have not done the personality step, so it says so.
     expect(said).toContain("style questions");
   });
