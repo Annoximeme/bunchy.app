@@ -221,8 +221,14 @@ export function AnnouncementList({
 
 function Row({ item }: { item: AnnouncementSummary }) {
   return (
+    // Not `card-surface`, and this is the one card in the product with a good
+    // reason. The border colour carries state here: an unread notice is edged
+    // in coral and a read one in the ordinary hairline, which a utility with a
+    // fixed border cannot say. The other three properties are the utility's,
+    // written out, including the shadow, which this card was missing and every
+    // other card in the app has.
     <article
-      className={`group rounded-[var(--radius-card)] border bg-surface p-6 transition-colors duration-200 ${
+      className={`group rounded-[var(--radius-card)] border bg-surface p-6 shadow-[var(--shadow-card)] transition-colors duration-200 ${
         item.read ? "border-line" : "border-accent/30"
       }`}
     >

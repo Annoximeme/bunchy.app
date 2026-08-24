@@ -136,7 +136,21 @@ export async function supporterCosmetics(
   return { badge: true, ring: true, appIcons: true, since: row.since };
 }
 
-/** The same question for a page full of people, in one query. */
+/**
+ * The same question for a page full of people, in one query.
+ *
+ * "The same question" is the requirement, and it was not being met. This one
+ * answered without consulting `supporterEnabled()`, while `supporterCosmetics`
+ * refuses everything when the Stripe variables are absent. On a deploy with the
+ * payment configuration removed, which is every preview build and was the state
+ * of production for months, a member's own profile showed no ring while the
+ * member list beside it drew one against their name. Same person, same page,
+ * two answers.
+ *
+ * The staff branch stays above the check, matching the single-member path: a
+ * moderator's mark is complimentary and should not blink out because a payment
+ * key is missing.
+ */
 export async function supporterUserIds(
   userIds: string[],
 ): Promise<Set<string>> {
@@ -146,16 +160,24 @@ export async function supporterUserIds(
     where: {
       id: { in: userIds },
       OR: [
-        // Staff, complimentary.
+        // Staff, complimentary, and granted whether or not payments are on.
         { role: { not: "MEMBER" } },
-        {
-          supporter: {
-            OR: [
-              { status: { in: ["ACTIVE", "PAST_DUE"] } },
-              { currentPeriodEnd: { gt: new Date() } },
-            ],
-          },
-        },
+        // Paid cosmetics only exist when the payment side is fully configured,
+        // which is the condition `supporterCosmetics` applies one member at a
+        // time. An impossible clause rather than a branch, so the shape of the
+        // query does not change with the configuration.
+        ...(supporterEnabled()
+          ? [
+              {
+                supporter: {
+                  OR: [
+                    { status: { in: ["ACTIVE" as const, "PAST_DUE" as const] } },
+                    { currentPeriodEnd: { gt: new Date() } },
+                  ],
+                },
+              },
+            ]
+          : []),
       ],
     },
     select: { id: true },

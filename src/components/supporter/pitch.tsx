@@ -79,7 +79,7 @@ export function SupporterPitch({
 
   if (thanked) {
     return (
-      <section className="rise mt-10 rounded-[var(--radius-card)] border border-line bg-surface p-10 text-center">
+      <section className="card-surface rise mt-10 p-10 text-center">
         <div className="flex justify-center">
           <SupporterRing active>
             <Avatar name="You" src={null} size="lg" />
@@ -116,7 +116,7 @@ export function SupporterPitch({
           {DESTINATIONS.map(({ icon: Icon, title, body }) => (
             <article
               key={title}
-              className="rounded-[var(--radius-card)] border border-line bg-surface p-6"
+              className="card-surface p-6"
             >
               <span className="inline-flex size-10 items-center justify-center rounded-full bg-gradient-to-r from-[#FF5C6C] to-[#7657FF] text-white">
                 <Icon size={18} aria-hidden />
@@ -164,7 +164,7 @@ export function SupporterPitch({
         </p>
 
         <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          <article className="rounded-[var(--radius-card)] border border-line bg-surface p-7">
+          <article className="card-surface p-7">
             <h3 className="font-bold tracking-tight">A ring, and a small mark</h3>
             <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
               The mark is the Bunchy cluster rather than a tick, on purpose. A
@@ -193,7 +193,7 @@ export function SupporterPitch({
             </div>
           </article>
 
-          <article className="rounded-[var(--radius-card)] border border-line bg-surface p-7">
+          <article className="card-surface p-7">
             <h3 className="font-bold tracking-tight">A choice of app icon</h3>
             <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
               Five of them. They change what is on your home screen and nothing
@@ -233,7 +233,7 @@ export function SupporterPitch({
         </div>
       </section>
 
-      <section className="mx-auto mt-14 max-w-lg rounded-[var(--radius-card)] border border-line bg-surface p-7 sm:p-9">
+      <section className="card-surface mx-auto mt-14 max-w-lg p-7 sm:p-9">
         {/* One price, two shapes. No tiers: a three-column pricing table is a
             device for making the middle one look sensible, and there is only
             one thing being sold. */}

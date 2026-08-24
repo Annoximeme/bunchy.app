@@ -61,7 +61,7 @@ export function DiscoverSummary({
   ].filter((link): link is Exclude<typeof link, false> => Boolean(link));
 
   return (
-    <header className="mb-8 overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-[var(--shadow-card)]">
+    <header className="card-surface mb-8 overflow-hidden">
       {/*
         The same two washes the landing hero and the app shell use, at card
         scale. Discover is the page a member opens most, and it was the one

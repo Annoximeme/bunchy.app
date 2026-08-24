@@ -26,7 +26,7 @@ export default async function SupporterSettingsPage() {
       <PageHeader title="Support" subtitle="What you are paying, and how to stop." />
 
       {support ? (
-        <section className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-7">
+        <section className="card-surface mt-8 p-7">
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <dt className="text-sm text-muted">Status</dt>
@@ -68,7 +68,7 @@ export default async function SupporterSettingsPage() {
           </p>
         </section>
       ) : (
-        <section className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-7">
+        <section className="card-surface mt-8 p-7">
           <p className="font-semibold">You are not supporting Bunchy.</p>
           <p className="mt-2 max-w-[60ch] leading-relaxed text-ink-soft">
             Which is completely fine. The whole app works the same either way.

@@ -121,7 +121,7 @@ export function ProfileHero({
 
   return (
     <section
-      className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-[var(--shadow-card)]"
+      className="card-surface overflow-hidden"
       style={{ ["--profile-tint" as string]: tint }}
     >
       {/*

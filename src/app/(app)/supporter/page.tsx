@@ -44,7 +44,7 @@ export default async function SupporterPage() {
       />
 
       {support?.current ? (
-        <section className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-7">
+        <section className="card-surface mt-8 p-7">
           <p className="text-lg font-bold tracking-tight">
             You are already keeping this running. Thank you.
           </p>
