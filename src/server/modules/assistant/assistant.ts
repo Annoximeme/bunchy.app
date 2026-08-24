@@ -5,7 +5,7 @@ import type {
   ConversationSummaryInput,
   StarterContext,
 } from "@/server/modules/assistant/provider";
-import { ONLINE_FIRST_INTERESTS, slugifyInterest } from "@/lib/interests";
+import { ONLINE_FIRST_INTERESTS, slugifyInterest , interestInSentence } from "@/lib/interests";
 
 /**
  * Bunchy's assistant: no network, no API key, no bill.
@@ -111,10 +111,18 @@ export class BunchyAssistant implements Assistant {
     // usually the easiest thing in the world to open with.
     for (const raw of context.complementaryInterests) {
       if (starters.length >= 3) break;
-      const topic = raw.split("—")[0]?.trim();
+      // These are plain interest labels, "Board games", "AI". They used to be
+      // split on a dash first, on the assumption that they arrived as
+      // "Label - detail"; they never have, the split found nothing, and the
+      // whole string fell through as the topic anyway. Reading the value
+      // directly says what actually happens.
+      const topic = raw.trim();
       if (!topic) continue;
       const template = COMPLEMENTARY_TEMPLATES[starters.length % COMPLEMENTARY_TEMPLATES.length]!;
-      starters.push(template(topic.toLowerCase()));
+      // `interestInSentence` rather than `toLowerCase`, because these are
+      // starters a member sends to a stranger. "How did you get started with
+      // ai?" is the first thing they would ever say to somebody.
+      starters.push(template(interestInSentence(topic)));
     }
 
     for (const fallback of FALLBACKS) {

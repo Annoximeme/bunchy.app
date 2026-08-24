@@ -6,6 +6,7 @@ import type {
   SignalResult,
 } from "@/server/modules/matching/types";
 import { interestAffinity } from "@/server/modules/matching/interest-graph";
+import { interestInSentence } from "@/lib/interests";
 import { overlappingWindows, sharedHours } from "@/server/modules/geo/timezone";
 import { distanceKm } from "@/server/modules/geo/distance";
 
@@ -222,13 +223,13 @@ function describePair(pair: {
 }): string {
   switch (pair.kind) {
     case "teach":
-      return `They could get you into ${pair.label.toLowerCase()}`;
+      return `They could get you into ${interestInSentence(pair.label)}`;
     case "learn":
-      return `You could get them into ${pair.label.toLowerCase()}`;
+      return `You could get them into ${interestInSentence(pair.label)}`;
     case "duplicate":
-      return `You're both into ${pair.label.toLowerCase()}`;
+      return `You're both into ${interestInSentence(pair.label)}`;
     default:
-      return `${pair.label} and ${pair.otherLabel.toLowerCase()} go well together`;
+      return `${pair.label} and ${interestInSentence(pair.otherLabel)} go well together`;
   }
 }
 

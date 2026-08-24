@@ -1,4 +1,5 @@
 import type { MatchProfile } from "@/server/modules/matching/types";
+import { interestInSentence } from "@/lib/interests";
 
 /**
  * Forming a bunch out of people who aren't in one.
@@ -211,7 +212,7 @@ function describe(group: MatchProfile[], scores: PairScores): BunchProposal {
     rationale.push(
       `${common.length === 1 ? "Shares" : "Shares"} ${common
         .slice(0, 3)
-        .map((c) => c.label.toLowerCase())
+        .map((c) => interestInSentence(c.label))
         .join(", ")} across most of the group`,
     );
   }

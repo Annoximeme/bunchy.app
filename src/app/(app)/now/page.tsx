@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { interestInSentence } from "@/lib/interests";
 import Link from "next/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { bunchyNow, type BunchyNowBoard } from "@/server/modules/discovery/bunchy-now";
@@ -132,7 +133,7 @@ export default async function BunchyNowPage({
                       {cluster.count}
                     </span>
                     <span className="text-sm text-ink-soft">
-                      {cluster.label.toLowerCase()}
+                      {interestInSentence(cluster.label)}
                       <span className="block text-xs text-muted">
                         near {cluster.where}
                       </span>

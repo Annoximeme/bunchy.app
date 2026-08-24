@@ -251,3 +251,38 @@ export function slugifyInterest(input: string): string {
     .replace(/^-+|-+$/g, "")
     .slice(0, 48);
 }
+
+/**
+ * An interest label as it should read inside a sentence.
+ *
+ * Almost every label is ordinary sentence case, "Board games", "Hiking", and
+ * belongs in lower case when it appears mid-sentence: "You're both into board
+ * games" reads better than "You're both into Board games". So the display code
+ * lower-cased all of them, which is right for eighty-two of the eighty-nine and
+ * wrong for the rest in a way people notice immediately.
+ *
+ *   Programming and ai go well together
+ *   You're both into rpgs
+ *   3d printing and diy go well together
+ *
+ * Those appeared on Discover, which is the most-read page in the product and
+ * the one whose entire job is to sound like a person wrote it. "ai" is the
+ * worst of them: the one place the product does use that word is a member's
+ * hobby, and rendering it in lower case makes it look like a machine wrote the
+ * sentence, which is precisely the impression the whole site is built to avoid.
+ *
+ * The rule is that a label is left alone unless it looks like ordinary prose:
+ * if anything after the first character is a capital, the label is carrying
+ * meaning in its capitals, an acronym (AI, TV, DIY, RPGs) or a proper noun
+ * (Dungeons & Dragons), and lowering it destroys that. A leading digit is
+ * covered by the same test, since "3D printing" capitalises its D.
+ *
+ * Proper nouns spelled in plain sentence case, "Warhammer", are indistinguishable
+ * from ordinary words by this test and are still lowered. That is the existing
+ * behaviour, it reads acceptably, and the alternative is a hand-maintained list
+ * of exceptions that would fall out of date the first time somebody adds a
+ * custom interest.
+ */
+export function interestInSentence(label: string): string {
+  return /[A-Z]/.test(label.slice(1)) ? label : label.toLowerCase();
+}

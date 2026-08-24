@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { interestInSentence } from "@/lib/interests";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
@@ -206,7 +207,7 @@ export function WhosUp({
               <li key={`${cluster.where}-${cluster.kind}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong>{" "}
                 {cluster.count === 1 ? "person" : "people"} near {cluster.where},{" "}
-                {cluster.label.toLowerCase()}
+                {interestInSentence(cluster.label)}
               </li>
             ))}
           </ul>

@@ -1,4 +1,5 @@
 import type { MatchProfile, PersonMatch, SignalResult } from "@/server/modules/matching/types";
+import { interestInSentence } from "@/lib/interests";
 import {
   buildScoringContext,
   loadCandidates,
@@ -117,7 +118,11 @@ function reasonsFor(match: PersonMatch, novelty: number): string[] {
   }
   if (match.complementaryInterests.length > 0) {
     reasons.push(
-      `One of you does ${match.complementaryInterests[0]}, the other wants to`,
+      // Mid-sentence, so it takes the same casing rule as every other place a
+      // label is dropped into prose. Without it this said "One of you does
+      // Gaming", capitalised in the middle of a sentence, while the same label
+      // read correctly two lines away on Discover.
+      `One of you does ${interestInSentence(match.complementaryInterests[0]!)}, the other wants to`,
     );
   }
   if (match.sharedInterests.length > 0) {

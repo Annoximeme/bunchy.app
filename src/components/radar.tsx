@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { interestInSentence } from "@/lib/interests";
 import Link from "next/link";
 import { api, errorMessage } from "@/lib/api";
 import { Card, Chip, EmptyState, ErrorNotice, LinkButton, Select, Spinner, cn } from "@/components/ui";
@@ -181,7 +182,7 @@ export function Radar({
             {data.clusters.slice(0, 4).map((cluster) => (
               <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong> near{" "}
-                {cluster.where}, {cluster.label.toLowerCase()}
+                {cluster.where}, {interestInSentence(cluster.label)}
               </li>
             ))}
           </ul>
