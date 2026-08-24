@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Tag } from "@/components/ui";
 import Link from "next/link";
 import { requireAdmin } from "@/server/modules/admin/guard";
 import {
@@ -34,10 +35,13 @@ export const dynamic = "force-dynamic";
  * guess.
  */
 
-const STATE: Record<AnnouncementState, { label: string; className: string }> = {
-  draft: { label: "Draft", className: "bg-surface-sunken text-muted" },
-  scheduled: { label: "Scheduled", className: "bg-yellow-soft text-yellow-ink" },
-  published: { label: "Published", className: "bg-mint-soft text-mint-ink" },
+const STATE: Record<
+  AnnouncementState,
+  { label: string; tone: "neutral" | "yellow" | "teal" }
+> = {
+  draft: { label: "Draft", tone: "neutral" },
+  scheduled: { label: "Scheduled", tone: "yellow" },
+  published: { label: "Published", tone: "teal" },
 };
 
 export default async function AdminAnnouncementsPage({
@@ -86,14 +90,14 @@ export default async function AdminAnnouncementsPage({
               <dt className="font-semibold text-ink">
                 {label}
                 {DELIVERY[tier].banner && (
-                  <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-accent-ink">
+                  <Tag tone="accent" className="ml-2">
                     Interrupts
-                  </span>
+                  </Tag>
                 )}
                 {DELIVERY[tier].mayEmail && (
-                  <span className="ml-1.5 rounded-full bg-purple-soft px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-purple-ink">
+                  <Tag tone="suggested" className="ml-1.5">
                     Emails
-                  </span>
+                  </Tag>
                 )}
               </dt>
               <dd className="mt-1.5 leading-relaxed text-ink-soft">{blurb}</dd>
@@ -145,18 +149,12 @@ export default async function AdminAnnouncementsPage({
               <li key={a.slug} className="flex flex-wrap gap-x-4 gap-y-2 p-5">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider ${STATE[a.state].className}`}
-                    >
-                      {STATE[a.state].label}
-                    </span>
+                    <Tag tone={STATE[a.state].tone}>{STATE[a.state].label}</Tag>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
                       {a.tier}
                     </span>
                     {!a.publicVisible && (
-                      <span className="rounded-full bg-surface-sunken px-2 py-0.5 text-[11px] font-medium text-muted">
-                        Members only
-                      </span>
+                      <Tag>Members only</Tag>
                     )}
                   </div>
 

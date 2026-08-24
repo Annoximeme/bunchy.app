@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Tag } from "@/components/ui";
 import { CalendarDays, Globe, MapPin, Repeat } from "lucide-react";
 
 /**
@@ -97,13 +98,10 @@ export function YourWeek({
                 <p className="flex items-center gap-2 truncate font-semibold">
                   {item.title}
                   {item.recurring && (
-                    <span
-                      className="inline-flex items-center gap-1 rounded-full bg-purple-soft px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-purple-ink"
-                      title="Part of a standing arrangement"
-                    >
+                    <Tag tone="suggested" title="Part of a standing arrangement">
                       <Repeat size={10} aria-hidden />
                       Every week
-                    </span>
+                    </Tag>
                   )}
                 </p>
                 <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowRight, Info, Megaphone } from "lucide-react";
 import type { AnnouncementSummary } from "@/server/modules/announcements/service";
 import type { AnnouncementTier } from "@/generated/prisma/enums";
+import { Tag } from "@/components/ui";
 
 /**
  * The record of everything members have been told.
@@ -20,24 +21,29 @@ import type { AnnouncementTier } from "@/generated/prisma/enums";
 
 const TIER: Record<
   AnnouncementTier,
-  { label: string; icon: typeof Info; chip: string; dot: string }
+  {
+    label: string;
+    icon: typeof Info;
+    tone: "accent" | "suggested" | "neutral";
+    dot: string;
+  }
 > = {
   CRITICAL: {
     label: "Important",
     icon: AlertTriangle,
-    chip: "bg-accent-soft text-accent-ink",
+    tone: "accent",
     dot: "bg-accent",
   },
   NOTABLE: {
     label: "New",
     icon: Megaphone,
-    chip: "bg-purple-soft text-purple-ink",
+    tone: "suggested",
     dot: "bg-purple",
   },
   NOTED: {
     label: "Noted",
     icon: Info,
-    chip: "bg-surface-sunken text-muted",
+    tone: "neutral",
     dot: "bg-line",
   },
 };
@@ -98,16 +104,22 @@ export function effectiveNotice(
   return { text: `Takes effect in ${days} days`, pending: true };
 }
 
+/**
+ * The tier, as a tag.
+ *
+ * It used to write out its own pill at `px-2.5 py-1` while the "Unread" tag
+ * immediately beside it on the same row used `px-2 py-0.5`. Two labels in the
+ * same style, touching, at two different heights, which reads as one of them
+ * being broken rather than as a distinction.
+ */
 export function TierChip({ tier }: { tier: AnnouncementTier }) {
   const meta = TIER[tier];
   const Icon = meta.icon;
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${meta.chip}`}
-    >
+    <Tag tone={meta.tone}>
       <Icon size={12} aria-hidden />
       {meta.label}
-    </span>
+    </Tag>
   );
 }
 
@@ -235,9 +247,7 @@ function Row({ item }: { item: AnnouncementSummary }) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <TierChip tier={item.tier} />
         {!item.read && (
-          <span className="rounded-full bg-mint-soft px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-mint-ink">
-            Unread
-          </span>
+          <Tag tone="teal">Unread</Tag>
         )}
         <WhenLine
           publishedAt={item.publishedAt}

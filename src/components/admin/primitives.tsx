@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { cn } from "@/components/ui";
+import type { ComponentProps, ReactNode } from "react";
+import { cn, Tag } from "@/components/ui";
 
 /**
  * Dense, utilitarian building blocks for the staff surface.
@@ -58,36 +58,43 @@ export function Panel({
   );
 }
 
+/**
+ * A status, as a tag.
+ *
+ * The geometry is `Tag`'s and no longer its own. It used to write out the same
+ * pill at `font-semibold tracking-wide` where `Tag` uses `font-bold
+ * tracking-wider`, which is a difference nobody chose and nobody could see
+ * until the two appeared on one page, at which point it reads as a rendering
+ * fault rather than as a distinction.
+ *
+ * The tone *map* stays here, because it is admin's vocabulary rather than the
+ * product's: only the staff surfaces have states worth colouring as bad.
+ */
 export function StatusPill({ status }: { status: string }) {
-  const tone: Record<string, string> = {
-    ACTIVE: "bg-positive-soft text-positive",
-    SUSPENDED: "bg-accent-soft text-accent-ink",
-    BANNED: "bg-danger-soft text-danger",
-    DEACTIVATED: "bg-surface-sunken text-muted",
-    OPEN: "bg-danger-soft text-danger",
-    REVIEWING: "bg-accent-soft text-accent-ink",
-    ACTIONED: "bg-positive-soft text-positive",
-    DISMISSED: "bg-surface-sunken text-muted",
-    APPROVED: "bg-positive-soft text-positive",
-    PENDING: "bg-accent-soft text-accent-ink",
-    REJECTED: "bg-danger-soft text-danger",
-    SCHEDULED: "bg-positive-soft text-positive",
-    CANCELLED: "bg-danger-soft text-danger",
-    COMPLETED: "bg-surface-sunken text-muted",
-    ADMIN: "bg-teal-soft text-teal",
-    MODERATOR: "bg-teal-soft text-teal",
-    MEMBER: "bg-surface-sunken text-muted",
+  const tone: Record<string, ComponentProps<typeof Tag>["tone"]> = {
+    ACTIVE: "positive",
+    SUSPENDED: "accent",
+    BANNED: "danger",
+    DEACTIVATED: "neutral",
+    OPEN: "danger",
+    REVIEWING: "accent",
+    ACTIONED: "positive",
+    DISMISSED: "neutral",
+    APPROVED: "positive",
+    PENDING: "accent",
+    REJECTED: "danger",
+    SCHEDULED: "positive",
+    CANCELLED: "danger",
+    COMPLETED: "neutral",
+    ADMIN: "teal",
+    MODERATOR: "teal",
+    MEMBER: "neutral",
   };
 
   return (
-    <span
-      className={cn(
-        "inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
-        tone[status] ?? "bg-surface-sunken text-muted",
-      )}
-    >
+    <Tag tone={tone[status] ?? "neutral"}>
       {status.toLowerCase().replace(/_/g, " ")}
-    </span>
+    </Tag>
   );
 }
 

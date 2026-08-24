@@ -219,6 +219,77 @@ export function Chip({
 }
 
 /**
+ * The smaller sibling of a chip: an all-caps micro-label.
+ *
+ * A chip carries a value somebody chose, an interest, a status, a count. A tag
+ * carries a *property* of the thing next to it, "Unread", "Every week",
+ * "Interrupts", and it is set smaller and in capitals so it reads as an
+ * annotation rather than as more content competing with the heading beside it.
+ *
+ * It exists because the same eight utilities had been written out in four
+ * separate places, in three different files, with three different tones, and
+ * nothing said they were the same object. They were identical to the pixel,
+ * which is lucky rather than maintained: the next one would have been near
+ * enough and not quite, and two sizes of tag is the point where a reader stops
+ * being able to tell whether the difference means anything.
+ *
+ * Tones are the chip's vocabulary, so `suggested` still means "the software
+ * worked this out" here.
+ */
+export function Tag({
+  children,
+  tone = "neutral",
+  className,
+  title,
+}: {
+  children: ReactNode;
+  tone?:
+    | "neutral"
+    | "accent"
+    | "teal"
+    | "positive"
+    | "suggested"
+    | "yellow"
+    | "danger";
+  className?: string;
+  /** Hover explanation, for a tag whose two words are not self-explaining. */
+  title?: string;
+}) {
+  /**
+   * `yellow` exists here and not on `Chip`, which is the rule that file states:
+   * add the tone when something genuinely needs it rather than before. The
+   * caller is a scheduled announcement, which is a thing waiting for a date,
+   * and yellow is already what marks time in this palette.
+   */
+  const tones = {
+    neutral: "bg-surface-sunken text-ink-soft",
+    accent: "bg-accent-soft text-accent-ink",
+    teal: "bg-teal-soft text-teal",
+    positive: "bg-positive-soft text-positive",
+    suggested: "bg-purple-soft text-purple-ink",
+    yellow: "bg-yellow-soft text-yellow-ink",
+    // Only the staff surfaces have states worth colouring as bad, a banned
+    // account, a report still open. Nothing a member sees needs it, which is
+    // why `Chip` has no equivalent.
+    danger: "bg-danger-soft text-danger",
+  } as const;
+
+  return (
+    <span
+      title={title}
+      className={cn(
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5",
+        "text-[11px] font-bold uppercase tracking-wider",
+        tones[tone],
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+/**
  * Compatibility, rendered as a quiet number rather than a trophy.
  *
  * Deliberately understated: this is information to help someone decide, not a
