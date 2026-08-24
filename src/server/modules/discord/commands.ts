@@ -85,7 +85,7 @@ export async function tonightCommand(ctx: CommandContext): Promise<string> {
     const lines = calls.map((call) => {
       const mins = Math.round((call.expiresAt.getTime() - Date.now()) / 60_000);
       const closes = mins < 60 ? `${mins} min` : `${Math.round(mins / 60)} h`;
-      return `• **${call.title}** — ${call.going} going, closes in ${closes}`;
+      return `• **${call.title}**: ${call.going} going, closes in ${closes}`;
     });
 
     return [`Open right now:`, ...lines, appUrl("/now")].join("\n");
@@ -240,7 +240,7 @@ export async function weekCommand(ctx: CommandContext): Promise<string> {
         minute: "2-digit",
       });
       const repeats = item.recurring ? " (every week)" : "";
-      return `• **${item.title}** — ${day}${repeats}, ${item.going} going`;
+      return `• **${item.title}**: ${day}${repeats}, ${item.going} going`;
     });
 
     return ["Your week:", ...lines].join("\n");
