@@ -11,6 +11,7 @@ import {
   unreadCount as announcementsUnread,
 } from "@/server/modules/announcements/service";
 import { AnnouncementBanner } from "@/components/announcements/announcement-banner";
+import { RouteAnnouncer } from "@/components/live-region";
 
 /**
  * The signed-in shell.
@@ -99,6 +100,7 @@ export default async function AppLayout({
         */}
         <SiteFooter signedIn />
       </main>
+      <RouteAnnouncer />
     </div>
   );
 }

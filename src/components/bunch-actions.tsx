@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, ErrorNotice, Spinner } from "@/components/ui";
+import { Announce } from "@/components/live-region";
 
 /** Join / leave / accept-invite, with the confirmation that leaving deserves. */
 export function BunchMembershipButton({
@@ -19,14 +20,30 @@ export function BunchMembershipButton({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmingLeave, setConfirmingLeave] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
+  const [optimistic, setOptimistic] = useState<string | null | undefined>(undefined);
 
-  async function act(fn: () => Promise<unknown>) {
+  // See `activity-actions.tsx` for why this is adjusted during render rather
+  // than in an effect. Same situation, same reason.
+  const [lastFromServer, setLastFromServer] = useState(status);
+  if (lastFromServer !== status) {
+    setLastFromServer(status);
+    setOptimistic(undefined);
+  }
+
+  const shownStatus = optimistic === undefined ? status : optimistic;
+
+  async function act(fn: () => Promise<unknown>, next: string | null, said: string) {
     setPending(true);
     setError(null);
+    setOptimistic(next);
+    setAnnouncement(said);
     try {
       await fn();
       router.refresh();
     } catch (cause) {
+      setOptimistic(undefined);
+      setAnnouncement("");
       setError(errorMessage(cause));
     } finally {
       setPending(false);
@@ -34,7 +51,7 @@ export function BunchMembershipButton({
   }
 
   const body = () => {
-    if (status === "ACTIVE") {
+    if (shownStatus === "ACTIVE") {
       if (confirmingLeave) {
         return (
           <div className="flex flex-wrap items-center gap-2">
@@ -46,8 +63,11 @@ export function BunchMembershipButton({
               size="sm"
               loading={pending}
               onClick={() =>
-                act(() =>
-                  api(`/api/bunches/${bunchId}/membership`, { method: "DELETE" }),
+                act(
+                  () =>
+                    api(`/api/bunches/${bunchId}/membership`, { method: "DELETE" }),
+                  null,
+                  "You have left the bunch.",
                 )
               }
             >
@@ -70,7 +90,7 @@ export function BunchMembershipButton({
       );
     }
 
-    if (status === "REQUESTED") {
+    if (shownStatus === "REQUESTED") {
       return (
         <p className="text-sm text-muted">
           Your request is waiting for a moderator.
@@ -78,16 +98,19 @@ export function BunchMembershipButton({
       );
     }
 
-    if (status === "INVITED") {
+    if (shownStatus === "INVITED") {
       return (
         <Button
           loading={pending}
           onClick={() =>
-            act(() =>
-              api(`/api/bunches/${bunchId}/membership`, {
-                method: "POST",
-                json: { action: "accept_invite" },
-              }),
+            act(
+              () =>
+                api(`/api/bunches/${bunchId}/membership`, {
+                  method: "POST",
+                  json: { action: "accept_invite" },
+                }),
+              "ACTIVE",
+              "Invite accepted. You are in the bunch.",
             )
           }
         >
@@ -96,7 +119,7 @@ export function BunchMembershipButton({
       );
     }
 
-    if (status === "REMOVED") {
+    if (shownStatus === "REMOVED") {
       return <p className="text-sm text-muted">You can&rsquo;t rejoin this bunch.</p>;
     }
 
@@ -108,11 +131,14 @@ export function BunchMembershipButton({
       <Button
         loading={pending}
         onClick={() =>
-          act(() =>
-            api(`/api/bunches/${bunchId}/membership`, {
-              method: "POST",
-              json: { action: "join" },
-            }),
+          act(
+            () =>
+              api(`/api/bunches/${bunchId}/membership`, {
+                method: "POST",
+                json: { action: "join" },
+              }),
+            "REQUESTED",
+            "Request sent. A moderator will look at it.",
           )
         }
       >
@@ -124,6 +150,7 @@ export function BunchMembershipButton({
   return (
     <div className="space-y-2">
       {error && <ErrorNotice message={error} />}
+      <Announce message={announcement} />
       {body()}
     </div>
   );

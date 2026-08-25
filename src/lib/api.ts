@@ -72,3 +72,35 @@ export function errorMessage(error: unknown): string {
   if (error instanceof Error && error.message) return error.message;
   return "Something went wrong. Please try again.";
 }
+
+/**
+ * The per-field half of a validation failure.
+ *
+ * `src/server/http/route.ts` has always put `z.treeifyError` in the error
+ * envelope's `details`, and the client has always thrown it away, so somebody
+ * who mistyped one of six fields got a single sentence at the top of the form
+ * saying that some of those details needed another look, and no indication of
+ * which. This reads the tree's top level back into a flat map a form can hand
+ * straight to `Field error=`.
+ *
+ * Only the first message per field, and only the top level. A nested object
+ * would need a path-aware form to display it, and nothing in this product
+ * submits one.
+ */
+export function fieldErrors(error: unknown): Record<string, string> {
+  if (!(error instanceof ApiError)) return {};
+  const properties = (error.details as ErrorTree | undefined)?.properties;
+  if (!properties) return {};
+
+  const found: Record<string, string> = {};
+  for (const [field, branch] of Object.entries(properties)) {
+    const first = branch?.errors?.[0];
+    if (first) found[field] = first;
+  }
+  return found;
+}
+
+interface ErrorTree {
+  errors?: string[];
+  properties?: Record<string, ErrorTree | undefined>;
+}

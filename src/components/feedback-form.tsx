@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { api, errorMessage } from "@/lib/api";
+import { api } from "@/lib/api";
 import { Button, Field, Select, Textarea } from "@/components/ui";
+import { FormError, useFormSubmit } from "@/components/form-state";
 import { KINDS, KIND_LABEL } from "@/lib/feedback";
 import type { FeedbackKind } from "@/generated/prisma/enums";
 
@@ -26,8 +27,6 @@ export function FeedbackForm() {
   const [kind, setKind] = useState<FeedbackKind>("IDEA");
   const [message, setMessage] = useState("");
   const [includePath, setIncludePath] = useState(true);
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
   // Where they were before opening this page, when the browser will say. On a
@@ -37,38 +36,25 @@ export function FeedbackForm() {
       ? new URL(document.referrer).pathname
       : pathname;
 
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-    try {
-      await api("/api/feedback", {
-        method: "POST",
-        json: { kind, message, pagePath: includePath ? cameFrom : null },
-      });
-      setMessage("");
-      setSent(true);
-      router.refresh();
-    } catch (cause) {
-      setError(errorMessage(cause));
-    } finally {
-      setPending(false);
-    }
-  }
+  const form = useFormSubmit(async () => {
+    await api("/api/feedback", {
+      method: "POST",
+      json: { kind, message, pagePath: includePath ? cameFrom : null },
+    });
+    setMessage("");
+    setSent(true);
+    router.refresh();
+  });
 
   return (
-    <form onSubmit={submit} className="space-y-4">
-      {error && (
-        <p role="alert" className="text-sm text-danger">
-          {error}
-        </p>
-      )}
+    <form onSubmit={form.onSubmit} className="space-y-4">
+      <FormError state={form} />
 
-      <Field label="What kind of thing is it?" htmlFor="feedback-kind">
+      <Field label="What kind of thing is it?" htmlFor="feedback-kind" error={form.fields.kind}>
         <Select
           id="feedback-kind"
           value={kind}
-          disabled={pending}
+          disabled={form.pending}
           onChange={(e) => setKind(e.target.value as FeedbackKind)}
         >
           {KINDS.map((k) => (
@@ -82,6 +68,7 @@ export function FeedbackForm() {
       <Field
         label="What happened, or what should be different?"
         htmlFor="feedback-message"
+        error={form.fields.message}
         hint="Plain words are fine. If something broke, what you were trying to do is more useful than what the screen said."
       >
         <Textarea
@@ -89,7 +76,7 @@ export function FeedbackForm() {
           rows={6}
           required
           value={message}
-          disabled={pending}
+          disabled={form.pending}
           onChange={(e) => {
             setMessage(e.target.value);
             setSent(false);
@@ -103,7 +90,7 @@ export function FeedbackForm() {
           type="checkbox"
           className="mt-1 size-4"
           checked={includePath}
-          disabled={pending}
+          disabled={form.pending}
           onChange={(e) => setIncludePath(e.target.checked)}
         />
         <span className="text-sm">
@@ -118,7 +105,7 @@ export function FeedbackForm() {
       </label>
 
       <div className="flex items-center gap-3">
-        <Button type="submit" loading={pending} disabled={message.trim().length < 10}>
+        <Button type="submit" loading={form.pending} disabled={message.trim().length < 10}>
           Send it
         </Button>
         {sent && (

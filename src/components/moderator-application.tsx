@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+
 import { useRouter } from "next/navigation";
-import { api, errorMessage } from "@/lib/api";
-import { Button, ErrorNotice, Field, Textarea } from "@/components/ui";
+import { api } from "@/lib/api";
+import { Button, Field, Textarea } from "@/components/ui";
+import { FormError, useFormSubmit } from "@/components/form-state";
 
 /**
  * The application form.
@@ -17,39 +18,28 @@ import { Button, ErrorNotice, Field, Textarea } from "@/components/ui";
  */
 export function ModeratorApplicationForm() {
   const router = useRouter();
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setPending(true);
-
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
-    try {
-      await api("/api/moderators/apply", {
-        method: "POST",
-        json: {
-          hoursPerWeek: Number(data.get("hoursPerWeek")),
-          motivation: String(data.get("motivation") ?? ""),
-          experience: String(data.get("experience") ?? "") || undefined,
-          acknowledgedExposure: data.get("acknowledged") === "on",
-        },
-      });
-      router.refresh();
-    } catch (cause) {
-      setError(errorMessage(cause));
-      setPending(false);
-    }
-  }
+    await api("/api/moderators/apply", {
+      method: "POST",
+      json: {
+        hoursPerWeek: Number(data.get("hoursPerWeek")),
+        motivation: String(data.get("motivation") ?? ""),
+        experience: String(data.get("experience") ?? "") || undefined,
+        acknowledgedExposure: data.get("acknowledged") === "on",
+      },
+    });
+    router.refresh();
+  });
 
   return (
-    <form onSubmit={onSubmit} className="mt-6 space-y-5 not-prose">
-      {error && <ErrorNotice message={error} />}
+    <form onSubmit={form.onSubmit} className="mt-6 space-y-5 not-prose">
+      <FormError state={form} />
 
       <Field
         label="Roughly how many hours a week can you give?"
         htmlFor="hoursPerWeek"
+        error={form.fields.hoursPerWeek}
         hint="An honest small number is better than an optimistic large one. Nobody is held to it."
       >
         <select
@@ -69,6 +59,7 @@ export function ModeratorApplicationForm() {
       <Field
         label="Why do you want to do this?"
         htmlFor="motivation"
+        error={form.fields.motivation}
         hint="A couple of sentences is plenty."
       >
         <Textarea id="motivation" name="motivation" required rows={4} maxLength={2000} />
@@ -77,6 +68,7 @@ export function ModeratorApplicationForm() {
       <Field
         label="Have you moderated anything before?"
         htmlFor="experience"
+        error={form.fields.experience}
         hint="Optional. A Discord server counts. So does “no”."
       >
         <Textarea id="experience" name="experience" rows={3} maxLength={2000} />
@@ -96,7 +88,7 @@ export function ModeratorApplicationForm() {
         </span>
       </label>
 
-      <Button type="submit" loading={pending}>
+      <Button type="submit" loading={form.pending}>
         Send application
       </Button>
     </form>

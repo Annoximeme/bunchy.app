@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice } from "@/components/ui";
+import { Announce } from "@/components/live-region";
 
 export function RespondToRequest({ connectionId }: { connectionId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState<"accept" | "decline" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState("");
 
   async function respond(action: "accept" | "decline") {
     setPending(action);
@@ -18,6 +20,13 @@ export function RespondToRequest({ connectionId }: { connectionId: string }) {
         method: "PATCH",
         json: { action },
       });
+      // The row this sits in disappears on the refresh below, which is a
+      // perfectly clear answer to look at and no answer at all to listen to.
+      setAnnouncement(
+        action === "accept"
+          ? "Connected. You can message each other now."
+          : "Request declined. They are not told.",
+      );
       router.refresh();
     } catch (cause) {
       setError(errorMessage(cause));
@@ -28,6 +37,7 @@ export function RespondToRequest({ connectionId }: { connectionId: string }) {
   return (
     <div className="space-y-2">
       {error && <ErrorNotice message={error} />}
+      <Announce message={announcement} />
       <div className="flex gap-2">
         <Button
           size="sm"
@@ -53,12 +63,14 @@ export function WithdrawRequest({ connectionId }: { connectionId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState("");
 
   async function withdraw() {
     setPending(true);
     setError(null);
     try {
       await api(`/api/connections/${connectionId}`, { method: "DELETE" });
+      setAnnouncement("Request withdrawn.");
       router.refresh();
     } catch (cause) {
       setError(errorMessage(cause));
@@ -69,6 +81,7 @@ export function WithdrawRequest({ connectionId }: { connectionId: string }) {
   return (
     <div className="space-y-2">
       {error && <ErrorNotice message={error} />}
+      <Announce message={announcement} />
       <Button size="sm" variant="ghost" loading={pending} onClick={withdraw}>
         Withdraw
       </Button>
@@ -108,7 +121,12 @@ export function ConnectButton({
   }
 
   if (state === "pending_outgoing" || sent) {
-    return <p className="text-sm text-muted">Request sent</p>;
+    return (
+      <p className="text-sm text-muted">
+        Request sent
+        {sent && <Announce message="Request sent. They will see it on their connections page." />}
+      </p>
+    );
   }
 
   async function connect() {

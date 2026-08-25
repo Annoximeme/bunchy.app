@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input } from "@/components/ui";
+import { FormError, useFormSubmit } from "@/components/form-state";
 
 /**
  * Auth forms.
@@ -15,33 +16,13 @@ import { Button, ErrorNotice, Field, Input } from "@/components/ui";
  * costs you a member.
  */
 
-function useSubmit<T>(action: (event: FormEvent<HTMLFormElement>) => Promise<T>) {
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-    try {
-      await action(event);
-    } catch (cause) {
-      setError(errorMessage(cause));
-    } finally {
-      setPending(false);
-    }
-  }
-
-  return { pending, error, onSubmit, setError };
-}
-
 export function SignUpForm() {
   const router = useRouter();
   // From a personal invite link (/signup?ref=CODE). Read here rather than kept
   // in a cookie: an invite should not follow someone around the internet.
   const referralCode = useSearchParams().get("ref") ?? undefined;
 
-  const { pending, error, onSubmit } = useSubmit(async (event) => {
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const result = await api<{ next: string }>("/api/auth/signup", {
       method: "POST",
@@ -77,10 +58,10 @@ export function SignUpForm() {
           : "Two fields now, then your name and your city. The interesting questions come once you are inside."}
       </p>
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        {error && <ErrorNotice message={error} />}
+      <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
+        <FormError state={form} />
 
-        <Field label="Email" htmlFor="email">
+        <Field label="Email" htmlFor="email" error={form.fields.email}>
           <Input
             id="email"
             name="email"
@@ -95,6 +76,7 @@ export function SignUpForm() {
           label="Password"
           htmlFor="password"
           hint="At least 10 characters. Length matters more than symbols."
+          error={form.fields.password}
         >
           <Input
             id="password"
@@ -106,7 +88,7 @@ export function SignUpForm() {
           />
         </Field>
 
-        <Button type="submit" loading={pending} className="w-full" size="lg">
+        <Button type="submit" loading={form.pending} className="w-full" size="lg">
           Create account
         </Button>
       </form>
@@ -146,7 +128,7 @@ export function SignUpForm() {
 
 export function SignInForm() {
   const router = useRouter();
-  const { pending, error, onSubmit } = useSubmit(async (event) => {
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const result = await api<{ next: string }>("/api/auth/login", {
       method: "POST",
@@ -163,10 +145,10 @@ export function SignInForm() {
     <div className="card-surface p-7">
       <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        {error && <ErrorNotice message={error} />}
+      <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
+        <FormError state={form} />
 
-        <Field label="Email" htmlFor="email">
+        <Field label="Email" htmlFor="email" error={form.fields.email}>
           <Input
             id="email"
             name="email"
@@ -176,7 +158,7 @@ export function SignInForm() {
           />
         </Field>
 
-        <Field label="Password" htmlFor="password">
+        <Field label="Password" htmlFor="password" error={form.fields.password}>
           <Input
             id="password"
             name="password"
@@ -186,7 +168,7 @@ export function SignInForm() {
           />
         </Field>
 
-        <Button type="submit" loading={pending} className="w-full" size="lg">
+        <Button type="submit" loading={form.pending} className="w-full" size="lg">
           Sign in
         </Button>
       </form>
@@ -213,7 +195,7 @@ export function SignInForm() {
 
 export function ForgotPasswordForm() {
   const [sent, setSent] = useState(false);
-  const { pending, error, onSubmit } = useSubmit(async (event) => {
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     await api("/api/auth/password", {
       method: "POST",
@@ -246,12 +228,12 @@ export function ForgotPasswordForm() {
         We&rsquo;ll email you a link to set a new one.
       </p>
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        {error && <ErrorNotice message={error} />}
-        <Field label="Email" htmlFor="email">
+      <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
+        <FormError state={form} />
+        <Field label="Email" htmlFor="email" error={form.fields.email}>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </Field>
-        <Button type="submit" loading={pending} className="w-full" size="lg">
+        <Button type="submit" loading={form.pending} className="w-full" size="lg">
           Send reset link
         </Button>
       </form>
@@ -268,7 +250,7 @@ export function ForgotPasswordForm() {
 export function ResetPasswordForm({ token }: { token: string }) {
   const router = useRouter();
   const [done, setDone] = useState(false);
-  const { pending, error, onSubmit } = useSubmit(async (event) => {
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     await api("/api/auth/password", {
       method: "PUT",
@@ -312,12 +294,13 @@ export function ResetPasswordForm({ token }: { token: string }) {
     <div className="card-surface p-7">
       <h1 className="text-2xl font-semibold tracking-tight">Choose a new password</h1>
 
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        {error && <ErrorNotice message={error} />}
+      <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
+        <FormError state={form} />
         <Field
           label="New password"
           htmlFor="password"
           hint="At least 10 characters."
+          error={form.fields.password}
         >
           <Input
             id="password"
@@ -328,7 +311,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
             required
           />
         </Field>
-        <Button type="submit" loading={pending} className="w-full" size="lg">
+        <Button type="submit" loading={form.pending} className="w-full" size="lg">
           Update password
         </Button>
       </form>

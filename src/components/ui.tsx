@@ -1,6 +1,7 @@
 import { colourFor } from "@/lib/palette";
 import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import { cloneElement, isValidElement } from "react";
+import type { ComponentProps, ReactElement, ReactNode } from "react";
 
 /**
  * Shared primitives.
@@ -373,6 +374,25 @@ export function Avatar({
 
 // --- Form fields ------------------------------------------------------------
 
+/**
+ * A label, a control, and whichever of a hint or an error applies.
+ *
+ * The wiring is done here rather than at the 40-odd call sites, because a hint
+ * or an error that a sighted person reads under the box is, to somebody on a
+ * screen reader, silence: focus lands on the input and the explanation of what
+ * went wrong is somewhere else in the document with nothing pointing at it.
+ * `aria-describedby` is what points at it, and `aria-invalid` is what makes the
+ * control announce as wrong rather than merely having some text nearby.
+ *
+ * `cloneElement` is doing the pointing. Every call site passes a single control
+ * whose `id` already matches `htmlFor`, so the ids below are derivable rather
+ * than generated, which keeps this component usable from a server component: a
+ * `useId` here would have made every form in the product client-rendered to
+ * solve a problem that string concatenation solves.
+ *
+ * A caller's own `aria-describedby` is merged, never replaced, so a control
+ * that already points at something keeps pointing at it.
+ */
 export function Field({
   label,
   hint,
@@ -386,21 +406,57 @@ export function Field({
   htmlFor?: string;
   children: ReactNode;
 }) {
+  // The error replaces the hint visually, so it replaces it as the description
+  // too. Describing a control by a paragraph that is not on the page is worse
+  // than describing it by nothing.
+  const hintId = htmlFor && hint && !error ? `${htmlFor}-hint` : undefined;
+  const errorId = htmlFor && error ? `${htmlFor}-error` : undefined;
+  const describedBy = errorId ?? hintId;
+
+  const control =
+    isValidElement(children) && (describedBy || error)
+      ? cloneElement(children as ReactElement<DescribableProps>, {
+          "aria-describedby": mergeIds(
+            (children as ReactElement<DescribableProps>).props["aria-describedby"],
+            describedBy,
+          ),
+          "aria-invalid": error
+            ? true
+            : (children as ReactElement<DescribableProps>).props["aria-invalid"],
+        })
+      : children;
+
   return (
     <div className="space-y-1.5">
       <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
         {label}
       </label>
-      {children}
+      {control}
       {error ? (
-        <p className="text-sm text-danger" role="alert">
+        <p id={errorId} className="text-sm text-danger" role="alert">
           {error}
         </p>
       ) : (
-        hint && <p className="text-sm text-muted">{hint}</p>
+        hint && (
+          <p id={hintId} className="text-sm text-muted">
+            {hint}
+          </p>
+        )
       )}
     </div>
   );
+}
+
+interface DescribableProps {
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean | "true" | "false";
+}
+
+/** Join two token lists without repeating a token or leaving a stray space. */
+function mergeIds(existing: string | undefined, added: string | undefined): string | undefined {
+  const tokens = [...(existing?.split(/\s+/) ?? []), added].filter(Boolean) as string[];
+  const unique = [...new Set(tokens)];
+  return unique.length > 0 ? unique.join(" ") : undefined;
 }
 
 const CONTROL =
@@ -411,6 +467,10 @@ const CONTROL =
   // on every input, textarea and select in the product, leaving a keyboard
   // user with a 20%-opacity ring well under the 3:1 a focus indicator needs.
   "focus:border-accent focus:ring-2 focus:ring-accent/30 " +
+  // A control that only *announces* as invalid is half a fix. The red border
+  // is not the only cue either, the error text under the box carries the
+  // meaning, so nothing here depends on telling red from grey.
+  "aria-[invalid=true]:border-danger aria-[invalid=true]:focus:ring-danger/30 " +
   "disabled:opacity-60";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
@@ -442,19 +502,38 @@ export function Toggle({
   description?: string;
   id: string;
 }) {
+  // `<label htmlFor>` used to point at the button below, which did nothing at
+  // all: a label only associates with a labelable element, and a button is not
+  // one. Clicking the words did not flip the switch, and the switch announced
+  // itself as unlabelled. `aria-labelledby` is the association that works on a
+  // `role="switch"`, and the onClick is what gives the words back their tap
+  // target.
+  const labelId = `${id}-label`;
+  const descriptionId = description ? `${id}-description` : undefined;
+
   return (
     <div className="flex items-start justify-between gap-4 py-3">
       <div className="min-w-0">
-        <label htmlFor={id} className="block text-sm font-medium text-ink">
+        <span
+          id={labelId}
+          onClick={() => onChange(!checked)}
+          className="block cursor-pointer text-sm font-medium text-ink"
+        >
           {label}
-        </label>
-        {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
+        </span>
+        {description && (
+          <p id={descriptionId} className="mt-0.5 text-sm text-muted">
+            {description}
+          </p>
+        )}
       </div>
       <button
         id={id}
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-labelledby={labelId}
+        aria-describedby={descriptionId}
         onClick={() => onChange(!checked)}
         className={cn(
           "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition-colors duration-200",

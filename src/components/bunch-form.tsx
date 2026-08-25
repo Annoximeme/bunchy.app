@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { api, errorMessage } from "@/lib/api";
+import { api } from "@/lib/api";
 import {
   Button,
-  ErrorNotice,
   Field,
   Input,
   Select,
   Textarea,
   cn,
 } from "@/components/ui";
+import { FormError, useFormSubmit } from "@/components/form-state";
 import { INTEREST_CATEGORIES, INTEREST_SEEDS } from "@/lib/interests";
 
 interface Place {
@@ -40,8 +40,7 @@ export function BunchForm({
       ? { cityLabel: defaultCity, regionLabel: "", countryCode: defaultCountry }
       : null,
   );
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     // Nothing to search for; the visible list is derived below rather than
@@ -72,47 +71,43 @@ export function BunchForm({
     });
   }
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+  const form = useFormSubmit(async (event) => {
+    const data = new FormData(event.currentTarget);
+    const result = await api<{ bunch: { slug: string } }>("/api/bunches", {
+      method: "POST",
+      json: {
+        name: String(data.get("name") ?? ""),
+        description: String(data.get("description") ?? ""),
+        rules: String(data.get("rules") ?? "") || undefined,
+        type,
+        visibility,
+        maxMembers: Number(data.get("maxMembers")),
+        interestSlugs: [...interests],
+        ...(place
+          ? { cityLabel: place.cityLabel, countryCode: place.countryCode }
+          : {}),
+      },
+    });
+    router.push(`/bunches/${result.bunch.slug}`);
+    router.refresh();
+  });
 
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    // The one rule the server cannot phrase as a field error, because the
+    // interests are chips rather than a control the browser will focus.
     if (interests.size === 0) {
-      setError("Pick at least one interest so the right people can find it.");
+      event.preventDefault();
+      form.fail("Pick at least one interest so the right people can find it.");
       return;
     }
-
-    setPending(true);
-    const data = new FormData(event.currentTarget);
-
-    try {
-      const result = await api<{ bunch: { slug: string } }>("/api/bunches", {
-        method: "POST",
-        json: {
-          name: String(data.get("name") ?? ""),
-          description: String(data.get("description") ?? ""),
-          rules: String(data.get("rules") ?? "") || undefined,
-          type,
-          visibility,
-          maxMembers: Number(data.get("maxMembers")),
-          interestSlugs: [...interests],
-          ...(place
-            ? { cityLabel: place.cityLabel, countryCode: place.countryCode }
-            : {}),
-        },
-      });
-      router.push(`/bunches/${result.bunch.slug}`);
-      router.refresh();
-    } catch (cause) {
-      setError(errorMessage(cause));
-      setPending(false);
-    }
+    form.onSubmit(event);
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      {error && <ErrorNotice message={error} />}
+      <FormError state={form} />
 
-      <Field label="Name" htmlFor="name">
+      <Field label="Name" htmlFor="name" error={form.fields.name}>
         <Input
           id="name"
           name="name"
@@ -126,6 +121,7 @@ export function BunchForm({
       <Field
         label="What is this bunch for?"
         htmlFor="description"
+        error={form.fields.description}
         hint="Say who it's for and what you actually do. A clear description attracts better people than a vague one."
       >
         <Textarea
@@ -174,6 +170,7 @@ export function BunchForm({
       <Field
         label="Maximum members"
         htmlFor="maxMembers"
+        error={form.fields.maxMembers}
         hint="Capped at 12. Past that a group stops being somewhere you're known."
       >
         <Input
@@ -274,6 +271,7 @@ export function BunchForm({
       <Field
         label="House rules"
         htmlFor="rules"
+        error={form.fields.rules}
         hint="Optional. Bunches that say what they expect tend to need less moderation."
       >
         <Textarea
@@ -284,7 +282,7 @@ export function BunchForm({
         />
       </Field>
 
-      <Button type="submit" loading={pending} size="lg" className="w-full">
+      <Button type="submit" loading={form.pending} size="lg" className="w-full">
         Create bunch
       </Button>
     </form>

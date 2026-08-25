@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
-import { api, errorMessage } from "@/lib/api";
+import { useState } from "react";
+import { api } from "@/lib/api";
+import { FormError, useFormSubmit } from "@/components/form-state";
 import {
   Button,
-  ErrorNotice,
   Field,
   Input,
   Select,
@@ -46,66 +46,55 @@ export function ActivityForm({
   */
   const [mode, setMode] = useState<"OFFLINE" | "ONLINE">("ONLINE");
   const [cadence, setCadence] = useState("");
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-
+  const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const bunchId = String(data.get("bunchId") ?? "");
 
-    try {
-      const result = await api<{
-        activity?: { id: string };
-        series?: { id: string };
-      }>("/api/activities", {
-        method: "POST",
-        json: {
-          title: String(data.get("title") ?? ""),
-          description: String(data.get("description") ?? ""),
-          // datetime-local has no zone; the browser's own offset is the right
-          // interpretation of what the organizer typed.
-          startsAt: new Date(String(data.get("startsAt"))).toISOString(),
-          mode,
-          maxParticipants: Number(data.get("maxParticipants")),
-          ...(mode === "OFFLINE"
-            ? {
-                locationLabel: String(data.get("locationLabel") ?? ""),
-                ...(defaultCity && defaultCountry
-                  ? { cityLabel: defaultCity, countryCode: defaultCountry }
-                  : {}),
-              }
-            : { onlineUrl: String(data.get("onlineUrl") ?? "") || undefined }),
-          ...(bunchId ? { bunchId } : {}),
-          ...(cadence ? { cadence } : {}),
-        },
-      });
+    const result = await api<{
+      activity?: { id: string };
+      series?: { id: string };
+    }>("/api/activities", {
+      method: "POST",
+      json: {
+        title: String(data.get("title") ?? ""),
+        description: String(data.get("description") ?? ""),
+        // datetime-local has no zone; the browser's own offset is the right
+        // interpretation of what the organizer typed.
+        startsAt: new Date(String(data.get("startsAt"))).toISOString(),
+        mode,
+        maxParticipants: Number(data.get("maxParticipants")),
+        ...(mode === "OFFLINE"
+          ? {
+              locationLabel: String(data.get("locationLabel") ?? ""),
+              ...(defaultCity && defaultCountry
+                ? { cityLabel: defaultCity, countryCode: defaultCountry }
+                : {}),
+            }
+          : { onlineUrl: String(data.get("onlineUrl") ?? "") || undefined }),
+        ...(bunchId ? { bunchId } : {}),
+        ...(cadence ? { cadence } : {}),
+      },
+    });
 
-      /*
-        A series has no occurrence yet. The job materialises the first one
-        within the hour, so there is nothing to navigate to and sending
-        somebody to a 404 would be worse than sending them nowhere. The
-        activities list is where it will appear, and it is the honest
-        destination.
-      */
-      router.push(
-        result.activity ? `/activities/${result.activity.id}` : "/activities",
-      );
-      router.refresh();
-    } catch (cause) {
-      setError(errorMessage(cause));
-      setPending(false);
-    }
-  }
+    /*
+      A series has no occurrence yet. The job materialises the first one
+      within the hour, so there is nothing to navigate to and sending
+      somebody to a 404 would be worse than sending them nowhere. The
+      activities list is where it will appear, and it is the honest
+      destination.
+    */
+    router.push(
+      result.activity ? `/activities/${result.activity.id}` : "/activities",
+    );
+    router.refresh();
+  });
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
-      {error && <ErrorNotice message={error} />}
+    <form onSubmit={form.onSubmit} className="space-y-6">
+      <FormError state={form} />
 
-      <Field label="What's the plan?" htmlFor="title">
+      <Field label="What's the plan?" htmlFor="title" error={form.fields.title}>
         <Input
           id="title"
           name="title"
@@ -120,6 +109,7 @@ export function ActivityForm({
       <Field
         label="Tell people what to expect"
         htmlFor="description"
+        error={form.fields.description}
         hint="What you'll do, who it suits, anything to bring."
       >
         <Textarea
@@ -134,7 +124,7 @@ export function ActivityForm({
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="When" htmlFor="startsAt">
+        <Field label="When" htmlFor="startsAt" error={form.fields.startsAt}>
           <Input
             id="startsAt"
             name="startsAt"
@@ -144,7 +134,11 @@ export function ActivityForm({
           />
         </Field>
 
-        <Field label="How many people" htmlFor="maxParticipants">
+        <Field
+          label="How many people"
+          htmlFor="maxParticipants"
+          error={form.fields.maxParticipants}
+        >
           <Input
             id="maxParticipants"
             name="maxParticipants"
@@ -172,6 +166,7 @@ export function ActivityForm({
         <Field
           label="Meeting point"
           htmlFor="locationLabel"
+          error={form.fields.locationLabel}
           hint="A venue or neighbourhood. Never post your home address here."
         >
           <Input
@@ -186,6 +181,7 @@ export function ActivityForm({
         <Field
           label="Where online"
           htmlFor="onlineUrl"
+          error={form.fields.onlineUrl}
           hint="Only people who join can see this."
         >
           <Input
@@ -210,6 +206,7 @@ export function ActivityForm({
       <Field
         label="Does it repeat?"
         htmlFor="cadence"
+        error={form.fields.cadence}
         hint="A repeating plan becomes a standing arrangement. Anyone who joins it is in for every one, and can still miss a week without leaving."
       >
         <Select
@@ -229,6 +226,7 @@ export function ActivityForm({
         <Field
           label="For a bunch?"
           htmlFor="bunchId"
+          error={form.fields.bunchId}
           hint="Bunch members get told about it. Leave empty to make it open to everyone."
         >
           <Select id="bunchId" name="bunchId" defaultValue={defaultBunchId ?? ""}>
@@ -242,7 +240,7 @@ export function ActivityForm({
         </Field>
       )}
 
-      <Button type="submit" loading={pending} size="lg" className="w-full">
+      <Button type="submit" loading={form.pending} size="lg" className="w-full">
         Create activity
       </Button>
     </form>
