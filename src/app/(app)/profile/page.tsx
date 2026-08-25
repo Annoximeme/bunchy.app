@@ -21,7 +21,7 @@ import { MobileDestinations } from "@/components/mobile-destinations";
 import { unreadCount } from "@/server/modules/notifications/service";
 import { unreadCount as announcementsUnread } from "@/server/modules/announcements/service";
 import { db } from "@/server/db/client";
-import { Bell, HeartHandshake, Megaphone, Sparkles, Users } from "lucide-react";
+import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
 
 export const metadata: Metadata = { title: "Your profile" };
 export const dynamic = "force-dynamic";
@@ -90,6 +90,11 @@ export default async function ProfilePage() {
         */}
         <MobileDestinations
           destinations={[
+            {
+              href: "/search",
+              label: "Search",
+              icon: <Search className="size-5" />,
+            },
             {
               href: "/connections",
               label: "Connections",

@@ -25,6 +25,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 const ITEMS = [
   { href: "/discover", label: "Discover", icon: CompassIcon },
+  { href: "/search", label: "Search", icon: SearchIcon },
   { href: "/now", label: "Bunchy Now", icon: BoltIcon },
   { href: "/bunches", label: "Bunches", icon: BunchesIcon },
   { href: "/radar", label: "Radar", icon: RadarIcon },
@@ -45,7 +46,13 @@ const ITEMS = [
  * not prominence worth having.
  */
 const MOBILE_ITEMS = ITEMS.filter(
-  (item) => item.href !== "/radar" && item.href !== "/now",
+  (item) =>
+    item.href !== "/radar" &&
+    item.href !== "/now" &&
+    // Search is reached from the You tab's list rather than the bar, for the
+    // same reason as those two: a sixth destination takes every target below
+    // the size a thumb can hit reliably.
+    item.href !== "/search",
 );
 const MOBILE_LEFT = MOBILE_ITEMS.slice(0, 2);
 const MOBILE_RIGHT = MOBILE_ITEMS.slice(2);
@@ -361,6 +368,20 @@ function BoltIcon({ className }: { className?: string }) {
       aria-hidden
     >
       <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
+    </svg>
+  );
+}
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="m16 16 4 4"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
