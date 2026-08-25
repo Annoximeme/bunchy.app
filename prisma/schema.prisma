@@ -560,6 +560,12 @@ model ConversationParticipant {
   lastReadAt     DateTime?
   joinedAt       DateTime  @default(now())
 
+  /// Refreshed while this person is composing, and read back only as "is this
+  /// within the last few seconds". Never cleared on purpose: a stale value is
+  /// indistinguishable from an absent one once it has aged out, and clearing
+  /// it would mean a second write every time somebody stops typing.
+  typingAt DateTime?
+
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   profile      Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
 

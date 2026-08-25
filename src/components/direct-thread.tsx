@@ -19,7 +19,10 @@ interface ConversationContext {
   starters: string[];
 }
 
-const POLL_MS = 5000;
+/** Safety net for environments where SSE is proxied away entirely. */
+const POLL_FALLBACK_MS = 15000;
+/** Shorter than the server's six-second window, so a steady typist never blinks. */
+const TYPING_PING_MS = 3000;
 
 /**
  * A one-to-one conversation.
@@ -33,17 +36,22 @@ export function DirectThread({
   otherName,
   initialMessages,
   readOnly,
+  initialOtherLastReadAt,
 }: {
   conversationId: string;
   otherName: string;
   initialMessages: DirectMessage[];
   readOnly: boolean;
+  /** How far the other person had read when the page was rendered. */
+  initialOtherLastReadAt: string | null;
 }) {
   const [messages, setMessages] = useState<DirectMessage[]>(initialMessages);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [context, setContext] = useState<ConversationContext | null>(null);
+  const [otherLastReadAt, setOtherLastReadAt] = useState(initialOtherLastReadAt);
+  const [otherTyping, setOtherTyping] = useState(false);
   // Starts true when the thread opens empty, so the effect below never has to
   // flip it on synchronously, it only ever settles it in the promise callback.
   const [loadingContext, setLoadingContext] = useState(
@@ -53,28 +61,116 @@ export function DirectThread({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const atBottomRef = useRef(true);
+  const cursorRef = useRef<string>(
+    initialMessages.at(-1)?.createdAt ?? new Date(0).toISOString(),
+  );
 
-  const refresh = useCallback(async () => {
-    try {
-      const result = await api<{ conversation: { messages: DirectMessage[] } }>(
-        `/api/conversations/${conversationId}/messages`,
-      );
-      setMessages((prev) =>
-        result.conversation.messages.length === prev.length
-          ? prev
-          : result.conversation.messages,
-      );
-    } catch {
-      // Transient. The next tick retries.
-    }
+  /*
+    One request per few seconds of writing, never one per keystroke.
+
+    The server records the arrival time and the mark ages out by itself, so
+    the only thing this has to get right is not firing on every letter. A
+    timestamp in a ref rather than a debounce timer: a debounce would send the
+    signal *after* somebody stopped, which is precisely backwards.
+  */
+  const lastTypingPingRef = useRef(0);
+  const pingTyping = useCallback(() => {
+    const now = Date.now();
+    if (now - lastTypingPingRef.current < TYPING_PING_MS) return;
+    lastTypingPingRef.current = now;
+    void api(`/api/conversations/${conversationId}/typing`, { method: "POST" }).catch(
+      () => {
+        // An indicator that failed to appear is not worth telling anybody about.
+      },
+    );
   }, [conversationId]);
 
+  const merge = useCallback((incoming: DirectMessage[]) => {
+    if (incoming.length === 0) return;
+    setMessages((prev) => {
+      // A message this client sent optimistically comes back down the stream
+      // with the same id, so identity is what de-duplicates, not arrival order.
+      const seen = new Set(prev.map((m) => m.id));
+      const added = incoming.filter((m) => !seen.has(m.id));
+      if (added.length === 0) return prev;
+      return [...prev, ...added];
+    });
+    const newest = incoming.at(-1)?.createdAt;
+    if (newest && newest > cursorRef.current) cursorRef.current = newest;
+  }, []);
+
+  /*
+    Live, rather than re-fetching the entire thread every five seconds and
+    swapping it in when the length happened to differ. Two people talking to
+    each other is the place in this product where a delay is felt most, and it
+    was the one place still on a timer.
+
+    The fallback interval stays, at a much slower rate: some corporate proxies
+    strip `text/event-stream` entirely, and a conversation that silently stops
+    updating is worse than one that updates slowly.
+  */
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (document.visibilityState === "visible") void refresh();
-    }, POLL_MS);
-    return () => clearInterval(timer);
-  }, [refresh]);
+    let source: EventSource | null = null;
+    let cancelled = false;
+
+    try {
+      source = new EventSource(`/api/conversations/${conversationId}/stream`);
+      source.addEventListener("messages", (event) => {
+        if (cancelled) return;
+        try {
+          const payload = JSON.parse((event as MessageEvent).data) as {
+            messages: DirectMessage[];
+          };
+          merge(payload.messages);
+        } catch {
+          // A malformed frame should not take the whole stream down.
+        }
+      });
+      source.addEventListener("typing", (event) => {
+        if (cancelled) return;
+        try {
+          const payload = JSON.parse((event as MessageEvent).data) as {
+            otherTyping: boolean;
+          };
+          setOtherTyping(payload.otherTyping);
+        } catch {
+          // As above.
+        }
+      });
+      source.addEventListener("read", (event) => {
+        if (cancelled) return;
+        try {
+          const payload = JSON.parse((event as MessageEvent).data) as {
+            otherLastReadAt: string | null;
+          };
+          setOtherLastReadAt(payload.otherLastReadAt);
+        } catch {
+          // As above.
+        }
+      });
+    } catch {
+      // EventSource unavailable or blocked; the poll below covers it.
+    }
+
+    const poll = setInterval(async () => {
+      if (cancelled || document.visibilityState !== "visible") return;
+      try {
+        const result = await api<{
+          conversation: { messages: DirectMessage[]; otherLastReadAt: string | null };
+        }>(`/api/conversations/${conversationId}/messages`);
+        merge(result.conversation.messages);
+        setOtherLastReadAt(result.conversation.otherLastReadAt);
+      } catch {
+        // Offline or a blip; the next tick tries again.
+      }
+    }, POLL_FALLBACK_MS);
+
+    return () => {
+      cancelled = true;
+      source?.close();
+      clearInterval(poll);
+    };
+  }, [conversationId, merge]);
 
   useEffect(() => {
     if (!atBottomRef.current) return;
@@ -137,6 +233,20 @@ export function DirectThread({
     }
   }
 
+  /*
+    The receipt goes on the last message in the thread, and only when this
+    member sent it.
+
+    A "Seen" under every outgoing message is a column of noise, and the only
+    question anybody is actually asking is about the last thing they said. If
+    the other person has read past it, it is seen; if not, it has been sent and
+    that is all that can honestly be claimed.
+
+    And if they have replied, the reply is the receipt. Printing "Seen" above
+    an answer is telling somebody something the answer already told them.
+  */
+  const newestOwn = messages.at(-1)?.fromViewer ? messages.length - 1 : -1;
+
   // Derived before render rather than by mutating a variable inside the map.
   const rows = messages.map((message, index) => {
     const day = dayLabel(message.createdAt);
@@ -145,6 +255,12 @@ export function DirectThread({
       message,
       day,
       showDay: !previous || dayLabel(previous.createdAt) !== day,
+      receipt:
+        index === newestOwn
+          ? otherLastReadAt && message.createdAt <= otherLastReadAt
+            ? "Seen"
+            : "Sent"
+          : null,
     };
   });
 
@@ -227,7 +343,7 @@ export function DirectThread({
             </p>
           )}
 
-          {rows.map(({ message, day, showDay }) => {
+          {rows.map(({ message, day, showDay, receipt }) => {
             return (
               <div key={message.id}>
                 {showDay && (
@@ -265,9 +381,37 @@ export function DirectThread({
                     </p>
                   </div>
                 </div>
+                {receipt && (
+                  <p className="mt-0.5 pr-1 text-right text-[11px] text-muted">
+                    {receipt}
+                  </p>
+                )}
               </div>
             );
           })}
+
+          {/*
+            Announced as well as drawn. The three dots are the entire message
+            to somebody watching, and nothing at all to somebody listening,
+            and this sits inside the `role="log"` above so it is read in the
+            conversation rather than out of nowhere.
+          */}
+          {otherTyping && (
+            <p className="flex items-center gap-2 pt-1 text-xs text-muted">
+              <span aria-hidden className="flex gap-1">
+                <span className="typing-dot size-1.5 rounded-full bg-muted" />
+                <span
+                  className="typing-dot size-1.5 rounded-full bg-muted"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <span
+                  className="typing-dot size-1.5 rounded-full bg-muted"
+                  style={{ animationDelay: "300ms" }}
+                />
+              </span>
+              {otherName} is typing…
+            </p>
+          )}
         </div>
 
         <div className="border-t border-line p-3">
@@ -289,7 +433,10 @@ export function DirectThread({
               <Textarea
                 id="dm-input"
                 value={body}
-                onChange={(e) => setBody(e.target.value)}
+                onChange={(e) => {
+                  setBody(e.target.value);
+                  if (e.target.value.length > 0) pingTyping();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();

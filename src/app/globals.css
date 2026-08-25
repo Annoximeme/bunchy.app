@@ -727,3 +727,30 @@ body {
   .af-stage { animation: none !important; opacity: 0; }
   .af-stage[data-final="true"] { opacity: 1 !important; }
 }
+
+/*
+ * The three dots beside "is typing…".
+ *
+ * Behind `no-preference` like everything else that moves here. With motion
+ * reduced the dots simply sit still, which is not a degraded version of the
+ * indicator: the sentence next to them already says the whole thing, and the
+ * animation was never carrying the meaning.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .typing-dot {
+    animation: typing-bounce 1.1s ease-in-out infinite;
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}

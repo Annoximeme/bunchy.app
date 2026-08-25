@@ -119,7 +119,7 @@ export async function getConversation(
   const otherProfileId = await requireParticipant(conversationId, profileId);
   const limit = Math.min(options.limit ?? 50, 100);
 
-  const [other, messages, blockedEither] = await Promise.all([
+  const [other, messages, blockedEither, otherParticipant] = await Promise.all([
     db.profile.findUniqueOrThrow({
       where: { id: otherProfileId },
       select: {
@@ -146,6 +146,12 @@ export async function getConversation(
       },
     }),
     isBlockedBetween(profileId, otherProfileId),
+    db.conversationParticipant.findUnique({
+      where: {
+        conversationId_profileId: { conversationId, profileId: otherProfileId },
+      },
+      select: { lastReadAt: true },
+    }),
   ]);
 
   await db.conversationParticipant
@@ -160,6 +166,9 @@ export async function getConversation(
     other,
     // A block makes the history readable but the composer inert.
     readOnly: blockedEither,
+    // How far the other person has read, so the newest message they have seen
+    // can say so.
+    otherLastReadAt: otherParticipant?.lastReadAt?.toISOString() ?? null,
     messages: messages.reverse().map((m) => ({
       id: m.id,
       body: m.deletedAt ? "Message removed" : m.body,
@@ -168,6 +177,109 @@ export async function getConversation(
       deleted: m.deletedAt !== null,
     })),
   };
+}
+
+/**
+ * Everything in this conversation since a cursor, plus whether the other
+ * person has caught up.
+ *
+ * Two things a tailing client needs on every tick and the full
+ * `getConversation` cannot give it cheaply: it re-fetches the whole profile,
+ * the whole recent history and the block check every time. This is the
+ * narrow read the stream in `/api/conversations/[id]/stream` calls twice a
+ * second, so it does the least possible.
+ *
+ * `otherLastReadAt` is what turns a sent message into a seen one. The column
+ * has always been there, keeping the unread badge honest; nothing ever showed
+ * it to the person who did the sending, which is the one place in a
+ * conversation where "did that land?" is actually asked.
+ *
+ * The viewer's own read mark is advanced only when something new actually
+ * arrived for them. Doing it unconditionally would be a write per client per
+ * tick, forever, to store a timestamp nobody's view depends on.
+ */
+export async function messagesSince(
+  conversationId: string,
+  profileId: string,
+  after: string,
+): Promise<{
+  messages: DirectMessageView[];
+  otherLastReadAt: string | null;
+  otherTyping: boolean;
+}> {
+  const otherProfileId = await requireParticipant(conversationId, profileId);
+
+  const [rows, other] = await Promise.all([
+    db.directMessage.findMany({
+      where: { conversationId, createdAt: { gt: new Date(after) } },
+      orderBy: { createdAt: "asc" },
+      take: 50,
+      select: {
+        id: true,
+        body: true,
+        senderId: true,
+        createdAt: true,
+        deletedAt: true,
+      },
+    }),
+    db.conversationParticipant.findUnique({
+      where: {
+        conversationId_profileId: { conversationId, profileId: otherProfileId },
+      },
+      select: { lastReadAt: true, typingAt: true },
+    }),
+  ]);
+
+  if (rows.some((row) => row.senderId !== profileId)) {
+    await markConversationRead(conversationId, profileId);
+  }
+
+  return {
+    messages: rows.map((m) => ({
+      id: m.id,
+      body: m.deletedAt ? "Message removed" : m.body,
+      createdAt: m.createdAt.toISOString(),
+      fromViewer: m.senderId === profileId,
+      deleted: m.deletedAt !== null,
+    })),
+    otherLastReadAt: other?.lastReadAt?.toISOString() ?? null,
+    otherTyping: isTyping(other?.typingAt ?? null),
+  };
+}
+
+/**
+ * How long a keystroke keeps the indicator up.
+ *
+ * Comfortably longer than the interval the client refreshes on, so a steady
+ * typist never flickers, and short enough that somebody who walked away
+ * mid-sentence stops appearing to be about to answer. Nothing clears the
+ * column; ageing out is the whole mechanism.
+ */
+const TYPING_TTL_MS = 6000;
+
+function isTyping(typingAt: Date | null): boolean {
+  return typingAt !== null && Date.now() - typingAt.getTime() < TYPING_TTL_MS;
+}
+
+/** Refreshed by the composer while somebody is actually writing. */
+export async function markTyping(
+  conversationId: string,
+  profileId: string,
+): Promise<void> {
+  await db.conversationParticipant
+    .update({
+      where: { conversationId_profileId: { conversationId, profileId } },
+      data: { typingAt: new Date() },
+    })
+    .catch(() => {});
+}
+
+export interface DirectMessageView {
+  id: string;
+  body: string;
+  createdAt: string;
+  fromViewer: boolean;
+  deleted: boolean;
 }
 
 export async function sendDirectMessage(

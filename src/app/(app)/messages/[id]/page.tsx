@@ -73,6 +73,7 @@ export default async function ConversationPage({
           otherName={conversation.other.displayName}
           initialMessages={conversation.messages}
           readOnly={conversation.readOnly}
+          initialOtherLastReadAt={conversation.otherLastReadAt}
         />
 
         <div className="mt-6 border-t border-line pt-4">

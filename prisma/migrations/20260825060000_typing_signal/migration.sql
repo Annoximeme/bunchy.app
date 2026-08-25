@@ -1,0 +1,16 @@
+-- Whether somebody is currently typing in a conversation.
+--
+-- On the participant row rather than in a table of its own, because that is
+-- exactly what it is: a property of one person's presence in one conversation,
+-- with no history worth keeping and nothing to relate it to. A dedicated table
+-- would need its own primary key, its own cascade and its own cleanup job to
+-- say the same thing.
+--
+-- Deliberately not held in process memory either, which is the usual shortcut
+-- for something this ephemeral. The streams in this product hold no shared
+-- in-process state on purpose, so that any number of app instances stay
+-- correct; a typing map in one process would be the first thing to break that.
+--
+-- No index. It is only ever read by the primary key that already exists, as
+-- part of reading the conversation's other participant.
+ALTER TABLE "ConversationParticipant" ADD COLUMN "typingAt" TIMESTAMP(3);
