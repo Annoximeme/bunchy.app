@@ -105,6 +105,13 @@ services:
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # Web push. All three or none: `pushEnabled()` is false until every one of
+      # them is present, and then the settings screen simply has no Push column.
+      # They belong here as well as in `jobs` because a notification raised in a
+      # request is delivered in this process, not by the hourly container.
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-}
       # So /admin/site can hand the admin a bypass cookie in the same response
       # that takes the site down. Unset means the dashboard refuses to turn the
       # gate on at all, rather than locking whoever tried out of the off switch.
@@ -166,6 +173,12 @@ services:
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # Reminders raised here are pushed from here, so the keys are needed in
+      # both containers. Missing them costs a reminder its push and nothing
+      # else: the in-app row and the email are unaffected.
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-}
     depends_on:
       migrate:
         condition: service_completed_successfully
