@@ -23,7 +23,7 @@ const personEvent = "Someone wants to connect, in app";
 
 describe("notification preferences", () => {
   it("shows suggestions off and person events on, before anything is saved", () => {
-    render(<NotificationPreferences initial={[]} />);
+    render(<NotificationPreferences initial={[]} pushPublicKey={null} />);
 
     // The screen must draw the same defaults the sender actually applies,
     // these two disagreeing once meant members received suggestions the
@@ -39,7 +39,7 @@ describe("notification preferences", () => {
   });
 
   it("shows nothing switched on for email until asked", () => {
-    render(<NotificationPreferences initial={[]} />);
+    render(<NotificationPreferences initial={[]} pushPublicKey={null} />);
 
     // Counted rather than only asserted inside the branch. The suffix used to
     // be ",  email"; when the copy dropped its em dashes this loop stopped
@@ -58,7 +58,7 @@ describe("notification preferences", () => {
 
   it("saves the moment a switch moves, with no Save button to press", async () => {
     const user = userEvent.setup();
-    render(<NotificationPreferences initial={[]} />);
+    render(<NotificationPreferences initial={[]} pushPublicKey={null} />);
 
     await user.click(screen.getByRole("switch", { name: suggestion }));
 
@@ -67,7 +67,12 @@ describe("notification preferences", () => {
       "/api/notifications/preferences",
       expect.objectContaining({
         method: "PATCH",
-        json: { type: "BUNCH_RECOMMENDATION", inApp: true, email: false },
+        json: {
+          type: "BUNCH_RECOMMENDATION",
+          inApp: true,
+          email: false,
+          push: false,
+        },
       }),
     );
     expect(screen.queryByRole("button", { name: /save/i })).toBeNull();
@@ -76,7 +81,7 @@ describe("notification preferences", () => {
   it("puts the switch back when the save fails", async () => {
     const user = userEvent.setup();
     api.mockRejectedValueOnce(new Error("Network unavailable."));
-    render(<NotificationPreferences initial={[]} />);
+    render(<NotificationPreferences initial={[]} pushPublicKey={null} />);
 
     const control = screen.getByRole("switch", { name: personEvent });
     expect(control).toHaveAttribute("aria-checked", "true");
@@ -91,7 +96,7 @@ describe("notification preferences", () => {
   });
 
   it("does not try to talk anyone out of turning something off", () => {
-    render(<NotificationPreferences initial={[]} />);
+    render(<NotificationPreferences initial={[]} pushPublicKey={null} />);
     const text = document.body.textContent ?? "";
 
     // Warning people that quiet makes the product worse is how consent gets

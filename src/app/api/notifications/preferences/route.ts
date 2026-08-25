@@ -4,25 +4,29 @@ import {
   getPreferences,
   setPreference,
 } from "@/server/modules/notifications/service";
+import { NOTIFICATION_TYPE_INFO } from "@/lib/notifications";
+import type { NotificationType } from "@/generated/prisma/enums";
 
-const TYPES = [
-  "CONNECTION_REQUEST",
-  "CONNECTION_ACCEPTED",
-  "DIRECT_MESSAGE",
-  "BUNCH_INVITE",
-  "BUNCH_JOIN_REQUEST",
-  "BUNCH_MESSAGE_REPLY",
-  "BUNCH_MENTION",
-  "BUNCH_RECOMMENDATION",
-  "ACTIVITY_INVITE",
-  "ACTIVITY_REMINDER",
-  "ACTIVITY_CHANGED",
-] as const;
+/**
+ * Derived from the registry rather than copied out of it.
+ *
+ * The hand-written list this replaces was two types short of the settings
+ * screen, which draws its switches from `NOTIFICATION_TYPE_INFO`. So the
+ * screen rendered a switch for "How did it go?" and one for "We answered your
+ * feedback", and saving either got a 422 back: the member flipped it, watched
+ * it flip back, and had no way to know why. Adding a notification type and
+ * forgetting this array is not a mistake anybody should be able to make.
+ */
+const TYPES = NOTIFICATION_TYPE_INFO.map((info) => info.type) as [
+  NotificationType,
+  ...NotificationType[],
+];
 
 const schema = z.object({
   type: z.enum(TYPES),
   inApp: z.boolean(),
   email: z.boolean(),
+  push: z.boolean(),
 });
 
 export async function GET() {
@@ -37,6 +41,7 @@ export async function PATCH(request: Request) {
     await setPreference(viewer.profileId, input.type, {
       inApp: input.inApp,
       email: input.email,
+      push: input.push,
     });
     return { ok: true };
   });

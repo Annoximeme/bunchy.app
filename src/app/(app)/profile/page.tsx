@@ -21,6 +21,7 @@ import { MobileDestinations } from "@/components/mobile-destinations";
 import { unreadCount } from "@/server/modules/notifications/service";
 import { unreadCount as announcementsUnread } from "@/server/modules/announcements/service";
 import { db } from "@/server/db/client";
+import { env, pushEnabled } from "@/server/env";
 import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
 
 export const metadata: Metadata = { title: "Your profile" };
@@ -304,7 +305,10 @@ export default async function ProfilePage() {
               />
             )}
 
-            <NotificationPreferences initial={notificationPreferences} />
+            <NotificationPreferences
+              initial={notificationPreferences}
+              pushPublicKey={pushEnabled() ? (env().VAPID_PUBLIC_KEY ?? null) : null}
+            />
 
             {blocked.length > 0 && (
               <Card>

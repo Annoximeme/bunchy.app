@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Card, ErrorNotice, cn } from "@/components/ui";
+import { PushSetup } from "@/components/push-setup";
 import {
   NOTIFICATION_GROUPS,
   NOTIFICATION_TYPE_INFO,
@@ -25,13 +26,18 @@ export interface PreferenceValue {
   type: string;
   inApp: boolean;
   email: boolean;
+  push: boolean;
 }
 
 export function NotificationPreferences({
   initial,
+  pushPublicKey,
 }: {
   initial: PreferenceValue[];
+  /** Null when the deploy has no push keys, in which case the column is not drawn. */
+  pushPublicKey: string | null;
 }) {
+  const pushAvailable = pushPublicKey !== null;
   const [values, setValues] = useState<Map<string, PreferenceValue>>(
     () =>
       new Map(
@@ -47,7 +53,7 @@ export function NotificationPreferences({
   const [savingType, setSavingType] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function toggle(type: string, channel: "inApp" | "email") {
+  async function toggle(type: string, channel: "inApp" | "email" | "push") {
     const current = values.get(type);
     if (!current) return;
 
@@ -59,7 +65,7 @@ export function NotificationPreferences({
     try {
       await api("/api/notifications/preferences", {
         method: "PATCH",
-        json: { type, inApp: next.inApp, email: next.email },
+        json: { type, inApp: next.inApp, email: next.email, push: next.push },
       });
     } catch (cause) {
       // Put it back, a switch that looks changed but was not saved is a lie.
@@ -110,6 +116,14 @@ export function NotificationPreferences({
                     >
                       Email
                     </th>
+                    {pushAvailable && (
+                      <th
+                        scope="col"
+                        className="w-16 pb-1 text-xs font-medium text-muted"
+                      >
+                        Push
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line">
@@ -126,15 +140,15 @@ export function NotificationPreferences({
                               {info.description}
                             </span>
                           </td>
-                          {(["inApp", "email"] as const).map((channel) => (
+                          {CHANNELS.filter(
+                            (channel) => channel !== "push" || pushAvailable,
+                          ).map((channel) => (
                             <td key={channel} className="py-2.5 text-center">
                               <Switch
                                 checked={value[channel]}
                                 busy={savingType === info.type}
                                 onChange={() => toggle(info.type, channel)}
-                                label={`${info.label}, ${
-                                  channel === "inApp" ? "in app" : "email"
-                                }`}
+                                label={`${info.label}, ${CHANNEL_LABEL[channel]}`}
                               />
                             </td>
                           ))}
@@ -148,9 +162,19 @@ export function NotificationPreferences({
           </div>
         ))}
       </div>
+
+      {pushPublicKey && <PushSetup publicKey={pushPublicKey} />}
     </Card>
   );
 }
+
+const CHANNELS = ["inApp", "email", "push"] as const;
+
+const CHANNEL_LABEL: Record<(typeof CHANNELS)[number], string> = {
+  inApp: "in app",
+  email: "email",
+  push: "push",
+};
 
 function Switch({
   checked,

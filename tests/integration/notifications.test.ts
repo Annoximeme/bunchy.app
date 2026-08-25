@@ -48,7 +48,11 @@ describe("delivery honours the documented defaults", () => {
 
   it("delivers a suggestion once it has been switched on", async () => {
     const me = await member("optin");
-    await setPreference(me, "BUNCH_RECOMMENDATION", { inApp: true, email: false });
+    await setPreference(me, "BUNCH_RECOMMENDATION", {
+      inApp: true,
+      email: false,
+      push: false,
+    });
 
     await notify({
       profileId: me,

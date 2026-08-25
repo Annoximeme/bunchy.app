@@ -18,6 +18,19 @@ export interface NotificationTypeInfo {
   group: "People" | "Bunches" | "Activities" | "Your account";
   /** True when a person is waiting, false when it is our idea. */
   person: boolean;
+  /**
+   * Whether this is worth interrupting somebody's day for.
+   *
+   * Almost always the same answer as `person`, and the two types where it is
+   * not are the whole reason it is a separate field rather than a derivation.
+   * "How did it go?" is about something that has already finished, so nobody
+   * is waiting and there is nothing to be late for; it can sit in the app.
+   *
+   * Nothing here reaches anybody who has not granted their browser permission
+   * on a device first, so this is not the consent gate. It is the question of
+   * what deserves the interruption once consent exists.
+   */
+  push: boolean;
 }
 
 export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
@@ -27,6 +40,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "A request is waiting for your answer.",
     group: "People",
     person: true,
+    push: true,
   },
   {
     type: "CONNECTION_ACCEPTED",
@@ -34,6 +48,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "You can start talking.",
     group: "People",
     person: true,
+    push: true,
   },
   {
     type: "DIRECT_MESSAGE",
@@ -41,6 +56,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Someone you're connected to wrote to you.",
     group: "People",
     person: true,
+    push: true,
   },
   {
     type: "BUNCH_INVITE",
@@ -48,6 +64,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Someone thought you'd fit.",
     group: "Bunches",
     person: true,
+    push: true,
   },
   {
     type: "BUNCH_JOIN_REQUEST",
@@ -55,6 +72,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Only sent to moderators of the bunch.",
     group: "Bunches",
     person: true,
+    push: true,
   },
   {
     type: "BUNCH_MESSAGE_REPLY",
@@ -62,6 +80,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Someone replied to something you said.",
     group: "Bunches",
     person: true,
+    push: true,
   },
   {
     type: "BUNCH_MENTION",
@@ -69,6 +88,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Someone used your name in a bunch.",
     group: "Bunches",
     person: true,
+    push: true,
   },
   {
     type: "BUNCH_RECOMMENDATION",
@@ -76,6 +96,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Our suggestion, not a person waiting. Off by default.",
     group: "Bunches",
     person: false,
+    push: false,
   },
   {
     type: "ACTIVITY_INVITE",
@@ -83,6 +104,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "A new activity in a bunch you're in.",
     group: "Activities",
     person: true,
+    push: true,
   },
   {
     type: "ACTIVITY_REMINDER",
@@ -90,6 +112,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "A reminder shortly before an activity you joined.",
     group: "Activities",
     person: true,
+    push: true,
   },
   {
     type: "ACTIVITY_CHANGED",
@@ -97,6 +120,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: "Moved, cancelled, or a spot opened up for you.",
     group: "Activities",
     person: true,
+    push: true,
   },
   {
     /*
@@ -119,6 +143,10 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
       "Asked once after something you went to. It is the only message that comes after an activity rather than before it, and the answer is what makes the next suggestion better.",
     group: "Activities",
     person: true,
+    // The exception `push` exists for. This is the only notification that
+    // comes after the thing rather than before it, so nobody is waiting on the
+    // answer and there is nothing to be late for.
+    push: false,
   },
   {
     type: "FEEDBACK_ANSWERED",
@@ -127,6 +155,7 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
       "Only ever because you wrote to us first. Says what happened to it, including when the answer is no.",
     group: "Your account",
     person: true,
+    push: true,
   },
 ];
 
@@ -148,10 +177,23 @@ export const NOTIFICATION_GROUPS = [
 export function defaultPreference(type: NotificationType): {
   inApp: boolean;
   email: boolean;
+  push: boolean;
 } {
   const info = NOTIFICATION_TYPE_INFO.find((i) => i.type === type);
   // Unknown types are treated as suggestions: silent until asked for.
-  return { inApp: info?.person ?? false, email: false };
+  //
+  // Push follows `person` rather than starting off, and that is not the
+  // channel being treated casually. Nothing can be pushed at all until the
+  // member has granted the browser permission on that device, which is a
+  // deliberate, revocable act with a system prompt attached. Having done it,
+  // being told when a person is actually waiting on you is the thing they
+  // just asked for; being told about a bunch we thought they would like is
+  // not, which is exactly the line `person` already draws.
+  return {
+    inApp: info?.person ?? false,
+    email: false,
+    push: info?.push ?? false,
+  };
 }
 
 export function notificationLabel(type: NotificationType): string {

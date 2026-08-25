@@ -33,6 +33,9 @@ describe("notification defaults", () => {
       expect(defaultPreference(info.type)).toEqual({
         inApp: false,
         email: false,
+        // Push follows `person` too. Granting a browser permission to
+        // interrupt you is not consent to be told about our own ideas.
+        push: false,
       });
     }
   });
@@ -41,7 +44,11 @@ describe("notification defaults", () => {
     // A new enum value that nobody remembered to describe must not start out
     // notifying people. Failing closed is the only safe direction here.
     const unknown = "SOMETHING_ADDED_LATER" as (typeof NOTIFICATION_TYPE_INFO)[number]["type"];
-    expect(defaultPreference(unknown)).toEqual({ inApp: false, email: false });
+    expect(defaultPreference(unknown)).toEqual({
+      inApp: false,
+      email: false,
+      push: false,
+    });
   });
 });
 

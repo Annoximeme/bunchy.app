@@ -4,6 +4,7 @@ import { notificationEmail } from "@/server/email/templates";
 import { env } from "@/server/env";
 import { defaultPreference } from "@/lib/notifications";
 import { isBlockedBetween } from "@/server/modules/moderation/service";
+import { sendPush } from "@/server/modules/notifications/push";
 import type { NotificationType } from "@/generated/prisma/enums";
 
 /**
@@ -60,7 +61,7 @@ export async function notify(input: NotifyInput): Promise<void> {
 
   const preference = await db.notificationPreference.findUnique({
     where: { profileId_type: { profileId: input.profileId, type: input.type } },
-    select: { inApp: true, email: true },
+    select: { inApp: true, email: true, push: true },
   });
 
   // An absent row means the member has never touched this setting. The fallback
@@ -69,6 +70,7 @@ export async function notify(input: NotifyInput): Promise<void> {
   const fallback = defaultPreference(input.type);
   const inApp = preference?.inApp ?? fallback.inApp;
   const wantsEmail = preference?.email ?? fallback.email;
+  const wantsPush = preference?.push ?? fallback.push;
 
   if (inApp) {
     const existing = input.groupKey
@@ -128,6 +130,23 @@ export async function notify(input: NotifyInput): Promise<void> {
       });
     }
   }
+
+  if (wantsPush) {
+    // Same rule as the email above: never let a delivery problem fail the
+    // action. `sendPush` already swallows its own failures, and this is the
+    // belt to that pair of braces.
+    await sendPush(input.profileId, {
+      title: input.title,
+      body: input.body,
+      linkPath: input.linkPath,
+      // The same key that collapses repeats in the database collapses them on
+      // the device, so five messages in one conversation is one banner there
+      // too rather than five.
+      tag: input.groupKey,
+    }).catch((error) => {
+      console.error("Push notification failed:", error);
+    });
+  }
 }
 
 export async function listNotifications(profileId: string, limit = 30) {
@@ -171,7 +190,7 @@ export async function markAllRead(profileId: string): Promise<void> {
 export async function getPreferences(profileId: string) {
   return db.notificationPreference.findMany({
     where: { profileId },
-    select: { type: true, inApp: true, email: true },
+    select: { type: true, inApp: true, email: true, push: true },
     orderBy: { type: "asc" },
   });
 }
@@ -179,7 +198,7 @@ export async function getPreferences(profileId: string) {
 export async function setPreference(
   profileId: string,
   type: NotificationType,
-  values: { inApp: boolean; email: boolean },
+  values: { inApp: boolean; email: boolean; push: boolean },
 ): Promise<void> {
   await db.notificationPreference.upsert({
     where: { profileId_type: { profileId, type } },

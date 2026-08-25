@@ -283,6 +283,7 @@ model Profile {
 
   personality  PersonalityProfile?
   privacy      PrivacySettings?
+  pushSubscriptions PushSubscription[]
   interests    UserInterest[]
   goals        ProfileSocialGoal[]
   availability ProfileAvailability[]
@@ -1336,10 +1337,48 @@ model NotificationPreference {
   type      NotificationType
   inApp     Boolean
   email     Boolean
+  /// Defaults false in the database on purpose. The application decides what a
+  /// new row starts as; the column default only governs rows that already
+  /// existed, and opting somebody into a new channel by migration is not a
+  /// decision a migration gets to make.
+  push      Boolean @default(false)
 
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@id([profileId, type])
+}
+
+/// One browser that has agreed to be interrupted.
+///
+/// Per browser rather than per person: the same member has one of these on
+/// their phone, one on a work laptop, and a third the day they reinstall. The
+/// endpoint is the identity the push service issues, which makes it the
+/// natural unique key.
+model PushSubscription {
+  id        String @id @default(cuid())
+  profileId String
+
+  /// Where the push service wants the message delivered.
+  endpoint String @unique
+  /// The browser's public key and auth secret, used to encrypt the payload so
+  /// the push service in the middle cannot read it.
+  p256dh   String
+  auth     String
+
+  /// Only to help somebody recognise a device in a list of them.
+  userAgent String?
+
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  /// Set when the push service said this endpoint is gone for good. Kept
+  /// rather than deleted immediately so a transient failure cannot quietly
+  /// unsubscribe somebody, and swept later.
+  failedAt DateTime?
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
 }
 
 // ---------------------------------------------------------------------------

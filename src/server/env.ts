@@ -53,6 +53,22 @@ const schema = z.object({
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   STRIPE_PRICE_MONTHLY: z.string().optional(),
   STRIPE_PRICE_YEARLY: z.string().optional(),
+
+  /* --- Web push ---------------------------------------------------------
+   *
+   * Optional, all three or none, and off until they are all present. Same
+   * reasoning as the supporter keys above: a half-configured push setup fails
+   * at the moment somebody is waiting to be told something, which is the worst
+   * time to find out.
+   *
+   * The public key is handed to the browser, which is what it is for. The
+   * private key must never leave this process. The subject is the `mailto:` or
+   * URL a push service contacts if our traffic becomes its problem, and the
+   * specification requires one.
+   */
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+  VAPID_SUBJECT: z.string().optional(),
 });
 
 /**
@@ -120,6 +136,18 @@ export function env() {
  */
 export function resetEnv(): void {
   cached = undefined;
+}
+
+/**
+ * Whether push notifications can be sent at all.
+ *
+ * One check, read by the sender, the subscribe route and the settings screen
+ * alike, so the three cannot disagree about whether the feature exists. An
+ * unconfigured deploy simply has no push, and every other channel carries on.
+ */
+export function pushEnabled(): boolean {
+  const { VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT } = env();
+  return Boolean(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY && VAPID_SUBJECT);
 }
 
 /**

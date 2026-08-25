@@ -37,6 +37,9 @@ describe("the notification registries", () => {
       // NOTIFICATION_DEFAULTS. When these disagreed once before, the screen
       // showed a switch off while the sender delivered anyway.
       expect(defaultPreference(row.type).inApp, row.type).toBe(row.inApp);
+      // And the same for push, which has the same two writers and so the same
+      // way of drifting apart.
+      expect(defaultPreference(row.type).push, row.type).toBe(row.push);
     }
   });
 
