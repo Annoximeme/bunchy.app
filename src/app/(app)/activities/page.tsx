@@ -7,6 +7,8 @@ import { ActivityCard } from "@/components/cards";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 import { seriesForProfile } from "@/server/modules/activities/series";
 import { YourRegulars } from "@/components/your-regulars";
+import { outcomeReview } from "@/server/modules/activities/outcomes";
+import { OutcomeReviewCard } from "@/components/outcome-review";
 
 export const metadata: Metadata = { title: "Activities" };
 export const dynamic = "force-dynamic";
@@ -14,11 +16,12 @@ export const dynamic = "force-dynamic";
 export default async function ActivitiesPage() {
   const viewer = await requireViewer();
 
-  const [mine, suggested, upcoming, regulars] = await Promise.all([
+  const [mine, suggested, upcoming, regulars, review] = await Promise.all([
     listActivities(viewer.profileId, { scope: "mine", limit: 10 }),
     recommendActivities(viewer.profileId, 6),
     listActivities(viewer.profileId, { scope: "upcoming", limit: 20 }),
     seriesForProfile(viewer.profileId),
+    outcomeReview(viewer.profileId),
   ]);
 
   const mineIds = new Set(mine.map((a) => a.id));
@@ -38,6 +41,16 @@ export default async function ActivitiesPage() {
         activity rather than one Thursday.
       */}
       <YourRegulars regulars={regulars} />
+
+      {/*
+        Below what is coming and above what is on offer, which is where a look
+        back belongs: it is context for the decision, not the decision.
+      */}
+      {review.attended >= 2 && (
+        <div className="mb-10">
+          <OutcomeReviewCard review={review} />
+        </div>
+      )}
 
       <div className="space-y-12">
         <section>

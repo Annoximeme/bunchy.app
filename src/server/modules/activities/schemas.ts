@@ -14,6 +14,16 @@ export const activityCreateSchema = z
     cityLabel: z.string().trim().max(80).optional(),
     countryCode: z.string().trim().length(2).toUpperCase().optional(),
     onlineUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
+    /**
+     * Which door, which floor, what the organiser will be wearing.
+     *
+     * Kept apart from `locationLabel` because the two have different
+     * audiences: the venue is shown to anybody who can see the activity, and
+     * this is shown only to people who have joined. It is the difference
+     * between announcing an event and telling the world exactly where a group
+     * of people will be standing.
+     */
+    meetingPoint: z.string().trim().max(200).optional(),
     maxParticipants: z.number().int().min(2).max(50).default(8),
     bunchId: z.string().trim().min(1).max(40).optional(),
     /**
@@ -43,7 +53,22 @@ export const activityUpdateSchema = z.object({
   endsAt: z.coerce.date().nullable().optional(),
   locationLabel: z.string().trim().max(160).optional(),
   onlineUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
+  meetingPoint: z.string().trim().max(200).optional(),
   maxParticipants: z.number().int().min(2).max(50).optional(),
+});
+
+/**
+ * How many people somebody may bring.
+ *
+ * Three, which is a friend, a partner and one more. Higher than that and a
+ * plus-one has become a way to fill somebody else's evening with your own
+ * group, which is the failure mode a product about meeting new people can
+ * least afford.
+ */
+export const MAX_GUESTS = 3;
+
+export const participationSchema = z.object({
+  guests: z.number().int().min(0).max(MAX_GUESTS).default(0),
 });
 
 export type ActivityCreateInput = z.infer<typeof activityCreateSchema>;

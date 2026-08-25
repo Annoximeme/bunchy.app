@@ -104,6 +104,7 @@ export interface CreateSeriesInput {
   mode?: "ONLINE" | "OFFLINE";
   locationLabel?: string | null;
   onlineUrl?: string | null;
+  meetingPoint?: string | null;
   maxParticipants?: number;
   bunchId?: string | null;
 }
@@ -148,6 +149,7 @@ export async function createSeries(
       mode: input.mode ?? "OFFLINE",
       locationLabel: input.locationLabel ?? null,
       onlineUrl: input.onlineUrl ?? null,
+      meetingPoint: input.meetingPoint ?? null,
       maxParticipants: input.maxParticipants ?? 8,
       organizerId,
       bunchId: input.bunchId ?? null,
@@ -248,6 +250,7 @@ export async function materialiseDueOccurrences(
       mode: true,
       locationLabel: true,
       onlineUrl: true,
+      meetingPoint: true,
       maxParticipants: true,
       organizerId: true,
       bunchId: true,
@@ -290,6 +293,7 @@ export async function materialiseDueOccurrences(
           mode: series.mode,
           locationLabel: series.locationLabel,
           onlineUrl: series.onlineUrl,
+          meetingPoint: series.meetingPoint,
           maxParticipants: series.maxParticipants,
           organizerId: series.organizerId,
           bunchId: series.bunchId,
@@ -399,6 +403,7 @@ export async function repeatActivity(
       mode: true,
       locationLabel: true,
       onlineUrl: true,
+      meetingPoint: true,
       maxParticipants: true,
       organizerId: true,
       bunchId: true,
@@ -440,6 +445,7 @@ export async function repeatActivity(
       mode: activity.mode,
       locationLabel: activity.locationLabel,
       onlineUrl: activity.onlineUrl,
+      meetingPoint: activity.meetingPoint,
       maxParticipants: activity.maxParticipants,
       organizerId: activity.organizerId,
       bunchId: activity.bunchId,

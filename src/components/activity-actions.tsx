@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { Button, ErrorNotice } from "@/components/ui";
+import { Button, ErrorNotice, Select } from "@/components/ui";
 import { Announce } from "@/components/live-region";
 
 /**
@@ -28,18 +28,22 @@ export function ActivityJoinButton({
   spotsLeft,
   isOrganizer,
   status,
+  viewerGuests,
 }: {
   activityId: string;
   viewerStatus: string | null;
   spotsLeft: number;
   isOrganizer: boolean;
   status: string;
+  /** How many people this member is already bringing. */
+  viewerGuests: number;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  const [guests, setGuests] = useState(viewerGuests);
   // `undefined` means "no opinion, show the server's answer". `null` is a real
   // optimistic value, the one that means not going, so the two cannot share.
   const [optimistic, setOptimistic] = useState<string | null | undefined>(undefined);
@@ -144,21 +148,48 @@ export function ActivityJoinButton({
           </Button>
         </div>
       ) : (
-        <Button
-          loading={pending}
-          onClick={() =>
-            act(
-              () =>
-                api(`/api/activities/${activityId}/participation`, { method: "POST" }),
-              joining,
-              joining === "JOINED"
-                ? "You're going. It's in your week now."
-                : "You're on the waitlist. We'll tell you if a spot opens.",
-            )
-          }
-        >
-          {spotsLeft > 0 ? "Count me in" : "Join the waitlist"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            loading={pending}
+            onClick={() =>
+              act(
+                () =>
+                  api(`/api/activities/${activityId}/participation`, {
+                    method: "POST",
+                    json: { guests },
+                  }),
+                joining,
+                joining === "JOINED"
+                  ? "You're going. It's in your week now."
+                  : "You're on the waitlist. We'll tell you if a spot opens.",
+              )
+            }
+          >
+            {spotsLeft > 0 ? "Count me in" : "Join the waitlist"}
+          </Button>
+
+          {/*
+            Beside the button rather than behind a second step, because a
+            first evening with strangers is the one most people would rather
+            not turn up to alone, and asking afterwards is asking too late.
+
+            Guests are a count and never a name: they have no account here and
+            nothing about them is ours to store.
+          */}
+          <label className="flex items-center gap-2 text-sm text-muted">
+            Bringing
+            <Select
+              value={String(guests)}
+              onChange={(event) => setGuests(Number(event.target.value))}
+              className="w-auto py-1.5 pl-3 pr-8 text-sm"
+            >
+              <option value="0">nobody</option>
+              <option value="1">1 person</option>
+              <option value="2">2 people</option>
+              <option value="3">3 people</option>
+            </Select>
+          </label>
+        </div>
       )}
     </div>
   );

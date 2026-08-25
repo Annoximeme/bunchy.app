@@ -31,6 +31,7 @@ const ACTIVITY_SELECT = {
   locationLabel: true,
   cityLabel: true,
   onlineUrl: true,
+  meetingPoint: true,
   maxParticipants: true,
   status: true,
   createdAt: true,
@@ -43,6 +44,7 @@ const ACTIVITY_SELECT = {
     where: { status: { in: ["JOINED", "WAITLISTED"] } },
     select: {
       status: true,
+      guests: true,
       profile: {
         select: { id: true, username: true, displayName: true, avatarUrl: true },
       },
@@ -61,6 +63,7 @@ type ActivityRow = {
   locationLabel: string | null;
   cityLabel: string | null;
   onlineUrl: string | null;
+  meetingPoint: string | null;
   maxParticipants: number;
   status: string;
   createdAt: Date;
@@ -69,9 +72,26 @@ type ActivityRow = {
   bunch: { id: string; slug: string; name: string } | null;
   participants: Array<{
     status: string;
+    guests: number;
     profile: { id: string; username: string; displayName: string; avatarUrl: string | null };
   }>;
 };
+
+/**
+ * How many chairs a set of participants actually needs.
+ *
+ * One per member plus whoever they are bringing. Capacity has to be counted
+ * this way everywhere or it is counted this way nowhere: a room that seats
+ * eight and a list of eight members who between them bring four friends is a
+ * room with four people standing.
+ */
+export function seatsTaken(
+  participants: ReadonlyArray<{ status: string; guests: number }>,
+): number {
+  return participants
+    .filter((p) => p.status === "JOINED")
+    .reduce((total, p) => total + 1 + p.guests, 0);
+}
 
 export function toActivityView(row: ActivityRow, viewerProfileId: string) {
   const joined = row.participants.filter((p) => p.status === "JOINED");
@@ -79,6 +99,7 @@ export function toActivityView(row: ActivityRow, viewerProfileId: string) {
   const viewerEntry = row.participants.find(
     (p) => p.profile.id === viewerProfileId,
   );
+  const seats = seatsTaken(row.participants);
 
   return {
     id: row.id,
@@ -89,11 +110,19 @@ export function toActivityView(row: ActivityRow, viewerProfileId: string) {
     mode: row.mode,
     locationLabel: row.locationLabel,
     cityLabel: row.cityLabel,
-    // The meeting link is only for people who are actually going.
+    // The meeting link is only for people who are actually going, and so is
+    // the meeting point: one is a way into a room and the other is a way to a
+    // group of people standing somewhere real.
     onlineUrl: viewerEntry?.status === "JOINED" ? row.onlineUrl : null,
+    meetingPoint: viewerEntry?.status === "JOINED" ? row.meetingPoint : null,
     maxParticipants: row.maxParticipants,
-    participantCount: joined.length,
-    spotsLeft: Math.max(0, row.maxParticipants - joined.length),
+    // The headline count is people-and-guests, because that is what somebody
+    // reading "6 of 8" wants to know about how full the evening is.
+    participantCount: seats,
+    memberCount: joined.length,
+    guestCount: seats - joined.length,
+    spotsLeft: Math.max(0, row.maxParticipants - seats),
+    viewerGuests: viewerEntry?.guests ?? 0,
     status: row.status,
     organizer: row.organizer,
     bunch: row.bunch,
@@ -140,6 +169,7 @@ export async function createActivity(
       cityLabel: place?.cityLabel ?? input.cityLabel ?? null,
       countryCode: place?.countryCode ?? input.countryCode ?? null,
       onlineUrl: input.onlineUrl || null,
+      meetingPoint: input.meetingPoint || null,
       maxParticipants: input.maxParticipants,
       organizerId,
       bunchId: input.bunchId ?? null,
@@ -214,9 +244,22 @@ async function announceToBunch(
   );
 }
 
+/**
+ * Join, optionally bringing somebody who is not on Bunchy.
+ *
+ * A plus-one is the thing that makes a first activity survivable: nobody's
+ * first evening with strangers should have to be alone, and it is also the
+ * most natural way this product grows. The guest never becomes a row of their
+ * own, only a number, so there is no third party's data here to look after.
+ *
+ * The whole party is seated together or not at all. Letting one person in and
+ * waitlisting the friend they were bringing solves an arithmetic problem by
+ * creating a social one.
+ */
 export async function joinActivity(
   activityId: string,
   profileId: string,
+  guests = 0,
 ): Promise<{ status: "JOINED" | "WAITLISTED" }> {
   const activity = await db.activity.findUnique({
     where: { id: activityId },
@@ -256,15 +299,19 @@ export async function joinActivity(
   if (existing?.status === "JOINED") throw conflict("You're already going.");
   if (existing?.status === "WAITLISTED") throw conflict("You're already on the waitlist.");
 
-  const joinedCount = await db.activityParticipant.count({
+  const going = await db.activityParticipant.findMany({
     where: { activityId, status: "JOINED" },
+    select: { status: true, guests: true },
   });
-  const status = joinedCount >= activity.maxParticipants ? "WAITLISTED" : "JOINED";
+  // Seats, not people. Someone bringing a friend takes two.
+  const taken = seatsTaken(going);
+  const wanted = 1 + guests;
+  const status = taken + wanted > activity.maxParticipants ? "WAITLISTED" : "JOINED";
 
   await db.activityParticipant.upsert({
     where: { activityId_profileId: { activityId, profileId } },
-    create: { activityId, profileId, status },
-    update: { status, joinedAt: new Date() },
+    create: { activityId, profileId, status, guests },
+    update: { status, guests, joinedAt: new Date() },
   });
 
   await markRecommendationActed(profileId, "ACTIVITY", activityId);
@@ -356,6 +403,9 @@ export async function updateActivity(
         ? { locationLabel: input.locationLabel || null }
         : {}),
       ...(input.onlineUrl !== undefined ? { onlineUrl: input.onlineUrl || null } : {}),
+      ...(input.meetingPoint !== undefined
+        ? { meetingPoint: input.meetingPoint || null }
+        : {}),
       ...(input.maxParticipants ? { maxParticipants: input.maxParticipants } : {}),
     },
   });

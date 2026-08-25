@@ -164,7 +164,7 @@ export function ActivityForm({
 
       {mode === "OFFLINE" ? (
         <Field
-          label="Meeting point"
+          label="Venue"
           htmlFor="locationLabel"
           error={form.fields.locationLabel}
           hint="A venue or neighbourhood. Never post your home address here."
@@ -175,6 +175,29 @@ export function ActivityForm({
             required
             maxLength={160}
             placeholder="Bar Bassin, Antwerp"
+          />
+        </Field>
+      ) : null}
+
+      {/*
+        Kept apart from the venue above, and asked for separately, because the
+        two have different audiences. The venue is shown to anybody who can see
+        the plan. This is shown only to the people who joined it, which is the
+        difference between announcing an evening and telling the world exactly
+        where a group of people will be standing.
+      */}
+      {mode === "OFFLINE" ? (
+        <Field
+          label="Meeting point"
+          htmlFor="meetingPoint"
+          hint="Only people who join can see this. Which door, which floor, what you will be wearing. Optional, and the thing that turns a joined plan into somebody actually finding you."
+          error={form.fields.meetingPoint}
+        >
+          <Input
+            id="meetingPoint"
+            name="meetingPoint"
+            maxLength={200}
+            placeholder="Upstairs, the long table by the window"
           />
         </Field>
       ) : (

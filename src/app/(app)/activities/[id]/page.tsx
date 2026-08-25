@@ -92,6 +92,18 @@ export default async function ActivityPage({
             {activity.description}
           </p>
 
+          {activity.meetingPoint && (
+            <div className="mt-6 rounded-[var(--radius-control)] border border-line bg-surface-sunken p-4">
+              <p className="text-sm font-medium">Where exactly</p>
+              <p className="mt-1 whitespace-pre-wrap text-sm text-ink-soft">
+                {activity.meetingPoint}
+              </p>
+              <p className="mt-2 text-xs text-muted">
+                Only people going can see this.
+              </p>
+            </div>
+          )}
+
           {activity.onlineUrl && (
             <div className="mt-6 rounded-[var(--radius-control)] border border-line bg-surface-sunken p-4">
               <p className="text-sm font-medium">Where to meet</p>
@@ -116,6 +128,7 @@ export default async function ActivityPage({
               spotsLeft={activity.spotsLeft}
               isOrganizer={activity.viewerIsOrganizer}
               status={activity.status}
+              viewerGuests={activity.viewerGuests}
             />
             {/*
               A plain link, not a button: it is a file download, and the browser
@@ -195,6 +208,15 @@ export default async function ActivityPage({
             <h2 className="text-sm font-semibold">
               Going ({activity.participantCount}/{activity.maxParticipants})
             </h2>
+            {activity.guestCount > 0 && (
+              // Named separately because the list below shows members only, and
+              // a count of six above a list of four otherwise reads as a bug.
+              <p className="mt-1 text-xs text-muted">
+                Including {activity.guestCount}{" "}
+                {activity.guestCount === 1 ? "guest" : "guests"} people are
+                bringing
+              </p>
+            )}
             {activity.waitlistCount > 0 && (
               <p className="mt-1 text-xs text-muted">
                 {activity.waitlistCount} on the waitlist

@@ -45,6 +45,7 @@ export async function POST(request: Request) {
         mode: input.mode,
         locationLabel: input.locationLabel ?? null,
         onlineUrl: input.onlineUrl || null,
+        meetingPoint: input.meetingPoint || null,
         maxParticipants: input.maxParticipants,
         bunchId: input.bunchId ?? null,
       });

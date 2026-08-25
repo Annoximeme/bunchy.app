@@ -212,3 +212,121 @@ export async function outcomeSummary(since?: Date): Promise<OutcomeSummary> {
       attended >= REPORTING_FLOOR ? metSomeone / attended : null,
   };
 }
+
+/**
+ * What the member gets back for answering.
+ *
+ * `ActivityOutcome` has always been the only honest signal in the schema:
+ * every other one is about intent, and this one is about what happened. It fed
+ * the matching engine's `met_well` and the staff dashboard, and it gave the
+ * person who answered it nothing at all. Asking somebody a question after
+ * every evening out and never once telling them what came of it is how a
+ * question stops being answered.
+ *
+ * Two things come back. A count of what actually happened, which is the only
+ * number in this product worth showing a member about themselves, and the
+ * people they have now been in a room with more than once and never connected
+ * to. The second is the useful half: two evenings with the same person is a
+ * far better reason to reach out than any compatibility score, and it is a fact
+ * rather than a guess.
+ */
+
+export interface OutcomeReview {
+  /** Activities in the window this member said they went to. */
+  attended: number;
+  /** Of those, how many they met somebody at. */
+  metSomeone: number;
+  /**
+   * People they have been at two or more activities with and are not connected
+   * to. Never more than a handful; this is a nudge, not a directory.
+   */
+  seenAgain: Array<{
+    id: string;
+    username: string;
+    displayName: string;
+    avatarUrl: string | null;
+    /** How many activities they have both been at. */
+    times: number;
+  }>;
+}
+
+/** How far back the review looks. A season, not a lifetime. */
+const REVIEW_WINDOW_DAYS = 90;
+/** Being in the same room twice is the signal. Once is a coincidence. */
+const SEEN_AGAIN_FLOOR = 2;
+const SEEN_AGAIN_LIMIT = 4;
+
+export async function outcomeReview(profileId: string): Promise<OutcomeReview> {
+  const since = new Date(Date.now() - REVIEW_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+
+  const [attended, metSomeone, attendedActivities] = await Promise.all([
+    db.activityOutcome.count({
+      where: { profileId, attended: true, createdAt: { gte: since } },
+    }),
+    db.activityOutcome.count({
+      where: { profileId, metSomeone: true, createdAt: { gte: since } },
+    }),
+    // The activities they said they went to. Not merely joined: somebody who
+    // signed up for six things and went to one has been in a room with the
+    // people from one of them.
+    db.activityOutcome.findMany({
+      where: { profileId, attended: true, createdAt: { gte: since } },
+      select: { activityId: true },
+    }),
+  ]);
+
+  const activityIds = attendedActivities.map((row) => row.activityId);
+  if (activityIds.length < SEEN_AGAIN_FLOOR) {
+    return { attended, metSomeone, seenAgain: [] };
+  }
+
+  const [others, connections, blocks] = await Promise.all([
+    db.activityParticipant.findMany({
+      where: {
+        activityId: { in: activityIds },
+        status: "JOINED",
+        profileId: { not: profileId },
+      },
+      select: {
+        profileId: true,
+        profile: {
+          select: { id: true, username: true, displayName: true, avatarUrl: true },
+        },
+      },
+    }),
+    db.connection.findMany({
+      where: { OR: [{ requesterId: profileId }, { addresseeId: profileId }] },
+      select: { requesterId: true, addresseeId: true },
+    }),
+    db.block.findMany({
+      where: { OR: [{ blockerId: profileId }, { blockedId: profileId }] },
+      select: { blockerId: true, blockedId: true },
+    }),
+  ]);
+
+  // Any connection at all, in any state. A pending request is already a
+  // suggestion made, and a declined one is an answer.
+  const known = new Set(
+    connections.flatMap((c) => [c.requesterId, c.addresseeId]),
+  );
+  for (const block of blocks) {
+    known.add(block.blockerId);
+    known.add(block.blockedId);
+  }
+
+  const counts = new Map<string, { times: number; profile: (typeof others)[number]["profile"] }>();
+  for (const row of others) {
+    if (known.has(row.profileId)) continue;
+    const entry = counts.get(row.profileId);
+    if (entry) entry.times += 1;
+    else counts.set(row.profileId, { times: 1, profile: row.profile });
+  }
+
+  const seenAgain = [...counts.values()]
+    .filter((entry) => entry.times >= SEEN_AGAIN_FLOOR)
+    .sort((a, b) => b.times - a.times)
+    .slice(0, SEEN_AGAIN_LIMIT)
+    .map((entry) => ({ ...entry.profile, times: entry.times }));
+
+  return { attended, metSomeone, seenAgain };
+}

@@ -820,6 +820,8 @@ model ActivitySeries {
   mode          ActivityMode @default(ONLINE)
   locationLabel String?
   onlineUrl     String?
+  /// Carried onto each occurrence. See Activity.meetingPoint.
+  meetingPoint  String?
   maxParticipants Int        @default(8)
 
   organizerId String
@@ -987,6 +989,10 @@ model Activity {
   cityLabel     String?
   /// For ONLINE activities: where to meet (Discord, Steam, a link).
   onlineUrl     String?
+  /// The detail that only matters once you are standing outside: which door,
+  /// which floor, what the organiser will be wearing. Shown only to people who
+  /// have joined, like `onlineUrl` above and for the same reason.
+  meetingPoint  String?
   maxParticipants Int          @default(8)
   status          ActivityStatus @default(SCHEDULED)
   organizerId     String
@@ -1039,6 +1045,13 @@ model ActivityParticipant {
   profileId  String
   status     ParticipationStatus @default(JOINED)
   joinedAt   DateTime            @default(now())
+
+  /// How many people this member is bringing who are not on Bunchy.
+  ///
+  /// A number, not rows. A guest has no profile and no say in being stored, so
+  /// their name is not ours to keep; the organiser needs a chair count and the
+  /// capacity check needs the same number, and both are satisfied by this.
+  guests Int @default(0)
 
   /// When a Discord reminder went out for this person and this activity.
   ///
