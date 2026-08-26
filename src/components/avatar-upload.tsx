@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/ui";
@@ -24,7 +26,7 @@ const MAX_DIMENSION = 512;
 /** Visually indistinguishable from 1.0 at this size, roughly a third the bytes. */
 const QUALITY = 0.85;
 
-async function compress(file: File): Promise<Blob> {
+async function compress(file: File, cannotProcess: string): Promise<Blob> {
   // `imageOrientation` applies the EXIF rotation. Without it, half of all phone
   // portraits arrive sideways, the tag is dropped by the re-encode, so the
   // rotation has to be baked in here.
@@ -39,7 +41,7 @@ async function compress(file: File): Promise<Blob> {
   canvas.height = height;
 
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("Your browser could not process that image.");
+  if (!context) throw new Error(cannotProcess);
   context.imageSmoothingQuality = "high";
   context.drawImage(bitmap, 0, 0, width, height);
   bitmap.close();
@@ -51,7 +53,7 @@ async function compress(file: File): Promise<Blob> {
     canvas.toBlob(resolve, "image/webp", QUALITY);
   });
 
-  if (!blob) throw new Error("Your browser could not process that image.");
+  if (!blob) throw new Error(cannotProcess);
   return blob;
 }
 
@@ -65,6 +67,7 @@ export function AvatarUpload({
   /** Draws the gradient ring. Staff and supporters only. */
   supporter?: boolean;
 }) {
+  const t = useTranslate();
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState(false);
@@ -75,7 +78,7 @@ export function AvatarUpload({
     setPending(true);
     setError(null);
     try {
-      const blob = await compress(file);
+      const blob = await compress(file, t("avatar.processFailed"));
 
       const response = await fetch("/api/profile/avatar", {
         method: "POST",
@@ -84,7 +87,7 @@ export function AvatarUpload({
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null);
-        throw new Error(body?.error?.message ?? "That upload didn't work.");
+        throw new Error(body?.error?.message ?? t("avatar.uploadFailed"));
       }
 
       const { avatarUrl: next } = await response.json();
@@ -140,7 +143,7 @@ export function AvatarUpload({
           title={`JPEG, PNG or WebP. Resized to ${MAX_DIMENSION}px and compressed on your device before it is sent. A phone photo ends up around 40KB.`}
           className="font-medium text-accent-ink transition-opacity hover:underline disabled:opacity-55"
         >
-          {pending ? "Working…" : shown ? "Change" : "Upload"}
+          {pending ? t("avatar.working") : shown ? t("avatar.change") : t("avatar.upload")}
         </button>
         {shown && !pending && (
           <>
@@ -152,7 +155,7 @@ export function AvatarUpload({
               onClick={remove}
               className="text-muted transition-colors hover:text-ink"
             >
-              Remove
+              {t("avatar.remove")}
             </button>
           </>
         )}

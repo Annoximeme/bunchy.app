@@ -1,5 +1,6 @@
 import { Link } from "@/components/link";
 import { Card } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
 
 /**
  * What is still missing, and why it matters.
@@ -24,7 +25,7 @@ interface Gap {
   href: string;
 }
 
-export function ProfileCompleteness({
+export async function ProfileCompleteness({
   bio,
   avatarUrl,
   interests,
@@ -39,47 +40,48 @@ export function ProfileCompleteness({
   availability: number;
   traits: number;
 }) {
+  const t = await getTranslations();
   const gaps: Gap[] = [];
 
   // Ordered by what it costs, heaviest first.
   if (interests === 0) {
     gaps.push({
-      label: "Add what you're into",
+      label: t("profile.addInterests"),
       because: "it is most of what you are matched on",
       href: "/onboarding/interests",
     });
   }
   if (goals === 0) {
     gaps.push({
-      label: "Say what you're looking for",
+      label: t("profile.addGoals"),
       because: "friends and project partners are not the same search",
       href: "/onboarding/goals",
     });
   }
   if (availability === 0) {
     gaps.push({
-      label: "Say when you're free",
+      label: t("profile.addAvailability"),
       because: "nothing can be planned around you without it",
       href: "/onboarding/availability",
     });
   }
   if (traits === 0) {
     gaps.push({
-      label: "Answer the style questions",
+      label: t("profile.addPersonality"),
       because: "it is how quiet people stop being put in loud bunches",
       href: "/onboarding/personality",
     });
   }
   if (!bio) {
     gaps.push({
-      label: "Write a line about yourself",
+      label: t("profile.addBio"),
       because: "it is the first thing anyone reads",
       href: "/onboarding/basics",
     });
   }
   if (!avatarUrl) {
     gaps.push({
-      label: "Add a photo",
+      label: t("profile.addPhoto"),
       because: "a coloured disc is fine, but a face is easier to say hello to",
       href: "/onboarding/basics",
     });
@@ -90,7 +92,7 @@ export function ProfileCompleteness({
   return (
     <Card className="border-accent/30 bg-accent-soft/40">
       <h2 className="text-sm font-bold uppercase tracking-widest text-accent-ink">
-        Worth finishing
+        {t("profile.worthFinishing")}
       </h2>
       <ul className="mt-3 space-y-2">
         {gaps.map((gap) => (

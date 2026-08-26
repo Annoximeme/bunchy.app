@@ -67,8 +67,11 @@ describe("notification copy", () => {
   it("never shows a raw enum value to a member", () => {
     for (const info of NOTIFICATION_TYPE_INFO) {
       expect(notificationLabel(info.type)).toBe(info.label);
-      expect(info.label).not.toMatch(/_/);
-      expect(info.description.length).toBeGreaterThan(0);
+      // The words themselves live in the phrasebook now, so what this checks
+      // is that every type has a phrase to point at, and that nothing points
+      // at a path built out of the raw enum value.
+      expect(info.label.path).not.toMatch(/_/);
+      expect(info.description.path.length).toBeGreaterThan(0);
     }
   });
 });

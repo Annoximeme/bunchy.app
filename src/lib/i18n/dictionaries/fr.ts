@@ -964,4 +964,215 @@ export const fr: Dictionary = {
     sayHello: "Dire bonjour",
     unread: "non lus",
   },
+
+  profile: {
+    title: "Ton profil",
+    subtitle: "Voici ce que les autres membres voient.",
+    viewAsOthers: "Voir comme les autres le voient",
+    confirmEmail: "Confirme ton adresse e-mail",
+    confirmEmailBody:
+      "Il te faut une adresse confirmée pour récupérer ton compte si tu perds ton mot de passe.",
+    edit: "Modifier",
+    publicTitle: "Ce que les autres membres voient",
+    publicSubtitle:
+      "Tout ce qui suit est sur le profil que n’importe quel membre connecté peut lire.",
+    into: "Ce que tu fais",
+    intoEmpty:
+      "Rien pour l’instant. C’est le plus important : c’est là-dessus que {brand} fait ses associations.",
+    curious: "Ce que tu veux apprendre",
+    curiousEmpty:
+      "Rien pour l’instant. Dire ce que tu veux apprendre, c’est comme ça qu’on t’associe à quelqu’un qui le fait déjà.",
+    lookingFor: "Ce que tu cherches",
+    lookingForEmpty: "Rien pour l’instant.",
+    free: "Quand tu es libre",
+    freeEmpty: "Rien pour l’instant. Sans ça, on ne peut rien organiser autour de toi.",
+    style: "Ton style social",
+    styleEmpty:
+      "Rien pour l’instant. Réponds aux questions de style et ça se remplit tout seul.",
+    styleNote:
+      "Déduit de tes réponses plutôt qu’écrit par toi. Seules les tendances nettes sont décrites, et ce qui est proche du milieu est laissé de côté.",
+    details: "Tes informations",
+    email: "E-mail",
+    bunches: "Bunches",
+    joined: "Membre depuis",
+    settings: "Réglages",
+    settingsSubtitle: "Rien de tout ceci n’apparaît sur ton profil.",
+    account: "Ton compte",
+    reallyInto: "(vraiment à fond)",
+    worthFinishing: "Ça vaut la peine de finir",
+    addInterests: "Ajoute ce que tu aimes",
+    addGoals: "Dis ce que tu cherches",
+    addAvailability: "Dis quand tu es libre",
+    addPersonality: "Réponds aux questions de style",
+    addBio: "Écris une ligne sur toi",
+    addPhoto: "Ajoute une photo",
+    staff: "Équipe",
+    founding: "Ici depuis le début",
+  },
+
+  overlap: {
+    title: "Ce que vous avez en commun",
+    enough: "Assez de points communs pour valoir un coup d’œil.",
+    match: "d’affinité",
+    how: "Comment est-ce calculé ?",
+    hide: "Masquer le détail",
+    bothInto: "Tous les deux",
+    swapNotes: "De quoi échanger",
+    whyYouTwo: "Pourquoi vous deux",
+    source:
+      "Déduit de ce que vous avez chacun dit à {brand}, pas de ce que l’un aurait écrit sur l’autre.",
+  },
+
+  privacy: {
+    title: "Confidentialité",
+    locationNote:
+      "On ne stocke jamais ton adresse ni ta position précise, seulement une zone approximative.",
+    whoCanRequest: "Qui peut t’envoyer une demande de contact",
+    whoCanMessage: "Qui peut t’écrire",
+    messageNote:
+      "Tes contacts peuvent toujours t’écrire. C’est ce que veut dire accepter.",
+    whoCanSeeFree: "Qui peut voir quand tu es libre",
+    freeNoteBefore:
+      "Ne s’applique que si tu mets un statut Who’s Up, et ceux-là expirent d’eux-mêmes. Choisir",
+    nobody: "Personne",
+    freeNoteAfter:
+      " désactive la fonction et supprime tout statut que tu aurais mis.",
+    save: "Enregistrer",
+    saved: "Enregistré",
+    discoverable: "Apparaître dans Découvrir",
+    discoverableNote: "Désactive et plus personne de nouveau ne verra ton profil.",
+    showArea: "Montrer ma zone",
+    showAreaNote:
+      "Désactivé, seul ton pays s’affiche. Les associations marchent encore, moins précisément.",
+    showAge: "Montrer mon âge",
+    showAgeNote: "Désactivé, une tranche s’affiche à la place, comme 25–34.",
+    introductions: "Laisser {brand} te présenter des gens",
+    introductionsNote:
+      "Désactivé, on ne propose jamais quelqu’un spontanément. La recherche et Découvrir continuent de marcher.",
+    bunchInvites: "Autoriser les invitations à des bunches",
+    bunchInvitesNote:
+      "Désactivé, toi seul peux entamer la conversation sur le fait de rejoindre.",
+    anyone: "N’importe qui sur {brand}",
+    myBunches: "Les gens de mes bunches",
+    friendsOfConnections: "Les contacts de mes contacts",
+  },
+
+  accountData: {
+    title: "Tes données",
+    body: "Elles sont à toi. Prends-en une copie quand tu veux, ou emporte-les pour de bon.",
+    download: "Télécharger mes données",
+    downloadNote: "Un fichier JSON, tout ce qu’on conserve, tout de suite.",
+    delete: "Supprimer mon compte",
+    deleteNote: "Immédiat et définitif. Il n’y a pas de délai de récupération.",
+    confirmTitle: "Supprimer ton compte",
+    confirmBody:
+      "Ton profil, tes messages, tes contacts et ton activité sont effacés maintenant, pas dans trente jours. Ce que tu as écrit dans un bunch y reste, ton nom retiré, pour que la conversation du groupe garde du sens.",
+    keep: "Garder mon compte",
+    password: "Ton mot de passe",
+    typeDelete: "Tape DELETE pour confirmer",
+  },
+
+  referral: {
+    title: "Invite quelqu’un",
+    body:
+      "{brand} marche mieux quand les gens que tu apprécies déjà y sont. Il n’y a rien à gagner à en inviter davantage.",
+    getLink: "Obtenir mon lien d’invitation",
+    copyFailed: "La copie n’a pas marché. Sélectionne le lien et copie-le à la main.",
+    nobodyYet: "Personne n’est encore arrivé par ton lien.",
+  },
+
+  avatar: {
+    change: "Changer",
+    upload: "Envoyer",
+    remove: "Retirer",
+    processFailed: "Ton navigateur n’a pas pu traiter cette image.",
+    uploadFailed: "Cet envoi n’a pas marché.",
+    working: "En cours…",
+    note:
+      "JPEG, PNG ou WebP. Redimensionnée à {size}px et compressée sur ton appareil avant l’envoi. Une photo de téléphone finit autour de 100 Ko.",
+  },
+
+  notifications: {
+    groups: {
+    people: "Les gens",
+    bunches: "Bunches",
+    activities: "Activités",
+    account: "Ton compte",
+    },
+
+    types: {
+      connectionrequest: {
+        label: "Quelqu’un veut se connecter",
+        description:
+          "Une demande attend ta réponse.",
+      },
+      connectionaccepted: {
+        label: "Ta demande a été acceptée",
+        description:
+          "Vous pouvez commencer à parler.",
+      },
+      directmessage: {
+        label: "Nouveau message",
+        description:
+          "Quelqu’un avec qui tu es en contact t’a écrit.",
+      },
+      bunchinvite: {
+        label: "Invité dans un bunch",
+        description:
+          "Quelqu’un a pensé que tu y aurais ta place.",
+      },
+      bunchjoinrequest: {
+        label: "Quelqu’un demande à rejoindre",
+        description:
+          "Envoyé uniquement aux modérateurs du bunch.",
+      },
+      bunchmessagereply: {
+        label: "Une réponse pour toi",
+        description:
+          "Quelqu’un a répondu à quelque chose que tu as dit.",
+      },
+      bunchmention: {
+        label: "On t’a mentionné",
+        description:
+          "Quelqu’un a utilisé ton nom dans un bunch.",
+      },
+      bunchrecommendation: {
+        label: "Un bunch qui pourrait te plaire",
+        description:
+          "Notre suggestion, pas quelqu’un qui attend. Désactivé par défaut.",
+      },
+      activityinvite: {
+        label: "Ton bunch a prévu quelque chose",
+        description:
+          "Une nouvelle activité dans un bunch dont tu fais partie.",
+      },
+      activityreminder: {
+        label: "Quelque chose approche",
+        description:
+          "Un rappel peu avant une activité à laquelle tu participes.",
+      },
+      activitychanged: {
+        label: "Une activité a changé",
+        description:
+          "Déplacée, annulée, ou une place s’est libérée pour toi.",
+      },
+      activityfollowup: {
+        label: "Comment ça s’est passé ?",
+        description:
+          "Demandé une fois après quelque chose où tu es allé. C’est le seul message qui arrive après une activité plutôt qu’avant, et la réponse rend la suggestion suivante meilleure.",
+      },
+      feedbackanswered: {
+        label: "On a répondu à ton retour",
+        description:
+          "Uniquement parce que tu nous as écrit d’abord. Dit ce qu’il en est advenu, y compris quand la réponse est non.",
+      },
+    },
+  },
+
+  notificationSettings: {
+    notification: "Notification",
+    inApp: "Dans l’appli",
+    email: "E-mail",
+    push: "Push",
+  },
 };

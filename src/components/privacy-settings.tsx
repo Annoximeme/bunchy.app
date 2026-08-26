@@ -1,8 +1,12 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, ErrorNotice, Select, Toggle } from "@/components/ui";
+import { brand } from "@/lib/brand";
+import { phrase } from "@/lib/i18n/phrase";
 
 export interface PrivacyValues {
   whoCanMessage: string;
@@ -15,11 +19,17 @@ export interface PrivacyValues {
   whoCanSeeAvailability: string;
 }
 
+/**
+ * Who an audience setting can be opened to.
+ *
+ * Phrase refs rather than words: this list is module scope and the language is
+ * only known once a request is being served.
+ */
 const AUDIENCES = [
-  { value: "EVERYONE", label: "Anyone on Bunchy" },
-  { value: "BUNCH_MEMBERS", label: "People in my bunches" },
-  { value: "CONNECTIONS", label: "Friends of my connections" },
-  { value: "NOBODY", label: "Nobody" },
+  { value: "EVERYONE", label: phrase("privacy.anyone") },
+  { value: "BUNCH_MEMBERS", label: phrase("privacy.myBunches") },
+  { value: "CONNECTIONS", label: phrase("privacy.friendsOfConnections") },
+  { value: "NOBODY", label: phrase("privacy.nobody") },
 ] as const;
 
 /**
@@ -31,6 +41,7 @@ const AUDIENCES = [
  * talk people out of privacy, and we don't use it.
  */
 export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
+  const t = useTranslate();
   const [values, setValues] = useState<PrivacyValues>(initial);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -56,9 +67,9 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold tracking-tight">Privacy</h2>
+      <h2 className="text-lg font-semibold tracking-tight">{t("privacy.title")}</h2>
       <p className="mt-1 text-sm text-muted">
-        We never store your address or precise location, only a rough area.
+        {t("privacy.locationNote")}
       </p>
 
       {error && (
@@ -70,7 +81,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
       <div className="mt-5 space-y-4">
         <div>
           <label htmlFor="whoCanSendRequests" className="block text-sm font-medium">
-            Who can send you a connection request
+            {t("privacy.whoCanRequest")}
           </label>
           <Select
             id="whoCanSendRequests"
@@ -80,7 +91,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
           >
             {AUDIENCES.map((a) => (
               <option key={a.value} value={a.value}>
-                {a.label}
+                {t(a.label, { brand: brand.name })}
               </option>
             ))}
           </Select>
@@ -88,7 +99,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
 
         <div>
           <label htmlFor="whoCanMessage" className="block text-sm font-medium">
-            Who can message you
+            {t("privacy.whoCanMessage")}
           </label>
           <Select
             id="whoCanMessage"
@@ -98,18 +109,18 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
           >
             {AUDIENCES.map((a) => (
               <option key={a.value} value={a.value}>
-                {a.label}
+                {t(a.label, { brand: brand.name })}
               </option>
             ))}
           </Select>
           <p className="mt-1.5 text-sm text-muted">
-            Connections can always message you. That&rsquo;s what accepting means.
+            {t("privacy.messageNote")}
           </p>
         </div>
 
         <div>
           <label htmlFor="whoCanSeeAvailability" className="block text-sm font-medium">
-            Who can see when you&rsquo;re free
+            {t("privacy.whoCanSeeFree")}
           </label>
           <Select
             id="whoCanSeeAvailability"
@@ -119,7 +130,7 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
           >
             {AUDIENCES.map((a) => (
               <option key={a.value} value={a.value}>
-                {a.label}
+                {t(a.label, { brand: brand.name })}
               </option>
             ))}
           </Select>
@@ -135,45 +146,45 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
             id="discoverable"
             checked={values.discoverable}
             onChange={(v) => set("discoverable", v)}
-            label="Appear in Discover"
-            description="Turn off and nobody new will be shown your profile."
+            label={t("privacy.discoverable")}
+            description={t("privacy.discoverableNote")}
           />
           <Toggle
             id="showApproxLocation"
             checked={values.showApproxLocation}
             onChange={(v) => set("showApproxLocation", v)}
-            label="Show my area"
-            description="Off shows only your country. Matching still works, less precisely."
+            label={t("privacy.showArea")}
+            description={t("privacy.showAreaNote")}
           />
           <Toggle
             id="showExactAge"
             checked={values.showExactAge}
             onChange={(v) => set("showExactAge", v)}
-            label="Show my age"
-            description="Off shows a range instead, like 25–34."
+            label={t("privacy.showAge")}
+            description={t("privacy.showAgeNote")}
           />
           <Toggle
             id="aiIntroductions"
             checked={values.aiIntroductions}
             onChange={(v) => set("aiIntroductions", v)}
-            label="Let Bunchy introduce you to people"
-            description="Off means we never suggest someone unprompted. Search and Discover still work."
+            label={t("privacy.introductions", { brand: brand.name })}
+            description={t("privacy.introductionsNote")}
           />
           <Toggle
             id="invitableToBunches"
             checked={values.invitableToBunches}
             onChange={(v) => set("invitableToBunches", v)}
-            label="Allow bunch invites"
-            description="Off means only you can start the conversation about joining."
+            label={t("privacy.bunchInvites")}
+            description={t("privacy.bunchInvitesNote")}
           />
         </div>
       </div>
 
       <div className="mt-5 flex items-center gap-3">
         <Button onClick={save} loading={saving}>
-          Save
+          {t("privacy.save")}
         </Button>
-        {saved && <span className="text-sm text-positive">Saved</span>}
+        {saved && <span className="text-sm text-positive">{t("privacy.saved")}</span>}
       </div>
     </Card>
   );

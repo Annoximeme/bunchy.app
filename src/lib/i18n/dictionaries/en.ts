@@ -988,6 +988,211 @@ export const en = {
     sayHello: "Say hello",
     unread: "unread",
   },
+
+  profile: {
+    title: "Your profile",
+    subtitle: "This is what other members see.",
+    viewAsOthers: "View as others see it",
+    confirmEmail: "Confirm your email",
+    confirmEmailBody:
+      "You need a confirmed email to recover your account if you lose your password.",
+    edit: "Edit",
+    publicTitle: "What other members see",
+    publicSubtitle: "Everything here is on the profile anyone signed in can read.",
+    into: "Into",
+    intoEmpty:
+      "Nothing yet. This is the one that matters most: it is what {brand} matches on.",
+    curious: "Want to get into",
+    curiousEmpty:
+      "Nothing yet. Saying what you want to learn is how you match with someone who already does it.",
+    lookingFor: "What you’re looking for",
+    lookingForEmpty: "Nothing yet.",
+    free: "When you’re free",
+    freeEmpty: "Nothing yet. Without this, nothing can be planned around you.",
+    style: "Your social style",
+    styleEmpty: "Nothing yet. Answer the style questions and this fills itself in.",
+    styleNote:
+      "Worked out from your answers rather than written by you. Only clear leanings are described, and anything near the middle is left out.",
+    details: "Your details",
+    email: "Email",
+    bunches: "Bunches",
+    joined: "Joined",
+    settings: "Settings",
+    settingsSubtitle: "None of this appears on your profile.",
+    account: "Your account",
+    reallyInto: "(really into this)",
+    worthFinishing: "Worth finishing",
+    addInterests: "Add what you’re into",
+    addGoals: "Say what you’re looking for",
+    addAvailability: "Say when you’re free",
+    addPersonality: "Answer the style questions",
+    addBio: "Write a line about yourself",
+    addPhoto: "Add a photo",
+    staff: "Staff",
+    founding: "Here since the beginning",
+  },
+
+  overlap: {
+    title: "What you have in common",
+    enough: "Enough overlap to be worth a look.",
+    match: "match",
+    how: "How was this worked out?",
+    hide: "Hide the breakdown",
+    bothInto: "Both into",
+    swapNotes: "Worth swapping notes on",
+    whyYouTwo: "Why you two",
+    source:
+      "Worked out from what you have each told {brand}, not from anything either of you wrote about the other.",
+  },
+
+  privacy: {
+    title: "Privacy",
+    locationNote:
+      "We never store your address or precise location, only a rough area.",
+    whoCanRequest: "Who can send you a connection request",
+    whoCanMessage: "Who can message you",
+    messageNote: "Connections can always message you. That’s what accepting means.",
+    whoCanSeeFree: "Who can see when you’re free",
+    freeNoteBefore:
+      "Only applies when you set a Who’s Up status, and those expire on their own. Choosing",
+    nobody: "Nobody",
+    freeNoteAfter: "switches the feature off and deletes any status you have set.",
+    save: "Save",
+    saved: "Saved",
+    discoverable: "Appear in Discover",
+    discoverableNote: "Turn off and nobody new will be shown your profile.",
+    showArea: "Show my area",
+    showAreaNote: "Off shows only your country. Matching still works, less precisely.",
+    showAge: "Show my age",
+    showAgeNote: "Off shows a range instead, like 25–34.",
+    introductions: "Let {brand} introduce you to people",
+    introductionsNote:
+      "Off means we never suggest someone unprompted. Search and Discover still work.",
+    bunchInvites: "Allow bunch invites",
+    bunchInvitesNote: "Off means only you can start the conversation about joining.",
+    anyone: "Anyone on {brand}",
+    myBunches: "People in my bunches",
+    friendsOfConnections: "Friends of my connections",
+  },
+
+  accountData: {
+    title: "Your data",
+    body: "It’s yours. Take a copy whenever you like, or take it away for good.",
+    download: "Download my data",
+    downloadNote: "One JSON file, everything we hold, straight away.",
+    delete: "Delete my account",
+    deleteNote: "Immediate and permanent. There is no recovery window.",
+    confirmTitle: "Delete your account",
+    confirmBody:
+      "Your profile, messages, connections and activity are erased now, not in thirty days. Anything you wrote in a bunch stays there with your name removed, so the group’s conversation still makes sense.",
+    keep: "Keep my account",
+    password: "Your password",
+    typeDelete: "Type DELETE to confirm",
+  },
+
+  referral: {
+    title: "Invite someone",
+    body:
+      "{brand} works better when the people you already like are on it. There is nothing to win by inviting more of them.",
+    getLink: "Get my invite link",
+    copyFailed: "Couldn’t copy, select the link and copy it manually.",
+    nobodyYet: "Nobody has joined through your link yet.",
+  },
+
+  avatar: {
+    change: "Change",
+    upload: "Upload",
+    remove: "Remove",
+    processFailed: "Your browser could not process that image.",
+    uploadFailed: "That upload didn’t work.",
+    working: "Working…",
+    note:
+      "JPEG, PNG or WebP. Resized to {size}px and compressed on your device before it is sent. A phone photo ends up around 100 KB.",
+  },
+
+  notifications: {
+    groups: {
+    people: "People",
+    bunches: "Bunches",
+    activities: "Activities",
+    account: "Your account",
+    },
+
+    types: {
+      connectionrequest: {
+        label: "Someone wants to connect",
+        description:
+          "A request is waiting for your answer.",
+      },
+      connectionaccepted: {
+        label: "Your request was accepted",
+        description:
+          "You can start talking.",
+      },
+      directmessage: {
+        label: "New message",
+        description:
+          "Someone you're connected to wrote to you.",
+      },
+      bunchinvite: {
+        label: "Invited to a bunch",
+        description:
+          "Someone thought you'd fit.",
+      },
+      bunchjoinrequest: {
+        label: "Someone asked to join",
+        description:
+          "Only sent to moderators of the bunch.",
+      },
+      bunchmessagereply: {
+        label: "A reply to you",
+        description:
+          "Someone replied to something you said.",
+      },
+      bunchmention: {
+        label: "You were mentioned",
+        description:
+          "Someone used your name in a bunch.",
+      },
+      bunchrecommendation: {
+        label: "A bunch you might like",
+        description:
+          "Our suggestion, not a person waiting. Off by default.",
+      },
+      activityinvite: {
+        label: "Your bunch planned something",
+        description:
+          "A new activity in a bunch you're in.",
+      },
+      activityreminder: {
+        label: "Something's coming up",
+        description:
+          "A reminder shortly before an activity you joined.",
+      },
+      activitychanged: {
+        label: "An activity changed",
+        description:
+          "Moved, cancelled, or a spot opened up for you.",
+      },
+      activityfollowup: {
+        label: "How did it go?",
+        description:
+          "Asked once after something you went to. It is the only message that comes after an activity rather than before it, and the answer is what makes the next suggestion better.",
+      },
+      feedbackanswered: {
+        label: "We answered your feedback",
+        description:
+          "Only ever because you wrote to us first. Says what happened to it, including when the answer is no.",
+      },
+    },
+  },
+
+  notificationSettings: {
+    notification: "Notification",
+    inApp: "In app",
+    email: "Email",
+    push: "Push",
+  },
 } as const;
 
 /**

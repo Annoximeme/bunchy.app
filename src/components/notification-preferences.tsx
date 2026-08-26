@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Card, ErrorNotice, cn } from "@/components/ui";
@@ -37,6 +39,7 @@ export function NotificationPreferences({
   /** Null when the deploy has no push keys, in which case the column is not drawn. */
   pushPublicKey: string | null;
 }) {
+  const t = useTranslate();
   const pushAvailable = pushPublicKey !== null;
   const [values, setValues] = useState<Map<string, PreferenceValue>>(
     () =>
@@ -94,7 +97,7 @@ export function NotificationPreferences({
         {NOTIFICATION_GROUPS.map((group) => (
           <div key={group}>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">
-              {group}
+              {t(`notifications.groups.${group}`)}
             </h3>
 
             <div className="mt-2 overflow-x-auto">
@@ -102,26 +105,26 @@ export function NotificationPreferences({
                 <thead>
                   <tr>
                     <th scope="col" className="sr-only">
-                      Notification
+                      {t("notificationSettings.notification")}
                     </th>
                     <th
                       scope="col"
                       className="w-16 pb-1 text-xs font-medium text-muted"
                     >
-                      In app
+                      {t("notificationSettings.inApp")}
                     </th>
                     <th
                       scope="col"
                       className="w-16 pb-1 text-xs font-medium text-muted"
                     >
-                      Email
+                      {t("notificationSettings.email")}
                     </th>
                     {pushAvailable && (
                       <th
                         scope="col"
                         className="w-16 pb-1 text-xs font-medium text-muted"
                       >
-                        Push
+                        {t("notificationSettings.push")}
                       </th>
                     )}
                   </tr>
@@ -134,10 +137,10 @@ export function NotificationPreferences({
                         <tr key={info.type}>
                           <td className="py-2.5 pr-3">
                             <span className="block font-medium text-ink">
-                              {info.label}
+                              {t(info.label)}
                             </span>
                             <span className="block text-xs text-muted">
-                              {info.description}
+                              {t(info.description)}
                             </span>
                           </td>
                           {CHANNELS.filter(

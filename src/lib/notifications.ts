@@ -1,4 +1,5 @@
 import type { NotificationType } from "@/generated/prisma/enums";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 /**
  * How each notification type is described to the member controlling it.
@@ -11,11 +12,19 @@ import type { NotificationType } from "@/generated/prisma/enums";
  * you. Those are the ones defaulted on; everything else is a suggestion we
  * thought of, and starts off.
  */
+/** The four headings the settings screen groups the switches under. */
+export type NotificationGroup = "people" | "bunches" | "activities" | "account";
+
 export interface NotificationTypeInfo {
   type: NotificationType;
-  label: string;
-  description: string;
-  group: "People" | "Bunches" | "Activities" | "Your account";
+  /**
+   * Phrase refs rather than words, because this table is module scope and the
+   * language is a fact about a request. The unsubscribe page and the settings
+   * screen both render it, in whatever language the reader is in.
+   */
+  label: PhraseRef;
+  description: PhraseRef;
+  group: NotificationGroup;
   /** True when a person is waiting, false when it is our idea. */
   person: boolean;
   /**
@@ -36,89 +45,89 @@ export interface NotificationTypeInfo {
 export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
   {
     type: "CONNECTION_REQUEST",
-    label: "Someone wants to connect",
-    description: "A request is waiting for your answer.",
-    group: "People",
+    label: phrase("notifications.types.connectionrequest.label"),
+    description: phrase("notifications.types.connectionrequest.description"),
+    group: "people",
     person: true,
     push: true,
   },
   {
     type: "CONNECTION_ACCEPTED",
-    label: "Your request was accepted",
-    description: "You can start talking.",
-    group: "People",
+    label: phrase("notifications.types.connectionaccepted.label"),
+    description: phrase("notifications.types.connectionaccepted.description"),
+    group: "people",
     person: true,
     push: true,
   },
   {
     type: "DIRECT_MESSAGE",
-    label: "New message",
-    description: "Someone you're connected to wrote to you.",
-    group: "People",
+    label: phrase("notifications.types.directmessage.label"),
+    description: phrase("notifications.types.directmessage.description"),
+    group: "people",
     person: true,
     push: true,
   },
   {
     type: "BUNCH_INVITE",
-    label: "Invited to a bunch",
-    description: "Someone thought you'd fit.",
-    group: "Bunches",
+    label: phrase("notifications.types.bunchinvite.label"),
+    description: phrase("notifications.types.bunchinvite.description"),
+    group: "bunches",
     person: true,
     push: true,
   },
   {
     type: "BUNCH_JOIN_REQUEST",
-    label: "Someone asked to join",
-    description: "Only sent to moderators of the bunch.",
-    group: "Bunches",
+    label: phrase("notifications.types.bunchjoinrequest.label"),
+    description: phrase("notifications.types.bunchjoinrequest.description"),
+    group: "bunches",
     person: true,
     push: true,
   },
   {
     type: "BUNCH_MESSAGE_REPLY",
-    label: "A reply to you",
-    description: "Someone replied to something you said.",
-    group: "Bunches",
+    label: phrase("notifications.types.bunchmessagereply.label"),
+    description: phrase("notifications.types.bunchmessagereply.description"),
+    group: "bunches",
     person: true,
     push: true,
   },
   {
     type: "BUNCH_MENTION",
-    label: "You were mentioned",
-    description: "Someone used your name in a bunch.",
-    group: "Bunches",
+    label: phrase("notifications.types.bunchmention.label"),
+    description: phrase("notifications.types.bunchmention.description"),
+    group: "bunches",
     person: true,
     push: true,
   },
   {
     type: "BUNCH_RECOMMENDATION",
-    label: "A bunch you might like",
-    description: "Our suggestion, not a person waiting. Off by default.",
-    group: "Bunches",
+    label: phrase("notifications.types.bunchrecommendation.label"),
+    description: phrase("notifications.types.bunchrecommendation.description"),
+    group: "bunches",
     person: false,
     push: false,
   },
   {
     type: "ACTIVITY_INVITE",
-    label: "Your bunch planned something",
-    description: "A new activity in a bunch you're in.",
-    group: "Activities",
+    label: phrase("notifications.types.activityinvite.label"),
+    description: phrase("notifications.types.activityinvite.description"),
+    group: "activities",
     person: true,
     push: true,
   },
   {
     type: "ACTIVITY_REMINDER",
-    label: "Something's coming up",
-    description: "A reminder shortly before an activity you joined.",
-    group: "Activities",
+    label: phrase("notifications.types.activityreminder.label"),
+    description: phrase("notifications.types.activityreminder.description"),
+    group: "activities",
     person: true,
     push: true,
   },
   {
     type: "ACTIVITY_CHANGED",
-    label: "An activity changed",
-    description: "Moved, cancelled, or a spot opened up for you.",
-    group: "Activities",
+    label: phrase("notifications.types.activitychanged.label"),
+    description: phrase("notifications.types.activitychanged.description"),
+    group: "activities",
     person: true,
     push: true,
   },
@@ -138,10 +147,9 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
       better was open at both ends.
     */
     type: "ACTIVITY_FOLLOW_UP",
-    label: "How did it go?",
-    description:
-      "Asked once after something you went to. It is the only message that comes after an activity rather than before it, and the answer is what makes the next suggestion better.",
-    group: "Activities",
+    label: phrase("notifications.types.activityfollowup.label"),
+    description: phrase("notifications.types.activityfollowup.description"),
+    group: "activities",
     person: true,
     // The exception `push` exists for. This is the only notification that
     // comes after the thing rather than before it, so nobody is waiting on the
@@ -150,21 +158,20 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
   },
   {
     type: "FEEDBACK_ANSWERED",
-    label: "We answered your feedback",
-    description:
-      "Only ever because you wrote to us first. Says what happened to it, including when the answer is no.",
-    group: "Your account",
+    label: phrase("notifications.types.feedbackanswered.label"),
+    description: phrase("notifications.types.feedbackanswered.description"),
+    group: "account",
     person: true,
     push: true,
   },
 ];
 
 export const NOTIFICATION_GROUPS = [
-  "People",
-  "Bunches",
-  "Activities",
-  "Your account",
-] as const;
+  "people",
+  "bunches",
+  "activities",
+  "account",
+] as const satisfies readonly NotificationGroup[];
 
 /**
  * What a member gets before they have ever opened the settings screen.
@@ -196,7 +203,14 @@ export function defaultPreference(type: NotificationType): {
   };
 }
 
-export function notificationLabel(type: NotificationType): string {
+/**
+ * Where this notification type's name lives, for whoever is rendering it.
+ *
+ * Returns a phrase ref rather than a word: the caller knows the language and
+ * this file does not. The fallback for an unknown type is the enum spelled out
+ * in lower case, which is not a phrase and is returned as one.
+ */
+export function notificationLabel(type: NotificationType): PhraseRef | string {
   return (
     NOTIFICATION_TYPE_INFO.find((i) => i.type === type)?.label ??
     type.toLowerCase().replace(/_/g, " ")

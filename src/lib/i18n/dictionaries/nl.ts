@@ -959,4 +959,214 @@ export const nl: Dictionary = {
     sayHello: "Zeg hallo",
     unread: "ongelezen",
   },
+
+  profile: {
+    title: "Jouw profiel",
+    subtitle: "Dit is wat andere leden zien.",
+    viewAsOthers: "Bekijk zoals anderen het zien",
+    confirmEmail: "Bevestig je e-mailadres",
+    confirmEmailBody:
+      "Je hebt een bevestigd e-mailadres nodig om je account te herstellen als je je wachtwoord kwijt bent.",
+    edit: "Aanpassen",
+    publicTitle: "Wat andere leden zien",
+    publicSubtitle:
+      "Alles hier staat op het profiel dat iedereen die aangemeld is kan lezen.",
+    into: "Bezig met",
+    intoEmpty:
+      "Nog niets. Dit is het belangrijkste: het is waar {brand} op matcht.",
+    curious: "Wil ik in leren",
+    curiousEmpty:
+      "Nog niets. Zeggen wat je wil leren, is hoe je matcht met iemand die het al doet.",
+    lookingFor: "Wat je zoekt",
+    lookingForEmpty: "Nog niets.",
+    free: "Wanneer je vrij bent",
+    freeEmpty: "Nog niets. Zonder dit kan er niets rond jou gepland worden.",
+    style: "Je sociale stijl",
+    styleEmpty: "Nog niets. Beantwoord de stijlvragen en dit vult zichzelf in.",
+    styleNote:
+      "Afgeleid uit je antwoorden, niet door jou geschreven. Alleen duidelijke neigingen worden beschreven, en wat rond het midden zit blijft weg.",
+    details: "Jouw gegevens",
+    email: "E-mail",
+    bunches: "Bunches",
+    joined: "Lid sinds",
+    settings: "Instellingen",
+    settingsSubtitle: "Hiervan staat niets op je profiel.",
+    account: "Je account",
+    reallyInto: "(hier echt mee bezig)",
+    worthFinishing: "De moeite om af te maken",
+    addInterests: "Voeg toe waar je mee bezig bent",
+    addGoals: "Zeg wat je zoekt",
+    addAvailability: "Zeg wanneer je vrij bent",
+    addPersonality: "Beantwoord de stijlvragen",
+    addBio: "Schrijf een regel over jezelf",
+    addPhoto: "Voeg een foto toe",
+    staff: "Team",
+    founding: "Hier vanaf het begin",
+  },
+
+  overlap: {
+    title: "Wat jullie gemeen hebben",
+    enough: "Genoeg overlap om eens te kijken.",
+    match: "match",
+    how: "Hoe is dit berekend?",
+    hide: "Verberg de uitleg",
+    bothInto: "Allebei bezig met",
+    swapNotes: "De moeite om over uit te wisselen",
+    whyYouTwo: "Waarom jullie twee",
+    source:
+      "Afgeleid uit wat jullie elk aan {brand} verteld hebben, niet uit iets wat een van jullie over de ander schreef.",
+  },
+
+  privacy: {
+    title: "Privacy",
+    locationNote:
+      "We bewaren nooit je adres of je precieze locatie, alleen een ruwe streek.",
+    whoCanRequest: "Wie je een connectieverzoek mag sturen",
+    whoCanMessage: "Wie je mag berichten",
+    messageNote:
+      "Connecties kunnen je altijd berichten. Dat is wat aanvaarden betekent.",
+    whoCanSeeFree: "Wie mag zien wanneer je vrij bent",
+    freeNoteBefore:
+      "Geldt alleen wanneer je een Who’s Up-status zet, en die vervallen vanzelf. Kies je",
+    nobody: "Niemand",
+    freeNoteAfter:
+      ", dan gaat de functie uit en wordt elke status die je gezet hebt verwijderd.",
+    save: "Opslaan",
+    saved: "Opgeslagen",
+    discoverable: "Verschijn in Ontdekken",
+    discoverableNote: "Zet je dit uit, dan krijgt niemand nieuw je profiel te zien.",
+    showArea: "Toon mijn streek",
+    showAreaNote:
+      "Uit toont alleen je land. Het matchen werkt nog, alleen minder precies.",
+    showAge: "Toon mijn leeftijd",
+    showAgeNote: "Uit toont in de plaats een vork, zoals 25–34.",
+    introductions: "Laat {brand} je aan mensen voorstellen",
+    introductionsNote:
+      "Uit betekent dat we nooit uit onszelf iemand voorstellen. Zoeken en Ontdekken blijven werken.",
+    bunchInvites: "Uitnodigingen voor bunches toestaan",
+    bunchInvitesNote:
+      "Uit betekent dat alleen jij het gesprek over meedoen kan beginnen.",
+    anyone: "Iedereen op {brand}",
+    myBunches: "Mensen in mijn bunches",
+    friendsOfConnections: "Vrienden van mijn connecties",
+  },
+
+  accountData: {
+    title: "Jouw gegevens",
+    body: "Ze zijn van jou. Neem er een kopie van wanneer je wil, of neem ze definitief mee.",
+    download: "Download mijn gegevens",
+    downloadNote: "Eén JSON-bestand, alles wat we bijhouden, meteen.",
+    delete: "Verwijder mijn account",
+    deleteNote: "Meteen en definitief. Er is geen hersteltermijn.",
+    confirmTitle: "Je account verwijderen",
+    confirmBody:
+      "Je profiel, berichten, connecties en activiteit worden nu gewist, niet over dertig dagen. Wat je in een bunch schreef blijft daar staan met je naam eraf, zodat het gesprek van de groep nog klopt.",
+    keep: "Hou mijn account",
+    password: "Je wachtwoord",
+    typeDelete: "Typ DELETE om te bevestigen",
+  },
+
+  referral: {
+    title: "Nodig iemand uit",
+    body:
+      "{brand} werkt beter wanneer de mensen die je al graag hebt erop zitten. Er valt niets te winnen door er meer uit te nodigen.",
+    getLink: "Haal mijn uitnodigingslink",
+    copyFailed: "Kopiëren lukte niet. Selecteer de link en kopieer ze zelf.",
+    nobodyYet: "Er is nog niemand via jouw link binnengekomen.",
+  },
+
+  avatar: {
+    change: "Wijzigen",
+    upload: "Uploaden",
+    remove: "Verwijderen",
+    processFailed: "Je browser kon die afbeelding niet verwerken.",
+    uploadFailed: "Dat uploaden is niet gelukt.",
+    working: "Bezig…",
+    note:
+      "JPEG, PNG of WebP. Wordt op je eigen toestel verkleind naar {size}px en gecomprimeerd voor het verstuurd wordt. Een gsm-foto komt zo op ongeveer 100 KB uit.",
+  },
+
+  notifications: {
+    groups: {
+    people: "Mensen",
+    bunches: "Bunches",
+    activities: "Activiteiten",
+    account: "Je account",
+    },
+
+    types: {
+      connectionrequest: {
+        label: "Iemand wil connecteren",
+        description:
+          "Er wacht een verzoek op je antwoord.",
+      },
+      connectionaccepted: {
+        label: "Je verzoek is aanvaard",
+        description:
+          "Jullie kunnen beginnen praten.",
+      },
+      directmessage: {
+        label: "Nieuw bericht",
+        description:
+          "Iemand met wie je geconnecteerd bent, heeft je geschreven.",
+      },
+      bunchinvite: {
+        label: "Uitgenodigd voor een bunch",
+        description:
+          "Iemand dacht dat je erbij past.",
+      },
+      bunchjoinrequest: {
+        label: "Iemand vraagt om erbij te komen",
+        description:
+          "Gaat alleen naar de moderatoren van de bunch.",
+      },
+      bunchmessagereply: {
+        label: "Een antwoord aan jou",
+        description:
+          "Iemand heeft geantwoord op iets dat jij zei.",
+      },
+      bunchmention: {
+        label: "Je bent vernoemd",
+        description:
+          "Iemand heeft je naam gebruikt in een bunch.",
+      },
+      bunchrecommendation: {
+        label: "Een bunch die je misschien ligt",
+        description:
+          "Onze suggestie, geen persoon die wacht. Standaard uit.",
+      },
+      activityinvite: {
+        label: "Je bunch heeft iets gepland",
+        description:
+          "Een nieuwe activiteit in een bunch waar je in zit.",
+      },
+      activityreminder: {
+        label: "Er komt iets aan",
+        description:
+          "Een herinnering kort voor een activiteit waar je aan meedoet.",
+      },
+      activitychanged: {
+        label: "Een activiteit is gewijzigd",
+        description:
+          "Verplaatst, geannuleerd, of er is een plaats vrijgekomen voor jou.",
+      },
+      activityfollowup: {
+        label: "Hoe was het?",
+        description:
+          "Eén keer gevraagd na iets waar je naartoe ging. Het is het enige bericht dat na een activiteit komt in plaats van ervoor, en het antwoord maakt de volgende suggestie beter.",
+      },
+      feedbackanswered: {
+        label: "We hebben je feedback beantwoord",
+        description:
+          "Alleen ooit omdat jij ons eerst geschreven hebt. Zegt wat ermee gebeurd is, ook wanneer het antwoord nee is.",
+      },
+    },
+  },
+
+  notificationSettings: {
+    notification: "Melding",
+    inApp: "In de app",
+    email: "E-mail",
+    push: "Push",
+  },
 };

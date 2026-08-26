@@ -1,5 +1,6 @@
 import { brand } from "@/lib/brand";
 import { Card, Chip, SectionHeading, cn } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
 import {
   CompatibilityRadar,
   type RadarSignal,
@@ -55,7 +56,8 @@ export interface ProfileOverlap {
   complementary: string[];
 }
 
-export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
+export async function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
+  const t = await getTranslations();
   const { score, highlights, signals, shared, complementary } = overlap;
 
   const hasLists = shared.length > 0 || complementary.length > 0;
@@ -69,10 +71,10 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
   return (
     <section>
       <SectionHeading
-        eyebrow="Why you two"
+        eyebrow={t("overlap.whyYouTwo")}
         eyebrowTone="suggested"
-        title="What you have in common"
-        subtitle={`Worked out from what you have each told ${brand.name}, not from anything either of you wrote about the other.`}
+        title={t("overlap.title")}
+        subtitle={t("overlap.source", { brand: brand.name })}
       />
 
       <Card className="space-y-5">
@@ -95,7 +97,7 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
             </ul>
           ) : (
             <p className="text-sm text-muted">
-              Enough overlap to be worth a look.
+              {t("overlap.enough")}
             </p>
           )}
 
@@ -107,18 +109,18 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
           */}
           <p className="shrink-0 rounded-full bg-accent-soft px-3.5 py-1.5 text-accent-ink">
             <span className="text-lg font-bold tabular-nums">{score}%</span>{" "}
-            <span className="text-sm font-medium">match</span>
+            <span className="text-sm font-medium">{t("overlap.match")}</span>
           </p>
         </div>
 
         {hasLists && (
           <div className="grid grid-cols-1 gap-5 border-t border-line pt-5 sm:grid-cols-2">
             {shared.length > 0 && (
-              <OverlapList label="Both into" tone="teal" items={shared} />
+              <OverlapList label={t("overlap.bothInto")} tone="teal" items={shared} />
             )}
             {complementary.length > 0 && (
               <OverlapList
-                label="Worth swapping notes on"
+                label={t("overlap.swapNotes")}
                 tone="accent"
                 items={complementary}
               />
@@ -131,8 +133,8 @@ export function OverlapSection({ overlap }: { overlap: ProfileOverlap }) {
             <summary className="cursor-pointer list-none text-sm font-medium text-accent-ink underline underline-offset-2 marker:content-['']">
               {/* Two labels, one shown at a time by the open state, so the
                   control says what it will do rather than what it did. */}
-              <span className="group-open:hidden">How was this worked out?</span>
-              <span className="hidden group-open:inline">Hide the breakdown</span>
+              <span className="group-open:hidden">{t("overlap.how")}</span>
+              <span className="hidden group-open:inline">{t("overlap.hide")}</span>
             </summary>
             <div className="mt-4">
               <CompatibilityRadar signals={signals} />

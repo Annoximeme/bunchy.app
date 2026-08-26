@@ -1,8 +1,11 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, ErrorNotice } from "@/components/ui";
+import { brand } from "@/lib/brand";
 
 /**
  * Invite someone you actually know.
@@ -14,6 +17,7 @@ import { Button, Card, ErrorNotice } from "@/components/ui";
  * people you belong with is the last place that should reward volume.
  */
 export function ReferralCard() {
+  const t = useTranslate();
   const [state, setState] = useState<{ code: string; joined: number } | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -39,16 +43,15 @@ export function ReferralCard() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError("Couldn't copy, select the link and copy it manually.");
+      setError(t("referral.copyFailed"));
     }
   }
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold tracking-tight">Invite someone</h2>
+      <h2 className="text-lg font-semibold tracking-tight">{t("referral.title")}</h2>
       <p className="mt-1 text-sm text-muted">
-        Bunchy works better when the people you already like are on it. There is
-        nothing to win by inviting more of them.
+        {t("referral.body", { brand: brand.name })}
       </p>
 
       {error && (
@@ -60,7 +63,7 @@ export function ReferralCard() {
       {state === null ? (
         <div className="mt-4">
           <Button size="sm" variant="secondary" loading={busy} onClick={load}>
-            Get my invite link
+            {t("referral.getLink")}
           </Button>
         </div>
       ) : (
@@ -75,7 +78,7 @@ export function ReferralCard() {
           </div>
           <p className="text-sm text-muted">
             {state.joined === 0
-              ? "Nobody has joined through your link yet."
+              ? t("referral.nobodyYet")
               : `${state.joined} ${state.joined === 1 ? "person has" : "people have"} joined through your link.`}
           </p>
         </div>

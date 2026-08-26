@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -17,6 +19,7 @@ import { Button, Card, ErrorNotice, Field, Input } from "@/components/ui";
  * an accident, not to change a mind.
  */
 export function AccountData() {
+  const t = useTranslate();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -52,9 +55,9 @@ export function AccountData() {
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold tracking-tight">Your data</h2>
+      <h2 className="text-lg font-semibold tracking-tight">{t("accountData.title")}</h2>
       <p className="mt-1 text-sm text-muted">
-        It&rsquo;s yours. Take a copy whenever you like, or take it away for good.
+        {t("accountData.body")}
       </p>
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -63,10 +66,10 @@ export function AccountData() {
           download
           className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-ink transition-all duration-200 hover:border-ink-soft hover:bg-surface-sunken"
         >
-          Download my data
+          {t("accountData.download")}
         </a>
         <span className="text-sm text-muted">
-          One JSON file, everything we hold, straight away.
+          {t("accountData.downloadNote")}
         </span>
       </div>
 
@@ -74,17 +77,17 @@ export function AccountData() {
         {!open ? (
           <div className="flex flex-wrap items-center gap-3">
             <Button variant="danger" size="sm" onClick={() => setOpen(true)}>
-              Delete my account
+              {t("accountData.delete")}
             </Button>
             <span className="text-sm text-muted">
-              Immediate and permanent. There is no recovery window.
+              {t("accountData.deleteNote")}
             </span>
           </div>
         ) : (
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold tracking-tight">
-                Delete your account
+                {t("accountData.confirmTitle")}
               </h3>
               <p className="mt-1.5 max-w-prose text-sm text-ink-soft">
                 Your profile, messages, connections and activity are erased now,
@@ -99,7 +102,7 @@ export function AccountData() {
             {error && <ErrorNotice message={error} />}
 
             <div className="grid gap-3 sm:max-w-sm">
-              <Field label="Your password" htmlFor="delete-password">
+              <Field label={t("accountData.password")} htmlFor="delete-password">
                 <Input
                   id="delete-password"
                   type="password"
@@ -108,7 +111,7 @@ export function AccountData() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Field>
-              <Field label="Type DELETE to confirm" htmlFor="delete-confirm">
+              <Field label={t("accountData.typeDelete")} htmlFor="delete-confirm">
                 <Input
                   id="delete-confirm"
                   value={confirm}
@@ -126,7 +129,7 @@ export function AccountData() {
                 disabled={confirm !== "DELETE" || password.length === 0}
                 onClick={remove}
               >
-                Delete my account
+                {t("accountData.delete")}
               </Button>
               <Button
                 variant="ghost"
@@ -138,7 +141,7 @@ export function AccountData() {
                   router.refresh();
                 }}
               >
-                Keep my account
+                {t("accountData.keep")}
               </Button>
             </div>
           </div>

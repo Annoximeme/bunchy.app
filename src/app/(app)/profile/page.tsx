@@ -23,8 +23,9 @@ import { unreadCount as announcementsUnread } from "@/server/modules/announcemen
 import { db } from "@/server/db/client";
 import { env, pushEnabled } from "@/server/env";
 import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
-import { currentLocale } from "@/server/i18n";
+import { currentLocale, getTranslations } from "@/server/i18n";
 import { interestLabel } from "@/lib/i18n/interests";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = { title: "Your profile" };
 export const dynamic = "force-dynamic";
@@ -47,6 +48,7 @@ export const dynamic = "force-dynamic";
  * really about hierarchy.
  */
 export default async function ProfilePage() {
+  const t = await getTranslations();
   const locale = await currentLocale();
   const viewer = await requireViewer();
   const [
@@ -77,11 +79,11 @@ export default async function ProfilePage() {
   return (
     <PageShell>
       <PageHeader
-        title="Your profile"
-        subtitle="This is what other members see."
+        title={t("profile.title")}
+        subtitle={t("profile.subtitle")}
         action={
           <LinkButton href={`/u/${profile.username}`} variant="secondary" size="sm">
-            View as others see it
+            {t("profile.viewAsOthers")}
           </LinkButton>
         }
       />
@@ -160,11 +162,10 @@ export default async function ProfilePage() {
         {!viewer.emailVerified && (
           <Card className="border-yellow bg-yellow-soft">
             <h2 className="text-sm font-semibold text-yellow-ink">
-              Confirm your email
+              {t("profile.confirmEmail")}
             </h2>
             <p className="mt-1 text-sm text-yellow-ink/85">
-              You need a confirmed email to recover your account if you lose your
-              password.
+              {t("profile.confirmEmailBody")}
             </p>
             <div className="mt-3">
               <ResendVerification />
@@ -176,15 +177,15 @@ export default async function ProfilePage() {
         <section>
           <SectionHeading
             eyebrow="Your profile"
-            title="What other members see"
-            subtitle="Everything here is on the profile anyone signed in can read."
+            title={t("profile.publicTitle")}
+            subtitle={t("profile.publicSubtitle")}
           />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <EditableCard
-              title="Into"
+              title={t("profile.into")}
               href="/onboarding/interests"
-              empty="Nothing yet. This is the one that matters most: it is what Bunchy matches on."
+              empty={t("profile.intoEmpty", { brand: brand.name })}
               count={practices.length}
             >
               <ul className="flex flex-wrap gap-1.5">
@@ -195,7 +196,7 @@ export default async function ProfilePage() {
                       {interest.strength === 3 && (
                         <>
                           <span aria-hidden> ★</span>
-                          <span className="sr-only"> (really into this)</span>
+                          <span className="sr-only"> {t("profile.reallyInto")}</span>
                         </>
                       )}
                     </Chip>
@@ -205,9 +206,9 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
-              title="Want to get into"
+              title={t("profile.curious")}
               href="/onboarding/interests"
-              empty="Nothing yet. Saying what you want to learn is how you match with someone who already does it."
+              empty={t("profile.curiousEmpty")}
               count={curious.length}
             >
               <ul className="flex flex-wrap gap-1.5">
@@ -222,9 +223,9 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
-              title="What you're looking for"
+              title={t("profile.lookingFor")}
               href="/onboarding/goals"
-              empty="Nothing yet."
+              empty={t("profile.lookingForEmpty")}
               count={profile.goals.length}
             >
               <ul className="flex flex-wrap gap-1.5">
@@ -237,9 +238,9 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
-              title="When you're free"
+              title={t("profile.free")}
               href="/onboarding/availability"
-              empty="Nothing yet. Without this, nothing can be planned around you."
+              empty={t("profile.freeEmpty")}
               count={profile.availability.length}
             >
               <ul className="flex flex-wrap gap-1.5">
@@ -252,9 +253,9 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
-              title="Your social style"
+              title={t("profile.style")}
               href="/onboarding/personality"
-              empty="Nothing yet. Answer the style questions and this fills itself in."
+              empty={t("profile.styleEmpty")}
               count={profile.traits.length}
               note="Worked out from your answers rather than written by you. Only clear leanings are described, and anything near the middle is left unsaid."
             >
@@ -268,16 +269,16 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
-              title="Your details"
+              title={t("profile.details")}
               href="/onboarding/basics"
               empty=""
               count={1}
             >
               <dl className="space-y-1.5 text-sm">
-                <Detail label="Email" value={viewer.email} />
-                <Detail label="Bunches" value={String(profile.bunchCount)} />
+                <Detail label={t("profile.email")} value={viewer.email} />
+                <Detail label={t("profile.bunches")} value={String(profile.bunchCount)} />
                 <Detail
-                  label="Joined"
+                  label={t("profile.joined")}
                   value={new Date(profile.joinedAt).toLocaleDateString()}
                 />
               </dl>
@@ -288,10 +289,10 @@ export default async function ProfilePage() {
         {/* --- Yours alone ------------------------------------------------ */}
         <section>
           <SectionHeading
-            eyebrow="Your account"
+            eyebrow={t("profile.account")}
             eyebrowTone="suggested"
-            title="Settings"
-            subtitle="None of this appears on your profile."
+            title={t("profile.settings")}
+            subtitle={t("profile.settingsSubtitle")}
           />
 
           <div className="space-y-4">
@@ -379,7 +380,7 @@ export default async function ProfilePage() {
  * where somebody finds out why Discover has nothing for them, and an untouched
  * "When you're free" is one of the two most common reasons.
  */
-function EditableCard({
+async function EditableCard({
   title,
   href,
   count,
@@ -394,6 +395,8 @@ function EditableCard({
   note?: string;
   children: React.ReactNode;
 }) {
+  const edit = (await getTranslations())("profile.edit");
+
   return (
     <Card className="flex flex-col">
       <div className="flex items-start justify-between gap-3">
@@ -402,8 +405,8 @@ function EditableCard({
           href={href}
           className="shrink-0 text-sm font-medium text-accent-ink underline underline-offset-2"
         >
-          <span aria-hidden>Edit</span>
-          <span className="sr-only">Edit {title.toLowerCase()}</span>
+          <span aria-hidden>{edit}</span>
+          <span className="sr-only">{`${edit} ${title.toLowerCase()}`}</span>
         </Link>
       </div>
 

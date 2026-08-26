@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { colourFor } from "@/lib/palette";
 import { Avatar, cn } from "@/components/ui";
 import { NameMarks, SupporterRing } from "@/components/supporter/marks";
+import { getTranslations } from "@/server/i18n";
 
 /**
  * Who somebody is, drawn once.
@@ -32,12 +33,13 @@ export interface IdentityBadges {
   foundingMember: boolean;
 }
 
-export function ProfileBadges({
+export async function ProfileBadges({
   staff,
   title,
   foundingMember,
   className,
 }: IdentityBadges & { className?: string }) {
+  const t = await getTranslations();
   if (!staff && !title && !foundingMember) return null;
 
   return (
@@ -55,7 +57,7 @@ export function ProfileBadges({
           <span aria-hidden className="text-[0.7rem] leading-none">
             ◆
           </span>
-          Staff
+          {t("profile.staff")}
         </span>
       )}
       {title && (
@@ -67,7 +69,7 @@ export function ProfileBadges({
       {foundingMember && (
         <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-soft px-2.5 py-1 text-xs font-medium text-yellow-ink">
           <span aria-hidden>★</span>
-          Here since the beginning
+          {t("profile.founding")}
         </span>
       )}
     </div>
