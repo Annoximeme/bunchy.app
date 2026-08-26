@@ -15,6 +15,7 @@ import { OpenCalls } from "@/components/open-calls";
 import { brand } from "@/lib/brand";
 import { presentCount } from "@/server/modules/discord/presence";
 import { getTranslations } from "@/server/i18n";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 export const metadata: Metadata = { title: "Bunchy Now" };
 export const dynamic = "force-dynamic";
@@ -41,11 +42,12 @@ const RELAXATION_LABELS: Record<Relaxation["constraint"], string> = {
   availableNow: "only people free now",
 };
 
-const HORIZONS: Array<{ value: Horizon | "all"; label: string }> = [
-  { value: "all", label: "Anytime" },
-  { value: "now", label: "Now" },
-  { value: "tonight", label: "Tonight" },
-  { value: "weekend", label: "Weekend" },
+/** Phrase refs: module scope has no request, so it cannot have words. */
+const HORIZONS: Array<{ value: Horizon | "all"; label: PhraseRef }> = [
+  { value: "all", label: phrase("now.anytime") },
+  { value: "now", label: phrase("now.rightNow") },
+  { value: "tonight", label: phrase("now.tonight") },
+  { value: "weekend", label: phrase("now.weekend") },
 ];
 
 /**
@@ -87,8 +89,8 @@ export default async function BunchyNowPage({
   return (
     <PageShell>
       <PageHeader
-        title="Bunchy Now"
-        subtitle="Who is up for something, and when. Counts are approximate and never name anyone."
+        title={t("now.title", { brand: brand.name })}
+        subtitle={t("now.subtitle")}
       />
 
       {/* Your own status first: the board is a two-way thing, and it reads
@@ -117,9 +119,9 @@ export default async function BunchyNowPage({
       {board.hidden ? (
         <EmptyState
           icon="🙈"
-          title="You are hidden from Bunchy Now"
+          title={t("now.hiddenTitle", { brand: brand.name })}
           description="Availability is switched off in your privacy settings, so you cannot see who is up and nobody can see you. Turning it back on takes one tap."
-          action={<LinkButton href="/profile">Privacy settings</LinkButton>}
+          action={<LinkButton href="/profile">{t("now.privacySettings")}</LinkButton>}
         />
       ) : (
         <>
@@ -149,10 +151,10 @@ export default async function BunchyNowPage({
           <section>
             <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
               <h2 className="text-lg font-semibold tracking-tight">
-                People you could message now
+                {t("now.peopleNow")}
               </h2>
               {board.people.people.length > 0 && (
-                <Chip tone="suggested">Ranked by compatibility</Chip>
+                <Chip tone="suggested">{t("now.rankedBy")}</Chip>
               )}
             </div>
 
@@ -161,13 +163,13 @@ export default async function BunchyNowPage({
                 icon="🌙"
                 title={
                   totalUp > 0
-                    ? "Nobody up right now matches these filters"
-                    : "Nobody is looking for something right now"
+                    ? t("now.noMatch")
+                    : t("now.nobodyLooking")
                 }
                 description={
                   board.people.relaxations.length > 0
-                    ? "Loosening one thing usually finds somebody. Or set your own status and let people come to you."
-                    : "Set your own status so people can find you, or start something and invite whoever turns up."
+                    ? t("now.loosen")
+                    : t("now.setYourOwn")
                 }
                 action={
                   <div className="flex flex-wrap justify-center gap-3">
@@ -175,11 +177,11 @@ export default async function BunchyNowPage({
                         "tonight" and finding nobody should land in Start with
                         "tonight" already typed, not on an empty box. */}
                     <LinkButton href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}>
-                      Start something
+                      {t("now.startSomething")}
                     </LinkButton>
                     {board.people.relaxations.length > 0 && (
                       <LinkButton href="/now" variant="secondary">
-                        Clear filters
+                        {t("now.clearFilters")}
                       </LinkButton>
                     )}
                   </div>
@@ -197,12 +199,12 @@ export default async function BunchyNowPage({
                 an invitation to act on somebody you just saw. */}
             {board.people.people.length > 0 && (
               <div className="mt-8 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3.5 text-sm">
-                <span className="text-ink-soft">Seen someone worth an evening? </span>
+                <span className="text-ink-soft">{t("now.seenSomeone")} </span>
                 <Link
                   href={`/start?q=${encodeURIComponent(START_QUERY[horizon])}`}
                   className="font-medium text-accent-ink underline underline-offset-2"
                 >
-                  Start something and invite them
+                  {t("now.startAndInvite")}
                 </Link>
               </div>
             )}
@@ -213,7 +215,7 @@ export default async function BunchyNowPage({
                   Try dropping:{" "}
                   {board.people.relaxations.map((r) => RELAXATION_LABELS[r.constraint]).join(", ")}.{" "}
                   <Link href="/assistant" className="text-accent-ink underline underline-offset-2">
-                    Search with your own words
+                    {t("now.searchOwnWords")}
                   </Link>
                 </p>
               )}

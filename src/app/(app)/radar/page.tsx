@@ -4,11 +4,13 @@ import { db } from "@/server/db/client";
 import { scanRadar } from "@/server/modules/discovery/radar";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { Radar } from "@/components/radar";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Radar" };
 export const dynamic = "force-dynamic";
 
 export default async function RadarPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
 
   const [initial, interests] = await Promise.all([
@@ -27,8 +29,8 @@ export default async function RadarPage() {
   return (
     <PageShell>
       <PageHeader
-        title="Radar"
-        subtitle="Bunches and activities around you. Areas, never addresses."
+        title={t("radar.title")}
+        subtitle={t("radar.subtitle")}
       />
       {/* Dates cross the server/client boundary intact under RSC, so the
           result is passed as-is rather than round-tripped through JSON. */}

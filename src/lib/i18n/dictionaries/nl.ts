@@ -1336,4 +1336,76 @@ export const nl: Dictionary = {
     upfornightlife: "Zin om uit te gaan",
     upforspontaneous: "Zin in iets spontaans",
   },
+
+  now: {
+    rightNow: "Nu",
+    title: "{brand} Now",
+    subtitle:
+      "Wie zin heeft in iets, en wanneer. De aantallen zijn bij benadering en noemen nooit iemand bij naam.",
+    hiddenTitle: "Je bent verborgen voor {brand} Now",
+    hiddenBody:
+      "Beschikbaarheid staat uit in je privacy-instellingen, dus jij ziet niet wie er zin in heeft en niemand ziet jou. Ze terug aanzetten is één aanpassing.",
+    privacySettings: "Privacy-instellingen",
+    peopleNow: "Mensen die je nu kan berichten",
+    rankedBy: "Gerangschikt op compatibiliteit",
+    startSomething: "Start iets",
+    clearFilters: "Filters wissen",
+    seenSomeone: "Iemand gezien die een avond waard is?",
+    startAndInvite: "Start iets en nodig hen uit",
+    searchOwnWords: "Zoek met je eigen woorden",
+    anytime: "Om het even wanneer",
+    tonight: "Vanavond",
+    weekend: "Weekend",
+    noMatch: "Niemand die nu vrij is, past bij deze filters",
+    nobodyLooking: "Niemand is op dit moment naar iets op zoek",
+    loosen:
+      "Eén ding losser zetten vindt meestal iemand. Of zet je eigen status en laat mensen naar jou komen.",
+    setYourOwn:
+      "Zet je eigen status zodat mensen je vinden, of start iets en nodig uit wie komt opdagen.",
+    within: "Binnen",
+    compatibility: "Compatibiliteit",
+    strongFit: "Sterke match",
+    goodFit: "Goede match",
+  },
+
+  whosUp: {
+    title: "Wie heeft er zin?",
+    turnBackOn: "Zet het terug aan",
+    whoCanSee: "Wie dit kan zien",
+    change: "Wijzigen",
+    clearIt: "Wissen",
+    intro:
+      "Laat mensen die bij je passen weten dat je er bent. Het wist zichzelf. Er blijft niets staan.",
+    setStatus: "Zet een status",
+    anythingToAdd: "Iets toe te voegen?",
+    notePlaceholder: "zin in een spelletjesavond",
+    around: "Nu in je omgeving",
+    countsOnly:
+      "Alleen aantallen, per streek. Kleine groepen worden helemaal niet getoond, want een aantal van één is een persoon.",
+  },
+
+  radar: {
+    online: "Online",
+    title: "Radar",
+    subtitle: "Bunches en activiteiten in je omgeving. Streken, nooit adressen.",
+    distance: "Afstand",
+    interest: "Interesse",
+    anything: "Om het even wat",
+    where: "Waar",
+    addOne: "Voeg er een toe",
+    peopleAround: "Mensen in de buurt",
+    startBunch: "Start een bunch",
+    bandsNote:
+      "Afstanden zijn banden, geen posities. {brand} bewaart voor iedereen een ruwe streek en nooit een precieze locatie, dus “binnen 5 km” betekent dat de streken overlappen, niet dat iemand vijf kilometer ver zit.",
+    emptyTitle: "Nog niets op de radar",
+    emptyBody:
+      "Geen openbare bunches of open activiteiten die daarbij passen. Iets starten is hoe de eerste persoon dat altijd oplost. En het geeft wie hierna kijkt iets om te vinden.",
+    within5: "Binnen 5 km",
+    within10: "Binnen 10 km",
+    within25: "Binnen 25 km",
+    within50: "Binnen 50 km",
+    anywhere: "Overal",
+    inPerson: "In het echt",
+    activity: "Activiteit",
+  },
 };

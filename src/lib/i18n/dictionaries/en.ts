@@ -1359,6 +1359,78 @@ export const en = {
     upfornightlife: "Up for a night out",
     upforspontaneous: "Up for something spontaneous",
   },
+
+  now: {
+    rightNow: "Now",
+    title: "{brand} Now",
+    subtitle:
+      "Who is up for something, and when. Counts are approximate and never name anyone.",
+    hiddenTitle: "You are hidden from {brand} Now",
+    hiddenBody:
+      "Availability is switched off in your privacy settings, so you cannot see who is up and nobody can see you. Turning it back on takes one change.",
+    privacySettings: "Privacy settings",
+    peopleNow: "People you could message now",
+    rankedBy: "Ranked by compatibility",
+    startSomething: "Start something",
+    clearFilters: "Clear filters",
+    seenSomeone: "Seen someone worth an evening?",
+    startAndInvite: "Start something and invite them",
+    searchOwnWords: "Search with your own words",
+    anytime: "Anytime",
+    tonight: "Tonight",
+    weekend: "Weekend",
+    noMatch: "Nobody up right now matches these filters",
+    nobodyLooking: "Nobody is looking for something right now",
+    loosen:
+      "Loosening one thing usually finds somebody. Or set your own status and let people come to you.",
+    setYourOwn:
+      "Set your own status so people can find you, or start something and invite whoever turns up.",
+    within: "Within",
+    compatibility: "Compatibility",
+    strongFit: "Strong fit",
+    goodFit: "Good fit",
+  },
+
+  whosUp: {
+    title: "Who’s up?",
+    turnBackOn: "Turn it back on",
+    whoCanSee: "Who can see this",
+    change: "Change",
+    clearIt: "Clear it",
+    intro:
+      "Let compatible people know you’re around. It clears itself. Nothing stays set.",
+    setStatus: "Set a status",
+    anythingToAdd: "Anything to add?",
+    notePlaceholder: "up for a board game night",
+    around: "Around you right now",
+    countsOnly:
+      "Counts only, by area. Small groups aren’t shown at all, because a count of one is a person.",
+  },
+
+  radar: {
+    online: "Online",
+    title: "Radar",
+    subtitle: "Bunches and activities around you. Areas, never addresses.",
+    distance: "Distance",
+    interest: "Interest",
+    anything: "Anything",
+    where: "Where",
+    addOne: "Add one",
+    peopleAround: "People around",
+    startBunch: "Start a bunch",
+    bandsNote:
+      "Distances are bands, not positions. {brand} stores a rough area for everyone and never a precise location, so “within 5 km” means the areas overlap rather than that somebody is five kilometres away.",
+    emptyTitle: "Nothing on the radar yet",
+    emptyBody:
+      "No public bunches or open activities match that. Starting something is how the first person always fixes it. And it gives whoever looks next something to find.",
+    within5: "Within 5 km",
+    within10: "Within 10 km",
+    within25: "Within 25 km",
+    within50: "Within 50 km",
+    anywhere: "Anywhere",
+    inPerson: "In person",
+    activity: "Activity",
+  },
 } as const;
 
 /**

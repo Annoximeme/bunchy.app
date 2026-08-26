@@ -1,6 +1,8 @@
 "use client";
 
-import { Link, useAppPath } from "@/components/link";
+import type { PhraseRef } from "@/lib/i18n/phrase";
+
+import { Link, useAppPath, useTranslate } from "@/components/link";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/components/ui";
 
@@ -16,9 +18,10 @@ export function NowFilters({
   horizons,
   active,
 }: {
-  horizons: Array<{ value: string; label: string }>;
+  horizons: Array<{ value: string; label: PhraseRef }>;
   active: string;
 }) {
+  const t = useTranslate();
   const pathname = useAppPath();
   const params = useSearchParams();
 
@@ -71,13 +74,13 @@ export function NowFilters({
                 : "border border-line text-ink-soft hover:bg-surface-sunken",
             )}
           >
-            {horizon.label}
+            {t(horizon.label)}
           </Link>
         ))}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="text-muted">Within</span>
+        <span className="text-muted">{t("now.within")}</span>
         {[5, 25, 100].map((km) => (
           <Link
             key={km}
@@ -88,14 +91,14 @@ export function NowFilters({
           </Link>
         ))}
 
-        <span className="ml-3 text-muted">Compatibility</span>
+        <span className="ml-3 text-muted">{t("now.compatibility")}</span>
         {[70, 85].map((score) => (
           <Link
             key={score}
             href={withParam("minScore", minScore === String(score) ? null : String(score))}
             className={refinement(minScore === String(score))}
           >
-            {score === 85 ? "Strong fit" : "Good fit"}
+            {score === 85 ? t("now.strongFit") : t("now.goodFit")}
           </Link>
         ))}
       </div>

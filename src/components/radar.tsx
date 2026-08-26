@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { PhraseRef } from "@/lib/i18n/phrase";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 import { interestInSentence } from "@/lib/interests";
 import { Link, useFormats, useTranslate } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
@@ -37,17 +37,17 @@ interface RadarData {
 }
 
 const DISTANCES = [
-  { value: "5", label: "Within 5 km" },
-  { value: "10", label: "Within 10 km" },
-  { value: "25", label: "Within 25 km" },
-  { value: "50", label: "Within 50 km" },
-  { value: "", label: "Anywhere" },
+  { value: "5", label: phrase("radar.within5") },
+  { value: "10", label: phrase("radar.within10") },
+  { value: "25", label: phrase("radar.within25") },
+  { value: "50", label: phrase("radar.within50") },
+  { value: "", label: phrase("radar.anywhere") },
 ];
 
 const MODES = [
-  { value: "", label: "Anything" },
-  { value: "OFFLINE", label: "In person" },
-  { value: "ONLINE", label: "Online" },
+  { value: "", label: phrase("radar.anything") },
+  { value: "OFFLINE", label: phrase("radar.inPerson") },
+  { value: "ONLINE", label: phrase("radar.online") },
 ];
 
 export function Radar({
@@ -98,7 +98,7 @@ export function Radar({
         <div className="flex flex-wrap items-end gap-4">
           <div className="min-w-[9rem] flex-1">
             <label htmlFor="radar-distance" className="block text-sm font-medium">
-              Distance
+              {t("radar.distance")}
             </label>
             <Select
               id="radar-distance"
@@ -112,7 +112,7 @@ export function Radar({
             >
               {DISTANCES.map((d) => (
                 <option key={d.value} value={d.value}>
-                  {d.label}
+                  {t(d.label)}
                 </option>
               ))}
             </Select>
@@ -120,7 +120,7 @@ export function Radar({
 
           <div className="min-w-[9rem] flex-1">
             <label htmlFor="radar-interest" className="block text-sm font-medium">
-              Interest
+              {t("radar.interest")}
             </label>
             <Select
               id="radar-interest"
@@ -142,7 +142,7 @@ export function Radar({
 
           <div className="min-w-[9rem] flex-1">
             <label htmlFor="radar-mode" className="block text-sm font-medium">
-              Where
+              {t("radar.where")}
             </label>
             <Select
               id="radar-mode"
@@ -155,7 +155,7 @@ export function Radar({
             >
               {MODES.map((m) => (
                 <option key={m.value} value={m.value}>
-                  {m.label}
+                  {t(m.label)}
                 </option>
               ))}
             </Select>
@@ -168,7 +168,7 @@ export function Radar({
           <p className="mt-3 text-sm text-muted">
             You haven&rsquo;t set an area, so nothing can be sorted by distance.{" "}
             <Link href="/onboarding/basics" className="font-medium text-accent-ink underline underline-offset-2">
-              Add one
+              {t("radar.addOne")}
             </Link>{" "}
 . It stays a rough area, never an address.
           </p>
@@ -179,7 +179,7 @@ export function Radar({
 
       {data.clusters.length > 0 && (
         <Card>
-          <h2 className="text-sm font-semibold">People around</h2>
+          <h2 className="text-sm font-semibold">{t("radar.peopleAround")}</h2>
           <ul className="mt-2 space-y-1.5">
             {data.clusters.slice(0, 4).map((cluster) => (
               <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
@@ -194,7 +194,7 @@ export function Radar({
       {data.items.length === 0 ? (
         <EmptyState
           icon="📡"
-          title="Nothing on the radar yet"
+          title={t("radar.emptyTitle")}
           description="No public bunches or open activities match that. Starting something is how the first person always fixes it. And it gives whoever looks next somewhere to land."
           action={<LinkButton href="/start">Start a bunch</LinkButton>}
         />
@@ -223,7 +223,7 @@ export function Radar({
                     ? `${item.count} ${item.count === 1 ? "member" : "members"}`
                     : item.startsAt
                       ? activityWhen(item.startsAt)
-                      : "Activity"}
+                      : t("radar.activity")}
                 </p>
 
                 {item.interests.length > 0 && (

@@ -104,11 +104,11 @@ export function WhosUp({
   if (disabled) {
     return (
       <Card>
-        <h2 className="text-lg font-semibold tracking-tight">Who&rsquo;s up?</h2>
+        <h2 className="text-lg font-semibold tracking-tight">{t("whosUp.title")}</h2>
         <p className="mt-1 text-sm text-muted">
           You have this switched off.{" "}
           <Link href="/profile" className="font-medium text-accent-ink underline underline-offset-2">
-            Turn it back on
+            {t("whosUp.turnBackOn")}
           </Link>{" "}
           in your privacy settings if you&rsquo;d like to use it.
         </p>
@@ -119,9 +119,9 @@ export function WhosUp({
   return (
     <Card>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-lg font-semibold tracking-tight">Who&rsquo;s up?</h2>
+        <h2 className="text-lg font-semibold tracking-tight">{t("whosUp.title")}</h2>
         <Link href="/profile" className="text-sm text-muted hover:underline">
-          Who can see this
+          {t("whosUp.whoCanSee")}
         </Link>
       </div>
 
@@ -142,26 +142,25 @@ export function WhosUp({
           {status.note && <p className="mt-2 text-sm text-ink-soft">“{status.note}”</p>}
           <div className="mt-3 flex flex-wrap gap-2">
             <Button variant="secondary" onClick={() => setExpanded((v) => !v)}>
-              Change
+              {t("whosUp.change")}
             </Button>
             <Button
               variant="ghost"
               onClick={() => void clear()}
               loading={busy === "clear"}
             >
-              Clear it
+              {t("whosUp.clearIt")}
             </Button>
           </div>
         </div>
       ) : (
         <>
           <p className="mt-1 text-sm text-muted">
-            Let compatible people know you&rsquo;re around. It clears itself. Nothing
-            stays set.
+            {t("whosUp.intro")}
           </p>
           <div className="mt-3">
             <Button onClick={() => setExpanded((v) => !v)} aria-expanded={expanded}>
-              Set a status
+              {t("whosUp.setStatus")}
             </Button>
           </div>
         </>
@@ -170,14 +169,14 @@ export function WhosUp({
       {expanded && (
         <div className="mt-4 border-t border-line pt-4">
           <label htmlFor="whos-up-note" className="block text-sm font-medium">
-            Anything to add? <span className="font-normal text-muted">(optional)</span>
+            {t("whosUp.anythingToAdd")} <span className="font-normal text-muted">(optional)</span>
           </label>
           <input
             id="whos-up-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             maxLength={140}
-            placeholder="up for a board game night"
+            placeholder={t("whosUp.notePlaceholder")}
             className="mt-1.5 w-full rounded-[var(--radius-control)] border border-line bg-surface px-3.5 py-2.5 text-sm outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent-soft"
           />
 
@@ -206,7 +205,7 @@ export function WhosUp({
 
       {clusters.length > 0 && (
         <div className="mt-5 border-t border-line pt-4">
-          <h3 className="text-sm font-medium">Around you right now</h3>
+          <h3 className="text-sm font-medium">{t("whosUp.around")}</h3>
           <ul className="mt-2 space-y-1.5">
             {clusters.slice(0, 5).map((cluster) => (
               <li key={`${cluster.where}-${cluster.kind}`} className="text-sm text-ink-soft">
@@ -217,8 +216,7 @@ export function WhosUp({
             ))}
           </ul>
           <p className="mt-2 text-xs text-muted">
-            Counts only, by area. Small groups aren&rsquo;t shown at all, because a
-            count of one is a person.
+            {t("whosUp.countsOnly")}
           </p>
         </div>
       )}

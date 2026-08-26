@@ -1343,4 +1343,76 @@ export const fr: Dictionary = {
     upfornightlife: "Partant pour une sortie",
     upforspontaneous: "Partant pour un truc spontané",
   },
+
+  now: {
+    rightNow: "Maintenant",
+    title: "{brand} Now",
+    subtitle:
+      "Qui est partant pour quelque chose, et quand. Les nombres sont approximatifs et ne nomment jamais personne.",
+    hiddenTitle: "Tu es masqué de {brand} Now",
+    hiddenBody:
+      "La disponibilité est désactivée dans tes réglages de confidentialité : tu ne vois pas qui est partant et personne ne te voit. La réactiver, c’est un seul changement.",
+    privacySettings: "Réglages de confidentialité",
+    peopleNow: "Des gens à qui tu peux écrire maintenant",
+    rankedBy: "Classés par affinité",
+    startSomething: "Lancer quelque chose",
+    clearFilters: "Effacer les filtres",
+    seenSomeone: "Tu as vu quelqu’un qui vaut une soirée ?",
+    startAndInvite: "Lance quelque chose et invite-les",
+    searchOwnWords: "Cherche avec tes propres mots",
+    anytime: "N’importe quand",
+    tonight: "Ce soir",
+    weekend: "Week-end",
+    noMatch: "Personne de disponible ne correspond à ces filtres",
+    nobodyLooking: "Personne ne cherche quelque chose en ce moment",
+    loosen:
+      "Relâcher un critère trouve en général quelqu’un. Ou mets ton propre statut et laisse les gens venir à toi.",
+    setYourOwn:
+      "Mets ton propre statut pour qu’on te trouve, ou lance quelque chose et invite qui se présente.",
+    within: "À moins de",
+    compatibility: "Affinité",
+    strongFit: "Forte affinité",
+    goodFit: "Bonne affinité",
+  },
+
+  whosUp: {
+    title: "Qui est partant ?",
+    turnBackOn: "Réactiver",
+    whoCanSee: "Qui peut voir ça",
+    change: "Changer",
+    clearIt: "Effacer",
+    intro:
+      "Fais savoir aux gens qui te correspondent que tu es là. Ça s’efface tout seul. Rien ne reste.",
+    setStatus: "Mettre un statut",
+    anythingToAdd: "Quelque chose à ajouter ?",
+    notePlaceholder: "partant pour une soirée jeux",
+    around: "Autour de toi en ce moment",
+    countsOnly:
+      "Des nombres seulement, par zone. Les petits groupes ne sont pas montrés du tout, parce qu’un compte de un, c’est une personne.",
+  },
+
+  radar: {
+    online: "En ligne",
+    title: "Radar",
+    subtitle: "Les bunches et les activités autour de toi. Des zones, jamais des adresses.",
+    distance: "Distance",
+    interest: "Intérêt",
+    anything: "N’importe quoi",
+    where: "Où",
+    addOne: "En ajouter un",
+    peopleAround: "Des gens dans les environs",
+    startBunch: "Créer un bunch",
+    bandsNote:
+      "Les distances sont des tranches, pas des positions. {brand} garde une zone approximative pour chacun et jamais une position précise, donc « à moins de 5 km » veut dire que les zones se recoupent, pas que quelqu’un est à cinq kilomètres.",
+    emptyTitle: "Rien sur le radar pour l’instant",
+    emptyBody:
+      "Aucun bunch public ni activité ouverte ne correspond. Lancer quelque chose est la façon dont la première personne règle toujours ça. Et ça donne à la suivante quelque chose à trouver.",
+    within5: "À moins de 5 km",
+    within10: "À moins de 10 km",
+    within25: "À moins de 25 km",
+    within50: "À moins de 50 km",
+    anywhere: "N’importe où",
+    inPerson: "En vrai",
+    activity: "Activité",
+  },
 };
