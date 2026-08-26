@@ -23,6 +23,8 @@ import { unreadCount as announcementsUnread } from "@/server/modules/announcemen
 import { db } from "@/server/db/client";
 import { env, pushEnabled } from "@/server/env";
 import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
+import { currentLocale } from "@/server/i18n";
+import { interestLabel } from "@/lib/i18n/interests";
 
 export const metadata: Metadata = { title: "Your profile" };
 export const dynamic = "force-dynamic";
@@ -45,6 +47,7 @@ export const dynamic = "force-dynamic";
  * really about hierarchy.
  */
 export default async function ProfilePage() {
+  const locale = await currentLocale();
   const viewer = await requireViewer();
   const [
     profile,
@@ -188,7 +191,7 @@ export default async function ProfilePage() {
                 {practices.map((interest) => (
                   <li key={interest.slug}>
                     <Chip tone="teal">
-                      {interest.label}
+                      {interestLabel(locale, interest.slug, interest.label)}
                       {interest.strength === 3 && (
                         <>
                           <span aria-hidden> ★</span>
@@ -210,7 +213,9 @@ export default async function ProfilePage() {
               <ul className="flex flex-wrap gap-1.5">
                 {curious.map((interest) => (
                   <li key={interest.slug}>
-                    <Chip tone="accent">{interest.label}</Chip>
+                    <Chip tone="accent">
+                      {interestLabel(locale, interest.slug, interest.label)}
+                    </Chip>
                   </li>
                 ))}
               </ul>

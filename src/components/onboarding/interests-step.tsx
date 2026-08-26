@@ -8,7 +8,8 @@ import {
   INTEREST_SEEDS,
   type InterestSeed,
 } from "@/lib/interests";
-import { useLocaleRouter, useTranslate } from "@/components/link";
+import { useLanguage, useLocaleRouter } from "@/components/link";
+import { interestCategory, interestLabel } from "@/lib/i18n/interests";
 
 /**
  * Interest picker.
@@ -31,7 +32,24 @@ const MIN_INTERESTS = 3;
 
 export function InterestsStep({ initial }: { initial: Selection[] }) {
   const router = useLocaleRouter();
-  const t = useTranslate();
+  const { locale, t } = useLanguage();
+
+  /**
+   * The taxonomy in the reader's language.
+   *
+   * Built once per language rather than translated at each of the four places
+   * that need it, because the search below matches on the label: somebody
+   * typing "gezelschaps" is looking for board games, and filtering the English
+   * word would find nothing.
+   */
+  const seeds = useMemo(
+    () =>
+      INTEREST_SEEDS.map((seed) => ({
+        ...seed,
+        label: interestLabel(locale, seed.slug, seed.label),
+      })),
+    [locale],
+  );
   const [selected, setSelected] = useState<Map<string, Selection>>(
     new Map(initial.map((i) => [i.slug, i])),
   );
@@ -40,15 +58,15 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
   const [error, setError] = useState<string | null>(null);
 
   const bySlug = useMemo(
-    () => new Map(INTEREST_SEEDS.map((i) => [i.slug, i] as const)),
-    [],
+    () => new Map(seeds.map((i) => [i.slug, i] as const)),
+    [seeds],
   );
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     if (!needle) return null;
-    return INTEREST_SEEDS.filter((i) => i.label.toLowerCase().includes(needle));
-  }, [query]);
+    return seeds.filter((i) => i.label.toLowerCase().includes(needle));
+  }, [query, seeds]);
 
   const canAddCustom =
     query.trim().length >= 2 &&
@@ -150,14 +168,13 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
       {chosen.length > 0 && (
         <div className="card-surface p-5">
           <p className="text-sm font-medium text-ink">
-            Your interests
+            {t("interests.yourInterests")}
             <span className="ml-1.5 font-normal text-muted">
               ({chosen.length})
             </span>
           </p>
           <p className="mt-1 text-sm text-muted">
-            Mark anything you&rsquo;re still learning. It helps us pair you with
-            someone who can show you.
+            {t("interests.learningNote")}
           </p>
 
           <ul className="mt-4 space-y-2">
@@ -178,7 +195,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
                         })
                       }
                       aria-pressed={item.strength === 3}
-                      title="One of my favourites"
+                      title={t("interests.favourite")}
                       className={cn(
                         "rounded-full px-1.5 text-base leading-none transition-opacity",
                         item.strength === 3
@@ -186,7 +203,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
                           : "opacity-30 hover:opacity-70",
                       )}
                     >
-                      ★<span className="sr-only">Mark as a favourite</span>
+                      ★<span className="sr-only">{t("interests.markFavourite")}</span>
                     </button>
                   </span>
 
@@ -195,13 +212,13 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
                       active={item.intent === "PRACTICES"}
                       onClick={() => update(item.slug, { intent: "PRACTICES" })}
                     >
-                      I do this
+                      {t("interests.doThis")}
                     </IntentButton>
                     <IntentButton
                       active={item.intent === "CURIOUS"}
                       onClick={() => update(item.slug, { intent: "CURIOUS" })}
                     >
-                      Want to learn
+                      {t("interests.wantToLearn")}
                     </IntentButton>
                     <button
                       type="button"
@@ -213,7 +230,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
                         })
                       }
                       className="ml-1 rounded-full px-2 py-1 text-muted transition-colors hover:bg-danger-soft hover:text-danger"
-                      aria-label={`Remove ${label}`}
+                      aria-label={t("interests.remove", { label })}
                     >
                       ×
                     </button>
@@ -229,8 +246,8 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
         {(filtered
           ? [{ category: t("interests.results"), items: filtered }]
           : INTEREST_CATEGORIES.map((category) => ({
-              category,
-              items: INTEREST_SEEDS.filter((i) => i.category === category),
+              category: interestCategory(locale, category),
+              items: seeds.filter((i) => i.category === category),
             }))
         ).map(({ category, items }) => (
           <div key={category}>

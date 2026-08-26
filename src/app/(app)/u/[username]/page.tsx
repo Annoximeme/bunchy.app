@@ -14,6 +14,8 @@ import { OverlapSection } from "@/components/profile/overlap";
 import { Card, Chip, SectionHeading } from "@/components/ui";
 import { CalendarCheck } from "lucide-react";
 import { hostLine, hostStats } from "@/server/modules/activities/hosting";
+import { currentLocale } from "@/server/i18n";
+import { interestLabel } from "@/lib/i18n/interests";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +47,7 @@ export default async function PublicProfilePage({
 }: {
   params: Promise<{ username: string }>;
 }) {
+  const locale = await currentLocale();
   const viewer = await requireViewer();
   const { username } = await params;
 
@@ -157,7 +160,7 @@ export default async function PublicProfilePage({
                   {practices.map((interest) => (
                     <li key={interest.slug}>
                       <Chip tone="teal">
-                        {interest.label}
+                        {interestLabel(locale, interest.slug, interest.label)}
                         {/* A star is the member saying this one matters most,
                             so it is announced rather than left as decoration
                             a screen reader reads as "black star". */}
@@ -186,7 +189,9 @@ export default async function PublicProfilePage({
                 <ul className="mt-3 flex flex-wrap gap-1.5">
                   {curious.map((interest) => (
                     <li key={interest.slug}>
-                      <Chip tone="accent">{interest.label}</Chip>
+                      <Chip tone="accent">
+                        {interestLabel(locale, interest.slug, interest.label)}
+                      </Chip>
                     </li>
                   ))}
                 </ul>

@@ -12,7 +12,8 @@ import {
 } from "@/components/ui";
 import { FormError, useFormSubmit } from "@/components/form-state";
 import { INTEREST_CATEGORIES, INTEREST_SEEDS } from "@/lib/interests";
-import { useLocaleRouter } from "@/components/link";
+import { useLanguage, useLocaleRouter } from "@/components/link";
+import { interestCategory, interestLabel } from "@/lib/i18n/interests";
 
 interface Place {
   cityLabel: string;
@@ -30,6 +31,7 @@ export function BunchForm({
   defaultCountry: string | null;
 }) {
   const router = useLocaleRouter();
+  const { locale } = useLanguage();
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [type, setType] = useState("INTEREST");
   const [visibility, setVisibility] = useState("PUBLIC");
@@ -234,7 +236,7 @@ export function BunchForm({
           {INTEREST_CATEGORIES.map((category) => (
             <div key={category}>
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                {category}
+                {interestCategory(locale, category)}
               </p>
               <div className="flex flex-wrap gap-2">
                 {INTEREST_SEEDS.filter((i) => i.category === category).map(
@@ -256,7 +258,7 @@ export function BunchForm({
                           disabled && "cursor-not-allowed opacity-40",
                         )}
                       >
-                        {seed.label}
+                        {interestLabel(locale, seed.slug, seed.label)}
                       </button>
                     );
                   },

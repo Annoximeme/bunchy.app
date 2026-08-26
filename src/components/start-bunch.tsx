@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { Link, useLocaleRouter } from "@/components/link";
+import { Link, useLanguage, useLocaleRouter } from "@/components/link";
+import { interestLabel } from "@/lib/i18n/interests";
 import { api, errorMessage } from "@/lib/api";
 import {
   Avatar,
@@ -360,6 +361,7 @@ function Reading({
   onAvailableNow: (value: boolean) => void;
   onNearbyOnly: (value: boolean) => void;
 }) {
+  const { locale } = useLanguage();
   const { intent, search } = preview;
   const hasReading =
     intent.interests.length > 0 || intent.when !== null || intent.place !== null;
@@ -375,7 +377,7 @@ function Reading({
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {intent.interests.map((interest) => (
             <Chip key={interest.slug} tone="accent">
-              {interest.label}
+              {interestLabel(locale, interest.slug, interest.label)}
             </Chip>
           ))}
           {intent.when && <Chip tone="teal">{intent.when.label}</Chip>}
