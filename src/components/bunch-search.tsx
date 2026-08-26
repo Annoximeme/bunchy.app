@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Button, Input } from "@/components/ui";
-import { useLocaleRouter } from "@/components/link";
+import { useLocaleRouter, useTranslate } from "@/components/link";
 
 /**
  * Search as a real form submission rather than a live-filtering input.
@@ -11,6 +11,7 @@ import { useLocaleRouter } from "@/components/link";
  * server does the filtering it is already good at.
  */
 export function BunchSearch({ initialQuery }: { initialQuery: string }) {
+  const t = useTranslate();
   const router = useLocaleRouter();
   const [value, setValue] = useState(initialQuery);
 
@@ -23,17 +24,17 @@ export function BunchSearch({ initialQuery }: { initialQuery: string }) {
   return (
     <form onSubmit={onSubmit} className="flex gap-2" role="search">
       <label htmlFor="bunch-search" className="sr-only">
-        Search bunches
+        {t("bunches.search")}
       </label>
       <Input
         id="bunch-search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Board games, hiking, film…"
+        placeholder={t("bunches.searchPlaceholder")}
         className="flex-1"
       />
       <Button type="submit" variant="secondary">
-        Search
+        {t("bunches.searchAction")}
       </Button>
       {initialQuery && (
         <Button
@@ -44,7 +45,7 @@ export function BunchSearch({ initialQuery }: { initialQuery: string }) {
             router.push("/bunches");
           }}
         >
-          Clear
+          {t("bunches.clear")}
         </Button>
       )}
     </form>

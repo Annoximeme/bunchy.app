@@ -6,6 +6,7 @@ import { PageHeader, PageShell } from "@/components/page-header";
 import { BunchCard } from "@/components/cards";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 import { BunchSearch } from "@/components/bunch-search";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Bunches" };
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function BunchesPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const { q } = await searchParams;
 
@@ -32,17 +34,17 @@ export default async function BunchesPage({
   return (
     <PageShell>
       <PageHeader
-        title="Bunches"
-        subtitle="Small groups, five to twelve people. Small enough that you're known."
-        action={<LinkButton href="/bunches/new">Start a bunch</LinkButton>}
+        title={t("bunches.title")}
+        subtitle={t("bunches.subtitle")}
+        action={<LinkButton href="/bunches/new">{t("bunches.start")}</LinkButton>}
       />
 
       <div className="space-y-12">
         {invitations.length > 0 && (
           <section>
             <SectionHeading
-              title="You've been invited"
-              subtitle="Someone thought you'd fit."
+              title={t("bunches.invited")}
+              subtitle={t("bunches.invitedSubtitle")}
             />
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {invitations.map((bunch) => (
@@ -53,13 +55,13 @@ export default async function BunchesPage({
         )}
 
         <section>
-          <SectionHeading title="Your bunches" />
+          <SectionHeading title={t("bunches.yours")} />
           {active.length === 0 ? (
             <EmptyState
               icon="○"
-              title="You're not in a bunch yet"
+              title={t("bunches.noneTitle")}
               description="A bunch is the easiest way in. You join a group that already talks to each other instead of starting from a blank conversation."
-              action={<LinkButton href="/bunches/new">Start one</LinkButton>}
+              action={<LinkButton href="/bunches/new">{t("bunches.startOne")}</LinkButton>}
             />
           ) : (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -73,8 +75,8 @@ export default async function BunchesPage({
         {pending.length > 0 && (
           <section>
             <SectionHeading
-              title="Waiting on a moderator"
-              subtitle="You'll hear back when someone reviews your request."
+              title={t("bunches.waiting")}
+              subtitle={t("bunches.waitingSubtitle")}
             />
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {pending.map((bunch) => (
@@ -87,8 +89,8 @@ export default async function BunchesPage({
         {suggested.length > 0 && (
           <section>
             <SectionHeading
-              title="Bunches that fit you"
-              subtitle="Based on your interests, where you are and when you're free."
+              title={t("bunches.fitTitle")}
+              subtitle={t("bunches.fitSubtitle")}
             />
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {suggested
@@ -102,8 +104,8 @@ export default async function BunchesPage({
 
         <section>
           <SectionHeading
-            title="Browse"
-            subtitle="Everything public, whether or not it's a match."
+            title={t("bunches.browse")}
+            subtitle={t("bunches.browseSubtitle")}
           />
           <div className="mb-4">
             <BunchSearch initialQuery={q ?? ""} />
@@ -112,13 +114,13 @@ export default async function BunchesPage({
           {browse.length === 0 ? (
             <EmptyState
               icon="🔍"
-              title={q ? `Nothing matching "${q}"` : "Quiet night in your city"}
+              title={q ? t("bunches.nothingMatching", { query: q }) : t("bunches.quiet")}
               description={
                 q
-                  ? "Try a broader word, or start a bunch for it yourself."
+                  ? t("bunches.broaderWord")
                   : "Be the first to start a bunch. One with a thoughtful description attracts better people than an empty search page ever will."
               }
-              action={<LinkButton href="/bunches/new">Start a bunch</LinkButton>}
+              action={<LinkButton href="/bunches/new">{t("bunches.start")}</LinkButton>}
             />
           ) : (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

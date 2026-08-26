@@ -1,7 +1,8 @@
 import { Card, cn } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
 
 /**
- * Bunch chemistry, as a member sees it.
+ * {t("bunch.chemistry")}, as a member sees it.
  *
  * An earlier version of this component showed the observations and deliberately
  * hid the number, on the grounds that scoring a group's friendships invites
@@ -23,7 +24,7 @@ import { Card, cn } from "@/components/ui";
  *   that it moved since the last one.
  */
 
-export function BunchHealth({
+export async function BunchHealth({
   score,
   previousScore,
   confidence,
@@ -34,6 +35,7 @@ export function BunchHealth({
   confidence?: string;
   observations: string[];
 }) {
+  const t = await getTranslations();
   const hasScore = score !== null && confidence !== "none";
   if (!hasScore && observations.length === 0) return null;
 
@@ -50,7 +52,7 @@ export function BunchHealth({
             aria-hidden
             className="inline-block size-2 shrink-0 rounded-full bg-purple"
           />
-          Bunch chemistry
+          {t("bunch.chemistry")}
         </h2>
 
         {hasScore ? (
@@ -69,13 +71,13 @@ export function BunchHealth({
             )}
           </p>
         ) : (
-          <p className="text-sm text-muted">Too new to tell</p>
+          <p className="text-sm text-muted">{t("bunch.tooNew")}</p>
         )}
       </div>
 
       {hasScore && confidence === "low" && (
         <p className="mt-1 text-xs text-muted">
-          Based on a short history, so treat it loosely.
+          {t("bunch.shortHistory")}
         </p>
       )}
 

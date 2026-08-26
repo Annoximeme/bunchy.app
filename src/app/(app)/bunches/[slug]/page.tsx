@@ -19,6 +19,7 @@ import {
   JoinRequestList,
 } from "@/components/bunch-actions";
 import { Avatar, Card, Chip, LinkButton } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,7 @@ export default async function BunchPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const { slug } = await params;
 
@@ -81,7 +83,7 @@ export default async function BunchPage({
     <PageShell>
       <nav className="mb-6 text-sm text-muted">
         <Link href="/bunches" className="hover:text-ink">
-          Bunches
+          {t("bunch.breadcrumb")}
         </Link>
         <span aria-hidden> / </span>
         <span className="text-ink">{bunch.name}</span>
@@ -127,7 +129,7 @@ export default async function BunchPage({
             />
           ) : (
             <Card className="py-12 text-center">
-              <p className="font-medium">The chat is for members</p>
+              <p className="font-medium">{t("bunch.chatForMembers")}</p>
               <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted">
                 Ask to join and a moderator will take a look. Bunches stay small
                 on purpose, so it&rsquo;s a real decision rather than a formality.
@@ -138,7 +140,7 @@ export default async function BunchPage({
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg font-semibold tracking-tight">
-                What this bunch is doing
+                {t("bunch.whatItIsDoing")}
               </h2>
               {bunch.isMember && (
                 <LinkButton
@@ -146,7 +148,7 @@ export default async function BunchPage({
                   variant="secondary"
                   size="sm"
                 >
-                  Plan something
+                  {t("bunch.planSomething")}
                 </LinkButton>
               )}
             </div>
@@ -230,7 +232,7 @@ export default async function BunchPage({
                         </span>
                         {member.role !== "MEMBER" && (
                           <span className="block text-xs text-muted">
-                            {member.role === "OWNER" ? "Owner" : "Moderator"}
+                            {member.role === "OWNER" ? "Owner" : t("bunch.moderator")}
                           </span>
                         )}
                       </span>
@@ -243,7 +245,7 @@ export default async function BunchPage({
 
           {bunch.rules && (
             <Card>
-              <h2 className="text-sm font-semibold">House rules</h2>
+              <h2 className="text-sm font-semibold">{t("bunch.houseRules")}</h2>
               <p className="mt-2 whitespace-pre-wrap text-sm text-ink-soft">
                 {bunch.rules}
               </p>

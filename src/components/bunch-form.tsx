@@ -31,7 +31,7 @@ export function BunchForm({
   defaultCountry: string | null;
 }) {
   const router = useLocaleRouter();
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [type, setType] = useState("INTEREST");
   const [visibility, setVisibility] = useState("PUBLIC");
@@ -98,7 +98,7 @@ export function BunchForm({
     // interests are chips rather than a control the browser will focus.
     if (interests.size === 0) {
       event.preventDefault();
-      form.fail("Pick at least one interest so the right people can find it.");
+      form.fail(t("bunchForm.pickInterest"));
       return;
     }
     form.onSubmit(event);
@@ -108,22 +108,22 @@ export function BunchForm({
     <form onSubmit={onSubmit} className="space-y-6">
       <FormError state={form} />
 
-      <Field label="Name" htmlFor="name" error={form.fields.name}>
+      <Field label={t("bunchForm.name")} htmlFor="name" error={form.fields.name}>
         <Input
           id="name"
           name="name"
           required
           minLength={3}
           maxLength={60}
-          placeholder="Antwerp Board Game Nights"
+          placeholder={t("bunchForm.namePlaceholder")}
         />
       </Field>
 
       <Field
-        label="What is this bunch for?"
+        label={t("bunchForm.purpose")}
         htmlFor="description"
         error={form.fields.description}
-        hint="Say who it's for and what you actually do. A clear description attracts better people than a vague one."
+        hint={t("bunchForm.purposeHint")}
       >
         <Textarea
           id="description"
@@ -131,30 +131,30 @@ export function BunchForm({
           required
           minLength={20}
           maxLength={600}
-          placeholder="A small group who meet twice a month to play heavier board games. Beginners welcome, we'll teach."
+          placeholder={t("bunchForm.purposePlaceholder")}
         />
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Kind of bunch" htmlFor="type">
+        <Field label={t("bunchForm.kind")} htmlFor="type">
           <Select
             id="type"
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="INTEREST">Interest, built around a topic</option>
-            <option value="LOCAL">Local, built around a place</option>
-            <option value="ACTIVITY">Activity, built around doing a thing</option>
+            <option value="INTEREST">{t("bunchForm.kindInterest")}</option>
+            <option value="LOCAL">{t("bunchForm.kindLocal")}</option>
+            <option value="ACTIVITY">{t("bunchForm.kindActivity")}</option>
           </Select>
         </Field>
 
         <Field
-          label="Who can join"
+          label={t("bunchForm.whoCanJoin")}
           htmlFor="visibility"
           hint={
             visibility === "PUBLIC"
-              ? "Discoverable. You approve each request."
-              : "Hidden from Discover. Invite only."
+              ? t("bunchForm.publicNote")
+              : t("bunchForm.privateNote")
           }
         >
           <Select
@@ -162,17 +162,17 @@ export function BunchForm({
             value={visibility}
             onChange={(e) => setVisibility(e.target.value)}
           >
-            <option value="PUBLIC">Public</option>
-            <option value="PRIVATE">Private</option>
+            <option value="PUBLIC">{t("bunchForm.public")}</option>
+            <option value="PRIVATE">{t("bunchForm.private")}</option>
           </Select>
         </Field>
       </div>
 
       <Field
-        label="Maximum members"
+        label={t("bunchForm.maxMembers")}
         htmlFor="maxMembers"
         error={form.fields.maxMembers}
-        hint="Capped at 12. Past that a group stops being somewhere you're known."
+        hint={t("bunchForm.maxMembersHint")}
       >
         <Input
           id="maxMembers"
@@ -187,9 +187,9 @@ export function BunchForm({
 
       <div>
         <Field
-          label="Where does it meet?"
+          label={t("bunchForm.where")}
           htmlFor="bunch-city"
-          hint="Optional, leave empty for an online bunch."
+          hint={t("bunchForm.whereHint")}
         >
           <Input
             id="bunch-city"
@@ -199,7 +199,7 @@ export function BunchForm({
               setPlace(null);
             }}
             autoComplete="off"
-            placeholder="Antwerp"
+            placeholder={t("bunchForm.wherePlaceholder")}
           />
         </Field>
         {visiblePlaces.length > 0 && !place && (
@@ -270,21 +270,21 @@ export function BunchForm({
       </fieldset>
 
       <Field
-        label="House rules"
+        label={t("bunchForm.rules")}
         htmlFor="rules"
         error={form.fields.rules}
-        hint="Optional. Bunches that say what they expect tend to need less moderation."
+        hint={t("bunchForm.rulesHint")}
       >
         <Textarea
           id="rules"
           name="rules"
           maxLength={1000}
-          placeholder="Turn up if you say you will. Tell us if you can't make it."
+          placeholder={t("bunchForm.rulesPlaceholder")}
         />
       </Field>
 
       <Button type="submit" loading={form.pending} size="lg" className="w-full">
-        Create bunch
+        {t("bunchForm.create")}
       </Button>
     </form>
   );

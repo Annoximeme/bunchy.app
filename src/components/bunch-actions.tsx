@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -16,6 +18,7 @@ export function BunchMembershipButton({
   status: string | null;
   isFull: boolean;
 }) {
+  const t = useTranslate();
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +59,7 @@ export function BunchMembershipButton({
         return (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-ink-soft">
-              Leave this bunch? You&rsquo;ll lose access to the chat.
+              {t("bunch.leaveConfirm")}
             </span>
             <Button
               variant="danger"
@@ -67,25 +70,25 @@ export function BunchMembershipButton({
                   () =>
                     api(`/api/bunches/${bunchId}/membership`, { method: "DELETE" }),
                   null,
-                  "You have left the bunch.",
+                  t("bunch.left"),
                 )
               }
             >
-              Leave
+              {t("bunch.leave")}
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setConfirmingLeave(false)}
             >
-              Stay
+              {t("bunch.stay")}
             </Button>
           </div>
         );
       }
       return (
         <Button variant="ghost" size="sm" onClick={() => setConfirmingLeave(true)}>
-          Leave bunch
+          {t("bunch.leaveBunch")}
         </Button>
       );
     }
@@ -93,7 +96,7 @@ export function BunchMembershipButton({
     if (shownStatus === "REQUESTED") {
       return (
         <p className="text-sm text-muted">
-          Your request is waiting for a moderator.
+          {t("bunch.requestWaiting")}
         </p>
       );
     }
@@ -110,21 +113,21 @@ export function BunchMembershipButton({
                   json: { action: "accept_invite" },
                 }),
               "ACTIVE",
-              "Invite accepted. You are in the bunch.",
+              t("bunch.inviteAccepted"),
             )
           }
         >
-          Accept invite
+          {t("bunch.acceptInvite")}
         </Button>
       );
     }
 
     if (shownStatus === "REMOVED") {
-      return <p className="text-sm text-muted">You can&rsquo;t rejoin this bunch.</p>;
+      return <p className="text-sm text-muted">{t("bunch.cannotRejoin")}</p>;
     }
 
     if (isFull) {
-      return <p className="text-sm text-muted">This bunch is full.</p>;
+      return <p className="text-sm text-muted">{t("bunch.full")}</p>;
     }
 
     return (
@@ -138,11 +141,11 @@ export function BunchMembershipButton({
                 json: { action: "join" },
               }),
             "REQUESTED",
-            "Request sent. A moderator will look at it.",
+            t("bunch.requestSent"),
           )
         }
       >
-        Ask to join
+        {t("bunch.askToJoin")}
       </Button>
     );
   };
@@ -164,6 +167,7 @@ export function JoinRequestList({
   bunchId: string;
   requests: Array<{ id: string; displayName: string; username: string }>;
 }) {
+  const t = useTranslate();
   const router = useRouter();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -209,14 +213,14 @@ export function JoinRequestList({
                 loading={pendingId === request.id}
                 onClick={() => respond(request.id, "approve")}
               >
-                Approve
+                {t("bunch.approve")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => respond(request.id, "decline")}
               >
-                Decline
+                {t("bunch.decline")}
               </Button>
             </span>
           </li>
@@ -234,6 +238,7 @@ export function JoinRequestList({
  * and a notification engine.
  */
 export function BunchAssistant({ bunchId }: { bunchId: string }) {
+  const t = useTranslate();
   const [busy, setBusy] = useState<"summary" | "activity_idea" | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [idea, setIdea] = useState<{
@@ -252,9 +257,9 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
         suggestion?: { title: string; description: string; rationale: string } | null;
       }>(`/api/bunches/${bunchId}/assist`, { method: "POST", json: { task } });
 
-      if (task === "summary") setSummary(result.summary ?? "Nothing to catch up on.");
+      if (task === "summary") setSummary(result.summary ?? t("bunch.nothingToCatchUp"));
       else if (result.suggestion) setIdea(result.suggestion);
-      else setError("Not enough to go on yet, try once the bunch has talked a bit.");
+      else setError(t("bunch.notEnoughYet"));
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
@@ -272,7 +277,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
         Ask Bunchy
       </h2>
       <p className="mt-1 text-sm text-muted">
-        Ask for a catch-up, or an idea for something to do.
+        {t("bunch.assistantNote")}
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -282,7 +287,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
           loading={busy === "summary"}
           onClick={() => run("summary")}
         >
-          Catch me up
+          {t("bunch.catchMeUp")}
         </Button>
         <Button
           size="sm"
@@ -290,7 +295,7 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
           loading={busy === "activity_idea"}
           onClick={() => run("activity_idea")}
         >
-          Suggest an activity
+          {t("bunch.suggestActivity")}
         </Button>
       </div>
 
@@ -317,14 +322,14 @@ export function BunchAssistant({ bunchId }: { bunchId: string }) {
             href={`/activities/new?bunchId=${bunchId}&title=${encodeURIComponent(idea.title)}&description=${encodeURIComponent(idea.description)}`}
             className="mt-3 inline-block text-sm font-medium text-accent-ink underline underline-offset-2"
           >
-            Turn this into a plan →
+            {t("bunch.turnIntoPlan")}
           </a>
         </div>
       )}
 
       {busy && (
         <p className="mt-3 flex items-center gap-2 text-sm text-muted">
-          <Spinner className="size-4" /> Thinking…
+          <Spinner className="size-4" /> {t("bunch.thinking")}
         </p>
       )}
     </Card>
