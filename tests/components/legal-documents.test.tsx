@@ -7,6 +7,7 @@ import { SAFETY } from "@/content/legal/safety";
 import { PRIVACY } from "@/content/legal/privacy";
 import { TERMS } from "@/content/legal/terms";
 import { MODERATORS } from "@/content/legal/moderators";
+import { ABOUT } from "@/content/about";
 
 /**
  * The policy documents, held to the same shape in every language.
@@ -66,6 +67,41 @@ describe.each(DOCUMENTS)("%s", (_name, set) => {
     // that insisted otherwise would be demanding a worse translation.
     for (const locale of LOCALES.filter((l) => l !== "en")) {
       expect([locale, set[locale].summary]).not.toEqual([locale, set.en.summary]);
+    }
+  });
+});
+
+/**
+ * About is not a policy and has no clauses, so it is held to the shape it does
+ * have: the same section headings, in the same order, in every language. It is
+ * also the page most likely to drift, because it is the one somebody edits when
+ * the product changes rather than when the law does.
+ */
+describe("About", () => {
+  function headings(locale: Locale): string[] {
+    const { container } = render(
+      <LanguageProvider locale={locale}>
+        {ABOUT[locale].Body({ startHref: "/signup" })}
+      </LanguageProvider>,
+    );
+    return [...container.querySelectorAll("h1, h2")].map((el) => el.tagName);
+  }
+
+  it("makes the same argument in the same order in every language", () => {
+    const english = headings("en");
+    expect(english.length).toBeGreaterThan(5);
+    for (const locale of LOCALES) {
+      expect([locale, headings(locale)]).toEqual([locale, english]);
+    }
+  });
+
+  it("gives every language its own title and description", () => {
+    for (const locale of LOCALES.filter((l) => l !== "en")) {
+      expect([locale, ABOUT[locale].title]).not.toEqual([locale, ABOUT.en.title]);
+      expect([locale, ABOUT[locale].metaDescription]).not.toEqual([
+        locale,
+        ABOUT.en.metaDescription,
+      ]);
     }
   });
 });

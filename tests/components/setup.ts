@@ -26,6 +26,23 @@ vi.mock("next/font/google", () => {
   };
 });
 
+/**
+ * `next/image` is given its dimensions and blur placeholder by the Next build,
+ * which turns a static import into an object. Vitest hands the component a
+ * plain string instead, and it refuses to render without a width. The pages
+ * under test care that an image is there, not how it was optimised.
+ */
+vi.mock("next/image", async () => {
+  const { createElement } = await import("react");
+  return {
+    default: ({ src, alt, ...rest }: Record<string, unknown>) => {
+      const source =
+        typeof src === "string" ? src : String((src as { src?: string })?.src ?? "");
+      return createElement("img", { src: source, alt, ...rest });
+    },
+  };
+});
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn(), replace: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
