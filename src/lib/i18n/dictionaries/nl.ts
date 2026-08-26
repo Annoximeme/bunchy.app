@@ -1321,4 +1321,19 @@ export const nl: Dictionary = {
     openToAnyone: "Open voor iedereen",
     create: "Activiteit aanmaken",
   },
+
+  availability: {
+    freenow: "Nu vrij",
+    freetonight: "Vanavond vrij",
+    freethisweekend: "Dit weekend vrij",
+    lookingforsomething: "Op zoek naar iets om te doen",
+    lookingforpeople: "Op zoek naar mensen",
+    upforgaming: "Zin om te gamen",
+    upforactivities: "Zin in activiteiten",
+    opentomeeting: "Open om iemand nieuw te leren kennen",
+    upforfood: "Zin om te eten",
+    upforsports: "Zin om te sporten",
+    upfornightlife: "Zin om uit te gaan",
+    upforspontaneous: "Zin in iets spontaans",
+  },
 };

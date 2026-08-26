@@ -1328,4 +1328,19 @@ export const fr: Dictionary = {
     openToAnyone: "Ouvert à tous",
     create: "Créer l’activité",
   },
+
+  availability: {
+    freenow: "Libre maintenant",
+    freetonight: "Libre ce soir",
+    freethisweekend: "Libre ce week-end",
+    lookingforsomething: "En quête de quelque chose à faire",
+    lookingforpeople: "En quête de gens",
+    upforgaming: "Partant pour jouer",
+    upforactivities: "Partant pour des activités",
+    opentomeeting: "Ouvert à rencontrer quelqu’un",
+    upforfood: "Partant pour manger",
+    upforsports: "Partant pour du sport",
+    upfornightlife: "Partant pour une sortie",
+    upforspontaneous: "Partant pour un truc spontané",
+  },
 };

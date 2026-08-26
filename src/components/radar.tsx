@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import type { PhraseRef } from "@/lib/i18n/phrase";
 import { interestInSentence } from "@/lib/interests";
-import { Link, useFormats } from "@/components/link";
+import { Link, useFormats, useTranslate } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Card, Chip, EmptyState, ErrorNotice, LinkButton, Select, Spinner, cn } from "@/components/ui";
 
@@ -30,7 +31,7 @@ interface RadarItem {
 
 interface RadarData {
   items: RadarItem[];
-  clusters: Array<{ where: string; label: string; count: number }>;
+  clusters: Array<{ where: string; label: PhraseRef; count: number }>;
   applied: { withinKm: number | null; interest: string | null; mode: string | null };
   locationUnknown: boolean;
 }
@@ -56,6 +57,7 @@ export function Radar({
   initial: RadarData;
   interests: Array<{ slug: string; label: string }>;
 }) {
+  const t = useTranslate();
   const { activityWhen } = useFormats();
   const [data, setData] = useState(initial);
   const [withinKm, setWithinKm] = useState(String(initial.applied.withinKm ?? ""));
@@ -182,7 +184,7 @@ export function Radar({
             {data.clusters.slice(0, 4).map((cluster) => (
               <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong> near{" "}
-                {cluster.where}, {interestInSentence(cluster.label)}
+                {cluster.where}, {interestInSentence(t(cluster.label))}
               </li>
             ))}
           </ul>

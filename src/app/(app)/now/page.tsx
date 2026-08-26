@@ -14,6 +14,7 @@ import { openCalls } from "@/server/modules/activities/quick";
 import { OpenCalls } from "@/components/open-calls";
 import { brand } from "@/lib/brand";
 import { presentCount } from "@/server/modules/discord/presence";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Bunchy Now" };
 export const dynamic = "force-dynamic";
@@ -62,6 +63,7 @@ export default async function BunchyNowPage({
 }: {
   searchParams: Promise<{ horizon?: string; withinKm?: string; minScore?: string }>;
 }) {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const params = await searchParams;
 
@@ -133,7 +135,7 @@ export default async function BunchyNowPage({
                       {cluster.count}
                     </span>
                     <span className="text-sm text-ink-soft">
-                      {interestInSentence(cluster.label)}
+                      {interestInSentence(t(cluster.label))}
                       <span className="block text-xs text-muted">
                         near {cluster.where}
                       </span>
@@ -231,11 +233,12 @@ export default async function BunchyNowPage({
  * profile, and duplicating them here would mean a second place to keep the
  * permission checks right.
  */
-function NowPerson({
+async function NowPerson({
   person,
 }: {
   person: BunchyNowBoard["people"]["people"][number];
 }) {
+  const t = await getTranslations();
   return (
     <Card className="flex items-start gap-4">
       {/*
@@ -273,7 +276,7 @@ function NowPerson({
         {person.availability && (
           <p className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-teal-soft px-3 py-1 text-xs font-medium text-teal">
             <span className="size-1.5 rounded-full bg-teal" />
-            {person.availability.label}
+            {t(person.availability.label)}
           </p>
         )}
 

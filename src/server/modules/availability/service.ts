@@ -1,4 +1,6 @@
 import { db } from "@/server/db/client";
+import { AVAILABILITY_LABELS } from "@/lib/availability";
+import type { PhraseRef } from "@/lib/i18n/phrase";
 import type { AvailabilityKind, AudienceScope } from "@/generated/prisma/enums";
 import { forbidden, notFound, validationFailed } from "@/server/errors";
 import { track } from "@/server/modules/analytics/track";
@@ -85,27 +87,15 @@ export interface SetStatusInput {
 
 export interface AvailabilityStatusView {
   kind: AvailabilityKind;
-  label: string;
+  /** Where the words are; the caller knows the language. */
+  label: PhraseRef;
   note: string | null;
   interests: Array<{ id: string; label: string }>;
   mode: "ONLINE" | "OFFLINE" | null;
   expiresAt: Date;
 }
 
-export const AVAILABILITY_LABELS: Record<AvailabilityKind, string> = {
-  FREE_NOW: "Free now",
-  FREE_TONIGHT: "Free tonight",
-  FREE_THIS_WEEKEND: "Free this weekend",
-  LOOKING_FOR_SOMETHING: "Looking for something to do",
-  LOOKING_FOR_PEOPLE: "Looking for people",
-  UP_FOR_GAMING: "Up for gaming",
-  UP_FOR_ACTIVITIES: "Up for activities",
-  OPEN_TO_MEETING: "Open to meeting someone new",
-  UP_FOR_FOOD: "Up for food",
-  UP_FOR_SPORTS: "Up for sports",
-  UP_FOR_NIGHTLIFE: "Up for a night out",
-  UP_FOR_SPONTANEOUS: "Up for something spontaneous",
-};
+export { AVAILABILITY_LABELS } from "@/lib/availability";
 
 /**
  * The three horizons Bunchy Now filters on.
@@ -288,7 +278,8 @@ export interface AvailabilityCluster {
   /** A city label, never coordinates. */
   where: string;
   kind: AvailabilityKind;
-  label: string;
+  /** Where the words are. The reader's language is not this module's business. */
+  label: PhraseRef;
   count: number;
 }
 

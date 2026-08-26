@@ -1344,6 +1344,21 @@ export const en = {
     openToAnyone: "Open to anyone",
     create: "Create activity",
   },
+
+  availability: {
+    freenow: "Free now",
+    freetonight: "Free tonight",
+    freethisweekend: "Free this weekend",
+    lookingforsomething: "Looking for something to do",
+    lookingforpeople: "Looking for people",
+    upforgaming: "Up for gaming",
+    upforactivities: "Up for activities",
+    opentomeeting: "Open to meeting someone new",
+    upforfood: "Up for food",
+    upforsports: "Up for sports",
+    upfornightlife: "Up for a night out",
+    upforspontaneous: "Up for something spontaneous",
+  },
 } as const;
 
 /**

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import type { PhraseRef } from "@/lib/i18n/phrase";
 import { interestInSentence } from "@/lib/interests";
-import { Link, useFormats } from "@/components/link";
+import { Link, useFormats, useTranslate } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import {
   Avatar,
@@ -43,7 +44,7 @@ interface Reply {
   }>;
   bunches: Array<{ slug: string; name: string; memberCount: number; score: number }>;
   activities: Array<{ id: string; title: string; startsAt: string; cityLabel: string | null }>;
-  clusters: Array<{ where: string; label: string; count: number }>;
+  clusters: Array<{ where: string; label: PhraseRef; count: number }>;
   actions: Array<{ label: string; href: string; primary?: boolean }>;
 }
 
@@ -139,6 +140,7 @@ export function Assistant({ initialQuery = "" }: { initialQuery?: string }) {
 }
 
 function Answer({ reply }: { reply: Reply }) {
+  const t = useTranslate();
   const { activityWhen } = useFormats();
   return (
     <Card>
@@ -229,9 +231,9 @@ function Answer({ reply }: { reply: Reply }) {
       {reply.clusters.length > 0 && (
         <ul className="mt-4 space-y-1.5">
           {reply.clusters.slice(0, 5).map((cluster) => (
-            <li key={`${cluster.where}-${cluster.label}`} className="text-sm text-ink-soft">
+            <li key={`${cluster.where}-${cluster.label.path}`} className="text-sm text-ink-soft">
               <strong className="font-semibold tabular-nums">{cluster.count}</strong> near{" "}
-              {cluster.where}, {interestInSentence(cluster.label)}
+              {cluster.where}, {interestInSentence(t(cluster.label))}
             </li>
           ))}
         </ul>

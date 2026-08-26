@@ -1,8 +1,12 @@
 "use client";
 
+import { AVAILABILITY_LABELS } from "@/lib/availability";
+import type { PhraseRef } from "@/lib/i18n/phrase";
+import type { AvailabilityKind } from "@/generated/prisma/enums";
+
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import { Link } from "@/components/link";
+import { Link, useTranslate } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";
@@ -21,7 +25,7 @@ import { Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";
 
 export interface AvailabilityStatusView {
   kind: string;
-  label: string;
+  label: PhraseRef;
   note: string | null;
   interests: Array<{ id: string; label: string }>;
   expiresAt: string;
@@ -30,20 +34,20 @@ export interface AvailabilityStatusView {
 export interface ClusterView {
   where: string;
   kind: string;
-  label: string;
+  label: PhraseRef;
   count: number;
 }
 
 /** Ordered by how much of a commitment each is, shortest-lived first. */
-const KINDS: ReadonlyArray<{ kind: string; label: string; hours: number }> = [
-  { kind: "FREE_NOW", label: "Free now", hours: 3 },
-  { kind: "UP_FOR_GAMING", label: "Up for gaming", hours: 6 },
-  { kind: "FREE_TONIGHT", label: "Free tonight", hours: 8 },
-  { kind: "LOOKING_FOR_SOMETHING", label: "Looking for something to do", hours: 12 },
-  { kind: "LOOKING_FOR_PEOPLE", label: "Looking for people", hours: 24 },
-  { kind: "UP_FOR_ACTIVITIES", label: "Up for activities", hours: 24 },
-  { kind: "OPEN_TO_MEETING", label: "Open to meeting someone new", hours: 24 },
-  { kind: "FREE_THIS_WEEKEND", label: "Free this weekend", hours: 48 },
+const KINDS: ReadonlyArray<{ kind: AvailabilityKind; hours: number }> = [
+  { kind: "FREE_NOW", hours: 3 },
+  { kind: "UP_FOR_GAMING", hours: 6 },
+  { kind: "FREE_TONIGHT", hours: 8 },
+  { kind: "LOOKING_FOR_SOMETHING", hours: 12 },
+  { kind: "LOOKING_FOR_PEOPLE", hours: 24 },
+  { kind: "UP_FOR_ACTIVITIES", hours: 24 },
+  { kind: "OPEN_TO_MEETING", hours: 24 },
+  { kind: "FREE_THIS_WEEKEND", hours: 48 },
 ];
 
 export function WhosUp({
@@ -56,6 +60,7 @@ export function WhosUp({
   /** True when the member set Who's Up to "Nobody" in privacy settings. */
   disabled: boolean;
 }) {
+  const t = useTranslate();
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [note, setNote] = useState("");
@@ -129,7 +134,7 @@ export function WhosUp({
       {status ? (
         <div className="mt-3">
           <div className="flex flex-wrap items-center gap-2">
-            <Chip tone="positive">{status.label}</Chip>
+            <Chip tone="positive">{t(status.label)}</Chip>
             <span className="text-sm text-muted">
               until {formatExpiry(status.expiresAt)}
             </span>
@@ -190,7 +195,7 @@ export function WhosUp({
                       : "border-line hover:bg-surface-sunken",
                   )}
                 >
-                  {option.label}
+                  {t(AVAILABILITY_LABELS[option.kind])}
                   <span className="ml-1.5 text-xs text-muted">{option.hours}h</span>
                 </button>
               </li>
@@ -207,7 +212,7 @@ export function WhosUp({
               <li key={`${cluster.where}-${cluster.kind}`} className="text-sm text-ink-soft">
                 <strong className="font-semibold tabular-nums">{cluster.count}</strong>{" "}
                 {cluster.count === 1 ? "person" : "people"} near {cluster.where},{" "}
-                {interestInSentence(cluster.label)}
+                {interestInSentence(t(cluster.label))}
               </li>
             ))}
           </ul>

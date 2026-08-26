@@ -17,6 +17,7 @@ import {
 import { ageFrom } from "@/server/modules/profile/serialize";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
+import type { PhraseRef } from "@/lib/i18n/phrase";
 
 /**
  * "Find someone to play Fortnite with."
@@ -48,7 +49,11 @@ export interface FoundPerson extends PersonMatch {
   age: number | null;
   locationLabel: string | null;
   /** Their live Who's Up status, when they have one this viewer may see. */
-  availability: { kind: AvailabilityKind; label: string; note: string | null } | null;
+  availability: {
+    kind: AvailabilityKind;
+    label: PhraseRef;
+    note: string | null;
+  } | null;
   /** Already connected. Shown so "invite a friend" reads differently from "meet a stranger". */
   connected: boolean;
 }
