@@ -1291,6 +1291,59 @@ export const en = {
     tooNew: "Too new to tell",
     shortHistory: "Based on a short history, so treat it loosely.",
   },
+
+  activities: {
+    title: "Activities",
+    subtitle: "The point of all this. Somewhere to actually turn up.",
+    yours: "You’re going to",
+    emptyCalendar: "Nothing in your calendar yet",
+    emptyCalendarBody:
+      "Join something below, or plan the thing you wish existed. Most people are waiting for someone else to suggest it.",
+    worthLook: "Worth a look",
+    worthLookSubtitle: "Near you, at a time you’re usually free.",
+    everything: "Everything coming up",
+    nothingPlanned: "Nothing planned yet",
+    nothingPlannedBody:
+      "Be the first. One person suggesting a coffee is how most of this starts.",
+    plan: "Plan something",
+  },
+
+  activityForm: {
+    title: "Plan something",
+    subtitle: "Small and soon beats ambitious and someday.",
+    what: "What’s the plan?",
+    whatPlaceholder: "Coffee & board games",
+    describe: "Tell people what to expect",
+    describeHint: "What you’ll do, who it suits, anything to bring.",
+    describePlaceholder:
+      "Bring a game or just turn up. We’ll be at the big table near the window.",
+    when: "When",
+    howMany: "How many people",
+    where: "Where",
+    inPerson: "In person",
+    online: "Online",
+    venue: "Venue",
+    venueHint: "A venue or neighbourhood. Never post your home address here.",
+    venuePlaceholder: "Bar Bassin, Antwerp",
+    meetingPoint: "Meeting point",
+    meetingPointHint:
+      "Only people who join can see this. Which door, which floor, what you will be wearing. Optional, and the thing that turns a joined plan into somebody actually finding you.",
+    meetingPointPlaceholder: "Upstairs, the long table by the window",
+    whereOnline: "Where online",
+    whereOnlineHint: "Only people who join can see this.",
+    repeats: "Does it repeat?",
+    repeatsHint:
+      "A repeating plan becomes a standing arrangement. Anyone who joins it is in for every one, and can still miss a week without leaving.",
+    once: "Just this once",
+    weekly: "Every week",
+    biweekly: "Every two weeks",
+    monthly: "Every month",
+    forBunch: "For a bunch?",
+    forBunchHint:
+      "Bunch members get told about it. Leave empty to make it open to everyone.",
+    openToAnyone: "Open to anyone",
+    create: "Create activity",
+  },
 } as const;
 
 /**

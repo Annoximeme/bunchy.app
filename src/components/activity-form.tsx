@@ -10,7 +10,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import { useLocaleRouter } from "@/components/link";
+import { useLocaleRouter, useTranslate } from "@/components/link";
 
 /** A local datetime string for `<input type="datetime-local">`, an hour ahead. */
 function defaultStart(): string {
@@ -35,6 +35,7 @@ export function ActivityForm({
   defaultCity: string | null;
   defaultCountry: string | null;
 }) {
+  const t = useTranslate();
   const router = useLocaleRouter();
   /*
     Online first, matching the schema default.
@@ -94,7 +95,7 @@ export function ActivityForm({
     <form onSubmit={form.onSubmit} className="space-y-6">
       <FormError state={form} />
 
-      <Field label="What's the plan?" htmlFor="title" error={form.fields.title}>
+      <Field label={t("activityForm.what")} htmlFor="title" error={form.fields.title}>
         <Input
           id="title"
           name="title"
@@ -102,15 +103,15 @@ export function ActivityForm({
           minLength={3}
           maxLength={100}
           defaultValue={defaultTitle}
-          placeholder="Coffee & board games"
+          placeholder={t("activityForm.whatPlaceholder")}
         />
       </Field>
 
       <Field
-        label="Tell people what to expect"
+        label={t("activityForm.describe")}
         htmlFor="description"
         error={form.fields.description}
-        hint="What you'll do, who it suits, anything to bring."
+        hint={t("activityForm.describeHint")}
       >
         <Textarea
           id="description"
@@ -119,12 +120,12 @@ export function ActivityForm({
           minLength={10}
           maxLength={1500}
           defaultValue={defaultDescription}
-          placeholder="Bring a game or just turn up. We'll be at the big table near the window."
+          placeholder={t("activityForm.describePlaceholder")}
         />
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="When" htmlFor="startsAt" error={form.fields.startsAt}>
+        <Field label={t("activityForm.when")} htmlFor="startsAt" error={form.fields.startsAt}>
           <Input
             id="startsAt"
             name="startsAt"
@@ -135,7 +136,7 @@ export function ActivityForm({
         </Field>
 
         <Field
-          label="How many people"
+          label={t("activityForm.howMany")}
           htmlFor="maxParticipants"
           error={form.fields.maxParticipants}
         >
@@ -151,30 +152,30 @@ export function ActivityForm({
         </Field>
       </div>
 
-      <Field label="Where" htmlFor="mode">
+      <Field label={t("activityForm.where")} htmlFor="mode">
         <Select
           id="mode"
           value={mode}
           onChange={(e) => setMode(e.target.value as "OFFLINE" | "ONLINE")}
         >
-          <option value="OFFLINE">In person</option>
-          <option value="ONLINE">Online</option>
+          <option value="OFFLINE">{t("activityForm.inPerson")}</option>
+          <option value="ONLINE">{t("activityForm.online")}</option>
         </Select>
       </Field>
 
       {mode === "OFFLINE" ? (
         <Field
-          label="Venue"
+          label={t("activityForm.venue")}
           htmlFor="locationLabel"
           error={form.fields.locationLabel}
-          hint="A venue or neighbourhood. Never post your home address here."
+          hint={t("activityForm.venueHint")}
         >
           <Input
             id="locationLabel"
             name="locationLabel"
             required
             maxLength={160}
-            placeholder="Bar Bassin, Antwerp"
+            placeholder={t("activityForm.venuePlaceholder")}
           />
         </Field>
       ) : null}
@@ -188,24 +189,24 @@ export function ActivityForm({
       */}
       {mode === "OFFLINE" ? (
         <Field
-          label="Meeting point"
+          label={t("activityForm.meetingPoint")}
           htmlFor="meetingPoint"
-          hint="Only people who join can see this. Which door, which floor, what you will be wearing. Optional, and the thing that turns a joined plan into somebody actually finding you."
+          hint={t("activityForm.meetingPointHint")}
           error={form.fields.meetingPoint}
         >
           <Input
             id="meetingPoint"
             name="meetingPoint"
             maxLength={200}
-            placeholder="Upstairs, the long table by the window"
+            placeholder={t("activityForm.meetingPointPlaceholder")}
           />
         </Field>
       ) : (
         <Field
-          label="Where online"
+          label={t("activityForm.whereOnline")}
           htmlFor="onlineUrl"
           error={form.fields.onlineUrl}
-          hint="Only people who join can see this."
+          hint={t("activityForm.whereOnlineHint")}
         >
           <Input
             id="onlineUrl"
@@ -227,10 +228,10 @@ export function ActivityForm({
         plans are.
       */}
       <Field
-        label="Does it repeat?"
+        label={t("activityForm.repeats")}
         htmlFor="cadence"
         error={form.fields.cadence}
-        hint="A repeating plan becomes a standing arrangement. Anyone who joins it is in for every one, and can still miss a week without leaving."
+        hint={t("activityForm.repeatsHint")}
       >
         <Select
           id="cadence"
@@ -238,22 +239,22 @@ export function ActivityForm({
           value={cadence}
           onChange={(event) => setCadence(event.target.value)}
         >
-          <option value="">Just this once</option>
-          <option value="WEEKLY">Every week</option>
-          <option value="BIWEEKLY">Every two weeks</option>
-          <option value="MONTHLY">Every month</option>
+          <option value="">{t("activityForm.once")}</option>
+          <option value="WEEKLY">{t("activityForm.weekly")}</option>
+          <option value="BIWEEKLY">{t("activityForm.biweekly")}</option>
+          <option value="MONTHLY">{t("activityForm.monthly")}</option>
         </Select>
       </Field>
 
       {bunches.length > 0 && (
         <Field
-          label="For a bunch?"
+          label={t("activityForm.forBunch")}
           htmlFor="bunchId"
           error={form.fields.bunchId}
-          hint="Bunch members get told about it. Leave empty to make it open to everyone."
+          hint={t("activityForm.forBunchHint")}
         >
           <Select id="bunchId" name="bunchId" defaultValue={defaultBunchId ?? ""}>
-            <option value="">Open to anyone</option>
+            <option value="">{t("activityForm.openToAnyone")}</option>
             {bunches.map((bunch) => (
               <option key={bunch.id} value={bunch.id}>
                 {bunch.name}
@@ -264,7 +265,7 @@ export function ActivityForm({
       )}
 
       <Button type="submit" loading={form.pending} size="lg" className="w-full">
-        Create activity
+        {t("activityForm.create")}
       </Button>
     </form>
   );

@@ -1268,4 +1268,57 @@ export const nl: Dictionary = {
     tooNew: "Te nieuw om iets te zeggen",
     shortHistory: "Gebaseerd op een korte geschiedenis, dus neem het met een korrel zout.",
   },
+
+  activities: {
+    title: "Activiteiten",
+    subtitle: "Waar het allemaal om draait. Ergens waar je echt naartoe gaat.",
+    yours: "Jij gaat naar",
+    emptyCalendar: "Nog niets in je agenda",
+    emptyCalendarBody:
+      "Doe hieronder mee met iets, of plan het ding waarvan je wil dat het bestond. De meeste mensen wachten tot iemand anders het voorstelt.",
+    worthLook: "De moeite om te bekijken",
+    worthLookSubtitle: "In je buurt, op een moment dat je meestal vrij bent.",
+    everything: "Alles wat eraan komt",
+    nothingPlanned: "Nog niets gepland",
+    nothingPlannedBody:
+      "Wees de eerste. Eén iemand die koffie voorstelt, is hoe dit meestal begint.",
+    plan: "Plan iets",
+  },
+
+  activityForm: {
+    title: "Plan iets",
+    subtitle: "Klein en binnenkort is beter dan ambitieus en ooit.",
+    what: "Wat is het plan?",
+    whatPlaceholder: "Koffie & gezelschapsspelen",
+    describe: "Zeg wat mensen mogen verwachten",
+    describeHint: "Wat jullie doen, voor wie het is, en wat je moet meebrengen.",
+    describePlaceholder:
+      "Breng een spel mee of kom gewoon af. Wij zitten aan de grote tafel bij het raam.",
+    when: "Wanneer",
+    howMany: "Hoeveel mensen",
+    where: "Waar",
+    inPerson: "In het echt",
+    online: "Online",
+    venue: "Locatie",
+    venueHint: "Een zaak of een buurt. Zet hier nooit je thuisadres.",
+    venuePlaceholder: "Bar Bassin, Antwerpen",
+    meetingPoint: "Afspreekplaats",
+    meetingPointHint:
+      "Alleen wie meedoet, ziet dit. Welke deur, welke verdieping, wat je aanhebt. Optioneel, en net het ding dat van een plan waar iemand aan meedoet, iemand maakt die je ook echt vindt.",
+    meetingPointPlaceholder: "Boven, de lange tafel bij het raam",
+    whereOnline: "Waar online",
+    whereOnlineHint: "Alleen wie meedoet, ziet dit.",
+    repeats: "Herhaalt het zich?",
+    repeatsHint:
+      "Een herhalend plan wordt een vaste afspraak. Wie meedoet, doet elke keer mee, en kan nog altijd een week overslaan zonder eruit te gaan.",
+    once: "Eenmalig",
+    weekly: "Elke week",
+    biweekly: "Om de twee weken",
+    monthly: "Elke maand",
+    forBunch: "Voor een bunch?",
+    forBunchHint:
+      "De leden van de bunch krijgen het te horen. Laat leeg om het voor iedereen open te zetten.",
+    openToAnyone: "Open voor iedereen",
+    create: "Activiteit aanmaken",
+  },
 };

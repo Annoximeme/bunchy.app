@@ -1275,4 +1275,57 @@ export const fr: Dictionary = {
     tooNew: "Trop récent pour le dire",
     shortHistory: "Basé sur un historique court, à prendre avec des pincettes.",
   },
+
+  activities: {
+    title: "Activités",
+    subtitle: "Tout est là. Un endroit où se pointer pour de vrai.",
+    yours: "Tu participes à",
+    emptyCalendar: "Rien encore dans ton agenda",
+    emptyCalendarBody:
+      "Rejoins quelque chose ci-dessous, ou organise ce que tu aimerais voir exister. La plupart des gens attendent que quelqu’un d’autre le propose.",
+    worthLook: "Ça vaut un coup d’œil",
+    worthLookSubtitle: "Près de chez toi, à une heure où tu es d’habitude libre.",
+    everything: "Tout ce qui arrive",
+    nothingPlanned: "Rien de prévu pour l’instant",
+    nothingPlannedBody:
+      "Sois le premier. Une personne qui propose un café, c’est comme ça que ça commence le plus souvent.",
+    plan: "Organiser quelque chose",
+  },
+
+  activityForm: {
+    title: "Organiser quelque chose",
+    subtitle: "Petit et bientôt vaut mieux qu’ambitieux et un jour.",
+    what: "C’est quoi le plan ?",
+    whatPlaceholder: "Café & jeux de société",
+    describe: "Dis aux gens à quoi s’attendre",
+    describeHint: "Ce que vous ferez, à qui ça convient, ce qu’il faut apporter.",
+    describePlaceholder:
+      "Apporte un jeu ou viens simplement. On sera à la grande table près de la fenêtre.",
+    when: "Quand",
+    howMany: "Combien de personnes",
+    where: "Où",
+    inPerson: "En vrai",
+    online: "En ligne",
+    venue: "Lieu",
+    venueHint: "Un établissement ou un quartier. N’écris jamais ton adresse ici.",
+    venuePlaceholder: "Bar Bassin, Anvers",
+    meetingPoint: "Point de rendez-vous",
+    meetingPointHint:
+      "Seuls ceux qui participent le voient. Quelle porte, quel étage, ce que tu porteras. Facultatif, et c’est ce qui transforme un plan rejoint en quelqu’un qui te trouve vraiment.",
+    meetingPointPlaceholder: "À l’étage, la longue table près de la fenêtre",
+    whereOnline: "Où en ligne",
+    whereOnlineHint: "Seuls ceux qui participent le voient.",
+    repeats: "Ça se répète ?",
+    repeatsHint:
+      "Un plan qui se répète devient un rendez-vous régulier. Qui le rejoint est là à chaque fois, et peut toujours sauter une semaine sans partir.",
+    once: "Juste cette fois",
+    weekly: "Chaque semaine",
+    biweekly: "Toutes les deux semaines",
+    monthly: "Chaque mois",
+    forBunch: "Pour un bunch ?",
+    forBunchHint:
+      "Les membres du bunch en sont informés. Laisse vide pour l’ouvrir à tout le monde.",
+    openToAnyone: "Ouvert à tous",
+    create: "Créer l’activité",
+  },
 };

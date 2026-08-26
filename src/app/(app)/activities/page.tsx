@@ -9,11 +9,13 @@ import { seriesForProfile } from "@/server/modules/activities/series";
 import { YourRegulars } from "@/components/your-regulars";
 import { outcomeReview } from "@/server/modules/activities/outcomes";
 import { OutcomeReviewCard } from "@/components/outcome-review";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Activities" };
 export const dynamic = "force-dynamic";
 
 export default async function ActivitiesPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
 
   const [mine, suggested, upcoming, regulars, review] = await Promise.all([
@@ -29,9 +31,9 @@ export default async function ActivitiesPage() {
   return (
     <PageShell>
       <PageHeader
-        title="Activities"
-        subtitle="The point of all this. Somewhere to actually turn up."
-        action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+        title={t("activities.title")}
+        subtitle={t("activities.subtitle")}
+        action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
       />
 
       {/*
@@ -54,13 +56,13 @@ export default async function ActivitiesPage() {
 
       <div className="space-y-12">
         <section>
-          <SectionHeading title="You're going to" />
+          <SectionHeading title={t("activities.yours")} />
           {mine.length === 0 ? (
             <EmptyState
               icon="📍"
-              title="Nothing in your calendar yet"
-              description="Join something below, or plan the thing you wish existed. Most people are waiting for someone else to suggest it."
-              action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+              title={t("activities.emptyCalendar")}
+              description={t("activities.emptyCalendarBody")}
+              action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
             />
           ) : (
             <div className="space-y-3">
@@ -88,8 +90,8 @@ export default async function ActivitiesPage() {
         {suggested.length > 0 && (
           <section>
             <SectionHeading
-              title="Worth a look"
-              subtitle="Near you, at a time you're usually free."
+              title={t("activities.worthLook")}
+              subtitle={t("activities.worthLookSubtitle")}
             />
             <div className="space-y-3">
               {suggested
@@ -116,13 +118,13 @@ export default async function ActivitiesPage() {
         )}
 
         <section>
-          <SectionHeading title="Everything coming up" />
+          <SectionHeading title={t("activities.everything")} />
           {upcoming.length === 0 ? (
             <EmptyState
               icon="🗓"
-              title="Nothing planned yet"
-              description="Be the first. One person suggesting a coffee is how most of this starts."
-              action={<LinkButton href="/activities/new">Plan something</LinkButton>}
+              title={t("activities.nothingPlanned")}
+              description={t("activities.nothingPlannedBody")}
+              action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
             />
           ) : (
             <div className="space-y-3">

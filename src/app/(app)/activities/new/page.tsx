@@ -3,6 +3,7 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { ActivityForm } from "@/components/activity-form";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Plan something" };
 
@@ -11,6 +12,7 @@ export default async function NewActivityPage({
 }: {
   searchParams: Promise<{ bunchId?: string; title?: string; description?: string }>;
 }) {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const params = await searchParams;
 
@@ -29,8 +31,8 @@ export default async function NewActivityPage({
     <PageShell>
       <div className="mx-auto max-w-2xl">
         <PageHeader
-          title="Plan something"
-          subtitle="Small and soon beats ambitious and someday."
+          title={t("activityForm.title")}
+          subtitle={t("activityForm.subtitle")}
         />
         <ActivityForm
           bunches={memberships.map((m) => m.bunch)}
