@@ -890,4 +890,15 @@ export const nl: Dictionary = {
     moreAbout: "Meer over {brand}",
     documentNav: "Documenten",
   },
+
+  moderators: {
+    applyTitle: "Je kandidaat stellen",
+    applied: "Je hebt je op {date} kandidaat gesteld, en dat staat als {status}. We lezen ze allemaal en antwoorden. Duurt het meer dan een paar weken, por ons dan op via {contact}.",
+    threeQuestions:
+      "Drie vragen. Op de tweede bestaat geen fout antwoord, en “ik heb nog nooit iets gemodereerd” is een prima antwoord op de derde. De meeste goede moderatoren hadden dat ook niet.",
+    needAccount:
+      "Je hebt een account nodig om je kandidaat te stellen, want een moderator moet iemand zijn met een geschiedenis hier, niet een adres dat we nog nooit gezien hebben.",
+    createAccount: "Maak een account",
+    signIn: "Aanmelden",
+  },
 };

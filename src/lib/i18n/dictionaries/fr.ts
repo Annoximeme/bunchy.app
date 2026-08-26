@@ -895,4 +895,15 @@ export const fr: Dictionary = {
     moreAbout: "En savoir plus sur {brand}",
     documentNav: "Documents",
   },
+
+  moderators: {
+    applyTitle: "Poser sa candidature",
+    applied: "Tu as posé ta candidature le {date}, et elle est marquée {status}. On les lit toutes et on répond. Si ça fait plus de deux semaines, relance-nous à {contact}.",
+    threeQuestions:
+      "Trois questions. Il n’y a pas de mauvaise réponse à la deuxième, et « je n’ai jamais rien modéré » est une très bonne réponse à la troisième. La plupart des bons modérateurs non plus.",
+    needAccount:
+      "Il faut un compte pour postuler, parce qu’un modérateur doit être quelqu’un qui a une histoire ici, pas une adresse qu’on n’a jamais vue.",
+    createAccount: "Créer un compte",
+    signIn: "Se connecter",
+  },
 };

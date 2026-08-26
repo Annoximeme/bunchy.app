@@ -6,6 +6,7 @@ import type { LegalDocumentSet } from "@/content/legal/document";
 import { SAFETY } from "@/content/legal/safety";
 import { PRIVACY } from "@/content/legal/privacy";
 import { TERMS } from "@/content/legal/terms";
+import { MODERATORS } from "@/content/legal/moderators";
 
 /**
  * The policy documents, held to the same shape in every language.
@@ -23,6 +24,7 @@ const DOCUMENTS: Array<[string, LegalDocumentSet]> = [
   ["Meeting safely", SAFETY],
   ["Privacy", PRIVACY],
   ["Terms", TERMS],
+  ["Volunteer moderators", MODERATORS],
 ];
 
 function clauseIds(set: LegalDocumentSet, locale: Locale): string[] {

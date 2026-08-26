@@ -919,6 +919,17 @@ export const en = {
     moreAbout: "More about {brand}",
     documentNav: "Documents",
   },
+
+  moderators: {
+    applyTitle: "Applying",
+    applied: "You applied on {date}, and it is marked {status}. We read every one and reply. If it has been more than a couple of weeks, chase us at {contact}.",
+    threeQuestions:
+      "Three questions. There is no wrong answer to the second one, and “I have never moderated anything” is a perfectly good answer to the third. Most good moderators have not.",
+    needAccount:
+      "You need an account to apply, because a moderator has to be somebody with a history here rather than an address we have never seen.",
+    createAccount: "Create an account",
+    signIn: "Sign in",
+  },
 } as const;
 
 /**

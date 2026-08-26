@@ -11,7 +11,8 @@ import type { ModeratorApplicationStatus } from "@/generated/prisma/enums";
  * to read that on a volunteer basis is not something a product should do.
  */
 
-export const MINIMUM_AGE = 18;
+export { MINIMUM_AGE } from "@/lib/moderation";
+import { MINIMUM_AGE } from "@/lib/moderation";
 
 /** Nobody is asked for more than this, and nobody should offer more. */
 export const MAX_HOURS_PER_WEEK = 10;
