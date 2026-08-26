@@ -31,18 +31,42 @@ describe("who operates Bunchy", () => {
 });
 
 describe("the policy matches the code", () => {
-  const privacy = readFileSync("src/app/(legal)/privacy/page.tsx", "utf8");
+  /**
+   * The English document, which is the source the other two are translated
+   * from. It moved out of the page when the policies were translated: the page
+   * is now four lines that pick a language, and the words live in
+   * `content/legal/privacy`.
+   */
+  const privacy = readFileSync("src/content/legal/privacy/en.tsx", "utf8");
+
+  /**
+   * Every language, for the claims that are numbers.
+   *
+   * A mistranslated sentence is a copy problem and a human will catch it. A
+   * mistranslated *number* is a false statement about what the software does,
+   * in a document that is supposed to be enforceable, and nobody rereads the
+   * Dutch policy looking for it.
+   */
+  const allLanguages = ["en", "nl", "fr"].map((locale) =>
+    readFileSync(`src/content/legal/privacy/${locale}.tsx`, "utf8"),
+  );
 
   it("states the same session lifetime the auth layer enforces", () => {
     const session = readFileSync("src/server/auth/session.ts", "utf8");
     expect(session).toContain("30 * 24 * 60 * 60 * 1000");
     expect(privacy).toContain("30 days");
+    for (const document of allLanguages) {
+      expect(document).toMatch(/\b30\b/);
+    }
   });
 
   it("states the same minimum age the schema enforces", () => {
     const schemas = readFileSync("src/server/modules/profile/schemas.ts", "utf8");
     expect(schemas).toContain("CURRENT_YEAR - 16");
     expect(privacy).toContain("16 or over");
+    for (const document of allLanguages) {
+      expect(document).toMatch(/\b16\b/);
+    }
   });
 
   it("claims no page-view tracking, and the taxonomy has none", async () => {
