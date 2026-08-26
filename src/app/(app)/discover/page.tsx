@@ -16,6 +16,8 @@ import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageShell } from "@/components/page-header";
 import { YourWeek } from "@/components/your-week";
+import { FinishProfile } from "@/components/finish-profile";
+import { outstandingOnboarding } from "@/server/modules/profile/service";
 import { upcomingForProfile } from "@/server/modules/activities/series";
 import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { IntroductionCard } from "@/components/introduction-card";
@@ -80,6 +82,7 @@ export default async function DiscoverPage() {
     outcome,
     introduction,
     week,
+    outstanding,
   ] = await Promise.all([
     recommendPeople(viewer.profileId, { limit: 8 }),
     recommendBunches(viewer.profileId, 6),
@@ -101,7 +104,11 @@ export default async function DiscoverPage() {
     // What they have already decided to do. Loaded alongside the
     // recommendations rather than after them, because it renders above them
     // and a sequential fetch would hold the whole page on the shorter query.
-    upcomingForProfile(viewer.profileId)
+    upcomingForProfile(viewer.profileId),
+    // Two counts. Cheap enough to ask on every load, and asking it here rather
+    // than storing a "they skipped it" flag means it answers itself the moment
+    // the member fills either one in, from anywhere.
+    outstandingOnboarding(viewer.profileId),
   ]);
 
   if (introduction) {
@@ -151,6 +158,8 @@ export default async function DiscoverPage() {
           </Link>
         </div>
       )}
+
+      <FinishProfile outstanding={outstanding} />
 
       {outcome && (
         <div className="mb-6">

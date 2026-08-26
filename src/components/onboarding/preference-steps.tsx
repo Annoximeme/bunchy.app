@@ -195,6 +195,7 @@ export function GoalsStep({ initial }: { initial: string[] }) {
       options={GOALS.map((g) => ({ ...g }))}
       minimum={1}
       minimumMessage="Pick at least one so we know who to introduce you to."
+      skippable
       columns
     />
   );
@@ -222,6 +223,7 @@ export function AvailabilityStep({ initial }: { initial: string[] }) {
       minimum={1}
       minimumMessage="Pick at least one so we only suggest things you can make."
       submitLabel="Finish"
+      skippable
       columns
     />
   );
@@ -237,6 +239,7 @@ function MultiSelectStep({
   minimum,
   minimumMessage,
   submitLabel = "Continue",
+  skippable = false,
   columns = false,
 }: {
   endpoint: string;
@@ -246,11 +249,22 @@ function MultiSelectStep({
   minimum: number;
   minimumMessage: string;
   submitLabel?: string;
+  /**
+   * Whether this step can be left for later.
+   *
+   * True for goals and availability, and only those two. Everything before
+   * them is load-bearing: a member with no name, no interests and no
+   * personality answers cannot be matched to anybody. These two make matching
+   * better and it runs without them, so holding a new member at them, between
+   * signing up and the first screen worth seeing, is a bad trade.
+   */
+  skippable?: boolean;
   columns?: boolean;
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set(initial));
   const [pending, setPending] = useState(false);
+  const [skipping, setSkipping] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function toggle(value: string) {
@@ -279,6 +293,21 @@ function MultiSelectStep({
     } catch (cause) {
       setError(errorMessage(cause));
       setPending(false);
+    }
+  }
+
+  async function skip() {
+    setSkipping(true);
+    setError(null);
+    try {
+      const result = await api<{ next: string }>("/api/onboarding/skip", {
+        method: "POST",
+      });
+      router.push(result.next);
+      router.refresh();
+    } catch (cause) {
+      setError(errorMessage(cause));
+      setSkipping(false);
     }
   }
 
@@ -316,9 +345,28 @@ function MultiSelectStep({
         })}
       </div>
 
-      <Button onClick={submit} loading={pending} size="lg" className="w-full">
-        {submitLabel}
-      </Button>
+      <div className="space-y-3">
+        <Button onClick={submit} loading={pending} size="lg" className="w-full">
+          {submitLabel}
+        </Button>
+
+        {/*
+          Underneath rather than beside, and worded as what it is. "Skip" reads
+          as throwing the question away; this one is genuinely still there
+          afterwards, and saying so is the difference between a member who
+          answers it next week and one who assumes they cannot.
+        */}
+        {skippable && (
+          <Button
+            variant="ghost"
+            onClick={skip}
+            loading={skipping}
+            className="w-full"
+          >
+            I&rsquo;ll answer this later
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

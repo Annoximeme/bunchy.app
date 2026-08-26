@@ -8,6 +8,7 @@ import {
   personalitySchema,
 } from "@/server/modules/profile/schemas";
 import {
+  nextAfterGoals,
   saveAvailability,
   saveBasics,
   saveGoals,
@@ -33,7 +34,9 @@ const STEPS = {
     save: savePersonality,
     next: "/onboarding/goals",
   },
-  goals: { schema: goalsSchema, save: saveGoals, next: "/onboarding/availability" },
+  // The only step whose destination depends on who is answering it: during
+  // onboarding it leads to availability, afterwards it leads back to Discover.
+  goals: { schema: goalsSchema, save: saveGoals, next: nextAfterGoals },
   availability: {
     schema: availabilitySchema,
     save: saveAvailability,
@@ -65,6 +68,11 @@ export async function POST(
       input,
     );
 
-    return { ok: true, next: handler.next };
+    const next =
+      typeof handler.next === "function"
+        ? await handler.next(viewer.profileId)
+        : handler.next;
+
+    return { ok: true, next };
   });
 }

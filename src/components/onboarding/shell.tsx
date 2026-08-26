@@ -53,6 +53,16 @@ export function OnboardingShell({
       <div className="animate-rise">
         <p className="text-sm font-medium text-accent-ink">
           Step {index + 1} of {ONBOARDING_STEPS.length}
+          {/*
+            The estimate is on the first step and nowhere else. Somebody who
+            has already started can see the bar and count the steps left; it is
+            the person deciding whether to begin who has no idea what they are
+            agreeing to, and "five steps" says nothing about whether that is
+            two minutes or twenty.
+          */}
+          {index === 0 && (
+            <span className="font-normal text-muted">, about three minutes</span>
+          )}
         </p>
         <h1 className="mt-2 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
           {question}

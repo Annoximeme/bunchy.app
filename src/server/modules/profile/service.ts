@@ -288,6 +288,13 @@ export async function saveAvailability(
   profileId: string,
   input: AvailabilityInput,
 ): Promise<void> {
+  const stage = await currentStage(profileId);
+  // Somebody who skipped this step and answered it a fortnight later is not
+  // finishing onboarding again. They keep the date they actually finished on,
+  // and the funnel counts them once, or the completion chart would show more
+  // completions than there are members.
+  const finishing = stage !== "COMPLETE";
+
   await db.$transaction([
     db.profileAvailability.deleteMany({ where: { profileId } }),
     db.profileAvailability.createMany({
@@ -295,14 +302,104 @@ export async function saveAvailability(
     }),
     db.profile.update({
       where: { id: profileId },
-      data: { onboardingStage: "COMPLETE", onboardedAt: new Date() },
+      data: {
+        onboardingStage: "COMPLETE",
+        ...(finishing ? { onboardedAt: new Date() } : {}),
+      },
     }),
   ]);
 
-  // Earned by finishing, not by signing up, see `awardFoundingMember`.
+  // Earned by finishing, not by signing up, see `awardFoundingMember`. Safe to
+  // ask again: it refuses to award twice.
   await awardFoundingMember(profileId);
 
-  track({ name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED, profileId });
+  if (finishing) {
+    track({ name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED, profileId });
+  }
+}
+
+/**
+ * Finish onboarding without answering the last two questions.
+ *
+ * Goals and availability are the only two steps the product can work without.
+ * Everything before them is load-bearing: a member with no name, no interests
+ * and no personality answers cannot be matched to anybody and cannot be shown
+ * to anybody either. These two make the matching better and neither is
+ * required for it to run at all.
+ *
+ * Which makes holding somebody at them a bad trade. Every step before the
+ * first useful screen is somewhere to give up, and the two most skippable
+ * questions were sitting between a new member and the thing they signed up to
+ * see. They can answer them from their profile the moment they have any reason
+ * to, and `outstandingOnboarding` below is what makes sure they are asked.
+ *
+ * Deliberately not silent. Nothing is filled in on their behalf, and the empty
+ * answers stay empty rather than being defaulted to something that would make
+ * the matching engine act on a preference nobody stated.
+ */
+export async function finishOnboardingEarly(profileId: string): Promise<void> {
+  const stage = await currentStage(profileId);
+  // Only from the two steps that are skippable. Anywhere earlier and this
+  // would be a way to skip the questions the product actually needs.
+  if (stage !== "GOALS" && stage !== "AVAILABILITY") {
+    throw conflict("There is nothing to skip yet.");
+  }
+
+  await db.profile.update({
+    where: { id: profileId },
+    data: { onboardingStage: "COMPLETE", onboardedAt: new Date() },
+  });
+
+  // Earned by finishing, and finishing early is still finishing. Somebody who
+  // came back later and answered the rest would otherwise be a member who
+  // completed onboarding twice and was rewarded for neither.
+  await awardFoundingMember(profileId);
+
+  track({
+    name: ANALYTICS_EVENTS.ONBOARDING_COMPLETED,
+    profileId,
+    properties: { skippedFrom: stage },
+  });
+}
+
+/**
+ * The onboarding questions a member skipped and could still answer.
+ *
+ * Read from the answers themselves rather than from a "they skipped it" flag,
+ * because the two can disagree and the answers are the thing that is true. A
+ * member who skipped goals and later picked some has nothing outstanding, and
+ * nothing had to remember to clear a flag for that to be so.
+ */
+export async function outstandingOnboarding(
+  profileId: string,
+): Promise<Array<"goals" | "availability">> {
+  const [goals, availability] = await Promise.all([
+    db.profileSocialGoal.count({ where: { profileId } }),
+    db.profileAvailability.count({ where: { profileId } }),
+  ]);
+
+  const outstanding: Array<"goals" | "availability"> = [];
+  if (goals === 0) outstanding.push("goals");
+  if (availability === 0) outstanding.push("availability");
+  return outstanding;
+}
+
+/**
+ * Where the goals step leads once it has been answered.
+ *
+ * Straight on to availability during onboarding, which is the order the steps
+ * have always run in. Somebody answering it later from the reminder on
+ * Discover has already finished, so send them back to what they were doing,
+ * unless availability happens to be the other thing they left for later.
+ */
+export async function nextAfterGoals(profileId: string): Promise<string> {
+  const stage = await currentStage(profileId);
+  if (stage !== "COMPLETE") return "/onboarding/availability";
+
+  const outstanding = await outstandingOnboarding(profileId);
+  return outstanding.includes("availability")
+    ? "/onboarding/availability"
+    : "/discover";
 }
 
 export async function savePrivacy(
