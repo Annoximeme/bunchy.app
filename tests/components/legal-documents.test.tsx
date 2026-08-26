@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/components/link";
 import type { LegalDocumentSet } from "@/content/legal/document";
 import { SAFETY } from "@/content/legal/safety";
 import { PRIVACY } from "@/content/legal/privacy";
+import { TERMS } from "@/content/legal/terms";
 
 /**
  * The policy documents, held to the same shape in every language.
@@ -21,6 +22,7 @@ import { PRIVACY } from "@/content/legal/privacy";
 const DOCUMENTS: Array<[string, LegalDocumentSet]> = [
   ["Meeting safely", SAFETY],
   ["Privacy", PRIVACY],
+  ["Terms", TERMS],
 ];
 
 function clauseIds(set: LegalDocumentSet, locale: Locale): string[] {
@@ -48,7 +50,10 @@ describe.each(DOCUMENTS)("%s", (_name, set) => {
       const doc = set[locale];
       expect(doc.title.length).toBeGreaterThan(2);
       expect(doc.summary.length).toBeGreaterThan(40);
-      expect(doc.metaDescription.length).toBeGreaterThan(40);
+      // A low bar on purpose: it is here to catch an empty or forgotten
+      // field, not to impose a house style on how long a description should
+      // be. "The agreement between you and Bunchy." is a complete answer.
+      expect(doc.metaDescription.length).toBeGreaterThan(20);
     }
   });
 

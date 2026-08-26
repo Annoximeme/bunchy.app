@@ -93,22 +93,57 @@ describe("the terms", () => {
   // and an assertion that depends on where Prettier broke a line is an
   // assertion that fails for the wrong reason.
   const terms = readFileSync(
-    join(SRC, "app", "(legal)", "terms", "page.tsx"),
+    join(SRC, "content", "legal", "terms", "en.tsx"),
     "utf8",
   ).replace(/\s+/g, " ");
+
+  /**
+   * The same three clauses in the other two languages, matched on the words
+   * that carry the obligation rather than on the whole sentence. A translation
+   * that quietly drops the cancellation clause or the withdrawal period is a
+   * different promise made to a Dutch or French consumer, and the law does not
+   * care which language the page was in.
+   */
+  const other = ["nl", "fr"].map((locale) => ({
+    locale,
+    source: readFileSync(
+      join(SRC, "content", "legal", "terms", `${locale}.tsx`),
+      "utf8",
+    ).replace(/\s+/g, " "),
+  }));
 
   it("say how to stop paying, since the code can take money", () => {
     // The clause has to exist before the switch is flipped, not after somebody
     // asks for a refund. This test is what couples the two.
     expect(terms).toMatch(/Cancelling takes one click/);
+    for (const { locale, source } of other) {
+      expect([locale, /Opzeggen is één klik|Annuler prend un clic/.test(source)]).toEqual([
+        locale,
+        true,
+      ]);
+    }
   });
 
   it("carry the fourteen-day withdrawal right", () => {
     // A Belgian sole trader selling a digital subscription to EU consumers.
     expect(terms).toMatch(/fourteen-day right of withdrawal/);
+    for (const { locale, source } of other) {
+      expect([
+        locale,
+        /veertien dagen herroepingsrecht|droit de rétractation de quatorze jours/.test(
+          source,
+        ),
+      ]).toEqual([locale, true]);
+    }
   });
 
   it("say the product stays free", () => {
     expect(terms).toMatch(/buys nothing functional/);
+    for (const { locale, source } of other) {
+      expect([
+        locale,
+        /koopt niets functioneels|n’achète rien de fonctionnel/.test(source),
+      ]).toEqual([locale, true]);
+    }
   });
 });
