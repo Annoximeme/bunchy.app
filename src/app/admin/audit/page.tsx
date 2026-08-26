@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { listModerationEvents } from "@/server/modules/admin/audit";
-import { relativeTime } from "@/lib/format";
+import { getFormats } from "@/server/i18n";
 import {
   AdminHeader,
   Cell,
@@ -17,6 +17,7 @@ export const dynamic = "force-dynamic";
  * moderation event, an audit trail staff can rewrite is not an audit trail.
  */
 export default async function AdminAuditPage() {
+  const { relativeTime } = await getFormats();
   await requireStaff();
   const { events } = await listModerationEvents({ limit: 100 });
 

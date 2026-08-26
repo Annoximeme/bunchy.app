@@ -903,6 +903,16 @@ export const en = {
     notInterested: "Not interested",
     notInterestedNote: "“Not interested” means we won’t suggest them again.",
   },
+
+  time: {
+    justNow: "just now",
+    minutesAgo: "{count}m ago",
+    hoursAgo: "{count}h ago",
+    daysAgo: "{count}d ago",
+    today: "Today",
+    tomorrow: "Tomorrow",
+    yesterday: "Yesterday",
+  },
 } as const;
 
 /**

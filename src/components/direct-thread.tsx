@@ -1,8 +1,9 @@
 "use client";
 
+import { useFormats } from "@/components/link";
+
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { dayLabel, messageTime } from "@/lib/format";
 import { Button, Card, ErrorNotice, Spinner, Textarea, cn } from "@/components/ui";
 
 export interface DirectMessage {
@@ -45,6 +46,7 @@ export function DirectThread({
   /** How far the other person had read when the page was rendered. */
   initialOtherLastReadAt: string | null;
 }) {
+  const { dayLabel, messageTime } = useFormats();
   const [messages, setMessages] = useState<DirectMessage[]>(initialMessages);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);

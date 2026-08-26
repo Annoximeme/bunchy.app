@@ -874,4 +874,14 @@ export const nl: Dictionary = {
     notInterested: "Geen interesse",
     notInterestedNote: "“Geen interesse” wil zeggen dat we deze persoon niet meer voorstellen.",
   },
+
+  time: {
+    justNow: "net nu",
+    minutesAgo: "{count} min geleden",
+    hoursAgo: "{count} u geleden",
+    daysAgo: "{count} d geleden",
+    today: "Vandaag",
+    tomorrow: "Morgen",
+    yesterday: "Gisteren",
+  },
 };

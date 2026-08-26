@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useLanguage } from "@/components/link";
-import { LOCALE_TAGS } from "@/lib/i18n/config";
+import { INTL_TAGS } from "@/lib/i18n/config";
 import { Tag } from "@/components/ui";
 import { CalendarDays, Globe, MapPin, Repeat } from "lucide-react";
 
@@ -76,7 +76,7 @@ export function YourWeek({
   now?: Date;
 }) {
   const { locale, t } = useLanguage();
-  const tag = LOCALE_TAGS[locale];
+  const tag = INTL_TAGS[locale];
   if (items.length === 0) return null;
 
   return (

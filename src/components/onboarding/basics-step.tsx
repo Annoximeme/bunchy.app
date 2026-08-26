@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input, Textarea } from "@/components/ui";
 import { useLanguage, useLocaleRouter } from "@/components/link";
-import { LOCALE_TAGS } from "@/lib/i18n/config";
+import { INTL_TAGS } from "@/lib/i18n/config";
 
 interface Place {
   cityLabel: string;
@@ -218,7 +218,7 @@ export function BasicsStep({
             className="min-w-0 flex-1 rounded-[var(--radius-control)] border border-line bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors focus:border-ink-soft focus:outline-none"
           >
             <option value="">{t("basics.monthOptional")}</option>
-            {months(LOCALE_TAGS[locale]).map((month, i) => (
+            {months(INTL_TAGS[locale]).map((month, i) => (
               <option key={month} value={i + 1}>
                 {month}
               </option>

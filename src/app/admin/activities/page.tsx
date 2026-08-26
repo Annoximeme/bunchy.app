@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { listActivitiesForAdmin } from "@/server/modules/admin/content";
-import { activityWhen } from "@/lib/format";
 import {
   AdminHeader,
   Cell,
@@ -12,6 +11,7 @@ import {
 } from "@/components/admin/primitives";
 import { AdminAction } from "@/components/admin/action-button";
 import { AdminSearch } from "@/components/admin/search";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Activities" };
 export const dynamic = "force-dynamic";
@@ -21,6 +21,7 @@ export default async function AdminActivitiesPage({
 }: {
   searchParams: Promise<{ q?: string; when?: string }>;
 }) {
+  const { activityWhen } = await getFormats();
   await requireStaff();
   const params = await searchParams;
 

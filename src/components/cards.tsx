@@ -1,10 +1,9 @@
 "use client";
 
-import { Link, useTranslate } from "@/components/link";
+import { Link, useFormats, useTranslate } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { activityWhen } from "@/lib/format";
 import { lifecycleOf } from "@/server/modules/bunches/lifecycle";
 import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 import { Avatar, Button, Chip, cn } from "@/components/ui";
@@ -375,6 +374,7 @@ export interface ActivityCardData {
 }
 
 export function ActivityCard({ activity }: { activity: ActivityCardData }) {
+  const { activityWhen } = useFormats();
   const t = useTranslate();
   const spotsLeft = activity.maxParticipants - activity.participantCount;
   const where =

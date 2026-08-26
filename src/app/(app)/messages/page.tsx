@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { listConversations } from "@/server/modules/messaging/direct";
-import { relativeTime } from "@/lib/format";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { Avatar, EmptyState, LinkButton } from "@/components/ui";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Messages" };
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
+  const { relativeTime } = await getFormats();
   const viewer = await requireViewer();
   const conversations = await listConversations(viewer.profileId);
 

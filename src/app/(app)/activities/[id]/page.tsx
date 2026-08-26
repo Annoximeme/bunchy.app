@@ -5,12 +5,12 @@ import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getActivity } from "@/server/modules/activities/service";
 import { env } from "@/server/env";
-import { activityWhen } from "@/lib/format";
 import { PageShell } from "@/components/page-header";
 import { ActivityJoinButton } from "@/components/activity-actions";
 import { ReportButton } from "@/components/moderation-actions";
 import { TellSomeone } from "@/components/tell-someone";
 import { Avatar, Card, Chip } from "@/components/ui";
+import { getFormats } from "@/server/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +34,7 @@ export default async function ActivityPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { activityWhen } = await getFormats();
   const viewer = await requireViewer();
   const { id } = await params;
 

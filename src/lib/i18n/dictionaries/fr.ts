@@ -879,4 +879,14 @@ export const fr: Dictionary = {
     notInterested: "Pas intéressé",
     notInterestedNote: "« Pas intéressé » veut dire qu’on ne te la proposera plus.",
   },
+
+  time: {
+    justNow: "à l’instant",
+    minutesAgo: "il y a {count} min",
+    hoursAgo: "il y a {count} h",
+    daysAgo: "il y a {count} j",
+    today: "Aujourd’hui",
+    tomorrow: "Demain",
+    yesterday: "Hier",
+  },
 };

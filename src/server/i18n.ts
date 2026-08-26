@@ -10,6 +10,7 @@ import {
 } from "@/lib/i18n/config";
 import { DICTIONARIES, type Dictionary } from "@/lib/i18n/dictionaries";
 import { createTranslator, type Translate } from "@/lib/i18n/translate";
+import { createFormats, type Formats } from "@/lib/format";
 
 /**
  * The language of the request being served.
@@ -26,6 +27,12 @@ export const currentLocale = cache(async (): Promise<Locale> => {
   const value = (await headers()).get("x-locale");
   return isLocale(value) ? value : DEFAULT_LOCALE;
 });
+
+/** The same formatters as `useFormats`, for a server component. */
+export async function getFormats(): Promise<Formats> {
+  const locale = await currentLocale();
+  return createFormats(locale, await getTranslations());
+}
 
 /** `const t = await getTranslations()`, then `t("nav.discover")`. */
 export async function getTranslations(): Promise<Translate<Dictionary>> {

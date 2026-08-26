@@ -5,7 +5,7 @@ import { search, type SearchResult } from "@/server/modules/search/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { EmptyState, SectionHeading } from "@/components/ui";
 import { SearchBox } from "@/components/search-box";
-import { dayLabel } from "@/lib/format";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Search" };
 export const dynamic = "force-dynamic";
@@ -67,7 +67,14 @@ export default async function SearchPage({
   );
 }
 
-function Group({ title, results }: { title: string; results: SearchResult[] }) {
+async function Group({
+  title,
+  results,
+}: {
+  title: string;
+  results: SearchResult[];
+}) {
+  const { dayLabel } = await getFormats();
   if (results.length === 0) return null;
 
   return (

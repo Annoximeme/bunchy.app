@@ -54,6 +54,25 @@ export const LOCALE_TAGS: Record<Locale, string> = {
 };
 
 /**
+ * What goes to `Intl`, which is not the same list.
+ *
+ * English here is `en-GB` rather than `en`, and the difference is not
+ * cosmetic: bare `en` formats half past eight as "08:30 PM" and dates
+ * month-first, and this is a product used in Belgium, where the clock has
+ * twenty-four hours and the day comes before the month. Every time written in
+ * this app's own copy is a 24-hour one, so the formatter has to agree with it.
+ *
+ * The `hreflang` list above stays `en`, because that is a claim about who the
+ * page is for, and the English version is for anybody who reads English, not
+ * for the United Kingdom.
+ */
+export const INTL_TAGS: Record<Locale, string> = {
+  en: "en-GB",
+  nl: "nl-BE",
+  fr: "fr-BE",
+};
+
+/**
  * Remembers the last choice for visits to an unprefixed address.
  *
  * A year, because a language preference does not go stale, and readable by the

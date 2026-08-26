@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { countReportsByStatus, listReports } from "@/server/modules/admin/reports";
-import { relativeTime } from "@/lib/format";
 import { AdminHeader, Panel, StatusPill } from "@/components/admin/primitives";
 import { ActionRow, AdminAction } from "@/components/admin/action-button";
 import type { ReportStatus } from "@/generated/prisma/enums";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Reports" };
 export const dynamic = "force-dynamic";
@@ -23,6 +23,7 @@ export default async function AdminReportsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  const { relativeTime } = await getFormats();
   await requireStaff();
   const params = await searchParams;
   const status = TABS.find((t) => t.status === params.status)?.status;

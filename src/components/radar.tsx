@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Card, Chip, EmptyState, ErrorNotice, LinkButton, Select, Spinner, cn } from "@/components/ui";
-import { activityWhen } from "@/lib/format";
 
 /**
  * Bunch Radar.
@@ -57,6 +56,7 @@ export function Radar({
   initial: RadarData;
   interests: Array<{ slug: string; label: string }>;
 }) {
+  const { activityWhen } = useFormats();
   const [data, setData] = useState(initial);
   const [withinKm, setWithinKm] = useState(String(initial.applied.withinKm ?? ""));
   const [interest, setInterest] = useState(initial.applied.interest ?? "");

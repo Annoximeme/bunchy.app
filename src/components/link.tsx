@@ -13,6 +13,7 @@ import {
 } from "@/lib/i18n/config";
 import { DICTIONARIES, type Dictionary } from "@/lib/i18n/dictionaries";
 import { createTranslator, type Translate } from "@/lib/i18n/translate";
+import { createFormats, type Formats } from "@/lib/format";
 
 /**
  * Links that keep the language they were followed in.
@@ -72,6 +73,17 @@ export function useLanguage(): LanguageValue {
       },
     [value],
   );
+}
+
+/**
+ * Dates and times in the language being read.
+ *
+ * Built once per language rather than per call: see the note in `format.ts`
+ * about why these are formatters rather than functions.
+ */
+export function useFormats(): Formats {
+  const { locale, t } = useLanguage();
+  return useMemo(() => createFormats(locale, t), [locale, t]);
 }
 
 /** `const t = useTranslate()`, then `t("nav.discover")`. */

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { listBunchesForAdmin } from "@/server/modules/admin/content";
-import { relativeTime } from "@/lib/format";
 import {
   AdminHeader,
   Cell,
@@ -12,6 +11,7 @@ import {
 } from "@/components/admin/primitives";
 import { AdminAction } from "@/components/admin/action-button";
 import { AdminSearch } from "@/components/admin/search";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Bunches" };
 export const dynamic = "force-dynamic";
@@ -21,6 +21,7 @@ export default async function AdminBunchesPage({
 }: {
   searchParams: Promise<{ q?: string; archived?: string }>;
 }) {
+  const { relativeTime } = await getFormats();
   await requireStaff();
   const params = await searchParams;
 

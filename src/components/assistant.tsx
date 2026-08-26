@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import {
   Avatar,
@@ -14,7 +14,6 @@ import {
   Spinner,
   Textarea,
 } from "@/components/ui";
-import { activityWhen } from "@/lib/format";
 
 /**
  * Ask Bunchy.
@@ -140,6 +139,7 @@ export function Assistant({ initialQuery = "" }: { initialQuery?: string }) {
 }
 
 function Answer({ reply }: { reply: Reply }) {
+  const { activityWhen } = useFormats();
   return (
     <Card>
       <div className="flex items-start gap-3">

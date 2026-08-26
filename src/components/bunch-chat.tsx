@@ -1,8 +1,9 @@
 "use client";
 
+import { useFormats } from "@/components/link";
+
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { dayLabel, messageTime } from "@/lib/format";
 import {
   Avatar,
   Button,
@@ -52,6 +53,7 @@ export function BunchChat({
   viewerProfileId: string;
   initialMessages: ChatMessage[];
 }) {
+  const { dayLabel } = useFormats();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [body, setBody] = useState("");
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
@@ -364,6 +366,7 @@ function MessageRow({
   onReact: (id: string, emoji: string) => void;
   onRemove: (id: string) => void;
 }) {
+  const { messageTime } = useFormats();
   const [showReactions, setShowReactions] = useState(false);
 
   return (

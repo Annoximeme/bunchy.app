@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, ErrorNotice, Input, Textarea, cn } from "@/components/ui";
-import { activityWhen } from "@/lib/format";
 
 /**
  * Plan something, break the ice, take on a challenge.
@@ -337,6 +336,7 @@ function PlanCard({
   onVote: (optionId: string, response: "YES" | "MAYBE" | "NO") => void;
   onDecide: (optionId: string) => void;
 }) {
+  const { activityWhen } = useFormats();
   return (
     <Card>
       <div className="flex flex-wrap items-baseline justify-between gap-2">

@@ -3,7 +3,6 @@ import { Link } from "@/components/link";
 import { getViewer } from "@/server/auth/current-user";
 import { isAdmin, requireStaff } from "@/server/modules/admin/guard";
 import { searchUsers } from "@/server/modules/admin/users";
-import { relativeTime } from "@/lib/format";
 import {
   AdminHeader,
   Cell,
@@ -15,6 +14,7 @@ import { ActionRow, AdminAction } from "@/components/admin/action-button";
 import { AdminSearch } from "@/components/admin/search";
 import { Avatar } from "@/components/ui";
 import type { UserRole, UserStatus } from "@/generated/prisma/enums";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "People" };
 export const dynamic = "force-dynamic";
@@ -24,6 +24,7 @@ export default async function AdminUsersPage({
 }: {
   searchParams: Promise<{ q?: string; status?: string; role?: string }>;
 }) {
+  const { relativeTime } = await getFormats();
   const staff = await requireStaff();
   const viewer = await getViewer();
   const canManageAccounts = isAdmin(viewer);

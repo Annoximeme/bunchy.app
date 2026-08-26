@@ -1,10 +1,9 @@
 "use client";
 
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { dayLabel, relativeTime } from "@/lib/format";
 import { Button, ErrorNotice, cn } from "@/components/ui";
 
 /**
@@ -32,6 +31,7 @@ export function NotificationList({
 }: {
   initial: NotificationItem[];
 }) {
+  const { dayLabel, relativeTime } = useFormats();
   const router = useRouter();
   const [items, setItems] = useState(initial);
   const [pending, setPending] = useState(false);

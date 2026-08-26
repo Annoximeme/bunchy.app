@@ -5,18 +5,19 @@ import {
   listConnections,
   listPendingRequests,
 } from "@/server/modules/connections/service";
-import { relativeTime } from "@/lib/format";
 import { PageHeader, PageShell } from "@/components/page-header";
 import {
   RespondToRequest,
   WithdrawRequest,
 } from "@/components/connection-actions";
 import { Avatar, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+import { getFormats } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Connections" };
 export const dynamic = "force-dynamic";
 
 export default async function ConnectionsPage() {
+  const { relativeTime } = await getFormats();
   const viewer = await requireViewer();
   const [connections, pending] = await Promise.all([
     listConnections(viewer.profileId),
