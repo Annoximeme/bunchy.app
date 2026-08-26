@@ -906,4 +906,27 @@ export const fr: Dictionary = {
     createAccount: "Créer un compte",
     signIn: "Se connecter",
   },
+
+  changelog: {
+    title: "Journal des modifications",
+    metaDescription:
+      "Chaque changement annoncé par Bunchy, dans l’ordre où il s’est produit.",
+    summary:
+      "Chaque changement annoncé par {brand}, dans l’ordre où il s’est produit. Publié ici au moment même où les membres en sont informés, pour que les deux traces ne puissent pas diverger.",
+    empty:
+      "Rien n’a encore été annoncé. Quand {brand} change quelque chose qui touche à ce qu’il conserve sur les gens ou à ce que disent les conditions, l’avis apparaît ici le jour où il part vers les membres, avec la date à laquelle il prend effet.",
+    documentsBefore: "Les documents eux-mêmes sont la",
+    privacy: "politique de confidentialité",
+    documentsAnd: "et les",
+    terms: "conditions",
+    feedBefore: "Cette page est aussi un",
+    feed: "flux Atom",
+    feedAfter:
+      ", pour suivre un changement des conditions sans avoir à passer nulle part. Les membres voient la même trace, plus celles qu’ils ont lues, dans",
+    whatsNew: "Quoi de neuf",
+    tierCritical: "Important",
+    tierNotable: "Nouveau",
+    tierNoted: "Noté",
+    tookEffect: "Entré en vigueur le",
+  },
 };

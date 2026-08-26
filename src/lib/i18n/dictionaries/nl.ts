@@ -901,4 +901,27 @@ export const nl: Dictionary = {
     createAccount: "Maak een account",
     signIn: "Aanmelden",
   },
+
+  changelog: {
+    title: "Wijzigingen",
+    metaDescription:
+      "Elke wijziging die Bunchy heeft aangekondigd, in de volgorde waarin ze gebeurde.",
+    summary:
+      "Elke wijziging die {brand} heeft aangekondigd, in de volgorde waarin ze gebeurde. Hier gepubliceerd op hetzelfde moment dat leden het te horen krijgen, zodat de twee verslagen niet uit elkaar kunnen groeien.",
+    empty:
+      "Er is nog niets aangekondigd. Wanneer {brand} iets verandert aan wat het over mensen bijhoudt of aan wat de voorwaarden zeggen, verschijnt de mededeling hier op de dag dat ze naar de leden gaat, met de datum waarop ze ingaat.",
+    documentsBefore: "De documenten zelf zijn de",
+    privacy: "privacyverklaring",
+    documentsAnd: "en de",
+    terms: "voorwaarden",
+    feedBefore: "Deze pagina is ook een",
+    feed: "Atom-feed",
+    feedAfter:
+      ", zodat je een wijziging aan de voorwaarden kan volgen zonder ergens langs te gaan. Leden zien hetzelfde verslag, plus welke ze gelezen hebben, bij",
+    whatsNew: "Wat is er nieuw",
+    tierCritical: "Belangrijk",
+    tierNotable: "Nieuw",
+    tierNoted: "Genoteerd",
+    tookEffect: "Ging in op",
+  },
 };

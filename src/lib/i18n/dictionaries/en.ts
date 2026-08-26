@@ -930,6 +930,29 @@ export const en = {
     createAccount: "Create an account",
     signIn: "Sign in",
   },
+
+  changelog: {
+    title: "Changelog",
+    metaDescription:
+      "Every change Bunchy has announced, in the order it happened.",
+    summary:
+      "Every change {brand} has announced, in the order it happened. Published here at the same moment members are told, so the two records cannot drift apart.",
+    empty:
+      "Nothing has been announced yet. When {brand} changes something that affects what it holds about people or what the terms say, the notice appears here on the day it goes to members, with the date it takes effect on it.",
+    documentsBefore: "The documents themselves are the",
+    privacy: "privacy policy",
+    documentsAnd: "and the",
+    terms: "terms",
+    feedBefore: "This page is also an",
+    feed: "Atom feed",
+    feedAfter:
+      ", so a change to the terms can be watched without visiting anything. Members see the same record, plus which ones they have read, at",
+    whatsNew: "What’s new",
+    tierCritical: "Important",
+    tierNotable: "New",
+    tierNoted: "Noted",
+    tookEffect: "Took effect",
+  },
 } as const;
 
 /**

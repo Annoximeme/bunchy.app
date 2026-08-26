@@ -8,18 +8,23 @@ import {
   type PublicAnnouncement,
 } from "@/server/modules/announcements/service";
 import type { AnnouncementBlock } from "@/server/modules/announcements/blocks";
+import { currentLocale, getTranslations } from "@/server/i18n";
+import { INTL_TAGS, type Locale } from "@/lib/i18n/config";
 
-export const metadata: Metadata = {
-  title: "Changelog",
-  description: `Every change ${brand.name} has announced, when it was announced, and when it took effect. Readable without an account.`,
-  alternates: {
-    types: {
-      "application/atom+xml": [
-        { url: "/changelog/feed.xml", title: `${brand.name} changelog` },
-      ],
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return {
+    title: t("changelog.title"),
+    description: t("changelog.metaDescription"),
+    alternates: {
+      types: {
+        "application/atom+xml": [
+          { url: "/changelog/feed.xml", title: `${brand.name} changelog` },
+        ],
+      },
     },
-  },
-};
+  };
+}
 
 // The record changes when something is published, which is not a build.
 export const dynamic = "force-dynamic";
@@ -54,26 +59,25 @@ export const dynamic = "force-dynamic";
  */
 export default async function ChangelogPage() {
   const announcements = await listPublicAnnouncements();
+  const t = await getTranslations();
 
   return (
     <LegalPage
       path="/changelog"
-      title="Changelog"
+      title={t("changelog.title")}
       contact={LEGAL.privacyContact}
-      summary={`Every change ${brand.name} has announced, in the order it happened. Published here at the same moment members are told, so the two records cannot drift apart.`}
+      summary={t("changelog.summary", { brand: brand.name })}
     >
       {announcements.length === 0 ? (
         <section>
           <p className="text-lg leading-relaxed text-ink-soft">
-            Nothing has been announced yet. When {brand.name} changes something
-            that affects what it holds about people or what the terms say, the
-            notice appears here on the day it goes to members, with the date it
-            takes effect on it.
+            {t("changelog.empty", { brand: brand.name })}
           </p>
           <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-            The documents themselves are the{" "}
-            <Link href="/privacy">privacy policy</Link> and the{" "}
-            <Link href="/terms">terms</Link>.
+            {t("changelog.documentsBefore")}{" "}
+            <Link href="/privacy">{t("changelog.privacy")}</Link>{" "}
+            {t("changelog.documentsAnd")}{" "}
+            <Link href="/terms">{t("changelog.terms")}</Link>.
           </p>
         </section>
       ) : (
@@ -82,19 +86,26 @@ export default async function ChangelogPage() {
 
       <section>
         <p className="text-sm text-ink-soft">
-          This page is also an{" "}
-          <Link href="/changelog/feed.xml">Atom feed</Link>, so a change to the
-          terms can be watched without visiting anything. Members see the same
-          record, plus which ones they have read, at{" "}
-          <Link href="/whats-new">What&rsquo;s new</Link>.
+          {t("changelog.feedBefore")}{" "}
+          <Link href="/changelog/feed.xml">{t("changelog.feed")}</Link>
+          {t("changelog.feedAfter")}{" "}
+          <Link href="/whats-new">{t("changelog.whatsNew")}</Link>.
         </p>
       </section>
     </LegalPage>
   );
 }
 
-function formatDate(value: Date) {
-  return value.toLocaleDateString("en-GB", {
+/**
+ * The long date, in the reader's language.
+ *
+ * The announcements themselves are not translated and are not meant to be:
+ * each one is a notice that was published to members on a day, in the words it
+ * was published in, and rewriting a record after the fact is the opposite of
+ * what a changelog is for. Only the furniture around them moves.
+ */
+function formatDate(value: Date, locale: Locale) {
+  return value.toLocaleDateString(INTL_TAGS[locale], {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -102,20 +113,23 @@ function formatDate(value: Date) {
 }
 
 const TIER_LABEL = {
-  CRITICAL: "Important",
-  NOTABLE: "New",
-  NOTED: "Noted",
+  CRITICAL: "changelog.tierCritical",
+  NOTABLE: "changelog.tierNotable",
+  NOTED: "changelog.tierNoted",
 } as const;
 
-function Entry({ item }: { item: PublicAnnouncement }) {
+async function Entry({ item }: { item: PublicAnnouncement }) {
+  const t = await getTranslations();
+  const locale = await currentLocale();
+
   return (
     <section id={item.slug} className="scroll-mt-8">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
         <span className="font-bold uppercase tracking-[0.14em] text-accent-ink">
-          {TIER_LABEL[item.tier]}
+          {t(TIER_LABEL[item.tier])}
         </span>
         <time dateTime={item.publishedAt.toISOString()} className="text-muted">
-          {formatDate(item.publishedAt)}
+          {formatDate(item.publishedAt, locale)}
         </time>
         {item.effectiveAt && (
           <span className="text-muted">
@@ -123,12 +137,12 @@ function Entry({ item }: { item: PublicAnnouncement }) {
                 record it is always stated as a date rather than as a countdown:
                 this page is read by people deciding whether to join, and "in
                 four days" is only meaningful to somebody already affected. */}
-            Took effect{" "}
+            {t("changelog.tookEffect")}{" "}
             <time
               dateTime={item.effectiveAt.toISOString()}
               className="font-medium"
             >
-              {formatDate(item.effectiveAt)}
+              {formatDate(item.effectiveAt, locale)}
             </time>
           </span>
         )}
