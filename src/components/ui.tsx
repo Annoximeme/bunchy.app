@@ -1,16 +1,5 @@
 import { colourFor } from "@/lib/palette";
-/**
- * Two components of this kit read the language, which is a hook, which makes
- * them client components. They live next door so that everything else here
- * stays renderable on the server, and both are re-exported so every caller
- * keeps importing from one place.
- *
- * Not a style preference. A server component that calls a client hook does not
- * fail to compile: it throws at render, in production, inside a Suspense
- * boundary, and the reader gets "this page didn't load" while the real reason
- * appears only in the server log. That shipped once, on Discover.
- */
-export { CompatibilityBadge, ErrorNotice } from "@/components/ui-language";
+
 import { Link } from "@/components/link";
 import { cloneElement, isValidElement } from "react";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
@@ -441,6 +430,43 @@ interface DescribableProps {
   "aria-invalid"?: boolean | "true" | "false";
 }
 
+/**
+ * Compatibility, rendered as a quiet number rather than a trophy.
+ *
+ * Deliberately understated: this is information to help someone decide, not a
+ * score to chase. There is no leaderboard anywhere in the product that this
+ * could feed.
+ *
+ * The tooltip arrives as a prop rather than being read from the phrasebook
+ * here. Reading the language is a hook, a hook makes this module a client
+ * module, and this module is half the product's furniture: the version of it
+ * that called `useTranslate` took Discover down for every signed-in member,
+ * and the version that lived in its own client module made Next emit a script
+ * tag with no CSP nonce on it. The caller already knows the language.
+ */
+export function CompatibilityBadge({
+  score,
+  title,
+}: {
+  score: number;
+  /** "How well your interests, goals, availability and style line up". */
+  title: string;
+}) {
+  return (
+    <span
+      className="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-accent-ink"
+      title={title}
+    >
+      <span className="text-sm font-semibold tabular-nums">{score}%</span>
+      {/* No `opacity-80` here. Dimming the label pulled it to 3.61:1 on the
+          soft coral behind it, the quietness was worth having and was being
+          bought by making the word hard to read. The smaller size already
+          subordinates it. */}
+      <span className="text-[11px] font-medium">match</span>
+    </span>
+  );
+}
+
 /** Join two token lists without repeating a token or leaving a stray space. */
 function mergeIds(existing: string | undefined, added: string | undefined): string | undefined {
   const tokens = [...(existing?.split(/\s+/) ?? []), added].filter(Boolean) as string[];
@@ -615,6 +641,31 @@ export function EmptyState({
       </Heading>
       <p className="mt-2 max-w-md leading-relaxed text-ink-soft">{description}</p>
       {action && <div className="mt-6">{action}</div>}
+    </div>
+  );
+}
+
+export function ErrorNotice({
+  message,
+  onRetry,
+  retryLabel,
+}: {
+  message: string;
+  /** Both or neither: a retry button with no label is not a control. */
+  onRetry?: () => void;
+  retryLabel?: string;
+}) {
+  return (
+    <div
+      role="alert"
+      className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-danger/25 bg-danger-soft px-4 py-3"
+    >
+      <p className="text-sm text-danger">{message}</p>
+      {onRetry && retryLabel && (
+        <Button variant="secondary" size="sm" onClick={onRetry}>
+          {retryLabel}
+        </Button>
+      )}
     </div>
   );
 }
