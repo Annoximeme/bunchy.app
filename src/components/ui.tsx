@@ -1,5 +1,17 @@
 import { colourFor } from "@/lib/palette";
-import { Link, useTranslate } from "@/components/link";
+/**
+ * Two components of this kit read the language, which is a hook, which makes
+ * them client components. They live next door so that everything else here
+ * stays renderable on the server, and both are re-exported so every caller
+ * keeps importing from one place.
+ *
+ * Not a style preference. A server component that calls a client hook does not
+ * fail to compile: it throws at render, in production, inside a Suspense
+ * boundary, and the reader gets "this page didn't load" while the real reason
+ * appears only in the server log. That shipped once, on Discover.
+ */
+export { CompatibilityBadge, ErrorNotice } from "@/components/ui-language";
+import { Link } from "@/components/link";
 import { cloneElement, isValidElement } from "react";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
 
@@ -286,37 +298,6 @@ export function Tag({
       )}
     >
       {children}
-    </span>
-  );
-}
-
-/**
- * Compatibility, rendered as a quiet number rather than a trophy.
- *
- * Deliberately understated: this is information to help someone decide, not a
- * score to chase. There is no leaderboard anywhere in the product that this
- * could feed.
- */
-/**
- * Client-only, unlike most of this file: it reads the language, and reading the
- * language is a hook. Rendering it from a server component would throw. Every
- * caller is already a client component, and the same is true of `ErrorNotice`
- * below.
- */
-export function CompatibilityBadge({ score }: { score: number }) {
-  const t = useTranslate();
-
-  return (
-    <span
-      className="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-accent-ink"
-      title={t("common.compatibility")}
-    >
-      <span className="text-sm font-semibold tabular-nums">{score}%</span>
-      {/* No `opacity-80` here. Dimming the label pulled it to 3.61:1 on the
-          soft coral behind it, the quietness was worth having and was being
-          bought by making the word hard to read. The smaller size already
-          subordinates it. */}
-      <span className="text-[11px] font-medium">match</span>
     </span>
   );
 }
@@ -634,30 +615,6 @@ export function EmptyState({
       </Heading>
       <p className="mt-2 max-w-md leading-relaxed text-ink-soft">{description}</p>
       {action && <div className="mt-6">{action}</div>}
-    </div>
-  );
-}
-
-export function ErrorNotice({
-  message,
-  onRetry,
-}: {
-  message: string;
-  onRetry?: () => void;
-}) {
-  const t = useTranslate();
-
-  return (
-    <div
-      role="alert"
-      className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-danger/25 bg-danger-soft px-4 py-3"
-    >
-      <p className="text-sm text-danger">{message}</p>
-      {onRetry && (
-        <Button variant="secondary" size="sm" onClick={onRetry}>
-          {t("common.tryAgain")}
-        </Button>
-      )}
     </div>
   );
 }

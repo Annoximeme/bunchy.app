@@ -16,6 +16,11 @@ export interface Viewer {
   avatarUrl: string | null;
   onboardingStage: OnboardingStage;
   /**
+   * The language this member last read the product in, or null if they have
+   * never said. What emails and scheduled notifications are written in.
+   */
+  locale: string | null;
+  /**
    * Staff privilege. Never rendered to other members *as a level*, profiles
    * show a plain "Staff" badge derived from this, so members can tell a real
    * staff account from someone claiming to be one, without publishing who can
@@ -49,6 +54,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
           displayName: true,
           avatarUrl: true,
           onboardingStage: true,
+          locale: true,
         },
       },
     },
@@ -66,6 +72,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
     displayName: user.profile.displayName,
     avatarUrl: user.profile.avatarUrl,
     onboardingStage: user.profile.onboardingStage,
+    locale: user.profile.locale,
     role: user.role,
   };
 });

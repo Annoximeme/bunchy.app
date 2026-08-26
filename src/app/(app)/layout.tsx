@@ -12,7 +12,8 @@ import {
 } from "@/server/modules/announcements/service";
 import { AnnouncementBanner } from "@/components/announcements/announcement-banner";
 import { RouteAnnouncer } from "@/components/live-region";
-import { localeHref } from "@/server/i18n";
+import { currentLocale, localeHref } from "@/server/i18n";
+import { rememberLocale } from "@/server/modules/profile/service";
 
 /**
  * The signed-in shell.
@@ -30,6 +31,11 @@ export default async function AppLayout({
   if (viewer.onboardingStage !== "COMPLETE") {
     redirect(await localeHref(onboardingPath(viewer.onboardingStage)));
   }
+
+  // What to write emails in later. Only touches the database when the answer
+  // has changed, which is almost never.
+  const locale = await currentLocale();
+  if (viewer.locale !== locale) await rememberLocale(viewer.profileId, locale);
 
   const [
     unreadMessages,

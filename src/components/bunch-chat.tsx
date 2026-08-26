@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormats } from "@/components/link";
+import { useFormats, useTranslate } from "@/components/link";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -54,6 +54,7 @@ export function BunchChat({
   initialMessages: ChatMessage[];
 }) {
   const { dayLabel } = useFormats();
+  const t = useTranslate();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [body, setBody] = useState("");
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
@@ -207,7 +208,7 @@ export function BunchChat({
       setMessages((prev) =>
         prev.map((m) =>
           m.id === messageId
-            ? { ...m, body: "This message was removed.", author: null, canModerate: false }
+            ? { ...m, body: t("chat.messageRemoved"), author: null, canModerate: false }
             : m,
         ),
       );
@@ -231,10 +232,10 @@ export function BunchChat({
   return (
     <div className="card-surface flex h-[min(70vh,40rem)] flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
-        <h2 className="text-sm font-semibold">Bunch chat</h2>
+        <h2 className="text-sm font-semibold">{t("chat.bunchChat")}</h2>
         <span
           className="flex items-center gap-1.5 text-xs text-muted"
-          title={live ? "Connected" : "Reconnecting"}
+          title={live ? t("chat.connected") : t("chat.reconnecting")}
         >
           <span
             className={cn(
@@ -242,7 +243,7 @@ export function BunchChat({
               live ? "bg-positive" : "bg-muted",
             )}
           />
-          {live ? "Live" : "Catching up"}
+          {live ? "Live" : t("chat.catchingUp")}
         </span>
       </div>
 
@@ -252,11 +253,11 @@ export function BunchChat({
         className="flex-1 space-y-1 overflow-y-auto px-4 py-4"
         role="log"
         aria-live="polite"
-        aria-label="Bunch messages"
+        aria-label={t("chat.bunchMessages")}
       >
         {messages.length === 0 && (
           <p className="py-10 text-center text-sm text-muted">
-            Nothing here yet. Say hello, someone has to go first.
+            {t("chat.bunchEmpty")}
           </p>
         )}
 
@@ -282,7 +283,7 @@ export function BunchChat({
                   <p className="text-xs font-medium text-purple-ink">
                     {message.author?.displayName
                       ? `${message.author.displayName} asked the bunch`
-                      : "A question for the bunch"}
+                      : t("chat.aQuestion")}
                   </p>
                   <p className="mt-1 text-purple-ink">{message.body}</p>
                 </div>
@@ -318,7 +319,7 @@ export function BunchChat({
               type="button"
               onClick={() => setReplyTo(null)}
               className="shrink-0 text-muted hover:text-ink"
-              aria-label="Cancel reply"
+              aria-label={t("chat.cancelReply")}
             >
               ×
             </button>
@@ -341,7 +342,7 @@ export function BunchChat({
             }}
             rows={1}
             maxLength={2000}
-            placeholder="Write something…"
+            placeholder={t("chat.write")}
             className="min-h-11 flex-1 resize-none py-2.5"
           />
           <Button type="submit" disabled={body.trim().length === 0 || sending}>
@@ -367,6 +368,7 @@ function MessageRow({
   onRemove: (id: string) => void;
 }) {
   const { messageTime } = useFormats();
+  const t = useTranslate();
   const [showReactions, setShowReactions] = useState(false);
 
   return (
@@ -377,7 +379,7 @@ function MessageRow({
       )}
     >
       <Avatar
-        name={message.author?.displayName ?? "Removed"}
+        name={message.author?.displayName ?? t("chat.removed")}
         src={message.author?.avatarUrl}
         size="sm"
         className="mt-0.5"
@@ -386,7 +388,7 @@ function MessageRow({
       <div className="min-w-0 flex-1">
         <p className="flex items-baseline gap-2">
           <span className="text-sm font-medium">
-            {message.author?.displayName ?? "Removed"}
+            {message.author?.displayName ?? t("chat.removed")}
           </span>
           <span className="text-xs text-muted">
             {messageTime(message.createdAt)}
@@ -434,7 +436,7 @@ function MessageRow({
             className="rounded-full px-1.5 py-1 text-xs text-muted hover:bg-surface hover:text-ink"
           >
             <span aria-hidden>☺</span>
-            <span className="sr-only">Add a reaction</span>
+            <span className="sr-only">{t("chat.addReaction")}</span>
           </button>
           {showReactions && (
             <div className="absolute right-0 z-10 mt-1 flex gap-0.5 rounded-full border border-line bg-surface p-1 shadow-[var(--shadow-lift)]">
@@ -460,7 +462,7 @@ function MessageRow({
           onClick={onReply}
           className="rounded-full px-1.5 py-1 text-xs text-muted hover:bg-surface hover:text-ink"
         >
-          Reply
+          {t("chat.reply")}
         </button>
 
         {message.canModerate && (

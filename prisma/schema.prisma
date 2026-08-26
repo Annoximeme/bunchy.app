@@ -242,6 +242,20 @@ model Profile {
   /// member in Tokyo.
   timezone    String?
 
+  /// The language this member reads the product in.
+  ///
+  /// Stored as well as carried in the URL, because the two answer different
+  /// questions. The URL says what language *this page* is in; this column says
+  /// what language to write an email in at three in the morning when there is
+  /// no request and nobody to ask. Without it every notification and every
+  /// email is English regardless of what the member chose, which is the one
+  /// place a translation can fail silently: they simply never see the Dutch.
+  ///
+  /// Nullable rather than defaulted to "en": null means nobody has told us, so
+  /// a member who signed up before this existed is not recorded as having
+  /// chosen English when they never did.
+  locale      String?
+
   onboardingStage OnboardingStage @default(BASICS)
   onboardedAt     DateTime?
 

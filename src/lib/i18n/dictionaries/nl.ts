@@ -924,4 +924,39 @@ export const nl: Dictionary = {
     tierNoted: "Genoteerd",
     tookEffect: "Ging in op",
   },
+
+  chat: {
+    conversationWith: "Gesprek met {name}",
+    messagePlaceholder: "Bericht aan {name}…",
+    noMessages: "Nog geen berichten. Zeg als eerste iets.",
+    readOnly: "Dit gesprek is alleen-lezen.",
+    findingCommon: "Zoeken wat jullie gemeen hebben…",
+    somethingToOpen: "Iets om mee te beginnen",
+    bunchChat: "Bunchchat",
+    bunchMessages: "Berichten van de bunch",
+    bunchEmpty: "Hier staat nog niets. Zeg hallo, iemand moet beginnen.",
+    write: "Schrijf iets…",
+    message: "Bericht",
+    addReaction: "Voeg een reactie toe",
+    reply: "Antwoorden",
+    cancelReply: "Antwoord annuleren",
+    removed: "Verwijderd",
+    messageRemoved: "Dit bericht is verwijderd.",
+    connected: "Verbonden",
+    reconnecting: "Opnieuw verbinden",
+    catchingUp: "Bijwerken",
+    aQuestion: "Een vraag voor de bunch",
+  },
+
+  messages: {
+    emptyBody:
+      "Een gesprek gaat open zodra iemand jouw verzoek aanvaardt, of jij het hunne. Tot dan valt hier niets te checken.",
+    title: "Berichten",
+    subtitle:
+      "Alleen mensen met wie jullie allebei akkoord gingen om te praten. Niemand kan je zomaar berichten.",
+    emptyTitle: "Niets te lezen, en dat is net de bedoeling",
+    findPeople: "Vind mensen",
+    sayHello: "Zeg hallo",
+    unread: "ongelezen",
+  },
 };

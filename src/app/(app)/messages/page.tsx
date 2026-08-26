@@ -4,12 +4,16 @@ import { requireViewer } from "@/server/auth/current-user";
 import { listConversations } from "@/server/modules/messaging/direct";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { Avatar, EmptyState, LinkButton } from "@/components/ui";
-import { getFormats } from "@/server/i18n";
+import { getFormats, getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "Messages" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("messages.title") };
+}
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
+  const t = await getTranslations();
   const { relativeTime } = await getFormats();
   const viewer = await requireViewer();
   const conversations = await listConversations(viewer.profileId);
@@ -17,16 +21,16 @@ export default async function MessagesPage() {
   return (
     <PageShell>
       <PageHeader
-        title="Messages"
-        subtitle="Only people you've both agreed to talk to. Nobody can message you out of nowhere."
+        title={t("messages.title")}
+        subtitle={t("messages.subtitle")}
       />
 
       {conversations.length === 0 ? (
         <EmptyState
           icon="💬"
-          title="Nothing to read, which is the point"
-          description="A conversation opens the moment someone accepts your request, or you accept theirs. Until then there is nothing here to check."
-          action={<LinkButton href="/discover">Find people</LinkButton>}
+          title={t("messages.emptyTitle")}
+          description={t("messages.emptyBody")}
+          action={<LinkButton href="/discover">{t("messages.findPeople")}</LinkButton>}
         />
       ) : (
         <ul className="space-y-2">
@@ -54,13 +58,13 @@ export default async function MessagesPage() {
                   <p className="truncate text-sm text-muted">
                     {conversation.lastMessage
                       ? `${conversation.lastMessage.fromViewer ? "You: " : ""}${conversation.lastMessage.body}`
-                      : "Say hello"}
+                      : t("messages.sayHello")}
                   </p>
                 </div>
                 {conversation.unreadCount > 0 && (
                   <span className="inline-flex min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-semibold text-[var(--color-on-accent)]">
                     {conversation.unreadCount > 9 ? "9+" : conversation.unreadCount}
-                    <span className="sr-only"> unread</span>
+                    <span className="sr-only"> {t("messages.unread")}</span>
                   </span>
                 )}
               </Link>

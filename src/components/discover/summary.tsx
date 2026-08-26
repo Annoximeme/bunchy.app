@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/components/ui";
 import { useTranslate } from "@/components/link";
 

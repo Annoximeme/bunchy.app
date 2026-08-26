@@ -929,4 +929,39 @@ export const fr: Dictionary = {
     tierNoted: "Noté",
     tookEffect: "Entré en vigueur le",
   },
+
+  chat: {
+    conversationWith: "Conversation avec {name}",
+    messagePlaceholder: "Écrire à {name}…",
+    noMessages: "Pas encore de messages. Dis la première chose.",
+    readOnly: "Cette conversation est en lecture seule.",
+    findingCommon: "On cherche ce que vous avez en commun…",
+    somethingToOpen: "Quelque chose pour commencer",
+    bunchChat: "Chat du bunch",
+    bunchMessages: "Messages du bunch",
+    bunchEmpty: "Rien ici pour l’instant. Dis bonjour, il faut bien commencer.",
+    write: "Écris quelque chose…",
+    message: "Message",
+    addReaction: "Ajouter une réaction",
+    reply: "Répondre",
+    cancelReply: "Annuler la réponse",
+    removed: "Retiré",
+    messageRemoved: "Ce message a été retiré.",
+    connected: "Connecté",
+    reconnecting: "Reconnexion",
+    catchingUp: "Mise à jour",
+    aQuestion: "Une question pour le bunch",
+  },
+
+  messages: {
+    emptyBody:
+      "Une conversation s’ouvre dès que quelqu’un accepte ta demande, ou que tu acceptes la sienne. D’ici là, il n’y a rien à venir vérifier ici.",
+    title: "Messages",
+    subtitle:
+      "Seulement des gens avec qui vous avez tous les deux accepté de parler. Personne ne peut t’écrire sans prévenir.",
+    emptyTitle: "Rien à lire, et c’est le principe",
+    findPeople: "Trouver des gens",
+    sayHello: "Dire bonjour",
+    unread: "non lus",
+  },
 };

@@ -402,6 +402,29 @@ export async function nextAfterGoals(profileId: string): Promise<string> {
     : "/discover";
 }
 
+/**
+ * Records the language a member is reading in.
+ *
+ * Called from the shell on every signed-in page, and it writes only when the
+ * answer has changed, which is almost never. The reason it is worth a query at
+ * all is everything that renders with no request behind it: an email at three
+ * in the morning has no URL to read a prefix off and no cookie to consult, so
+ * without this it is English no matter what the member chose.
+ *
+ * Deliberately not part of the language switcher. Most people change language
+ * by following a link, not by finding a control, and a switcher that owned this
+ * would record only the ones who found it.
+ */
+export async function rememberLocale(
+  profileId: string,
+  locale: string,
+): Promise<void> {
+  await db.profile.updateMany({
+    where: { id: profileId, locale: { not: locale } },
+    data: { locale },
+  });
+}
+
 export async function savePrivacy(
   profileId: string,
   input: PrivacyInput,

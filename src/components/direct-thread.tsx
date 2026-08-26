@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormats } from "@/components/link";
+import { useFormats, useTranslate } from "@/components/link";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -47,6 +47,7 @@ export function DirectThread({
   initialOtherLastReadAt: string | null;
 }) {
   const { dayLabel, messageTime } = useFormats();
+  const t = useTranslate();
   const [messages, setMessages] = useState<DirectMessage[]>(initialMessages);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
@@ -276,7 +277,7 @@ export function DirectThread({
 
           {loadingContext && (
             <p className="mt-3 flex items-center gap-2 text-sm text-muted">
-              <Spinner className="size-4" /> Finding what you have in common…
+              <Spinner className="size-4" /> {t("chat.findingCommon")}
             </p>
           )}
 
@@ -304,7 +305,7 @@ export function DirectThread({
               {context.starters.length > 0 && (
                 <div className="mt-4">
                   <p className="text-xs font-medium uppercase tracking-wide text-muted">
-                    Something to open with
+                    {t("chat.somethingToOpen")}
                   </p>
                   <div className="mt-2 flex flex-col gap-2">
                     {context.starters.map((starter) => (
@@ -337,11 +338,11 @@ export function DirectThread({
           className="flex-1 space-y-2 overflow-y-auto px-4 py-4"
           role="log"
           aria-live="polite"
-          aria-label={`Conversation with ${otherName}`}
+          aria-label={t("chat.conversationWith", { name: otherName })}
         >
           {messages.length === 0 && (
             <p className="py-12 text-center text-sm text-muted">
-              No messages yet. Say the first thing.
+              {t("chat.noMessages")}
             </p>
           )}
 
@@ -425,7 +426,7 @@ export function DirectThread({
 
           {readOnly ? (
             <p className="py-2 text-center text-sm text-muted">
-              This conversation is read-only.
+              {t("chat.readOnly")}
             </p>
           ) : (
             <form onSubmit={send} className="flex items-end gap-2">
@@ -447,7 +448,7 @@ export function DirectThread({
                 }}
                 rows={1}
                 maxLength={4000}
-                placeholder={`Message ${otherName}…`}
+                placeholder={t("chat.messagePlaceholder", { name: otherName })}
                 className="min-h-11 flex-1 resize-none py-2.5"
               />
               <Button type="submit" disabled={body.trim().length === 0 || sending}>

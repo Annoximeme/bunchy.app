@@ -953,6 +953,41 @@ export const en = {
     tierNoted: "Noted",
     tookEffect: "Took effect",
   },
+
+  chat: {
+    conversationWith: "Conversation with {name}",
+    messagePlaceholder: "Message {name}…",
+    noMessages: "No messages yet. Say the first thing.",
+    readOnly: "This conversation is read-only.",
+    findingCommon: "Finding what you have in common…",
+    somethingToOpen: "Something to open with",
+    bunchChat: "Bunch chat",
+    bunchMessages: "Bunch messages",
+    bunchEmpty: "Nothing here yet. Say hello, someone has to go first.",
+    write: "Write something…",
+    message: "Message",
+    addReaction: "Add a reaction",
+    reply: "Reply",
+    cancelReply: "Cancel reply",
+    removed: "Removed",
+    messageRemoved: "This message was removed.",
+    connected: "Connected",
+    reconnecting: "Reconnecting",
+    catchingUp: "Catching up",
+    aQuestion: "A question for the bunch",
+  },
+
+  messages: {
+    emptyBody:
+      "A conversation opens the moment someone accepts your request, or you accept theirs. Until then there is nothing here to check.",
+    title: "Messages",
+    subtitle:
+      "Only people you’ve both agreed to talk to. Nobody can message you out of nowhere.",
+    emptyTitle: "Nothing to read, which is the point",
+    findPeople: "Find people",
+    sayHello: "Say hello",
+    unread: "unread",
+  },
 } as const;
 
 /**
