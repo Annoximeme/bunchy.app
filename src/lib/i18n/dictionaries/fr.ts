@@ -14,6 +14,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en";
  */
 export const fr: Dictionary = {
   common: {
+    compatibility: "À quel point vos intérêts, vos objectifs, vos disponibilités et vos styles s’accordent",
     skipToContent: "Aller au contenu",
     loading: "Chargement…",
     cancel: "Annuler",
@@ -778,5 +779,104 @@ export const fr: Dictionary = {
     "Work & Building": "Travail & projets",
     "Machines": "Machines",
     "Style & Culture": "Style & culture",
+  },
+
+  discover: {
+    shortcutNow: "Bunchy Now",
+    shortcutNowBody: "Qui est partant pour quelque chose, et quand.",
+    shortcutDo: "Faire quelque chose",
+    shortcutDoBody:
+      "Dis ce que tu as (argent, temps, énergie) et récupère une soirée.",
+    shortcutSurprise: "Surprends-moi",
+    shortcutSurpriseBody:
+      "Quelqu’un dont les intérêts ne ressemblent pas aux tiens, mais dont les soirées si.",
+    shortcutRadar: "Radar",
+    shortcutRadarBody: "Les bunches et les activités autour de toi. Des zones, jamais des adresses.",
+    greeting: "Salut {name}",
+    countPeople: {
+      one: "{count} personne",
+      other: "{count} personnes",
+    },
+    countBunches: {
+      one: "{count} bunch",
+      other: "{count} bunches",
+    },
+    countActivities: {
+      one: "{count} chose au programme",
+      other: "{count} choses au programme",
+    },
+    title: "Découvrir",
+    summaryLabel: "Ce qu’il y a sur cette page",
+    summaryBody:
+      "Voici qui vaut la peine d’être rencontré et ce qui se passe. C’est toute la page.",
+    verifyEmail: "Confirme ton adresse e-mail pour ne pas perdre l’accès à ton compte.",
+    resendLink: "Renvoyer le lien",
+    peopleTitle: "Des gens avec qui tu pourrais accrocher",
+    peopleBody:
+      "Classés sur les intérêts, les objectifs, les disponibilités et ta façon de passer du temps.",
+    bunchesTitle: "Des bunches pour toi",
+    bunchesBody: "De petits groupes avec de la place pour une personne de plus.",
+    activitiesTitle: "Ce qui se passe",
+    activitiesBody: "Un endroit où tu peux vraiment te pointer.",
+    otherWaysTitle: "D’autres façons de trouver quelque chose",
+    otherWaysBody:
+      "D’autres entrées, dont aucune n’attend que quelqu’un t’ait d’abord été associé.",
+    notWhatTitle: "Ce n’est pas ce que tu cherches ?",
+    notWhatBody: "Aucune de ces entrées n’attend qu’on t’ait d’abord associé à quelqu’un.",
+    matchedForYou: "Associé pour toi",
+    groups: "Groupes",
+    activities: "Activités",
+    seeAll: "Tout voir",
+    browseAll: "Tout parcourir",
+    startBunch: "Créer un bunch",
+    inviteLink: "Obtenir mon lien d’invitation",
+    everything: "C’est tout ce qui vaut la peine aujourd’hui.",
+    foundYourBunch: "Tu as trouvé ton bunch. Va leur parler.",
+    quietTitle: "C’est encore calme ici",
+    quietBody:
+      "{brand} a besoin d’un peu plus de monde dans les environs avant de pouvoir faire de bonnes présentations. Créer un bunch est le moyen le plus rapide d’y changer quelque chose, et ça donne un point de chute à la prochaine personne qui arrive.",
+    nearbyCount: "Tu es l’une des {count} personnes près de {place}",
+    nearbyTarget:
+      "Les bunches tiennent en général à partir d’environ {target} personnes dans les environs, donc d’ici là les présentations restent rares. Inviter une personne change ça plus que tout le reste de cette page. Et créer un bunch donne un point de chute à la prochaine personne qui arrive.",
+  },
+
+  cards: {
+    connect: "Se connecter",
+    notForMe: "Pas pour moi",
+    undo: "Annuler",
+    requestSent: "Demande envoyée. Tu auras la réponse ici.",
+    requestPending: "Demande en attente",
+    youreIn: "Tu en fais partie",
+    invited: "Invité",
+    going: "Participe",
+    waitlist: "Liste d’attente",
+    online: "En ligne",
+    nearby: "Quelque part dans les environs",
+    spotsLeft: {
+      one: "1 place restante",
+      other: "{count} places restantes",
+    },
+  },
+
+  week: {
+    title: "Ta semaine",
+    allOfIt: "Tout",
+    everyWeek: "Chaque semaine",
+    standing: "Fait partie d’un rendez-vous régulier",
+    today: "Aujourd’hui",
+    tomorrow: "Demain",
+    online: "En ligne",
+    inPerson: "En vrai",
+  },
+
+  introduction: {
+    title: "Une présentation",
+    messages: "Messages",
+    notNow: "Pas maintenant",
+    sendIt: "Envoyer",
+    back: "Retour",
+    startConversation: "Commencer une conversation",
+    notInterested: "Pas intéressé",
+    notInterestedNote: "« Pas intéressé » veut dire qu’on ne te la proposera plus.",
   },
 };

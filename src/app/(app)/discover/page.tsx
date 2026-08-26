@@ -26,8 +26,13 @@ import { OutcomePrompt } from "@/components/outcome-prompt";
 import { DiscoverSummary } from "@/components/discover/summary";
 import { DiscoverShortcuts } from "@/components/discover/shortcuts";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
+import { brand } from "@/lib/brand";
 
-export const metadata: Metadata = { title: "Discover" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("discover.title") };
+}
 
 // Recommendations depend on who is signed in, so this can never be static.
 export const dynamic = "force-dynamic";
@@ -62,6 +67,7 @@ export const dynamic = "force-dynamic";
  */
 export default async function DiscoverPage() {
   const viewer = await requireViewer();
+  const t = await getTranslations();
 
   /*
     One batch, not four.
@@ -148,13 +154,13 @@ export default async function DiscoverPage() {
       {!viewer.emailVerified && (
         <div className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-yellow/40 bg-yellow-soft px-4 py-3 text-sm">
           <span className="text-yellow-ink">
-            Confirm your email so you don&rsquo;t lose access to your account.
+            {t("discover.verifyEmail")}
           </span>
           <Link
             href="/profile"
             className="font-semibold text-yellow-ink underline underline-offset-2"
           >
-            Resend the link
+            {t("discover.resendLink")}
           </Link>
         </div>
       )}
@@ -191,8 +197,11 @@ export default async function DiscoverPage() {
             icon="🌱"
             title={
               neighbourhood.label
-                ? `You're one of ${neighbourhood.count} near ${neighbourhood.label}`
-                : "It's quiet here, for now"
+                ? t("discover.nearbyCount", {
+                    count: neighbourhood.count,
+                    place: neighbourhood.label,
+                  })
+                : t("discover.quietTitle")
             }
             /*
               A count and a target, rather than an apology. The emptiness is the
@@ -202,14 +211,14 @@ export default async function DiscoverPage() {
             */
             description={
               neighbourhood.label
-                ? `Bunches tend to hold together from about ${neighbourhood.target} people nearby, so introductions stay thin until then. Inviting one person moves this more than anything else on the page. And starting a bunch gives whoever joins next somewhere to land.`
-                : "Bunchy needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land."
+                ? t("discover.nearbyTarget", { target: neighbourhood.target })
+                : t("discover.quietBody", { brand: brand.name })
             }
             action={
               <div className="flex flex-wrap justify-center gap-3">
-                <LinkButton href="/start">Start a bunch</LinkButton>
+                <LinkButton href="/start">{t("discover.startBunch")}</LinkButton>
                 <LinkButton href="/profile#invite" variant="secondary">
-                  Get my invite link
+                  {t("discover.inviteLink")}
                 </LinkButton>
               </div>
             }
@@ -223,8 +232,8 @@ export default async function DiscoverPage() {
           */}
           <section className="mt-10">
             <SectionHeading
-              title="Other ways to find something"
-              subtitle="None of these need anyone to have matched you first."
+              title={t("discover.otherWaysTitle")}
+              subtitle={t("discover.notWhatBody")}
             />
             <DiscoverShortcuts />
           </section>
@@ -235,10 +244,10 @@ export default async function DiscoverPage() {
             /* scroll-mt clears the sticky top bar when jumped to from the head. */
             <section id="people" className="scroll-mt-20">
               <SectionHeading
-                eyebrow="Matched for you"
+                eyebrow={t("discover.matchedForYou")}
                 eyebrowTone="suggested"
-                title="People you might connect with"
-                subtitle="Ranked on interests, goals, availability and how you like to spend time."
+                title={t("discover.peopleTitle")}
+                subtitle={t("discover.peopleBody")}
               />
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {people.map((person) => (
@@ -266,13 +275,13 @@ export default async function DiscoverPage() {
           {bunches.length > 0 && (
             <section id="bunches" className="scroll-mt-20">
               <SectionHeading
-                eyebrow="Groups"
+                eyebrow={t("discover.groups")}
                 eyebrowTone="accent"
-                title="Bunches for you"
-                subtitle="Small groups with room for one more."
+                title={t("discover.bunchesTitle")}
+                subtitle={t("discover.bunchesBody")}
                 action={
                   <LinkButton href="/bunches" variant="ghost" size="sm">
-                    Browse all
+                    {t("discover.browseAll")}
                   </LinkButton>
                 }
               />
@@ -287,13 +296,13 @@ export default async function DiscoverPage() {
           {activities.length > 0 && (
             <section id="activities" className="scroll-mt-20">
               <SectionHeading
-                eyebrow="Activities"
+                eyebrow={t("discover.activities")}
                 eyebrowTone="teal"
-                title="Things happening"
-                subtitle="Somewhere to actually turn up."
+                title={t("discover.activitiesTitle")}
+                subtitle={t("discover.activitiesBody")}
                 action={
                   <LinkButton href="/activities" variant="ghost" size="sm">
-                    See all
+                    {t("discover.seeAll")}
                   </LinkButton>
                 }
               />
@@ -321,18 +330,18 @@ export default async function DiscoverPage() {
 
           <section>
             <SectionHeading
-              title="Not what you're after?"
-              subtitle="Other ways in, none of which need anyone to have matched you first."
+              title={t("discover.notWhatTitle")}
+              subtitle={t("discover.otherWaysBody")}
             />
             <DiscoverShortcuts />
           </section>
 
           <section className="border-t border-line pt-10 text-center">
             <p className="text-lg font-medium tracking-tight">
-              That&rsquo;s everything worth showing you today.
+              {t("discover.everything")}
             </p>
             <p className="mt-1.5 text-sm text-muted">
-              You&rsquo;ve found your bunch. Go talk to them.
+              {t("discover.foundYourBunch")}
             </p>
           </section>
         </div>

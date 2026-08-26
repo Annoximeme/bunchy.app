@@ -13,6 +13,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en";
  */
 export const nl: Dictionary = {
   common: {
+    compatibility: "Hoe goed je interesses, doelen, beschikbaarheid en stijl op elkaar aansluiten",
     skipToContent: "Naar de inhoud",
     loading: "Laden…",
     cancel: "Annuleren",
@@ -774,5 +775,103 @@ export const nl: Dictionary = {
     "Work & Building": "Werk & bouwen",
     "Machines": "Machines",
     "Style & Culture": "Stijl & cultuur",
+  },
+
+  discover: {
+    shortcutNow: "Bunchy Now",
+    shortcutNowBody: "Wie er zin heeft in iets, en wanneer.",
+    shortcutDo: "Doe iets",
+    shortcutDoBody: "Zeg wat je hebt (geld, tijd, energie) en krijg er een avond voor terug.",
+    shortcutSurprise: "Verras me",
+    shortcutSurpriseBody:
+      "Iemand wiens interesses niet op de jouwe lijken, maar wiens avonden dat wel doen.",
+    shortcutRadar: "Radar",
+    shortcutRadarBody: "Bunches en activiteiten in je omgeving. Streken, nooit adressen.",
+    greeting: "Hey {name}",
+    countPeople: {
+      one: "{count} persoon",
+      other: "{count} mensen",
+    },
+    countBunches: {
+      one: "{count} bunch",
+      other: "{count} bunches",
+    },
+    countActivities: {
+      one: "{count} ding te doen",
+      other: "{count} dingen te doen",
+    },
+    title: "Ontdekken",
+    summaryLabel: "Wat er op deze pagina staat",
+    summaryBody:
+      "Hier zie je wie de moeite waard is om te leren kennen en wat er te doen is. Meer is deze pagina niet.",
+    verifyEmail: "Bevestig je e-mailadres, zo verlies je de toegang tot je account niet.",
+    resendLink: "Stuur de link opnieuw",
+    peopleTitle: "Mensen die bij je kunnen passen",
+    peopleBody:
+      "Gerangschikt op interesses, doelen, beschikbaarheid en hoe je je tijd graag doorbrengt.",
+    bunchesTitle: "Bunches voor jou",
+    bunchesBody: "Kleine groepen met plaats voor één iemand extra.",
+    activitiesTitle: "Wat er te doen is",
+    activitiesBody: "Ergens waar je ook echt naartoe kan.",
+    otherWaysTitle: "Andere manieren om iets te vinden",
+    otherWaysBody:
+      "Andere manieren binnen, waarvoor niemand je eerst hoeft te matchen.",
+    notWhatTitle: "Niet wat je zoekt?",
+    notWhatBody: "Hiervoor hoeft niemand je eerst gematcht te hebben.",
+    matchedForYou: "Voor jou gematcht",
+    groups: "Groepen",
+    activities: "Activiteiten",
+    seeAll: "Alles bekijken",
+    browseAll: "Alles doorbladeren",
+    startBunch: "Start een bunch",
+    inviteLink: "Haal mijn uitnodigingslink",
+    everything: "Dat is alles wat we je vandaag de moeite vinden.",
+    foundYourBunch: "Je hebt je bunch gevonden. Ga met hen praten.",
+    quietTitle: "Het is hier nog rustig",
+    quietBody:
+      "{brand} heeft nog een paar mensen in de buurt nodig voor het goede introducties kan maken. Een bunch starten is de snelste manier om daar iets aan te doen, en het geeft wie hierna toekomt meteen ergens om te landen.",
+    nearbyCount: "Je bent een van de {count} in de buurt van {place}",
+    nearbyTarget:
+      "Bunches houden meestal stand vanaf ongeveer {target} mensen in de buurt, dus tot dan blijven de introducties dun. Eén iemand uitnodigen verandert daar meer aan dan wat dan ook op deze pagina. En een bunch starten geeft wie hierna toekomt ergens om te landen.",
+  },
+
+  cards: {
+    connect: "Connecteren",
+    notForMe: "Niets voor mij",
+    undo: "Ongedaan maken",
+    requestSent: "Verzoek verstuurd. Je hoort het hier.",
+    requestPending: "Verzoek in behandeling",
+    youreIn: "Je zit erin",
+    invited: "Uitgenodigd",
+    going: "Gaat mee",
+    waitlist: "Wachtlijst",
+    online: "Online",
+    nearby: "Ergens in de buurt",
+    spotsLeft: {
+      one: "Nog 1 plaats",
+      other: "Nog {count} plaatsen",
+    },
+  },
+
+  week: {
+    title: "Jouw week",
+    allOfIt: "Alles",
+    everyWeek: "Elke week",
+    standing: "Onderdeel van een vaste afspraak",
+    today: "Vandaag",
+    tomorrow: "Morgen",
+    online: "Online",
+    inPerson: "In het echt",
+  },
+
+  introduction: {
+    title: "Een introductie",
+    messages: "Berichten",
+    notNow: "Nu niet",
+    sendIt: "Verstuur",
+    back: "Terug",
+    startConversation: "Begin een gesprek",
+    notInterested: "Geen interesse",
+    notInterestedNote: "“Geen interesse” wil zeggen dat we deze persoon niet meer voorstellen.",
   },
 };

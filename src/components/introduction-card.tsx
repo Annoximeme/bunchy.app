@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/components/link";
+import { Link, useTranslate } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
 import { Avatar, Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";
@@ -34,6 +34,7 @@ export interface IntroductionData {
 }
 
 export function IntroductionCard({ intro }: { intro: IntroductionData }) {
+  const t = useTranslate();
   const router = useRouter();
   const [stage, setStage] = useState<"idle" | "composing" | "sent" | "gone">("idle");
   const [message, setMessage] = useState(intro.starters[0] ?? "");
@@ -69,7 +70,7 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
           Sent to {intro.displayName}. They&rsquo;ll see it when they accept. You&rsquo;ll
           find the conversation in{" "}
           <Link href="/messages" className="font-medium text-accent-ink underline underline-offset-2">
-            Messages
+            {t("introduction.messages")}
           </Link>{" "}
           once they do.
         </p>
@@ -80,14 +81,14 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
   return (
     <Card className={cn("border-l-4 border-l-purple")}>
       <div className="flex items-start justify-between gap-3">
-        <Chip tone="suggested">An introduction</Chip>
+        <Chip tone="suggested">{t("introduction.title")}</Chip>
         <button
           type="button"
           onClick={() => void respond("dismiss")}
           disabled={busy}
           className="text-sm text-muted transition-colors hover:text-ink disabled:opacity-60"
         >
-          Not now
+          {t("introduction.notNow")}
         </button>
       </div>
 
@@ -167,10 +168,10 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
               loading={busy}
               disabled={message.trim().length === 0}
             >
-              Send it
+              {t("introduction.sendIt")}
             </Button>
             <Button variant="ghost" onClick={() => setStage("idle")} disabled={busy}>
-              Back
+              {t("introduction.back")}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted">
@@ -180,16 +181,18 @@ export function IntroductionCard({ intro }: { intro: IntroductionData }) {
         </div>
       ) : (
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Button onClick={() => setStage("composing")}>Start a conversation</Button>
+          <Button onClick={() => setStage("composing")}>
+            {t("introduction.startConversation")}
+          </Button>
           <Button
             variant="ghost"
             onClick={() => void respond("not_interested")}
             disabled={busy}
           >
-            Not interested
+            {t("introduction.notInterested")}
           </Button>
           <span className="text-sm text-muted">
-            &ldquo;Not interested&rdquo; means we won&rsquo;t suggest them again.
+            {t("introduction.notInterestedNote")}
           </span>
         </div>
       )}

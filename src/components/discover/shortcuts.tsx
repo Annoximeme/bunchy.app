@@ -1,4 +1,8 @@
-import { Link } from "@/components/link";
+"use client";
+
+import { Link, useTranslate } from "@/components/link";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import type { PhrasePath } from "@/lib/i18n/translate";
 import { Compass, Dices, Map, Radio } from "lucide-react";
 import { cn } from "@/components/ui";
 
@@ -25,8 +29,9 @@ import { cn } from "@/components/ui";
 
 interface Shortcut {
   href: string;
-  label: string;
-  description: string;
+  /** Phrase paths: this list is module scope, the language is not. */
+  label: PhrasePath<Dictionary>;
+  description: PhrasePath<Dictionary>;
   icon: typeof Compass;
   /** Same vocabulary as the chips: a colour is a meaning, not a decoration. */
   tone: "mint" | "accent" | "purple" | "teal";
@@ -37,31 +42,29 @@ interface Shortcut {
 const SHORTCUTS: Shortcut[] = [
   {
     href: "/now",
-    label: "Bunchy Now",
-    description: "Who is up for something, and when.",
+    label: "discover.shortcutNow",
+    description: "discover.shortcutNowBody",
     icon: Radio,
     tone: "mint",
   },
   {
     href: "/do",
-    label: "Do something",
-    description:
-      "Say what you have (money, time, energy) and get an evening back.",
+    label: "discover.shortcutDo",
+    description: "discover.shortcutDoBody",
     icon: Compass,
     tone: "accent",
   },
   {
     href: "/surprise",
-    label: "Surprise me",
-    description:
-      "Someone whose interests do not look like yours, but whose evenings do.",
+    label: "discover.shortcutSurprise",
+    description: "discover.shortcutSurpriseBody",
     icon: Dices,
     tone: "purple",
   },
   {
     href: "/radar",
-    label: "Radar",
-    description: "Bunches and activities around you. Areas, never addresses.",
+    label: "discover.shortcutRadar",
+    description: "discover.shortcutRadarBody",
     icon: Map,
     tone: "teal",
     narrowOnly: true,
@@ -76,6 +79,8 @@ const TONES = {
 } as const;
 
 export function DiscoverShortcuts() {
+  const t = useTranslate();
+
   return (
     <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {SHORTCUTS.map((shortcut) => (
@@ -98,10 +103,10 @@ export function DiscoverShortcuts() {
             </span>
             <span className="min-w-0">
               <span className="block font-semibold tracking-tight group-hover:underline">
-                {shortcut.label}
+                {t(shortcut.label)}
               </span>
               <span className="mt-0.5 block text-sm text-muted">
-                {shortcut.description}
+                {t(shortcut.description)}
               </span>
             </span>
           </Link>

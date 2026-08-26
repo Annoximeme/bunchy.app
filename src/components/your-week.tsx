@@ -1,4 +1,7 @@
-import { Link } from "@/components/link";
+"use client";
+
+import { Link, useLanguage } from "@/components/link";
+import { LOCALE_TAGS } from "@/lib/i18n/config";
 import { Tag } from "@/components/ui";
 import { CalendarDays, Globe, MapPin, Repeat } from "lucide-react";
 
@@ -33,20 +36,33 @@ export interface WeekItem {
   bunch: { slug: string; name: string } | null;
 }
 
-/** "Thursday", or "Today" and "Tomorrow" where those are clearer. */
-function dayLabel(date: Date, now: Date): string {
+/**
+ * "Thursday", or "Today" and "Tomorrow" where those are clearer.
+ *
+ * The weekday comes from `Intl` in the reader's language; the two words that
+ * replace it are ours and come from the phrasebook. The locale tag is passed
+ * in rather than left to the platform, because on the server "the platform"
+ * is a container in UTC with no opinion about what language anybody reads.
+ */
+function dayLabel(
+  date: Date,
+  now: Date,
+  locale: string,
+  today: string,
+  tomorrow: string,
+): string {
   const startOf = (d: Date) =>
     new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   const days = Math.round(
     (startOf(date) - startOf(now)) / (24 * 60 * 60 * 1000),
   );
-  if (days === 0) return "Today";
-  if (days === 1) return "Tomorrow";
-  return date.toLocaleDateString("en-GB", { weekday: "long" });
+  if (days === 0) return today;
+  if (days === 1) return tomorrow;
+  return date.toLocaleDateString(locale, { weekday: "long" });
 }
 
-function timeLabel(date: Date): string {
-  return date.toLocaleTimeString("en-GB", {
+function timeLabel(date: Date, locale: string): string {
+  return date.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -59,17 +75,19 @@ export function YourWeek({
   items: WeekItem[];
   now?: Date;
 }) {
+  const { locale, t } = useLanguage();
+  const tag = LOCALE_TAGS[locale];
   if (items.length === 0) return null;
 
   return (
     <section className="mb-10">
       <div className="mb-4 flex items-baseline justify-between gap-4">
-        <h2 className="text-lg font-bold tracking-tight">Your week</h2>
+        <h2 className="text-lg font-bold tracking-tight">{t("week.title")}</h2>
         <Link
           href="/activities"
           className="text-sm font-medium text-accent-ink underline underline-offset-2"
         >
-          All of it
+          {t("week.allOfIt")}
         </Link>
       </div>
 
@@ -87,10 +105,10 @@ export function YourWeek({
               */}
               <div className="w-24 shrink-0">
                 <p className="font-bold tracking-tight">
-                  {dayLabel(item.startsAt, now)}
+                  {dayLabel(item.startsAt, now, tag, t("week.today"), t("week.tomorrow"))}
                 </p>
                 <p className="text-sm tabular-nums text-muted">
-                  {timeLabel(item.startsAt)}
+                  {timeLabel(item.startsAt, tag)}
                 </p>
               </div>
 
@@ -98,9 +116,9 @@ export function YourWeek({
                 <p className="flex items-center gap-2 truncate font-semibold">
                   {item.title}
                   {item.recurring && (
-                    <Tag tone="suggested" title="Part of a standing arrangement">
+                    <Tag tone="suggested" title={t("week.standing")}>
                       <Repeat size={10} aria-hidden />
-                      Every week
+                      {t("week.everyWeek")}
                     </Tag>
                   )}
                 </p>
@@ -112,8 +130,8 @@ export function YourWeek({
                       <MapPin size={13} aria-hidden />
                     )}
                     {item.mode === "ONLINE"
-                      ? "Online"
-                      : (item.locationLabel ?? "In person")}
+                      ? t("week.online")
+                      : (item.locationLabel ?? t("week.inPerson"))}
                   </span>
                   <span>{item.going} going</span>
                   {item.bunch && <span className="truncate">{item.bunch.name}</span>}

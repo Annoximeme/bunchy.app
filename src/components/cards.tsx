@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@/components/link";
+import { Link, useTranslate } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -36,6 +36,7 @@ export interface PersonCardData {
 }
 
 export function PersonCard({ person }: { person: PersonCardData }) {
+  const t = useTranslate();
   const router = useRouter();
   const [state, setState] = useState<"idle" | "sending" | "sent" | "dismissed">(
     "idle",
@@ -113,7 +114,7 @@ export function PersonCard({ person }: { person: PersonCardData }) {
           onClick={undoDismiss}
           className="font-medium text-accent-ink underline underline-offset-2"
         >
-          Undo
+          {t("cards.undo")}
         </button>
       </div>
     );
@@ -225,15 +226,15 @@ export function PersonCard({ person }: { person: PersonCardData }) {
       <div className="mt-auto flex items-center gap-2 pt-5">
         {state === "sent" ? (
           <p className="text-sm font-medium text-positive">
-            Request sent. You&rsquo;ll hear back here.
+            {t("cards.requestSent")}
           </p>
         ) : (
           <>
             <Button onClick={connect} loading={state === "sending"} size="sm">
-              Connect
+              {t("cards.connect")}
             </Button>
             <Button variant="ghost" size="sm" onClick={dismiss}>
-              Not for me
+              {t("cards.notForMe")}
             </Button>
           </>
         )}
@@ -271,6 +272,7 @@ const LIFECYCLE_TONE: Record<string, string> = {
 };
 
 export function BunchCard({ bunch }: { bunch: BunchCardData }) {
+  const t = useTranslate();
   /*
     Where the bunch is in its life, worked out rather than stored.
 
@@ -349,10 +351,10 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
           {state.label}
         </span>
         {bunch.membershipStatus === "ACTIVE" && (
-          <Chip tone="positive">You&rsquo;re in</Chip>
+          <Chip tone="positive">{t("cards.youreIn")}</Chip>
         )}
-        {bunch.membershipStatus === "REQUESTED" && <Chip>Request pending</Chip>}
-        {bunch.membershipStatus === "INVITED" && <Chip tone="accent">Invited</Chip>}
+        {bunch.membershipStatus === "REQUESTED" && <Chip>{t("cards.requestPending")}</Chip>}
+        {bunch.membershipStatus === "INVITED" && <Chip tone="accent">{t("cards.invited")}</Chip>}
       </div>
     </Link>
   );
@@ -373,11 +375,12 @@ export interface ActivityCardData {
 }
 
 export function ActivityCard({ activity }: { activity: ActivityCardData }) {
+  const t = useTranslate();
   const spotsLeft = activity.maxParticipants - activity.participantCount;
   const where =
     activity.mode === "ONLINE"
-      ? "Online"
-      : (activity.locationLabel ?? activity.cityLabel ?? "Somewhere nearby");
+      ? t("cards.online")
+      : (activity.locationLabel ?? activity.cityLabel ?? t("cards.nearby"));
 
   return (
     <Link
@@ -407,11 +410,11 @@ export function ActivityCard({ activity }: { activity: ActivityCardData }) {
           {activity.participantCount} going
         </p>
         <p className="text-xs text-muted">
-          {spotsLeft > 0 ? `${spotsLeft} left` : "Waitlist"}
+          {spotsLeft > 0 ? t("cards.spotsLeft", { count: spotsLeft }) : t("cards.waitlist")}
         </p>
         {activity.viewerStatus === "JOINED" && (
           <Chip tone="positive" className="mt-2">
-            Going
+            {t("cards.going")}
           </Chip>
         )}
       </div>

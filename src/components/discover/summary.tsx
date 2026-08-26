@@ -1,4 +1,5 @@
 import { cn } from "@/components/ui";
+import { useTranslate } from "@/components/link";
 
 /**
  * The head of Discover: a greeting, and what is actually on the page.
@@ -31,10 +32,6 @@ const TONES = {
   activities: "bg-teal-soft text-teal hover:bg-teal-soft/70",
 } as const;
 
-function plural(count: number, one: string, many: string): string {
-  return `${count} ${count === 1 ? one : many}`;
-}
-
 export function DiscoverSummary({
   firstName,
   counts,
@@ -42,21 +39,22 @@ export function DiscoverSummary({
   firstName: string;
   counts: DiscoverCounts;
 }) {
+  const t = useTranslate();
   const links = [
     counts.people > 0 && {
       href: "#people",
       tone: "people" as const,
-      label: plural(counts.people, "person", "people"),
+      label: t("discover.countPeople", { count: counts.people }),
     },
     counts.bunches > 0 && {
       href: "#bunches",
       tone: "bunches" as const,
-      label: plural(counts.bunches, "bunch", "bunches"),
+      label: t("discover.countBunches", { count: counts.bunches }),
     },
     counts.activities > 0 && {
       href: "#activities",
       tone: "activities" as const,
-      label: plural(counts.activities, "thing on", "things on"),
+      label: t("discover.countActivities", { count: counts.activities }),
     },
   ].filter((link): link is Exclude<typeof link, false> => Boolean(link));
 
@@ -78,15 +76,14 @@ export function DiscoverSummary({
       />
       <div className="p-5 sm:p-6">
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Hey {firstName}
+          {t("discover.greeting", { name: firstName })}
         </h1>
         <p className="mt-1.5 max-w-xl text-ink-soft">
-          Here&rsquo;s who&rsquo;s worth meeting and what&rsquo;s happening.
-          That&rsquo;s the whole page.
+          {t("discover.summaryBody")}
         </p>
 
         {links.length > 0 && (
-          <nav aria-label="What's on this page" className="mt-4">
+          <nav aria-label={t("discover.summaryLabel")} className="mt-4">
             <ul className="flex flex-wrap gap-2">
               {links.map((link) => (
                 <li key={link.href}>

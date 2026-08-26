@@ -1,5 +1,5 @@
 import { colourFor } from "@/lib/palette";
-import { Link } from "@/components/link";
+import { Link, useTranslate } from "@/components/link";
 import { cloneElement, isValidElement } from "react";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
 
@@ -297,11 +297,19 @@ export function Tag({
  * score to chase. There is no leaderboard anywhere in the product that this
  * could feed.
  */
+/**
+ * Client-only, unlike most of this file: it reads the language, and reading the
+ * language is a hook. Rendering it from a server component would throw. Every
+ * caller is already a client component, and the same is true of `ErrorNotice`
+ * below.
+ */
 export function CompatibilityBadge({ score }: { score: number }) {
+  const t = useTranslate();
+
   return (
     <span
       className="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-accent-ink"
-      title="How well your interests, goals, availability and style line up"
+      title={t("common.compatibility")}
     >
       <span className="text-sm font-semibold tabular-nums">{score}%</span>
       {/* No `opacity-80` here. Dimming the label pulled it to 3.61:1 on the
@@ -637,6 +645,8 @@ export function ErrorNotice({
   message: string;
   onRetry?: () => void;
 }) {
+  const t = useTranslate();
+
   return (
     <div
       role="alert"
@@ -645,7 +655,7 @@ export function ErrorNotice({
       <p className="text-sm text-danger">{message}</p>
       {onRetry && (
         <Button variant="secondary" size="sm" onClick={onRetry}>
-          Try again
+          {t("common.tryAgain")}
         </Button>
       )}
     </div>

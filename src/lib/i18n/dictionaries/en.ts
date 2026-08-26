@@ -23,6 +23,7 @@
 
 export const en = {
   common: {
+    compatibility: "How well your interests, goals, availability and style line up",
     skipToContent: "Skip to content",
     loading: "Loading…",
     cancel: "Cancel",
@@ -805,6 +806,102 @@ export const en = {
     "Work & Building": "Work & Building",
     "Machines": "Machines",
     "Style & Culture": "Style & Culture",
+  },
+
+  discover: {
+    shortcutNow: "Bunchy Now",
+    shortcutNowBody: "Who is up for something, and when.",
+    shortcutDo: "Do something",
+    shortcutDoBody: "Say what you have (money, time, energy) and get an evening back.",
+    shortcutSurprise: "Surprise me",
+    shortcutSurpriseBody:
+      "Someone whose interests do not look like yours, but whose evenings do.",
+    shortcutRadar: "Radar",
+    shortcutRadarBody: "Bunches and activities around you. Areas, never addresses.",
+    greeting: "Hey {name}",
+    countPeople: {
+      one: "{count} person",
+      other: "{count} people",
+    },
+    countBunches: {
+      one: "{count} bunch",
+      other: "{count} bunches",
+    },
+    countActivities: {
+      one: "{count} thing on",
+      other: "{count} things on",
+    },
+    title: "Discover",
+    summaryLabel: "What’s on this page",
+    summaryBody:
+      "Here’s who’s worth meeting and what’s happening. That’s the whole page.",
+    verifyEmail: "Confirm your email so you don’t lose access to your account.",
+    resendLink: "Resend the link",
+    peopleTitle: "People you might connect with",
+    peopleBody: "Ranked on interests, goals, availability and how you like to spend time.",
+    bunchesTitle: "Bunches for you",
+    bunchesBody: "Small groups with room for one more.",
+    activitiesTitle: "Things happening",
+    activitiesBody: "Somewhere to actually turn up.",
+    otherWaysTitle: "Other ways to find something",
+    otherWaysBody: "Other ways in, none of which need anyone to have matched you first.",
+    notWhatTitle: "Not what you’re after?",
+    notWhatBody: "None of these need anyone to have matched you first.",
+    matchedForYou: "Matched for you",
+    groups: "Groups",
+    activities: "Activities",
+    seeAll: "See all",
+    browseAll: "Browse all",
+    startBunch: "Start a bunch",
+    inviteLink: "Get my invite link",
+    everything: "That’s everything worth showing you today.",
+    foundYourBunch: "You’ve found your bunch. Go talk to them.",
+    quietTitle: "It’s quiet here, for now",
+    quietBody:
+      "{brand} needs a few more people nearby before it can make good introductions. Starting a bunch is the fastest way to change that, and it gives anyone who joins next somewhere to land.",
+    nearbyCount: "You’re one of {count} near {place}",
+    nearbyTarget:
+      "Bunches tend to hold together from about {target} people nearby, so introductions stay thin until then. Inviting one person moves this more than anything else on the page. And starting a bunch gives whoever joins next somewhere to land.",
+  },
+
+  cards: {
+    connect: "Connect",
+    notForMe: "Not for me",
+    undo: "Undo",
+    requestSent: "Request sent. You’ll hear back here.",
+    requestPending: "Request pending",
+    youreIn: "You’re in",
+    invited: "Invited",
+    going: "Going",
+    waitlist: "Waitlist",
+    online: "Online",
+    nearby: "Somewhere nearby",
+    spotsLeft: {
+      one: "1 left",
+      other: "{count} left",
+    },
+  },
+
+  week: {
+    title: "Your week",
+    allOfIt: "All of it",
+    everyWeek: "Every week",
+    standing: "Part of a standing arrangement",
+    today: "Today",
+    tomorrow: "Tomorrow",
+    online: "Online",
+    inPerson: "In person",
+  },
+
+  introduction: {
+    title: "An introduction",
+    messages: "Messages",
+    notNow: "Not now",
+    sendIt: "Send it",
+    back: "Back",
+    startConversation: "Start a conversation",
+    notInterested: "Not interested",
+    notInterestedNote: "“Not interested” means we won’t suggest them again.",
   },
 } as const;
 
