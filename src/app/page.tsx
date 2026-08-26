@@ -819,7 +819,7 @@ export default async function LandingPage({
                 href={link.href}
                 className="transition-colors hover:text-white"
               >
-                {link.label}
+                {t(link.label)}
               </Link>
             ))}
             {/* This page is a fixed composition, but the control belongs

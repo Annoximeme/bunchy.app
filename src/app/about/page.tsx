@@ -9,6 +9,7 @@ import { BunchyLogo } from "@/components/logo";
 import founder from "./gianni.jpg";
 import { SITE_LINKS } from "@/components/site-links";
 import { getViewer } from "@/server/auth/current-user";
+import { getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = {
   title: `About ${brand.name}`,
@@ -82,6 +83,7 @@ const CORAL = "#FF5C6C";
 const ON_CORAL = "var(--color-on-accent)";
 
 export default async function AboutPage() {
+  const t = await getTranslations();
   const viewer = await getViewer();
   // A signed-in member can actually start one. Sending them to signup would be
   // a door they have already walked through.
@@ -110,7 +112,7 @@ export default async function AboutPage() {
                 href={link.href}
                 className="text-white/60 transition-colors hover:text-white"
               >
-                {link.label}
+                {t(link.label)}
               </Link>
             ))}
           </nav>
@@ -664,7 +666,7 @@ export default async function AboutPage() {
                       href={link.href}
                       className="text-white/60 transition-colors hover:text-white"
                     >
-                      {link.label}
+                      {t(link.label)}
                     </Link>
                   </li>
                 ))}

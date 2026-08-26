@@ -4,6 +4,7 @@ import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { SITE_LINKS } from "@/components/site-links";
+import { getTranslations } from "@/server/i18n";
 
 /**
  * Shared furniture for the policy pages.
@@ -49,7 +50,7 @@ const editorial = Instrument_Serif({
 /** On `band-deep`, which is navy in both themes, so this never has to move. */
 const CORAL = "#FF5C6C";
 
-export function LegalPage({
+export async function LegalPage({
   title,
   summary,
   contact,
@@ -64,6 +65,8 @@ export function LegalPage({
   path?: string;
   children: ReactNode;
 }) {
+  const t = await getTranslations();
+
   return (
     <div className={`${display.className} min-h-dvh bg-band-soft text-ink`}>
       {/*
@@ -96,7 +99,7 @@ export function LegalPage({
                   rel="noopener noreferrer"
                   className="text-white/60 transition-colors hover:text-white"
                 >
-                  {link.label}
+                  {t(link.label)}
                 </a>
               ) : (
                 <Link
@@ -104,7 +107,7 @@ export function LegalPage({
                   href={link.href}
                   className="text-white/60 transition-colors hover:text-white"
                 >
-                  {link.label}
+                  {t(link.label)}
                 </Link>
               ),
             )}
@@ -141,7 +144,7 @@ export function LegalPage({
             {summary}
           </p>
           <p className="mt-8 text-sm text-white/60">
-            Questions:{" "}
+            {t("legal.questions")}{" "}
             <a
               href={`mailto:${contact}`}
               className="underline underline-offset-4"
@@ -162,9 +165,9 @@ export function LegalPage({
       <footer className="bg-band-deep px-5 py-10 text-sm text-white/60">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <p>
-            {brand.name}. {brand.tagline}
+            {brand.name}. {t("brand.tagline")}
           </p>
-          <nav aria-label={`More about ${brand.name}`}>
+          <nav aria-label={t("legal.moreAbout", { brand: brand.name })}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {SITE_LINKS.filter((link) => link.href !== path).map((link) => (
                 <li key={link.href}>
@@ -175,21 +178,21 @@ export function LegalPage({
                       rel="noopener noreferrer"
                       className="transition-colors hover:text-white"
                     >
-                      {link.label}
+                      {t(link.label)}
                     </a>
                   ) : (
                     <Link
                       href={link.href}
                       className="transition-colors hover:text-white"
                     >
-                      {link.label}
+                      {t(link.label)}
                     </Link>
                   )}
                 </li>
               ))}
               <li>
                 <Link href="/" className="transition-colors hover:text-white">
-                  Home
+                  {t("siteLinks.home")}
                 </Link>
               </li>
             </ul>

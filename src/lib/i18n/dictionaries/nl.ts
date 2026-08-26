@@ -884,4 +884,10 @@ export const nl: Dictionary = {
     tomorrow: "Morgen",
     yesterday: "Gisteren",
   },
+
+  legal: {
+    questions: "Vragen:",
+    moreAbout: "Meer over {brand}",
+    documentNav: "Documenten",
+  },
 };

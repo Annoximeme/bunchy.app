@@ -889,4 +889,10 @@ export const fr: Dictionary = {
     tomorrow: "Demain",
     yesterday: "Hier",
   },
+
+  legal: {
+    questions: "Des questions :",
+    moreAbout: "En savoir plus sur {brand}",
+    documentNav: "Documents",
+  },
 };

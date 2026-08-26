@@ -913,6 +913,12 @@ export const en = {
     tomorrow: "Tomorrow",
     yesterday: "Yesterday",
   },
+
+  legal: {
+    questions: "Questions:",
+    moreAbout: "More about {brand}",
+    documentNav: "Documents",
+  },
 } as const;
 
 /**
