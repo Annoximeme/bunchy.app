@@ -1,5 +1,4 @@
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 /**
  * The vocabulary behind "What are you up for?".
@@ -24,35 +23,35 @@ export interface Option {
    * it stays English and stays stable: `want=gaming` has to mean the same thing
    * next year and in every language. Only the word shown to a reader moves.
    */
-  label: PhrasePath<Dictionary>;
+  label: PhraseRef;
 }
 
 export const ACTIVITIES: Option[] = [
-  { value: "gaming", label: "upFor.activities.gaming" },
-  { value: "watch", label: "upFor.activities.watch" },
-  { value: "food", label: "upFor.activities.food" },
-  { value: "music", label: "upFor.activities.music" },
-  { value: "hang-out", label: "upFor.activities.hang-out" },
-  { value: "create", label: "upFor.activities.create" },
-  { value: "study", label: "upFor.activities.study" },
-  { value: "co-work", label: "upFor.activities.co-work" },
-  { value: "sports", label: "upFor.activities.sports" },
-  { value: "outdoors", label: "upFor.activities.outdoors" },
-  { value: "board-games", label: "upFor.activities.board-games" },
-  { value: "surprise", label: "upFor.activities.surprise" },
+  { value: "gaming", label: phrase("upFor.activities.gaming") },
+  { value: "watch", label: phrase("upFor.activities.watch") },
+  { value: "food", label: phrase("upFor.activities.food") },
+  { value: "music", label: phrase("upFor.activities.music") },
+  { value: "hang-out", label: phrase("upFor.activities.hang-out") },
+  { value: "create", label: phrase("upFor.activities.create") },
+  { value: "study", label: phrase("upFor.activities.study") },
+  { value: "co-work", label: phrase("upFor.activities.co-work") },
+  { value: "sports", label: phrase("upFor.activities.sports") },
+  { value: "outdoors", label: phrase("upFor.activities.outdoors") },
+  { value: "board-games", label: phrase("upFor.activities.board-games") },
+  { value: "surprise", label: phrase("upFor.activities.surprise") },
 ];
 
 export const PLACES: Option[] = [
-  { value: "online", label: "upFor.places.online" },
-  { value: "in-person", label: "upFor.places.in-person" },
-  { value: "either", label: "upFor.places.either" },
+  { value: "online", label: phrase("upFor.places.online") },
+  { value: "in-person", label: phrase("upFor.places.in-person") },
+  { value: "either", label: phrase("upFor.places.either") },
 ];
 
 export const TIMES: Option[] = [
-  { value: "now", label: "upFor.times.now" },
-  { value: "tonight", label: "upFor.times.tonight" },
-  { value: "weekend", label: "upFor.times.weekend" },
-  { value: "sometime", label: "upFor.times.sometime" },
+  { value: "now", label: phrase("upFor.times.now") },
+  { value: "tonight", label: phrase("upFor.times.tonight") },
+  { value: "weekend", label: phrase("upFor.times.weekend") },
+  { value: "sometime", label: phrase("upFor.times.sometime") },
 ];
 
 export interface ResolvedIntent {

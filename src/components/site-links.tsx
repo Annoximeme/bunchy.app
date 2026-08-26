@@ -2,8 +2,7 @@ import { Link } from "@/components/link";
 import { brand } from "@/lib/brand";
 import { cn } from "@/components/ui";
 import { getTranslations } from "@/server/i18n";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 /**
  * The pages that exist outside the product, in one list.
@@ -31,7 +30,7 @@ interface SiteLink {
    * This list is defined at module scope and the language is only known once a
    * request is being served, so what is stored is the phrase path.
    */
-  label: PhrasePath<Dictionary>;
+  label: PhraseRef;
   /**
    * Leaves the site.
    *
@@ -45,22 +44,22 @@ interface SiteLink {
 }
 
 export const SITE_LINKS: readonly SiteLink[] = [
-  { href: "/about", label: "siteLinks.about" },
-  { href: "/safety", label: "siteLinks.safety" },
-  { href: "/moderators", label: "siteLinks.volunteer" },
-  { href: "/privacy", label: "siteLinks.privacy" },
-  { href: "/terms", label: "siteLinks.terms" },
+  { href: "/about", label: phrase("siteLinks.about") },
+  { href: "/safety", label: phrase("siteLinks.safety") },
+  { href: "/moderators", label: phrase("siteLinks.volunteer") },
+  { href: "/privacy", label: phrase("siteLinks.privacy") },
+  { href: "/terms", label: phrase("siteLinks.terms") },
   // Next to the two documents it is the history of, which is the only place it
   // makes sense: on its own it reads as a product changelog, and beside them it
   // reads as what it is, the record of how those two have changed.
-  { href: "/changelog", label: "siteLinks.changelog" },
+  { href: "/changelog", label: phrase("siteLinks.changelog") },
   // Carries the flag, because `/` on its own bounces a signed-in member
   // straight back to Discover. Without it this link would look broken from
   // inside the product, which is the only place this footer renders.
-  { href: "/?home=1", label: "siteLinks.home" },
+  { href: "/?home=1", label: phrase("siteLinks.home") },
   // Last, and deliberately. It is the only entry that takes somebody off the
   // site, and the product's whole argument is that leaving is the point.
-  { href: brand.discordUrl, label: "siteLinks.discord", external: true },
+  { href: brand.discordUrl, label: phrase("siteLinks.discord"), external: true },
 ] as const;
 
 /**
@@ -82,7 +81,7 @@ export const SITE_LINKS: readonly SiteLink[] = [
  * for a real reason: there is nowhere to put the reply otherwise.
  */
 const SIGNED_IN_LINKS: readonly SiteLink[] = [
-  { href: "/feedback", label: "siteLinks.feedback" },
+  { href: "/feedback", label: phrase("siteLinks.feedback") },
 ];
 
 export async function SiteFooter({

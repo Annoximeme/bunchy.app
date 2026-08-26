@@ -1,8 +1,7 @@
 "use client";
 
 import { useTranslate } from "@/components/link";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -36,9 +35,9 @@ interface Idea {
    * Phrase paths, not words. This list is module scope and the language is a
    * fact about the request, so the words are looked up at render.
    */
-  tag: PhrasePath<Dictionary>;
-  title: PhrasePath<Dictionary>;
-  when: PhrasePath<Dictionary>;
+  tag: PhraseRef;
+  title: PhraseRef;
+  when: PhraseRef;
   going: number;
   fills: string[];
 }
@@ -46,25 +45,25 @@ interface Idea {
 const IDEAS: Idea[] = [
   {
     emoji: "🎮",
-    tag: "pebbles.gamingTag",
-    title: "pebbles.gamingTitle",
-    when: "pebbles.gamingWhen",
+    tag: phrase("pebbles.gamingTag"),
+    title: phrase("pebbles.gamingTitle"),
+    when: phrase("pebbles.gamingWhen"),
     going: 4,
     fills: ["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"],
   },
   {
     emoji: "☕",
-    tag: "pebbles.coffeeTag",
-    title: "pebbles.coffeeTitle",
-    when: "pebbles.coffeeWhen",
+    tag: phrase("pebbles.coffeeTag"),
+    title: phrase("pebbles.coffeeTitle"),
+    when: phrase("pebbles.coffeeWhen"),
     going: 3,
     fills: ["#55D6BE", "#FF5C6C", "#9B85FF"],
   },
   {
     emoji: "🥾",
-    tag: "pebbles.walkingTag",
-    title: "pebbles.walkingTitle",
-    when: "pebbles.walkingWhen",
+    tag: phrase("pebbles.walkingTag"),
+    title: phrase("pebbles.walkingTitle"),
+    when: phrase("pebbles.walkingWhen"),
     going: 5,
     fills: ["#FFC857", "#7657FF", "#55D6BE", "#FF5C6C", "#9B85FF"],
   },
@@ -94,7 +93,7 @@ export function PebbleBoard() {
     */
     <ul className="reveal-stagger grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {IDEAS.map((idea) => (
-        <li key={idea.title}>
+        <li key={idea.title.path}>
           <motion.article
             className="h-full rounded-squircle bg-surface p-8 shadow-pebble"
             whileHover={

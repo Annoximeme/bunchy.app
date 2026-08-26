@@ -3,8 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { brand } from "@/lib/brand";
 import { useTranslate } from "@/components/link";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 /**
  * Seven ways in, grouped into the three things somebody actually arrives
@@ -39,52 +38,48 @@ interface Way {
    * Phrase paths. What the visitor would say, not what the feature is called,
    * looked up in whichever language they are reading.
    */
-  intent: PhrasePath<Dictionary>;
-  blurb: PhrasePath<Dictionary>;
-  features: {
-    name: PhrasePath<Dictionary>;
-    line: PhrasePath<Dictionary>;
-    colour: string;
-  }[];
+  intent: PhraseRef;
+  blurb: PhraseRef;
+  features: { name: PhraseRef; line: PhraseRef; colour: string }[];
 }
 
 const WAYS: Way[] = [
   {
     id: "know",
-    intent: "ways.know.intent",
-    blurb: "ways.know.blurb",
+    intent: phrase("ways.know.intent"),
+    blurb: phrase("ways.know.blurb"),
     features: [
-      { name: "ways.know.startName", colour: "#7657FF", line: "ways.know.startLine" },
-      { name: "ways.know.plansName", colour: "#55D6BE", line: "ways.know.plansLine" },
+      { name: phrase("ways.know.startName"), colour: "#7657FF", line: phrase("ways.know.startLine") },
+      { name: phrase("ways.know.plansName"), colour: "#55D6BE", line: phrase("ways.know.plansLine") },
     ],
   },
   {
     id: "happening",
-    intent: "ways.happening.intent",
-    blurb: "ways.happening.blurb",
+    intent: phrase("ways.happening.intent"),
+    blurb: phrase("ways.happening.blurb"),
     features: [
       {
-        name: "ways.happening.discoverName",
+        name: phrase("ways.happening.discoverName"),
         colour: "#FF5C6C",
-        line: "ways.happening.discoverLine",
+        line: phrase("ways.happening.discoverLine"),
       },
       {
-        name: "ways.happening.radarName",
+        name: phrase("ways.happening.radarName"),
         colour: "#FFC857",
-        line: "ways.happening.radarLine",
+        line: phrase("ways.happening.radarLine"),
       },
     ],
   },
   {
     id: "out",
-    intent: "ways.out.intent",
-    blurb: "ways.out.blurb",
+    intent: phrase("ways.out.intent"),
+    blurb: phrase("ways.out.blurb"),
     features: [
-      { name: "ways.out.doName", colour: "#FFC857", line: "ways.out.doLine" },
+      { name: phrase("ways.out.doName"), colour: "#FFC857", line: phrase("ways.out.doLine") },
       {
-        name: "ways.out.surpriseName",
+        name: phrase("ways.out.surpriseName"),
         colour: "#7657FF",
-        line: "ways.out.surpriseLine",
+        line: phrase("ways.out.surpriseLine"),
       },
     ],
   },
@@ -99,7 +94,7 @@ function Features({ way }: { way: Way }) {
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {way.features.map((feature) => (
           <li
-            key={feature.name}
+            key={feature.name.path}
             className="rounded-2xl bg-white/[0.04] p-5 ring-1 ring-white/10"
           >
             <p className="flex items-center gap-2 font-bold tracking-tight">

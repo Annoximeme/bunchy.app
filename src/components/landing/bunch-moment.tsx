@@ -1,8 +1,7 @@
 "use client";
 
 import { useTranslate } from "@/components/link";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 
 import { useEffect, useRef, useState } from "react";
 import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
@@ -29,21 +28,21 @@ import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
  */
 
 const MATCHES = [
-  { initial: "M", colour: "#7657FF", x: -104, y: -58, tag: "moment.tagGaming" },
-  { initial: "E", colour: "#55D6BE", x: 104, y: -58, tag: "moment.tagHiking" },
-  { initial: "T", colour: "#FFC857", x: -104, y: 58, tag: "moment.tagFood" },
-  { initial: "P", colour: "#FF5C6C", x: 104, y: 58, tag: "moment.tagFilms" },
+  { initial: "M", colour: "#7657FF", x: -104, y: -58, tag: phrase("moment.tagGaming") },
+  { initial: "E", colour: "#55D6BE", x: 104, y: -58, tag: phrase("moment.tagHiking") },
+  { initial: "T", colour: "#FFC857", x: -104, y: 58, tag: phrase("moment.tagFood") },
+  { initial: "P", colour: "#FF5C6C", x: 104, y: 58, tag: phrase("moment.tagFilms") },
 ] as const;
 
 type Stage = "alone" | "searching" | "found" | "plan";
 
 /** The caption under each stage, as phrase paths. */
 const CAPTIONS = {
-  alone: "moment.alone",
-  searching: "moment.searching",
-  found: "moment.found",
-  plan: "moment.plan",
-} as const satisfies Record<Stage, PhrasePath<Dictionary>>;
+  alone: phrase("moment.alone"),
+  searching: phrase("moment.searching"),
+  found: phrase("moment.found"),
+  plan: phrase("moment.plan"),
+} as const satisfies Record<Stage, PhraseRef>;
 
 export function BunchMoment() {
   const t = useTranslate();

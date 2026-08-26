@@ -1,8 +1,7 @@
 "use client";
 
 import { Link, useTranslate } from "@/components/link";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
-import type { PhrasePath } from "@/lib/i18n/translate";
+import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 import { Compass, Dices, Map, Radio } from "lucide-react";
 import { cn } from "@/components/ui";
 
@@ -30,8 +29,8 @@ import { cn } from "@/components/ui";
 interface Shortcut {
   href: string;
   /** Phrase paths: this list is module scope, the language is not. */
-  label: PhrasePath<Dictionary>;
-  description: PhrasePath<Dictionary>;
+  label: PhraseRef;
+  description: PhraseRef;
   icon: typeof Compass;
   /** Same vocabulary as the chips: a colour is a meaning, not a decoration. */
   tone: "mint" | "accent" | "purple" | "teal";
@@ -42,29 +41,29 @@ interface Shortcut {
 const SHORTCUTS: Shortcut[] = [
   {
     href: "/now",
-    label: "discover.shortcutNow",
-    description: "discover.shortcutNowBody",
+    label: phrase("discover.shortcutNow"),
+    description: phrase("discover.shortcutNowBody"),
     icon: Radio,
     tone: "mint",
   },
   {
     href: "/do",
-    label: "discover.shortcutDo",
-    description: "discover.shortcutDoBody",
+    label: phrase("discover.shortcutDo"),
+    description: phrase("discover.shortcutDoBody"),
     icon: Compass,
     tone: "accent",
   },
   {
     href: "/surprise",
-    label: "discover.shortcutSurprise",
-    description: "discover.shortcutSurpriseBody",
+    label: phrase("discover.shortcutSurprise"),
+    description: phrase("discover.shortcutSurpriseBody"),
     icon: Dices,
     tone: "purple",
   },
   {
     href: "/radar",
-    label: "discover.shortcutRadar",
-    description: "discover.shortcutRadarBody",
+    label: phrase("discover.shortcutRadar"),
+    description: phrase("discover.shortcutRadarBody"),
     icon: Map,
     tone: "teal",
     narrowOnly: true,

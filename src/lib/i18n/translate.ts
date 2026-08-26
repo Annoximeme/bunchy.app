@@ -79,7 +79,15 @@ function choose(phrase: Phrase, values: Values | undefined): string {
   return Number(count) === 1 ? phrase.one : phrase.other;
 }
 
-export type Translate<T> = (path: PhrasePath<T>, values?: Values) => string;
+/**
+ * Either a dot path or a `phrase()` reference, which are the same thing in two
+ * shapes: the plain path where it is written inline and read immediately, the
+ * wrapped one where it has to sit in a list until a request arrives. See
+ * `phrase.ts` for why the second exists.
+ */
+export type PhraseKey<T> = PhrasePath<T> | { readonly path: PhrasePath<T> };
+
+export type Translate<T> = (key: PhraseKey<T>, values?: Values) => string;
 
 /**
  * Builds the `t` used everywhere else.
@@ -97,7 +105,8 @@ export function createTranslator<T extends Catalogue>(
   const chosen = catalogues[locale];
   const fallback = catalogues[DEFAULT_LOCALE];
 
-  return (path, values) => {
+  return (key, values) => {
+    const path = typeof key === "string" ? key : key.path;
     const phrase = lookup(chosen, path) ?? lookup(fallback, path);
     if (phrase === undefined) {
       // Not thrown. A missing key is a copy bug, and taking the page down over

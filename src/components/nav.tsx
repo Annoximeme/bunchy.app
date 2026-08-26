@@ -9,6 +9,7 @@ import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { phrase } from "@/lib/i18n/phrase";
 import { useTranslate } from "@/components/link";
 
 /**
@@ -33,13 +34,13 @@ import { useTranslate } from "@/components/link";
  * rather than the word itself.
  */
 const ITEMS = [
-  { href: "/discover", label: "nav.discover", icon: CompassIcon },
-  { href: "/search", label: "nav.search", icon: SearchIcon },
-  { href: "/now", label: "nav.now", icon: BoltIcon },
-  { href: "/bunches", label: "nav.bunches", icon: BunchesIcon },
-  { href: "/radar", label: "nav.radar", icon: RadarIcon },
-  { href: "/activities", label: "nav.activities", icon: CalendarIcon },
-  { href: "/messages", label: "nav.messages", icon: ChatIcon },
+  { href: "/discover", label: phrase("nav.discover"), icon: CompassIcon },
+  { href: "/search", label: phrase("nav.search"), icon: SearchIcon },
+  { href: "/now", label: phrase("nav.now"), icon: BoltIcon },
+  { href: "/bunches", label: phrase("nav.bunches"), icon: BunchesIcon },
+  { href: "/radar", label: phrase("nav.radar"), icon: RadarIcon },
+  { href: "/activities", label: phrase("nav.activities"), icon: CalendarIcon },
+  { href: "/messages", label: phrase("nav.messages"), icon: ChatIcon },
 ] as const;
 
 /**
