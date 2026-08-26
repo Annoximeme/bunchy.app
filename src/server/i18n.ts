@@ -2,6 +2,8 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import {
   DEFAULT_LOCALE,
+  LOCALES,
+  LOCALE_TAGS,
   isLocale,
   localePath,
   type Locale,
@@ -45,4 +47,38 @@ export async function getTranslations(): Promise<Translate<Dictionary>> {
  */
 export async function localeHref(path: string): Promise<string> {
   return localePath(await currentLocale(), path);
+}
+
+/**
+ * The path being served, with no language on it.
+ *
+ * Set by the proxy. Metadata is generated outside the component tree, so
+ * `usePathname` is not available there and the rewritten URL is not either.
+ */
+export async function currentPath(): Promise<string> {
+  return (await headers()).get("x-pathname") ?? "/";
+}
+
+/**
+ * This page's address in each language, for the document head.
+ *
+ * The counterpart to the sitemap's alternates, and the more important half:
+ * a crawler that only ever reaches a page by following a link still learns
+ * that the other two exist. `x-default` is the unprefixed address, which is
+ * what somebody with no stated language is sent to anyway.
+ */
+export async function languageAlternates(): Promise<{
+  canonical: string;
+  languages: Record<string, string>;
+}> {
+  const [locale, path] = await Promise.all([currentLocale(), currentPath()]);
+  return {
+    canonical: localePath(locale, path),
+    languages: {
+      ...Object.fromEntries(
+        LOCALES.map((option) => [LOCALE_TAGS[option], localePath(option, path)]),
+      ),
+      "x-default": path,
+    },
+  };
 }

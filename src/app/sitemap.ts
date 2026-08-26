@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/server/env";
+import { LOCALES, LOCALE_TAGS, localePath } from "@/lib/i18n/config";
 
 /**
  * The public surface, which is small on purpose: everything else in Bunchy is
@@ -25,14 +26,37 @@ const PUBLIC_PATHS = [
   { path: "/changelog", changeFrequency: "monthly" as const, priority: 0.3 },
 ];
 
+/**
+ * Every public page, once per language, each one naming the other two.
+ *
+ * The `alternates` block is what turns three addresses into one page a crawler
+ * understands: without it, /discover and /nl/discover look like two thin pages
+ * competing with each other, and a Dutch search is as likely to be shown the
+ * English one. `x-default` points at the unprefixed address, which is where
+ * somebody with no stated language is sent anyway.
+ *
+ * This is the reason the language is in the address at all. A cookie could
+ * carry the preference perfectly well and none of this would be expressible.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = env().APP_URL;
   const lastModified = new Date();
 
-  return PUBLIC_PATHS.map(({ path, changeFrequency, priority }) => ({
-    url: new URL(path, base).toString(),
-    lastModified,
-    changeFrequency,
-    priority,
-  }));
+  return PUBLIC_PATHS.flatMap(({ path, changeFrequency, priority }) => {
+    const languages = Object.fromEntries([
+      ...LOCALES.map((locale) => [
+        LOCALE_TAGS[locale],
+        new URL(localePath(locale, path), base).toString(),
+      ]),
+      ["x-default", new URL(path, base).toString()],
+    ]);
+
+    return LOCALES.map((locale) => ({
+      url: new URL(localePath(locale, path), base).toString(),
+      lastModified,
+      changeFrequency,
+      priority,
+      alternates: { languages },
+    }));
+  });
 }

@@ -164,6 +164,10 @@ export function proxy(request: NextRequest) {
   // thing that is true of *this* request: the URL has already been consulted,
   // the cookie has already lost the argument if they disagreed.
   requestHeaders.set("x-locale", locale);
+  // The path with no language on it, for the pages that have to name their own
+  // alternates. `usePathname` cannot be read from metadata, and the rewritten
+  // URL is not available there either.
+  requestHeaders.set("x-pathname", path);
 
   const url = request.nextUrl.clone();
   if (fromPath && !localeless) {
