@@ -115,3 +115,41 @@ describe("phrases", () => {
     expect(screen.getByText("Discover")).toBeInTheDocument();
   });
 });
+
+describe("the interest picker", () => {
+  it("names the built-in interests in the language being read", async () => {
+    const { InterestsStep } = await import("@/components/onboarding/interests-step");
+
+    render(
+      <LanguageProvider locale="nl">
+        <InterestsStep initial={[]} />
+      </LanguageProvider>,
+    );
+
+    expect(screen.getByRole("button", { name: "Gezelschapsspelen" })).toBeInTheDocument();
+    expect(screen.getByText("Eten & drinken")).toBeInTheDocument();
+  });
+
+  it("keeps an interest a member added themselves in their own words", async () => {
+    const { InterestsStep } = await import("@/components/onboarding/interests-step");
+
+    render(
+      <LanguageProvider locale="fr">
+        <InterestsStep
+          initial={[
+            {
+              slug: "warhammer-40k",
+              custom: "Warhammer 40k",
+              intent: "PRACTICES",
+              strength: 2,
+            },
+          ]}
+        />
+      </LanguageProvider>,
+    );
+
+    expect(screen.getByText("Warhammer 40k")).toBeInTheDocument();
+    // And the taxonomy around it is still French.
+    expect(screen.getByRole("button", { name: "Jeux de société" })).toBeInTheDocument();
+  });
+});
