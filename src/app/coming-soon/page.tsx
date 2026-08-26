@@ -6,13 +6,25 @@ import { BunchyLogo } from "@/components/logo";
 import { person } from "@/lib/example-people";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
 import { publicWaitlistCount } from "@/server/modules/waitlist/service";
+import { currentLocale, getTranslations, localeHref } from "@/server/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
-export const metadata: Metadata = {
-  title: "Coming soon",
-  description:
-    "Bunchy helps you find people who are into the same things as you, and actually do something together. Online, nearby, or both.",
-  robots: { index: false, follow: false },
-};
+/**
+ * The title and description in the reader's language.
+ *
+ * A function rather than a constant, because the language is a fact about the
+ * request. This is also the page most likely to be pasted into a chat, and a
+ * share preview that comes back in a language the sender was not reading is
+ * the one place a translation error is visible to everybody at once.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return {
+    title: t("comingSoon.metaTitle"),
+    description: t("comingSoon.metaDescription"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +54,9 @@ export default async function ComingSoonPage({
 }) {
   const { waitlist } = await searchParams;
   const waiting = await publicWaitlistCount();
+  const t = await getTranslations();
+  const locale = await currentLocale();
+  const privacyHref = await localeHref("/privacy");
 
   return (
     <div
@@ -57,8 +72,12 @@ export default async function ComingSoonPage({
       />
 
       <div className="relative mx-auto w-full max-w-6xl px-5 pb-20">
-        <header className="py-8">
+        <header className="flex items-center justify-between gap-4 py-8">
           <BunchyLogo height={24} color="#FFFFFF" />
+          {/* Top right, on the page more people will land on than any other,
+              and before they have read a word: somebody who cannot read this
+              should not have to scroll a poster to find the way out of it. */}
+          <LanguageSwitcher className="text-white/70" compact />
         </header>
 
         <main id="main">
@@ -72,11 +91,11 @@ export default async function ComingSoonPage({
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-mint-status/30 bg-mint-status/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-mint-status">
                 <span className="size-1.5 rounded-full bg-mint-status" />
-                Opening soon
+                {t("comingSoon.badge")}
               </span>
 
               <h1 className="mt-6 text-balance text-[2.6rem] font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
-                Making friends as an adult is{" "}
+                {t("comingSoon.headlineBefore")}{" "}
                 <span
                   style={{
                     background:
@@ -86,23 +105,25 @@ export default async function ComingSoonPage({
                     color: "transparent",
                   }}
                 >
-                  absurdly hard.
+                  {t("comingSoon.headlineEmphasis")}
                 </span>{" "}
-                It shouldn&rsquo;t be.
+                {t("comingSoon.headlineAfter")}
               </h1>
 
               <p className="mt-6 text-xl font-semibold leading-snug text-white/90">
-                Tell us what you want to do. We&rsquo;ll find your people.
+                {t("comingSoon.lead")}
               </p>
 
               <p className="mt-3 text-lg leading-relaxed text-white/65">
-                Gaming tonight. A film on Saturday. Coffee next week.{" "}
-                {brand.name} finds four or five people who are into the same
-                things and free when you are, then helps you make an actual
-                plan.{" "}
-                <span className="font-semibold text-mint-status">Online</span>,{" "}
-                <span className="font-semibold text-yellow-fun">nearby</span>,
-                or both.
+                {t("comingSoon.body", { brand: brand.name })}{" "}
+                <span className="font-semibold text-mint-status">
+                  {t("comingSoon.online")}
+                </span>
+                ,{" "}
+                <span className="font-semibold text-yellow-fun">
+                  {t("comingSoon.nearby")}
+                </span>
+                {t("comingSoon.orBoth")}
               </p>
 
               {/* The point of the page. */}
@@ -114,21 +135,19 @@ export default async function ComingSoonPage({
                   <div>
                     <p className="flex items-center gap-2.5 text-lg font-bold text-mint-status">
                       <Check size={20} aria-hidden />
-                      You&rsquo;re on the list.
+                      {t("comingSoon.joinedTitle")}
                     </p>
                     <p className="mt-2 text-white/70">
-                      We&rsquo;ll write to you once, on the day it opens.
-                      Nothing before that, nothing after it unless you join.
+                      {t("comingSoon.joinedBody")}
                     </p>
                   </div>
                 ) : (
                   <>
                     <h2 className="text-xl font-bold tracking-tight">
-                      Want to know when it opens?
+                      {t("comingSoon.formTitle")}
                     </h2>
                     <p className="mt-2 text-white/65">
-                      Leave your email and we&rsquo;ll tell you. One message, on
-                      launch day.
+                      {t("comingSoon.formBody")}
                     </p>
 
                     <form
@@ -136,8 +155,12 @@ export default async function ComingSoonPage({
                       method="post"
                       className="mt-5 flex flex-col gap-3 sm:flex-row"
                     >
+                      {/* The page knows what language it was read in; the
+                          route that answers the post does not, so it is told
+                          rather than left to guess from a cookie. */}
+                      <input type="hidden" name="locale" value={locale} />
                       <label htmlFor="waitlist-email" className="sr-only">
-                        Email address
+                        {t("comingSoon.emailLabel")}
                       </label>
                       <input
                         id="waitlist-email"
@@ -157,7 +180,7 @@ export default async function ComingSoonPage({
                         type="submit"
                         className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
                       >
-                        Keep me posted
+                        {t("comingSoon.submit")}
                         <ArrowRight size={18} aria-hidden />
                       </button>
                     </form>
@@ -168,7 +191,7 @@ export default async function ComingSoonPage({
                         role="alert"
                         className="mt-3 text-sm font-medium text-[#FF8A7D]"
                       >
-                        That address didn&rsquo;t look right. Have another go?
+                        {t("comingSoon.invalid")}
                       </p>
                     )}
                     {waitlist === "busy" && (
@@ -176,8 +199,7 @@ export default async function ComingSoonPage({
                         role="alert"
                         className="mt-3 text-sm font-medium text-[#FF8A7D]"
                       >
-                        That&rsquo;s a lot of tries from one place. Give it an
-                        hour.
+                        {t("comingSoon.busy")}
                       </p>
                     )}
                     {waitlist === "error" && (
@@ -185,8 +207,7 @@ export default async function ComingSoonPage({
                         role="alert"
                         className="mt-3 text-sm font-medium text-[#FF8A7D]"
                       >
-                        Something broke on our end. Not your fault. Try again in
-                        a minute?
+                        {t("comingSoon.error")}
                       </p>
                     )}
 
@@ -198,13 +219,12 @@ export default async function ComingSoonPage({
                       through the gate in the Caddyfile for the same reason.
                     */}
                     <p id="waitlist-note" className="mt-4 text-sm text-white/50">
-                      Your email, and nothing else. No name, no tracking, no
-                      newsletter. Unsubscribing is replying once. Here is{" "}
+                      {t("comingSoon.noteBefore")}{" "}
                       <a
-                        href="/privacy"
+                        href={privacyHref}
                         className="font-medium text-white/70 underline underline-offset-2 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral-primary"
                       >
-                        what we do with it
+                        {t("comingSoon.noteLink")}
                       </a>
                       .
                     </p>
@@ -213,8 +233,7 @@ export default async function ComingSoonPage({
 
                 {waiting !== null && (
                   <p className="mt-5 border-t border-white/10 pt-4 text-sm text-white/60">
-                    <span className="font-semibold text-white">{waiting}</span>{" "}
-                    people are waiting.
+                    {t("comingSoon.waiting", { count: waiting })}
                   </p>
                 )}
               </section>
@@ -234,26 +253,26 @@ export default async function ComingSoonPage({
           {/* What it actually is, in three beats. */}
           <section className="mt-16">
             <h2 className="text-sm font-bold uppercase tracking-widest text-[#9B85FF]">
-              How it works
+              {t("comingSoon.howItWorks")}
             </h2>
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
               <Beat
                 n="01"
                 tone="#FF5C6C"
-                title="Say what you're up for"
-                body="Gaming, a film, food, a walk. What you're into, and when you're actually free."
+                title={t("comingSoon.beatOneTitle")}
+                body={t("comingSoon.beatOneBody")}
               />
               <Beat
                 n="02"
                 tone="#9B85FF"
-                title="Meet your bunch"
-                body="Four or five people with real overlap. Small enough that everybody speaks."
+                title={t("comingSoon.beatTwoTitle")}
+                body={t("comingSoon.beatTwoBody")}
               />
               <Beat
                 n="03"
                 tone="#55D6BE"
-                title="Do the thing"
-                body="A voice channel on Thursday, a table on Saturday. Both count."
+                title={t("comingSoon.beatThreeTitle")}
+                body={t("comingSoon.beatThreeBody")}
               />
             </div>
           </section>
@@ -262,38 +281,34 @@ export default async function ComingSoonPage({
           <section className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7">
               <h2 className="text-xl font-bold tracking-tight">
-                What you won&rsquo;t find
+                {t("comingSoon.refusalTitle")}
               </h2>
               <ul className="mt-4 space-y-2.5 text-white/65">
-                <Nope>A feed to scroll</Nope>
-                <Nope>Follower counts</Nope>
-                <Nope>Swiping, or anything that ranks people by looks</Nope>
-                <Nope>Notifications designed to pull you back</Nope>
+                <Nope>{t("comingSoon.refusalFeed")}</Nope>
+                <Nope>{t("comingSoon.refusalFollowers")}</Nope>
+                <Nope>{t("comingSoon.refusalSwiping")}</Nope>
+                <Nope>{t("comingSoon.refusalNotifications")}</Nope>
               </ul>
               <p className="mt-5 border-t border-white/10 pt-4 text-sm text-white/50">
-                A good session ends with you closing the tab, because you have
-                somebody to talk to.
+                {t("comingSoon.refusalClosing")}
               </p>
             </div>
 
             <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7">
               <h2 className="text-xl font-bold tracking-tight">
-                Online counts too
+                {t("comingSoon.onlineTitle")}
               </h2>
               <p className="mt-4 leading-relaxed text-white/65">
-                {brand.name} isn&rsquo;t trying to get you off your screen, and
-                it isn&rsquo;t trying to keep you on it. A bunch that plays every
-                Thursday for two years and never meets is the product working
-                exactly as intended.
+                {t("comingSoon.onlineBody", { brand: brand.name })}
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {[
-                  "Co-op nights",
-                  "Watch parties",
-                  "Co-working",
-                  "Coffee",
-                  "Board games",
-                  "Hiking",
+                  t("comingSoon.tagCoop"),
+                  t("comingSoon.tagWatch"),
+                  t("comingSoon.tagCowork"),
+                  t("comingSoon.tagCoffee"),
+                  t("comingSoon.tagBoardGames"),
+                  t("comingSoon.tagHiking"),
                 ].map((tag) => (
                   <span
                     key={tag}
@@ -324,12 +339,9 @@ export default async function ComingSoonPage({
             </div>
             <p className="text-white/65">
               <span className="font-semibold text-white">
-                Built by one person, in the open.
+                {t("comingSoon.builtTitle")}
               </span>{" "}
-              No investors to answer to, nobody asking for engagement metrics.
-              That&rsquo;s why there&rsquo;s no feed: nothing here needs your
-              attention for its own sake. The faces above are examples, not
-              members, because there aren&rsquo;t any yet.
+              {t("comingSoon.builtBody")}
             </p>
           </section>
 
@@ -343,17 +355,16 @@ export default async function ComingSoonPage({
           {waitlist !== "joined" && (
             <section className="mt-16 flex flex-col items-center gap-5 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-6 py-12 text-center">
               <h2 className="max-w-lg text-balance text-2xl font-bold tracking-tight sm:text-3xl">
-                {brand.tagline}
+                {t("brand.tagline")}
               </h2>
               <p className="max-w-md text-white/60">
-                Not yet, but soon. Leave an email and you&rsquo;ll hear about it
-                on the day, rather than whenever you next think to check.
+                {t("comingSoon.closingBody")}
               </p>
               <a
                 href="#waitlist"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
               >
-                Keep me posted
+                {t("comingSoon.submit")}
                 <ArrowRight size={18} aria-hidden />
               </a>
             </section>
@@ -383,12 +394,10 @@ export default async function ComingSoonPage({
               <MessagesSquare size={22} />
             </span>
             <h2 className="max-w-lg text-balance text-xl font-bold tracking-tight sm:text-2xl">
-              There are already people here
+              {t("comingSoon.discordTitle")}
             </h2>
             <p className="max-w-md text-white/60">
-              {brand.name} has a Discord. It is where the people waiting for
-              this are talking to each other in the meantime, which is rather
-              the point.
+              {t("comingSoon.discordBody", { brand: brand.name })}
             </p>
             <a
               href={brand.discordUrl}
@@ -396,14 +405,14 @@ export default async function ComingSoonPage({
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-7 py-3.5 text-base font-bold tracking-wide transition-colors duration-200 hover:bg-white/[0.07]"
             >
-              Join the Discord
+              {t("comingSoon.discordCta")}
               <ArrowRight size={18} aria-hidden />
             </a>
           </section>
         </main>
 
         <footer className="mt-16 border-t border-white/10 pt-8 text-sm text-white/50">
-          {brand.name}. {brand.tagline}
+          {brand.name}. {t("brand.tagline")}
         </footer>
       </div>
     </div>

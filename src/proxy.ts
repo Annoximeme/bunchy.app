@@ -134,7 +134,13 @@ export function proxy(request: NextRequest) {
   // including the crawler that has no cookie.
   if (!fromPath && locale !== DEFAULT_LOCALE && !localeless) {
     const prefixed = request.nextUrl.clone();
-    prefixed.pathname = localePath(locale, path);
+    // `/coming-soon` is not an address anybody should be sent to. While the
+    // gate is up Caddy rewrites every public path to it before this runs, so
+    // redirecting a Dutch reader to the language version of what arrived here
+    // would put an internal path in their address bar. The page they asked for
+    // was the front page, so that is where they are sent, and the gate rewrites
+    // it again on the way back in.
+    prefixed.pathname = localePath(locale, path === "/coming-soon" ? "/" : path);
     return NextResponse.redirect(prefixed, 307);
   }
 

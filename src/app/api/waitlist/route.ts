@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requestFingerprint } from "@/server/auth/cookies";
 import { consume } from "@/server/ratelimit";
 import { joinWaitlist } from "@/server/modules/waitlist/service";
+import { DEFAULT_LOCALE, isLocale, localePath } from "@/lib/i18n/config";
 
 /**
  * Joining the waiting list, from the coming-soon page.
@@ -21,29 +22,54 @@ import { joinWaitlist } from "@/server/modules/waitlist/service";
  */
 const schema = z.object({ email: z.string().max(320) });
 
-function back(status: "joined" | "invalid" | "busy" | "error") {
+/**
+ * Back to the page they submitted from, in the language they read it in.
+ *
+ * The language rides along as a hidden field rather than being read off the
+ * referrer or the cookie. The form is the only thing that knows for certain,
+ * and somebody who came to the French page from a link should land back on the
+ * French page whatever they chose here previously.
+ */
+function back(
+  status: "joined" | "invalid" | "busy" | "error",
+  locale: string | null = null,
+) {
+  const language = isLocale(locale) ? locale : DEFAULT_LOCALE;
   // 303 so the browser follows with GET. A 307 would repeat the POST.
   return NextResponse.redirect(
-    new URL(`/?waitlist=${status}`, process.env.APP_URL ?? "http://localhost:3000"),
+    new URL(
+      `${localePath(language, "/")}?waitlist=${status}`,
+      process.env.APP_URL ?? "http://localhost:3000",
+    ),
     303,
   );
 }
 
 export async function POST(request: Request) {
+  // Parsed once, up front: a rate-limited or failed submission has to come
+  // back to the same page as a successful one, and the body can only be read
+  // through once.
+  let form: FormData | null = null;
+  try {
+    form = await request.formData();
+  } catch {
+    // Falls through as English, which is the only thing left to be.
+  }
+  const locale = typeof form?.get("locale") === "string" ? String(form.get("locale")) : null;
+
   try {
     await consume("waitlist", await requestFingerprint());
   } catch {
-    return back("busy");
+    return back("busy", locale);
   }
 
   try {
-    const form = await request.formData();
-    const { email } = schema.parse({ email: form.get("email") ?? "" });
+    const { email } = schema.parse({ email: form?.get("email") ?? "" });
     await joinWaitlist(email);
-    return back("joined");
+    return back("joined", locale);
   } catch (error) {
-    if (error instanceof z.ZodError) return back("invalid");
+    if (error instanceof z.ZodError) return back("invalid", locale);
     console.error("Waitlist signup failed:", error);
-    return back("error");
+    return back("error", locale);
   }
 }
