@@ -3,10 +3,15 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { OnboardingShell } from "@/components/onboarding/shell";
 import { BasicsStep } from "@/components/onboarding/basics-step";
+import { getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "About you" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("onboarding.basicsTitle") };
+}
 
 export default async function BasicsPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const profile = await db.profile.findUniqueOrThrow({
     where: { id: viewer.profileId },
@@ -27,8 +32,8 @@ export default async function BasicsPage() {
   return (
     <OnboardingShell
       step="basics"
-      question="First, who are you?"
-      intro="Nothing here is public until you say so, and we never ask for an address."
+      question={t("onboarding.basicsQuestion")}
+      intro={t("onboarding.basicsIntro")}
     >
       <BasicsStep
         initial={{

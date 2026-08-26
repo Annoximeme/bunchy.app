@@ -1,11 +1,12 @@
 import { cn } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
 
 export const ONBOARDING_STEPS = [
-  { key: "basics", label: "You" },
-  { key: "interests", label: "Interests" },
-  { key: "personality", label: "Style" },
-  { key: "goals", label: "Looking for" },
-  { key: "availability", label: "When" },
+  { key: "basics", label: "onboarding.stepYou" },
+  { key: "interests", label: "onboarding.stepInterests" },
+  { key: "personality", label: "onboarding.stepStyle" },
+  { key: "goals", label: "onboarding.stepLookingFor" },
+  { key: "availability", label: "onboarding.stepWhen" },
 ] as const;
 
 export type OnboardingStepKey = (typeof ONBOARDING_STEPS)[number]["key"];
@@ -17,7 +18,7 @@ export type OnboardingStepKey = (typeof ONBOARDING_STEPS)[number]["key"];
  * into?"), not a form label. Progress is shown as a small honest bar, five
  * steps, here's where you are, rather than a gamified streak.
  */
-export function OnboardingShell({
+export async function OnboardingShell({
   step,
   question,
   intro,
@@ -29,15 +30,20 @@ export function OnboardingShell({
   children: React.ReactNode;
 }) {
   const index = ONBOARDING_STEPS.findIndex((s) => s.key === step);
+  const t = await getTranslations();
 
   return (
     <div className="mx-auto w-full max-w-2xl px-5 py-10 md:py-16">
-      <ol className="mb-10 flex items-center gap-2" aria-label="Progress">
+      <ol className="mb-10 flex items-center gap-2" aria-label={t("onboarding.progress")}>
         {ONBOARDING_STEPS.map((s, i) => (
           <li key={s.key} className="flex-1">
             <span className="sr-only">
-              {s.label}
-              {i === index ? " (current step)" : i < index ? " (done)" : ""}
+              {t(s.label)}
+              {i === index
+                ? t("onboarding.currentStep")
+                : i < index
+                  ? t("onboarding.stepDone")
+                  : ""}
             </span>
             <span
               aria-hidden
@@ -52,7 +58,10 @@ export function OnboardingShell({
 
       <div className="animate-rise">
         <p className="text-sm font-medium text-accent-ink">
-          Step {index + 1} of {ONBOARDING_STEPS.length}
+          {t("onboarding.stepOf", {
+            current: index + 1,
+            total: ONBOARDING_STEPS.length,
+          })}
           {/*
             The estimate is on the first step and nowhere else. Somebody who
             has already started can see the bar and count the steps left; it is
@@ -61,7 +70,7 @@ export function OnboardingShell({
             two minutes or twenty.
           */}
           {index === 0 && (
-            <span className="font-normal text-muted">, about three minutes</span>
+            <span className="font-normal text-muted">{t("onboarding.estimate")}</span>
           )}
         </p>
         <h1 className="mt-2 text-balance text-3xl font-semibold tracking-tight md:text-4xl">

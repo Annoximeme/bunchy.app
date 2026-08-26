@@ -3,10 +3,15 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { OnboardingShell } from "@/components/onboarding/shell";
 import { InterestsStep } from "@/components/onboarding/interests-step";
+import { getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "Your interests" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("onboarding.interestsTitle") };
+}
 
 export default async function InterestsPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const rows = await db.userInterest.findMany({
     where: { profileId: viewer.profileId },
@@ -20,8 +25,8 @@ export default async function InterestsPage() {
   return (
     <OnboardingShell
       step="interests"
-      question="What are you into?"
-      intro="Pick a few. Add anything we're missing, plenty of people are here for something niche."
+      question={t("onboarding.interestsQuestion")}
+      intro={t("onboarding.interestsIntro")}
     >
       <InterestsStep
         initial={rows.map((r) => ({

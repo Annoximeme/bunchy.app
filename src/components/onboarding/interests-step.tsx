@@ -8,7 +8,7 @@ import {
   INTEREST_SEEDS,
   type InterestSeed,
 } from "@/lib/interests";
-import { useLocaleRouter } from "@/components/link";
+import { useLocaleRouter, useTranslate } from "@/components/link";
 
 /**
  * Interest picker.
@@ -31,6 +31,7 @@ const MIN_INTERESTS = 3;
 
 export function InterestsStep({ initial }: { initial: Selection[] }) {
   const router = useLocaleRouter();
+  const t = useTranslate();
   const [selected, setSelected] = useState<Map<string, Selection>>(
     new Map(initial.map((i) => [i.slug, i])),
   );
@@ -127,13 +128,13 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
 
       <div>
         <label htmlFor="interest-search" className="sr-only">
-          Search interests
+          {t("interests.searchLabel")}
         </label>
         <Input
           id="interest-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search, or add your own…"
+          placeholder={t("interests.searchPlaceholder")}
         />
         {canAddCustom && (
           <button
@@ -141,7 +142,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
             onClick={addCustom}
             className="mt-2 text-sm font-medium text-accent-ink underline underline-offset-2"
           >
-            Add &ldquo;{query.trim()}&rdquo; as an interest
+            {t("interests.addCustom", { query: query.trim() })}
           </button>
         )}
       </div>
@@ -226,7 +227,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
 
       <div className="space-y-6">
         {(filtered
-          ? [{ category: "Results", items: filtered }]
+          ? [{ category: t("interests.results"), items: filtered }]
           : INTEREST_CATEGORIES.map((category) => ({
               category,
               items: INTEREST_SEEDS.filter((i) => i.category === category),
@@ -261,7 +262,7 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
         ))}
         {filtered?.length === 0 && (
           <p className="text-sm text-muted">
-            Nothing matching &ldquo;{query}&rdquo;, add it as your own above.
+            {t("interests.noMatch", { query })}
           </p>
         )}
       </div>
@@ -274,8 +275,8 @@ export function InterestsStep({ initial }: { initial: Selection[] }) {
           className="w-full shadow-[var(--shadow-lift)]"
         >
           {selected.size < MIN_INTERESTS
-            ? `Pick ${MIN_INTERESTS - selected.size} more`
-            : "Continue"}
+            ? t("interests.pickMore", { count: MIN_INTERESTS - selected.size })
+            : t("onboarding.continueLabel")}
         </Button>
       </div>
     </div>

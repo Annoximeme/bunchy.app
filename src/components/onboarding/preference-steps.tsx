@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, cn } from "@/components/ui";
-import { useLocaleRouter } from "@/components/link";
+import { useLocaleRouter, useTranslate } from "@/components/link";
 
 /**
  * The three quick steps: style, goals and availability.
@@ -23,50 +23,22 @@ interface Axis {
   high: string;
 }
 
-const AXES: Axis[] = [
-  {
-    key: "introversionExtraversion",
-    question: "After a long week, you'd rather…",
-    low: "Recharge on your own",
-    high: "Be around people",
-  },
-  {
-    key: "smallLargeGroups",
-    question: "Your ideal get-together is…",
-    low: "Three or four people",
-    high: "A full room",
-  },
-  {
-    key: "deepCasual",
-    question: "The conversations you enjoy most are…",
-    low: "Long and deep",
-    high: "Easy and light",
-  },
-  {
-    key: "onlineOffline",
-    question: "You'd rather spend time together…",
-    low: "Online",
-    high: "In person",
-  },
-  {
-    key: "spontaneityPlanning",
-    question: "Plans usually happen…",
-    low: "Spur of the moment",
-    high: "Arranged in advance",
-  },
-  {
-    key: "competitiveRelaxed",
-    question: "When you play something…",
-    low: "You play to win",
-    high: "You play for fun",
-  },
-  {
-    key: "nightMorning",
-    question: "You're at your best…",
-    low: "Late at night",
-    high: "Early in the morning",
-  },
-];
+/**
+ * The seven axes, by key alone.
+ *
+ * The wording lives in the phrasebook under `onboarding.axes`, keyed by the
+ * same string that names the column in the database. One list, in one order,
+ * and a language cannot silently drop or reorder a question.
+ */
+const AXIS_KEYS = [
+  "introversionExtraversion",
+  "smallLargeGroups",
+  "deepCasual",
+  "onlineOffline",
+  "spontaneityPlanning",
+  "competitiveRelaxed",
+  "nightMorning",
+] as const;
 
 const SCALE = [0, 25, 50, 75, 100];
 
@@ -76,8 +48,15 @@ export function PersonalityStep({
   initial: Record<string, number> | null;
 }) {
   const router = useLocaleRouter();
+  const t = useTranslate();
+  const axes: Axis[] = AXIS_KEYS.map((key) => ({
+    key,
+    question: t(`onboarding.axes.${key}.question`),
+    low: t(`onboarding.axes.${key}.low`),
+    high: t(`onboarding.axes.${key}.high`),
+  }));
   const [values, setValues] = useState<Record<string, number>>(() =>
-    Object.fromEntries(AXES.map((a) => [a.key, initial?.[a.key] ?? 50])),
+    Object.fromEntries(AXIS_KEYS.map((key) => [key, initial?.[key] ?? 50])),
   );
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +82,7 @@ export function PersonalityStep({
       {error && <ErrorNotice message={error} />}
 
       <div className="space-y-5">
-        {AXES.map((axis) => (
+        {axes.map((axis) => (
           <fieldset key={axis.key} className="card-surface p-5">
             <legend className="mb-3 text-sm font-medium text-ink">
               {axis.question}
@@ -124,7 +103,11 @@ export function PersonalityStep({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      aria-label={`${axis.low} to ${axis.high}: ${value}`}
+                      aria-label={t("onboarding.axisScale", {
+                        low: axis.low,
+                        high: axis.high,
+                        value,
+                      })}
                       onClick={() =>
                         setValues((prev) => ({ ...prev, [axis.key]: value }))
                       }
@@ -156,13 +139,10 @@ export function PersonalityStep({
         ))}
       </div>
 
-      <p className="text-sm text-muted">
-        There are no right answers here, and nothing is shown to anyone as a
-        score. Leave anything in the middle if it depends.
-      </p>
+      <p className="text-sm text-muted">{t("onboarding.personalityNote")}</p>
 
       <Button onClick={submit} loading={pending} size="lg" className="w-full">
-        Continue
+        {t("onboarding.continueLabel")}
       </Button>
     </div>
   );
@@ -170,31 +150,36 @@ export function PersonalityStep({
 
 // --- Goals ------------------------------------------------------------------
 
-const GOALS = [
-  { value: "NEW_FRIENDS", label: "New friends", hint: "Just good people to know" },
-  { value: "GAMING_FRIENDS", label: "Gaming friends", hint: "People to play with" },
-  { value: "HOBBY_PARTNERS", label: "Hobby partners", hint: "Someone who's into the same thing" },
-  { value: "GOING_OUT", label: "People to go out with", hint: "Drinks, gigs, nights out" },
-  { value: "STUDY_PARTNERS", label: "Study partners", hint: "Learning something together" },
-  { value: "FITNESS_PARTNERS", label: "Fitness partners", hint: "Training, running, climbing" },
-  { value: "CREATIVE_COLLABORATORS", label: "Creative collaborators", hint: "Making things together" },
-  { value: "BUSINESS_PARTNERS", label: "Project partners", hint: "Building something" },
-  { value: "MENTORS", label: "Mentors", hint: "Someone a few steps ahead" },
-  { value: "SIMILAR_INTERESTS", label: "People like me", hint: "Shared taste, shared world" },
-  { value: "LOCAL_COMMUNITIES", label: "Local communities", hint: "Something near you" },
-  { value: "TRAVEL_COMPANIONS", label: "Travel companions", hint: "People to go places with" },
-  { value: "ACTIVITY_PARTNERS", label: "Activity partners", hint: "Someone for a specific thing" },
+const GOAL_VALUES = [
+  "NEW_FRIENDS",
+  "GAMING_FRIENDS",
+  "HOBBY_PARTNERS",
+  "GOING_OUT",
+  "STUDY_PARTNERS",
+  "FITNESS_PARTNERS",
+  "CREATIVE_COLLABORATORS",
+  "BUSINESS_PARTNERS",
+  "MENTORS",
+  "SIMILAR_INTERESTS",
+  "LOCAL_COMMUNITIES",
+  "TRAVEL_COMPANIONS",
+  "ACTIVITY_PARTNERS",
 ] as const;
 
 export function GoalsStep({ initial }: { initial: string[] }) {
+  const t = useTranslate();
   return (
     <MultiSelectStep
       endpoint="/api/onboarding/goals"
       field="goals"
       initial={initial}
-      options={GOALS.map((g) => ({ ...g }))}
+      options={GOAL_VALUES.map((value) => ({
+        value,
+        label: t(`onboarding.goals.${value}.label`),
+        hint: t(`onboarding.goals.${value}.hint`),
+      }))}
       minimum={1}
-      minimumMessage="Pick at least one so we know who to introduce you to."
+      minimumMessage={t("onboarding.goalsMinimum")}
       skippable
       columns
     />
@@ -203,26 +188,31 @@ export function GoalsStep({ initial }: { initial: string[] }) {
 
 // --- Availability -----------------------------------------------------------
 
-const WINDOWS = [
-  { value: "WEEKDAY_MORNING", label: "Weekday mornings", hint: "Before noon" },
-  { value: "WEEKDAY_AFTERNOON", label: "Weekday afternoons", hint: "Midday to evening" },
-  { value: "WEEKDAY_EVENING", label: "Weekday evenings", hint: "After work" },
-  { value: "WEEKEND_MORNING", label: "Weekend mornings", hint: "Early starts" },
-  { value: "WEEKEND_AFTERNOON", label: "Weekend afternoons", hint: "The easy slot" },
-  { value: "WEEKEND_EVENING", label: "Weekend evenings", hint: "Going out" },
-  { value: "LATE_NIGHT", label: "Late nights", hint: "After eleven" },
+const AVAILABILITY_VALUES = [
+  "WEEKDAY_MORNING",
+  "WEEKDAY_AFTERNOON",
+  "WEEKDAY_EVENING",
+  "WEEKEND_MORNING",
+  "WEEKEND_AFTERNOON",
+  "WEEKEND_EVENING",
+  "LATE_NIGHT",
 ] as const;
 
 export function AvailabilityStep({ initial }: { initial: string[] }) {
+  const t = useTranslate();
   return (
     <MultiSelectStep
       endpoint="/api/onboarding/availability"
       field="availability"
       initial={initial}
-      options={WINDOWS.map((w) => ({ ...w }))}
+      options={AVAILABILITY_VALUES.map((value) => ({
+        value,
+        label: t(`onboarding.availability.${value}.label`),
+        hint: t(`onboarding.availability.${value}.hint`),
+      }))}
       minimum={1}
-      minimumMessage="Pick at least one so we only suggest things you can make."
-      submitLabel="Finish"
+      minimumMessage={t("onboarding.availabilityMinimum")}
+      submitLabel={t("onboarding.finish")}
       skippable
       columns
     />
@@ -238,7 +228,7 @@ function MultiSelectStep({
   options,
   minimum,
   minimumMessage,
-  submitLabel = "Continue",
+  submitLabel,
   skippable = false,
   columns = false,
 }: {
@@ -262,6 +252,7 @@ function MultiSelectStep({
   columns?: boolean;
 }) {
   const router = useLocaleRouter();
+  const t = useTranslate();
   const [selected, setSelected] = useState<Set<string>>(new Set(initial));
   const [pending, setPending] = useState(false);
   const [skipping, setSkipping] = useState(false);
@@ -347,7 +338,7 @@ function MultiSelectStep({
 
       <div className="space-y-3">
         <Button onClick={submit} loading={pending} size="lg" className="w-full">
-          {submitLabel}
+          {submitLabel ?? t("onboarding.continueLabel")}
         </Button>
 
         {/*
@@ -363,7 +354,7 @@ function MultiSelectStep({
             loading={skipping}
             className="w-full"
           >
-            I&rsquo;ll answer this later
+            {t("onboarding.answerLater")}
           </Button>
         )}
       </div>

@@ -2,6 +2,8 @@ import { Link } from "@/components/link";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { person } from "@/lib/example-people";
+import { getTranslations } from "@/server/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 /**
  * The frame around signing in, joining, and the password flows.
@@ -25,9 +27,11 @@ import { person } from "@/lib/example-people";
 
 const CAST = ["S", "M", "E", "T", "P"];
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const t = await getTranslations();
+
   return (
     <div className="relative min-h-dvh bg-band-deep">
       <div
@@ -40,14 +44,18 @@ export default function AuthLayout({
       />
 
       <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-5">
-        <header className="py-6">
+        <header className="flex items-center justify-between gap-4 py-6">
           <Link
             href="/"
-            aria-label={`Back to the ${brand.name} homepage`}
+            aria-label={t("authFrame.backHome", { brand: brand.name })}
             className="inline-block rounded"
           >
             <BunchyLogo height={22} color="#FFFFFF" />
           </Link>
+          {/* Before the form rather than after it. Somebody who has to change
+              language to read a password field should not have to read the
+              password field first. */}
+          <LanguageSwitcher className="text-white/70" compact />
         </header>
 
         <main
@@ -58,18 +66,17 @@ export default function AuthLayout({
           <div className="hidden lg:block">
             <span className="inline-flex items-center gap-2 rounded-full border border-mint-status/30 bg-mint-status/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-mint-status">
               <span className="size-1.5 rounded-full bg-mint-status" />
-              No feed. No followers. Just people.
+              {t("authFrame.badge")}
             </span>
 
             <p className="mt-6 text-balance text-4xl font-extrabold leading-[1.08] tracking-tight text-white">
-              Find your people.
+              {t("authFrame.headlineOne")}
               <br />
-              Do something together.
+              {t("authFrame.headlineTwo")}
             </p>
 
             <p className="mt-4 max-w-sm text-lg leading-relaxed text-white/65">
-              Online, nearby, or both. Four or five people worth an evening, and
-              a plan you actually keep.
+              {t("authFrame.body")}
             </p>
 
             <div className="mt-10 flex items-center gap-4">
@@ -88,7 +95,7 @@ export default function AuthLayout({
                 ))}
               </div>
               <p className="text-sm text-white/55">
-                An example bunch. Bunchy hasn&rsquo;t launched yet.
+                {t("authFrame.exampleBunch", { brand: brand.name })}
               </p>
             </div>
           </div>
@@ -112,13 +119,13 @@ export default function AuthLayout({
         */}
         <footer className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pb-8 pt-6 text-sm text-white/55">
           <Link href="/safety" className="underline underline-offset-2 hover:text-white">
-            Safety
+            {t("authFrame.safety")}
           </Link>
           <Link href="/privacy" className="underline underline-offset-2 hover:text-white">
-            Privacy
+            {t("authFrame.privacy")}
           </Link>
           <Link href="/terms" className="underline underline-offset-2 hover:text-white">
-            Terms
+            {t("authFrame.terms")}
           </Link>
         </footer>
       </div>

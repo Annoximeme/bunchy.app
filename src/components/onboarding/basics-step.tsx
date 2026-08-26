@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input, Textarea } from "@/components/ui";
-import { useLocaleRouter } from "@/components/link";
+import { useLanguage, useLocaleRouter } from "@/components/link";
+import { LOCALE_TAGS } from "@/lib/i18n/config";
 
 interface Place {
   cityLabel: string;
@@ -13,10 +14,20 @@ interface Place {
 
 const CURRENT_YEAR = new Date().getUTCFullYear();
 
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
+/**
+ * Month names, from the platform rather than from the phrasebook.
+ *
+ * `Intl` already knows how every language writes January, including that
+ * Dutch and French do not capitalise it. Typing twelve names into three
+ * catalogues would be thirty-six chances to get one wrong, and a
+ * thirty-seventh the day a fourth language arrives.
+ */
+function months(locale: string): string[] {
+  const format = new Intl.DateTimeFormat(locale, { month: "long" });
+  return Array.from({ length: 12 }, (_, i) =>
+    format.format(new Date(Date.UTC(2000, i, 1))),
+  );
+}
 
 export function BasicsStep({
   initial,
@@ -32,6 +43,7 @@ export function BasicsStep({
   };
 }) {
   const router = useLocaleRouter();
+  const { locale, t } = useLanguage();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -151,7 +163,7 @@ export function BasicsStep({
     <form onSubmit={onSubmit} className="space-y-6">
       {error && <ErrorNotice message={error} />}
 
-      <Field label="What should people call you?" htmlFor="displayName">
+      <Field label={t("basics.nameLabel")} htmlFor="displayName">
         <Input
           id="displayName"
           name="displayName"
@@ -159,14 +171,14 @@ export function BasicsStep({
           required
           maxLength={40}
           autoComplete="nickname"
-          placeholder="Sarah"
+          placeholder={t("basics.namePlaceholder")}
         />
       </Field>
 
       <Field
-        label="Pick a username"
+        label={t("basics.usernameLabel")}
         htmlFor="username"
-        hint="Letters, numbers and hyphens. This is how people find you."
+        hint={t("basics.usernameHint")}
       >
         <Input
           id="username"
@@ -176,14 +188,14 @@ export function BasicsStep({
           minLength={3}
           maxLength={24}
           pattern="[a-zA-Z0-9][a-zA-Z0-9_\-]*[a-zA-Z0-9]"
-          placeholder="sarah"
+          placeholder={t("basics.usernamePlaceholder")}
         />
       </Field>
 
       <Field
-        label="When were you born?"
+        label={t("basics.bornLabel")}
         htmlFor="birthYear"
-        hint="Month and year, never the day, enough to state your age correctly, and not the number that opens bank accounts. You can hide your exact age later."
+        hint={t("basics.bornHint")}
       >
         <div className="flex gap-2.5">
           <Input
@@ -202,11 +214,11 @@ export function BasicsStep({
             id="birthMonth"
             name="birthMonth"
             defaultValue={initial.birthMonth ?? ""}
-            aria-label="Birth month"
+            aria-label={t("basics.birthMonth")}
             className="min-w-0 flex-1 rounded-[var(--radius-control)] border border-line bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors focus:border-ink-soft focus:outline-none"
           >
-            <option value="">Month (optional)</option>
-            {MONTHS.map((month, i) => (
+            <option value="">{t("basics.monthOptional")}</option>
+            {months(LOCALE_TAGS[locale]).map((month, i) => (
               <option key={month} value={i + 1}>
                 {month}
               </option>
@@ -217,9 +229,9 @@ export function BasicsStep({
 
       <div ref={placeBoxRef} className="relative">
         <Field
-          label="Where are you based?"
+          label={t("basics.cityLabel")}
           htmlFor="city"
-          hint="Optional. Only needed for meeting people in person, and we only ever store the area, never an address."
+          hint={t("basics.cityHint")}
         >
           <Input
             id="city"
@@ -234,7 +246,7 @@ export function BasicsStep({
             role="combobox"
             aria-expanded={showPlaces && visiblePlaces.length > 0}
             aria-controls="city-options"
-            placeholder="Antwerp"
+            placeholder={t("basics.cityPlaceholder")}
           />
         </Field>
 
@@ -275,21 +287,21 @@ export function BasicsStep({
       </div>
 
       <Field
-        label="Anything you'd like people to know?"
+        label={t("basics.bioLabel")}
         htmlFor="bio"
-        hint="Optional. One or two lines is plenty."
+        hint={t("basics.bioHint")}
       >
         <Textarea
           id="bio"
           name="bio"
           defaultValue={initial.bio ?? ""}
           maxLength={400}
-          placeholder="Software engineer, terrible at chess, always up for a walk."
+          placeholder={t("basics.bioPlaceholder")}
         />
       </Field>
 
       <Button type="submit" loading={pending} size="lg" className="w-full">
-        Continue
+        {t("onboarding.continueLabel")}
       </Button>
     </form>
   );

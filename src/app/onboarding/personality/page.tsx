@@ -3,10 +3,15 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { OnboardingShell } from "@/components/onboarding/shell";
 import { PersonalityStep } from "@/components/onboarding/preference-steps";
+import { getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "Your style" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("onboarding.personalityTitle") };
+}
 
 export default async function PersonalityPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const personality = await db.personalityProfile.findUnique({
     where: { profileId: viewer.profileId },
@@ -24,8 +29,8 @@ export default async function PersonalityPage() {
   return (
     <OnboardingShell
       step="personality"
-      question="How do you like to spend time?"
-      intro="Seven quick questions. Not a personality test. Nobody sees a score, including you."
+      question={t("onboarding.personalityQuestion")}
+      intro={t("onboarding.personalityIntro")}
     >
       <PersonalityStep initial={personality} />
     </OnboardingShell>

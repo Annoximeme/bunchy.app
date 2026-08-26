@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, useLocaleRouter } from "@/components/link";
+import { Link, useLocaleRouter, useTranslate } from "@/components/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
@@ -18,6 +18,7 @@ import { FormError, useFormSubmit } from "@/components/form-state";
 
 export function SignUpForm() {
   const router = useLocaleRouter();
+  const t = useTranslate();
   // From a personal invite link (/signup?ref=CODE). Read here rather than kept
   // in a cookie: an invite should not follow someone around the internet.
   const referralCode = useSearchParams().get("ref") ?? undefined;
@@ -50,18 +51,16 @@ export function SignUpForm() {
     */
     <div className="rounded-squircle bg-surface p-8 shadow-pebble">
       <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-ink">
-        Let&rsquo;s get you off this app. First, the basics.
+        {t("auth.signUpTitle")}
       </h1>
       <p className="mt-3 leading-relaxed text-ink-soft">
-        {referralCode
-          ? "Someone invited you. Two fields now, then your name and your city. The interesting questions come once you are inside."
-          : "Two fields now, then your name and your city. The interesting questions come once you are inside."}
+        {referralCode ? `${t("auth.signUpInvited")} ${t("auth.signUpBody")}` : t("auth.signUpBody")}
       </p>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
 
-        <Field label="Email" htmlFor="email" error={form.fields.email}>
+        <Field label={t("auth.email")} htmlFor="email" error={form.fields.email}>
           <Input
             id="email"
             name="email"
@@ -73,9 +72,9 @@ export function SignUpForm() {
         </Field>
 
         <Field
-          label="Password"
+          label={t("auth.password")}
           htmlFor="password"
-          hint="At least 10 characters. Length matters more than symbols."
+          hint={t("auth.passwordHint")}
           error={form.fields.password}
         >
           <Input
@@ -89,7 +88,7 @@ export function SignUpForm() {
         </Field>
 
         <Button type="submit" loading={form.pending} className="w-full" size="lg">
-          Create account
+          {t("auth.createAccount")}
         </Button>
       </form>
 
@@ -99,27 +98,27 @@ export function SignUpForm() {
         joining anything.
       */}
       <p className="mt-5 text-center text-xs text-muted">
-        By creating an account you agree to our{" "}
+        {t("auth.termsBefore")}{" "}
         <Link
           href="/terms"
           className="text-accent-ink underline underline-offset-2"
         >
-          terms
+          {t("auth.terms")}
         </Link>{" "}
-        and{" "}
+        {t("auth.termsAnd")}{" "}
         <Link
           href="/privacy"
           className="text-accent-ink underline underline-offset-2"
         >
-          privacy policy
+          {t("auth.privacy")}
         </Link>
         .
       </p>
 
       <p className="mt-4 border-t border-line pt-4 text-center text-sm text-muted">
-        Already have an account?{" "}
+        {t("auth.haveAccount")}{" "}
         <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
-          Sign in
+          {t("auth.signIn")}
         </Link>
       </p>
     </div>
@@ -128,6 +127,7 @@ export function SignUpForm() {
 
 export function SignInForm() {
   const router = useLocaleRouter();
+  const t = useTranslate();
   const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const result = await api<{ next: string }>("/api/auth/login", {
@@ -143,12 +143,12 @@ export function SignInForm() {
 
   return (
     <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.welcomeBack")}</h1>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
 
-        <Field label="Email" htmlFor="email" error={form.fields.email}>
+        <Field label={t("auth.email")} htmlFor="email" error={form.fields.email}>
           <Input
             id="email"
             name="email"
@@ -158,7 +158,7 @@ export function SignInForm() {
           />
         </Field>
 
-        <Field label="Password" htmlFor="password" error={form.fields.password}>
+        <Field label={t("auth.password")} htmlFor="password" error={form.fields.password}>
           <Input
             id="password"
             name="password"
@@ -169,7 +169,7 @@ export function SignInForm() {
         </Field>
 
         <Button type="submit" loading={form.pending} className="w-full" size="lg">
-          Sign in
+          {t("auth.signIn")}
         </Button>
       </form>
 
@@ -179,13 +179,13 @@ export function SignInForm() {
             href="/forgot-password"
             className="font-medium text-accent-ink underline underline-offset-2"
           >
-            Forgot your password?
+            {t("auth.forgot")}
           </Link>
         </p>
         <p>
-          New here?{" "}
+          {t("auth.newHere")}{" "}
           <Link href="/signup" className="font-medium text-accent-ink underline underline-offset-2">
-            Create an account
+            {t("auth.createOne")}
           </Link>
         </p>
       </div>
@@ -194,6 +194,7 @@ export function SignInForm() {
 }
 
 export function ForgotPasswordForm() {
+  const t = useTranslate();
   const [sent, setSent] = useState(false);
   const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
@@ -207,14 +208,11 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          If that address has an account, a reset link is on its way. It expires
-          in an hour.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.checkEmail")}</h1>
+        <p className="mt-2 text-sm text-ink-soft">{t("auth.checkEmailBody")}</p>
         <p className="mt-5 text-sm text-muted">
           <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
-            Back to sign in
+            {t("auth.backToSignIn")}
           </Link>
         </p>
       </div>
@@ -223,24 +221,22 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">Reset your password</h1>
-      <p className="mt-1.5 text-sm text-muted">
-        We&rsquo;ll email you a link to set a new one.
-      </p>
+      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.resetTitle")}</h1>
+      <p className="mt-1.5 text-sm text-muted">{t("auth.resetBody")}</p>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
-        <Field label="Email" htmlFor="email" error={form.fields.email}>
+        <Field label={t("auth.email")} htmlFor="email" error={form.fields.email}>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </Field>
         <Button type="submit" loading={form.pending} className="w-full" size="lg">
-          Send reset link
+          {t("auth.sendResetLink")}
         </Button>
       </form>
 
       <p className="mt-5 text-center text-sm text-muted">
         <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
-          Back to sign in
+          {t("auth.backToSignIn")}
         </Link>
       </p>
     </div>
@@ -249,6 +245,7 @@ export function ForgotPasswordForm() {
 
 export function ResetPasswordForm({ token }: { token: string }) {
   const router = useLocaleRouter();
+  const t = useTranslate();
   const [done, setDone] = useState(false);
   const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
@@ -263,16 +260,14 @@ export function ResetPasswordForm({ token }: { token: string }) {
   if (!token) {
     return (
       <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">Link not valid</h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          That reset link is missing or malformed. Request a new one.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.linkNotValid")}</h1>
+        <p className="mt-2 text-sm text-ink-soft">{t("auth.linkNotValidBody")}</p>
         <p className="mt-5 text-sm">
           <Link
             href="/forgot-password"
             className="font-medium text-accent-ink underline underline-offset-2"
           >
-            Request a new link
+            {t("auth.requestNewLink")}
           </Link>
         </p>
       </div>
@@ -282,24 +277,22 @@ export function ResetPasswordForm({ token }: { token: string }) {
   if (done) {
     return (
       <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">Password updated</h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          Every other device has been signed out. Taking you to sign in…
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.passwordUpdated")}</h1>
+        <p className="mt-2 text-sm text-ink-soft">{t("auth.passwordUpdatedBody")}</p>
       </div>
     );
   }
 
   return (
     <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">Choose a new password</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.chooseNewPassword")}</h1>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
         <Field
-          label="New password"
+          label={t("auth.newPassword")}
           htmlFor="password"
-          hint="At least 10 characters."
+          hint={t("auth.newPasswordHint")}
           error={form.fields.password}
         >
           <Input
@@ -312,7 +305,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           />
         </Field>
         <Button type="submit" loading={form.pending} className="w-full" size="lg">
-          Update password
+          {t("auth.updatePassword")}
         </Button>
       </form>
     </div>
@@ -320,6 +313,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
 }
 
 export function VerifyEmailPanel({ token }: { token: string }) {
+  const t = useTranslate();
   const [state, setState] = useState<"idle" | "working" | "done" | "failed">(
     "idle",
   );
@@ -340,11 +334,9 @@ export function VerifyEmailPanel({ token }: { token: string }) {
     return (
       <div className="card-surface p-7">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Confirmation link missing
+          {t("auth.confirmMissing")}
         </h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          Open the link from your email, or request a new one from your profile.
-        </p>
+        <p className="mt-2 text-sm text-ink-soft">{t("auth.confirmMissingBody")}</p>
       </div>
     );
   }
@@ -352,11 +344,11 @@ export function VerifyEmailPanel({ token }: { token: string }) {
   if (state === "done") {
     return (
       <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">Email confirmed</h1>
-        <p className="mt-2 text-sm text-ink-soft">You&rsquo;re all set.</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.emailConfirmed")}</h1>
+        <p className="mt-2 text-sm text-ink-soft">{t("auth.allSet")}</p>
         <div className="mt-5">
           <Link href="/discover" className="font-medium text-accent-ink underline underline-offset-2">
-            Go to Discover
+            {t("auth.goToDiscover")}
           </Link>
         </div>
       </div>
@@ -365,10 +357,8 @@ export function VerifyEmailPanel({ token }: { token: string }) {
 
   return (
     <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">Confirm your email</h1>
-      <p className="mt-2 text-sm text-ink-soft">
-        One tap and your account is verified.
-      </p>
+      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.confirmTitle")}</h1>
+      <p className="mt-2 text-sm text-ink-soft">{t("auth.confirmBody")}</p>
       {state === "failed" && message && (
         <div className="mt-4">
           <ErrorNotice message={message} />
@@ -380,7 +370,7 @@ export function VerifyEmailPanel({ token }: { token: string }) {
         className="mt-5 w-full"
         size="lg"
       >
-        Confirm email
+        {t("auth.confirmCta")}
       </Button>
     </div>
   );

@@ -3,10 +3,15 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { OnboardingShell } from "@/components/onboarding/shell";
 import { AvailabilityStep } from "@/components/onboarding/preference-steps";
+import { getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "When you're free" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("onboarding.availabilityTitle") };
+}
 
 export default async function AvailabilityPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const windows = await db.profileAvailability.findMany({
     where: { profileId: viewer.profileId },
@@ -16,8 +21,8 @@ export default async function AvailabilityPage() {
   return (
     <OnboardingShell
       step="availability"
-      question="When are you usually free?"
-      intro="So we only suggest people and plans you could actually show up for."
+      question={t("onboarding.availabilityQuestion")}
+      intro={t("onboarding.availabilityIntro")}
     >
       <AvailabilityStep initial={windows.map((w) => w.window)} />
     </OnboardingShell>

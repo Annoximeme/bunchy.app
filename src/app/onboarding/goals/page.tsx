@@ -3,10 +3,15 @@ import { requireViewer } from "@/server/auth/current-user";
 import { db } from "@/server/db/client";
 import { OnboardingShell } from "@/components/onboarding/shell";
 import { GoalsStep } from "@/components/onboarding/preference-steps";
+import { getTranslations } from "@/server/i18n";
 
-export const metadata: Metadata = { title: "What you're looking for" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return { title: t("onboarding.goalsTitle") };
+}
 
 export default async function GoalsPage() {
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const goals = await db.profileSocialGoal.findMany({
     where: { profileId: viewer.profileId },
@@ -16,8 +21,8 @@ export default async function GoalsPage() {
   return (
     <OnboardingShell
       step="goals"
-      question="What are you hoping to find?"
-      intro="Pick as many as apply. This shapes who we put in front of you more than anything else."
+      question={t("onboarding.goalsQuestion")}
+      intro={t("onboarding.goalsIntro")}
     >
       <GoalsStep initial={goals.map((g) => g.goal)} />
     </OnboardingShell>

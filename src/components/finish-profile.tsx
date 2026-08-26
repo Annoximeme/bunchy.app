@@ -1,4 +1,6 @@
-import { Link } from "@/components/link";
+"use client";
+
+import { Link, useTranslate } from "@/components/link";
 
 /**
  * What somebody left for later, asked for once they have a reason to answer.
@@ -20,6 +22,7 @@ export function FinishProfile({
 }: {
   outstanding: Array<"goals" | "availability">;
 }) {
+  const t = useTranslate();
   if (outstanding.length === 0) return null;
 
   const goals = outstanding.includes("goals");
@@ -29,17 +32,17 @@ export function FinishProfile({
     <div className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3 text-sm">
       <span className="text-ink-soft">
         {goals && availability
-          ? "You left two questions for later. Both make what you see below considerably better."
+          ? t("finishProfile.both")
           : goals
-            ? "You left one question for later: what you're looking for."
-            : "You left one question for later: when you're free."}
+            ? t("finishProfile.goalsOnly")
+            : t("finishProfile.availabilityOnly")}
       </span>
       {goals && (
         <Link
           href="/onboarding/goals"
           className="font-semibold text-accent-ink underline underline-offset-2"
         >
-          What you&rsquo;re looking for
+          {t("finishProfile.goalsLink")}
         </Link>
       )}
       {availability && (
@@ -47,7 +50,7 @@ export function FinishProfile({
           href="/onboarding/availability"
           className="font-semibold text-accent-ink underline underline-offset-2"
         >
-          When you&rsquo;re free
+          {t("finishProfile.availabilityLink")}
         </Link>
       )}
     </div>
