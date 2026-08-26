@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { Tag } from "@/components/ui";
 import { CalendarDays, Globe, MapPin, Repeat } from "lucide-react";
 

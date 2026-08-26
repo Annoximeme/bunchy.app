@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { Link, useAppPath } from "@/components/link";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/components/ui";
 
 /**
@@ -19,7 +19,7 @@ export function NowFilters({
   horizons: Array<{ value: string; label: string }>;
   active: string;
 }) {
-  const pathname = usePathname();
+  const pathname = useAppPath();
   const params = useSearchParams();
 
   function withParam(key: string, value: string | null) {

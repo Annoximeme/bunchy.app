@@ -1,4 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  DEFAULT_LOCALE,
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+  isLocale,
+  localePath,
+  preferredLocale,
+  splitLocale,
+  type Locale,
+} from "@/lib/i18n/config";
 
 /**
  * Content-Security-Policy, with a per-request nonce.
@@ -58,7 +68,76 @@ function contentSecurityPolicy(nonce: string, isDev: boolean, isHttps: boolean):
   ].join("; ");
 }
 
+/**
+ * Which language this request is in, and whether the address says so.
+ *
+ * The address wins. A link somebody was sent in French opens in French no
+ * matter what the reader chose here last, because the alternative is that a
+ * shared link shows two people different pages, which makes it useless as a
+ * way of pointing at something.
+ *
+ * With no prefix, the last choice is honoured, then the browser's own list of
+ * languages, then English. The browser is asked before English rather than
+ * after so that a Dutch speaker arriving at bunchy.app for the first time does
+ * not have to find a control in a language they did not want.
+ */
+function resolveLocale(request: NextRequest): {
+  locale: Locale;
+  fromPath: boolean;
+  path: string;
+} {
+  const { locale, path } = splitLocale(request.nextUrl.pathname);
+  if (locale) return { locale, fromPath: true, path };
+
+  const remembered = request.cookies.get(LOCALE_COOKIE)?.value;
+  if (isLocale(remembered)) return { locale: remembered, fromPath: false, path };
+
+  const guessed = preferredLocale(request.headers.get("accept-language"));
+  return { locale: guessed ?? DEFAULT_LOCALE, fromPath: false, path };
+}
+
+/**
+ * Paths that have no language and never should.
+ *
+ * An API route answers JSON to code, and `/nl/api/...` would be a second
+ * address for one endpoint. Anything a browser fetches without a document
+ * around it belongs here too: a manifest, an icon, the service worker.
+ */
+function isLocaleless(path: string): boolean {
+  return (
+    path.startsWith("/api/") ||
+    path.startsWith("/_next/") ||
+    path === "/robots.txt" ||
+    path === "/sitemap.xml" ||
+    path === "/manifest.webmanifest" ||
+    path === "/opengraph-image" ||
+    /\.[a-z0-9]+$/i.test(path)
+  );
+}
+
 export function proxy(request: NextRequest) {
+  const { locale, fromPath, path } = resolveLocale(request);
+  const localeless = isLocaleless(path);
+
+  // `/en/...` is not a second address for an English page. It is the one
+  // address people will type by analogy with the other two, so it redirects
+  // rather than 404s, and the prefix-free URL stays the only one that exists.
+  if (fromPath && locale === DEFAULT_LOCALE && !localeless) {
+    const canonical = request.nextUrl.clone();
+    canonical.pathname = path;
+    return NextResponse.redirect(canonical, 308);
+  }
+
+  // A remembered or guessed language, on an address that does not say which.
+  // Redirecting rather than rendering in place is what keeps one page at one
+  // address: the Dutch version of Discover is /nl/discover to everybody,
+  // including the crawler that has no cookie.
+  if (!fromPath && locale !== DEFAULT_LOCALE && !localeless) {
+    const prefixed = request.nextUrl.clone();
+    prefixed.pathname = localePath(locale, path);
+    return NextResponse.redirect(prefixed, 307);
+  }
+
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   const nonce = btoa(String.fromCharCode(...bytes));
@@ -75,9 +154,45 @@ export function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("content-security-policy", csp);
+  // What the pages read. A header rather than a cookie, because it is the one
+  // thing that is true of *this* request: the URL has already been consulted,
+  // the cookie has already lost the argument if they disagreed.
+  requestHeaders.set("x-locale", locale);
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  const url = request.nextUrl.clone();
+  if (fromPath && !localeless) {
+    // The prefix stays in the address bar and disappears on the way in, so
+    // every page component and route file stays where it is. Putting the app
+    // under `app/[locale]` would move sixty-one pages to buy nothing this does
+    // not already do.
+    url.pathname = path;
+  }
+
+  const response =
+    url.pathname === request.nextUrl.pathname
+      ? NextResponse.next({ request: { headers: requestHeaders } })
+      : NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+
   response.headers.set("content-security-policy", csp);
+
+  // Remember the language named in the address, so the next bare link opens
+  // in it. Written on the way past rather than by the switcher alone: most
+  // people will change language by following a link, not by finding a control.
+  if (fromPath && request.cookies.get(LOCALE_COOKIE)?.value !== locale) {
+    response.cookies.set(LOCALE_COOKIE, locale, {
+      path: "/",
+      maxAge: LOCALE_COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+  }
+
+  // A bare address answers differently depending on the cookie and the
+  // browser's language list, and a cache that ignores that would serve one
+  // visitor's language to the next.
+  if (!localeless) {
+    response.headers.set("Vary", "Accept-Language, Cookie");
+  }
+
   return response;
 }
 

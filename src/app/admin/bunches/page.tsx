@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { listBunchesForAdmin } from "@/server/modules/admin/content";
 import { relativeTime } from "@/lib/format";

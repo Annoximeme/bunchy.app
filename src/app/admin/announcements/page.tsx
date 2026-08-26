@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Tag } from "@/components/ui";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireAdmin } from "@/server/modules/admin/guard";
 import {
   DELIVERY,

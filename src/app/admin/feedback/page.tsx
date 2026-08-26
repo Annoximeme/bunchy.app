@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireStaff } from "@/server/modules/admin/guard";
 import { feedbackCounts, feedbackQueue } from "@/server/modules/feedback/service";
 import { AdminHeader, Panel } from "@/components/admin/primitives";

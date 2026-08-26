@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Card, Chip, EmptyState, ErrorNotice, LinkButton, Select, Spinner, cn } from "@/components/ui";
 import { activityWhen } from "@/lib/format";

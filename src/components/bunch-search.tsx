@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button, Input } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 /**
  * Search as a real form submission rather than a live-filtering input.
@@ -11,7 +11,7 @@ import { Button, Input } from "@/components/ui";
  * server does the filtering it is already good at.
  */
 export function BunchSearch({ initialQuery }: { initialQuery: string }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [value, setValue] = useState(initialQuery);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {

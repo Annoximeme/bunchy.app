@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { Avatar, Card } from "@/components/ui";
 import type { OutcomeReview } from "@/server/modules/activities/outcomes";
 

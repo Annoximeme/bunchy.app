@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { FormError, useFormSubmit } from "@/components/form-state";
@@ -11,6 +10,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 /** A local datetime string for `<input type="datetime-local">`, an hour ahead. */
 function defaultStart(): string {
@@ -35,7 +35,7 @@ export function ActivityForm({
   defaultCity: string | null;
   defaultCountry: string | null;
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   /*
     Online first, matching the schema default.
 

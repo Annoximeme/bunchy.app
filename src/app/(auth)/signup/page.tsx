@@ -4,6 +4,7 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { SignUpForm } from "@/components/auth-forms";
 import { resolveIntent } from "@/lib/up-for";
+import { localeHref } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Join" };
 
@@ -25,7 +26,7 @@ export default async function SignUpPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const viewer = await getViewer();
-  if (viewer) redirect(onboardingPath(viewer.onboardingStage));
+  if (viewer) redirect(await localeHref(onboardingPath(viewer.onboardingStage)));
 
   const params = await searchParams;
   const one = (v: string | string[] | undefined) =>

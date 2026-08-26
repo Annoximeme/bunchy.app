@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { listConversations } from "@/server/modules/messaging/direct";
 import { relativeTime } from "@/lib/format";

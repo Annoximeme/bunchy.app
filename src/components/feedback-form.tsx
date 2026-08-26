@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Button, Field, Select, Textarea } from "@/components/ui";
 import { FormError, useFormSubmit } from "@/components/form-state";
 import { KINDS, KIND_LABEL } from "@/lib/feedback";
 import type { FeedbackKind } from "@/generated/prisma/enums";
+import { useAppPath } from "@/components/link";
 
 /**
  * The form.
@@ -22,7 +23,7 @@ import type { FeedbackKind } from "@/generated/prisma/enums";
  */
 export function FeedbackForm() {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = useAppPath();
 
   const [kind, setKind] = useState<FeedbackKind>("IDEA");
   const [message, setMessage] = useState("");

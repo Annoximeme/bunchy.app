@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { Compass, Dices, Map, Radio } from "lucide-react";
 import { cn } from "@/components/ui";
 

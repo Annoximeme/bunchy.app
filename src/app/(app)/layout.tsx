@@ -12,6 +12,7 @@ import {
 } from "@/server/modules/announcements/service";
 import { AnnouncementBanner } from "@/components/announcements/announcement-banner";
 import { RouteAnnouncer } from "@/components/live-region";
+import { localeHref } from "@/server/i18n";
 
 /**
  * The signed-in shell.
@@ -25,9 +26,9 @@ export default async function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const viewer = await getViewer();
-  if (!viewer) redirect("/login");
+  if (!viewer) redirect(await localeHref("/login"));
   if (viewer.onboardingStage !== "COMPLETE") {
-    redirect(onboardingPath(viewer.onboardingStage));
+    redirect(await localeHref(onboardingPath(viewer.onboardingStage)));
   }
 
   const [

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { ArrowLeft } from "lucide-react";
 import { requireViewer } from "@/server/auth/current-user";
 import { getAnnouncement } from "@/server/modules/announcements/service";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { X } from "lucide-react";
 import { api } from "@/lib/api";
 

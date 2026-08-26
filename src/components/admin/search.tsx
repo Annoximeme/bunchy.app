@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button, Input, Select } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 /**
  * Search and filters as a plain form submission.
@@ -29,7 +29,7 @@ export function AdminSearch({
   placeholder?: string;
   filters?: AdminFilter[];
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [query, setQuery] = useState(initialQuery);
   const [values, setValues] = useState<Record<string, string>>(
     Object.fromEntries(filters.map((f) => [f.name, f.value])),

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
 import { AntiFeedDemo } from "@/components/landing/anti-feed-demo";
@@ -21,6 +21,7 @@ import { BunchCluster } from "@/components/landing/bunch-cluster";
 import { BunchMoment } from "@/components/landing/bunch-moment";
 import { UpFor } from "@/components/landing/up-for";
 import { HappeningNow } from "@/components/landing/happening-now";
+import { localeHref } from "@/server/i18n";
 
 /**
  * The landing page.
@@ -114,7 +115,7 @@ export default async function LandingPage({
   const viewer = await getViewer();
   const params = await searchParams;
   if (viewer && !wantsTheLandingPage(params)) {
-    redirect(onboardingPath(viewer.onboardingStage));
+    redirect(await localeHref(onboardingPath(viewer.onboardingStage)));
   }
 
   // Carries the CSP nonce: this app runs a nonce-based policy with no

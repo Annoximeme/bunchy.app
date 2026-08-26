@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { notFound } from "next/navigation";
 import { getViewer } from "@/server/auth/current-user";
 import { isAdmin, isStaff } from "@/server/modules/admin/guard";

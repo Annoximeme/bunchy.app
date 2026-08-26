@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+
+import { Link, useLocaleRouter } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import {
   Avatar,
@@ -103,7 +103,7 @@ const EXAMPLES = [
 ];
 
 export function StartBunch({ initialQuery = "" }: { initialQuery?: string }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
 
   const [query, setQuery] = useState(initialQuery);
   const [availableNow, setAvailableNow] = useState(false);

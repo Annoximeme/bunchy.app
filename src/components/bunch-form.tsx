@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { api } from "@/lib/api";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui";
 import { FormError, useFormSubmit } from "@/components/form-state";
 import { INTEREST_CATEGORIES, INTEREST_SEEDS } from "@/lib/interests";
+import { useLocaleRouter } from "@/components/link";
 
 interface Place {
   cityLabel: string;
@@ -29,7 +29,7 @@ export function BunchForm({
   defaultCity: string | null;
   defaultCountry: string | null;
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [type, setType] = useState("INTEREST");
   const [visibility, setVisibility] = useState("PUBLIC");
@@ -40,7 +40,6 @@ export function BunchForm({
       ? { cityLabel: defaultCity, regionLabel: "", countryCode: defaultCountry }
       : null,
   );
-
 
   useEffect(() => {
     // Nothing to search for; the visible list is derived below rather than

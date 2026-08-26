@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { person } from "@/lib/example-people";

@@ -111,7 +111,15 @@ www.{$DOMAIN} {
 		# on 127.0.0.1 and so has always been honest; anything checking the
 		# public URL was reading a deliberate 503 as a permanent outage, which
 		# is exactly the alarm you need to still mean something on launch day.
-		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /sitemap.xml /_next/* /api/waitlist /api/unsubscribe /unsubscribe /api/health /api/webhooks/* /privacy /terms
+		#
+		# The three language spellings of every page that is let through. A
+		# reader whose language is Dutch is redirected from /privacy to
+		# /nl/privacy by the app, and a list that only knows the English
+		# address would answer that redirect with the coming-soon page: the
+		# notice would be readable in one language and gated in the other two,
+		# which is the compliance problem this list exists to avoid, wearing a
+		# different hat.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /sitemap.xml /_next/* /api/waitlist /api/unsubscribe /unsubscribe /nl/unsubscribe /fr/unsubscribe /api/health /api/webhooks/* /privacy /nl/privacy /fr/privacy /terms /nl/terms /fr/terms
 	}
 	handle @soon {
 		# Rewritten to the real page rather than a static file. The coming-soon
@@ -120,7 +128,19 @@ www.{$DOMAIN} {
 		# working form, a server-rendered count, the app's stylesheet and a CSP.
 		# If the app does fall over while the gate is up, handle_errors below
 		# still catches it and serves the static maintenance page.
-		rewrite * /coming-soon
+		#
+		# Rewritten into the language the address asked for, not always into
+		# English. Rewriting every address to the bare /coming-soon would strip
+		# the prefix off a Dutch request, the app would notice the language was
+		# missing from the address and redirect to put it back, and Caddy would
+		# strip it off again: a loop, on the one page that has to work before
+		# anybody has an account.
+		@soon_nl path /nl /nl/*
+		@soon_fr path /fr /fr/*
+		@soon_en not path /nl /nl/* /fr /fr/*
+		rewrite @soon_nl /nl/coming-soon
+		rewrite @soon_fr /fr/coming-soon
+		rewrite @soon_en /coming-soon
 		reverse_proxy app:3000 {
 			header_up X-Forwarded-For {remote_host}
 			header_up X-Forwarded-Proto {scheme}

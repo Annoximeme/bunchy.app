@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { Check, Circle, TriangleAlert } from "lucide-react";
 import { requireAdmin } from "@/server/modules/admin/guard";
 import { brand } from "@/lib/brand";

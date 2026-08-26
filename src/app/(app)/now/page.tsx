@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { interestInSentence } from "@/lib/interests";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { bunchyNow, type BunchyNowBoard } from "@/server/modules/discovery/bunchy-now";
 import type { Horizon } from "@/server/modules/availability/service";

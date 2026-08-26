@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
 import { Avatar, Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";

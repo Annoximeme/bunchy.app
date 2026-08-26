@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useAppPath } from "@/components/link";
 
 /**
  * Things that change without the page changing.
@@ -45,7 +45,7 @@ export function Announce({ message }: { message: string }) {
  * as the new one.
  */
 export function RouteAnnouncer() {
-  const pathname = usePathname();
+  const pathname = useAppPath();
   const [message, setMessage] = useState("");
   // The first render is a real page load, which the browser has already
   // announced. Announcing it again is a duplicate, not a courtesy.

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { mySupport } from "@/server/modules/supporter/service";
 import { PageHeader, PageShell } from "@/components/page-header";

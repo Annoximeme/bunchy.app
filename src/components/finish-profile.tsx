@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 /**
  * What somebody left for later, asked for once they have a reason to answer.

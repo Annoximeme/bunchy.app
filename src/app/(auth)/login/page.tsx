@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { SignInForm } from "@/components/auth-forms";
+import { localeHref } from "@/server/i18n";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -13,6 +14,6 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   const viewer = await getViewer();
-  if (viewer) redirect(onboardingPath(viewer.onboardingStage));
+  if (viewer) redirect(await localeHref(onboardingPath(viewer.onboardingStage)));
   return <SignInForm />;
 }

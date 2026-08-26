@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";

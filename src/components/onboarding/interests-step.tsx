@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Input, cn } from "@/components/ui";
@@ -9,6 +8,7 @@ import {
   INTEREST_SEEDS,
   type InterestSeed,
 } from "@/lib/interests";
+import { useLocaleRouter } from "@/components/link";
 
 /**
  * Interest picker.
@@ -30,7 +30,7 @@ interface Selection {
 const MIN_INTERESTS = 3;
 
 export function InterestsStep({ initial }: { initial: Selection[] }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [selected, setSelected] = useState<Map<string, Selection>>(
     new Map(initial.map((i) => [i.slug, i])),
   );

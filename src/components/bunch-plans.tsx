@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, ErrorNotice, Input, Textarea, cn } from "@/components/ui";
 import { activityWhen } from "@/lib/format";

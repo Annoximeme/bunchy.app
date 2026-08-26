@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input, Textarea } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 interface Place {
   cityLabel: string;
@@ -31,7 +31,7 @@ export function BasicsStep({
     countryCode: string | null;
   };
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

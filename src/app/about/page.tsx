@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import Image from "next/image";
 import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { brand, BUNCH_NOUN } from "@/lib/brand";

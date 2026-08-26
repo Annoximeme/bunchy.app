@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { brand } from "@/lib/brand";
 import { LEGAL } from "@/lib/legal";
 import { Clause, Facts, LegalPage } from "@/components/legal";

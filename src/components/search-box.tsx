@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button, Input } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 /**
  * The one input in the product for finding something you already have.
@@ -13,7 +13,7 @@ import { Button, Input } from "@/components/ui";
  * matters more here than there, because this one touches four tables.
  */
 export function SearchBox({ initialQuery }: { initialQuery: string }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [value, setValue] = useState(initialQuery);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {

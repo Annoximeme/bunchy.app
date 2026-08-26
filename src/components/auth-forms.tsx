@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Link, useLocaleRouter } from "@/components/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input } from "@/components/ui";
@@ -17,7 +17,7 @@ import { FormError, useFormSubmit } from "@/components/form-state";
  */
 
 export function SignUpForm() {
-  const router = useRouter();
+  const router = useLocaleRouter();
   // From a personal invite link (/signup?ref=CODE). Read here rather than kept
   // in a cookie: an invite should not follow someone around the internet.
   const referralCode = useSearchParams().get("ref") ?? undefined;
@@ -127,7 +127,7 @@ export function SignUpForm() {
 }
 
 export function SignInForm() {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);
     const result = await api<{ next: string }>("/api/auth/login", {
@@ -248,7 +248,7 @@ export function ForgotPasswordForm() {
 }
 
 export function ResetPasswordForm({ token }: { token: string }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [done, setDone] = useState(false);
   const form = useFormSubmit(async (event) => {
     const data = new FormData(event.currentTarget);

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { getViewer } from "@/server/auth/current-user";
 import { isAdmin, requireStaff } from "@/server/modules/admin/guard";
 import { searchUsers } from "@/server/modules/admin/users";

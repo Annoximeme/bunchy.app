@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { AlertTriangle, ArrowRight, Info, Megaphone } from "lucide-react";
 import type { AnnouncementSummary } from "@/server/modules/announcements/service";
 import type { AnnouncementTier } from "@/generated/prisma/enums";

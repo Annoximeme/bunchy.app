@@ -1,5 +1,5 @@
 import { colourFor } from "@/lib/palette";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { cloneElement, isValidElement } from "react";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
 

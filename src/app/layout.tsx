@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { brand } from "@/lib/brand";
+import { LOCALE_TAGS } from "@/lib/i18n/config";
+import { LanguageProvider } from "@/components/link";
+import { currentLocale, getTranslations } from "@/server/i18n";
 import { env } from "@/server/env";
 import "./globals.css";
 
@@ -80,11 +83,13 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const locale = await currentLocale();
+  const t = await getTranslations();
 
   return (
     // `suppressHydrationWarning`: the script above edits this element before
     // React arrives, which is the entire point of it running that early.
-    <html lang="en" suppressHydrationWarning>
+    <html lang={LOCALE_TAGS[locale]} suppressHydrationWarning>
       <head>
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
@@ -93,9 +98,9 @@ export default async function RootLayout({
           href="#main"
           className="sr-only rounded-full bg-accent px-4 py-2 text-[var(--color-on-accent)] focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
         >
-          Skip to content
+          {t("common.skipToContent")}
         </a>
-        {children}
+        <LanguageProvider locale={locale}>{children}</LanguageProvider>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, cn } from "@/components/ui";
 import { COST_LABELS, type ActivityIdea, type Mood } from "@/lib/activity-ideas";

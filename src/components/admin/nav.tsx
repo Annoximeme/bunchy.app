@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useAppPath } from "@/components/link";
+
 import { cn } from "@/components/ui";
 
 /**
@@ -96,7 +96,7 @@ export function AdminNav({
   openReports: number;
   canManageAccounts: boolean;
 }) {
-  const pathname = usePathname();
+  const pathname = useAppPath();
 
   const visible = GROUPS.map((group) => ({
     ...group,

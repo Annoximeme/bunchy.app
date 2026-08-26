@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, cn } from "@/components/ui";
+import { useLocaleRouter } from "@/components/link";
 
 /**
  * The three quick steps: style, goals and availability.
@@ -75,7 +75,7 @@ export function PersonalityStep({
 }: {
   initial: Record<string, number> | null;
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [values, setValues] = useState<Record<string, number>>(() =>
     Object.fromEntries(AXES.map((a) => [a.key, initial?.[a.key] ?? 50])),
   );
@@ -261,7 +261,7 @@ function MultiSelectStep({
   skippable?: boolean;
   columns?: boolean;
 }) {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set(initial));
   const [pending, setPending] = useState(false);
   const [skipping, setSkipping] = useState(false);

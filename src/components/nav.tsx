@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Link, useAppPath, useLocaleRouter } from "@/components/link";
+
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { Avatar, cn } from "@/components/ui";
 import { brand } from "@/lib/brand";
 import { BunchyLogo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useTranslate } from "@/components/link";
 
 /**
  * Primary navigation.
@@ -23,14 +25,21 @@ import { ThemeToggle } from "@/components/theme-toggle";
  * product most wants people to do.
  */
 
+/**
+ * The labels are phrase paths rather than words, resolved at render.
+ *
+ * This list is defined once at module scope and the language is only known
+ * inside the component, so what is stored here is where to find the word
+ * rather than the word itself.
+ */
 const ITEMS = [
-  { href: "/discover", label: "Discover", icon: CompassIcon },
-  { href: "/search", label: "Search", icon: SearchIcon },
-  { href: "/now", label: "Bunchy Now", icon: BoltIcon },
-  { href: "/bunches", label: "Bunches", icon: BunchesIcon },
-  { href: "/radar", label: "Radar", icon: RadarIcon },
-  { href: "/activities", label: "Activities", icon: CalendarIcon },
-  { href: "/messages", label: "Messages", icon: ChatIcon },
+  { href: "/discover", label: "nav.discover", icon: CompassIcon },
+  { href: "/search", label: "nav.search", icon: SearchIcon },
+  { href: "/now", label: "nav.now", icon: BoltIcon },
+  { href: "/bunches", label: "nav.bunches", icon: BunchesIcon },
+  { href: "/radar", label: "nav.radar", icon: RadarIcon },
+  { href: "/activities", label: "nav.activities", icon: CalendarIcon },
+  { href: "/messages", label: "nav.messages", icon: ChatIcon },
 ] as const;
 
 /**
@@ -78,8 +87,9 @@ export function AppNav({
   /** Renders the staff entry. The link is cosmetic, /admin guards itself. */
   staff?: boolean;
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = useAppPath();
+  const router = useLocaleRouter();
+  const t = useTranslate();
   const [signingOut, setSigningOut] = useState(false);
 
   const isActive = (href: string) =>
@@ -103,7 +113,7 @@ export function AppNav({
     <>
       {/* Desktop rail */}
       <nav
-        aria-label="Main"
+        aria-label={t("nav.main")}
         className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-line bg-surface px-4 py-6 md:flex"
       >
         <Link href="/discover" className="mb-6 px-2" aria-label={brand.name}>
@@ -115,7 +125,7 @@ export function AppNav({
           className="mb-5 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-4 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] shadow-[0_1px_2px_rgb(23_32_51/0.08)] transition-shadow hover:shadow-[0_6px_18px_-6px_var(--color-accent)]"
         >
           <PlusIcon className="size-4" />
-          Start a bunch
+          {t("nav.startBunch")}
         </Link>
 
         <ul className="flex-1 space-y-1">
@@ -123,7 +133,7 @@ export function AppNav({
             <li key={item.href}>
               <NavLink
                 href={item.href}
-                label={item.label}
+                label={t(item.label)}
                 icon={item.icon}
                 active={isActive(item.href)}
                 badge={badgeFor(item.href)}
@@ -133,7 +143,7 @@ export function AppNav({
           <li>
             <NavLink
               href="/assistant"
-              label="Ask Bunchy"
+              label={t("nav.assistant")}
               icon={SparkIcon}
               active={isActive("/assistant")}
               badge={0}
@@ -142,7 +152,7 @@ export function AppNav({
           <li>
             <NavLink
               href="/connections"
-              label="Connections"
+              label={t("nav.connections")}
               icon={PeopleIcon}
               active={isActive("/connections")}
               badge={pendingRequests}
@@ -151,7 +161,7 @@ export function AppNav({
           <li>
             <NavLink
               href="/notifications"
-              label="Notifications"
+              label={t("nav.notifications")}
               icon={BellIcon}
               active={isActive("/notifications")}
               badge={unreadNotifications}
@@ -168,13 +178,13 @@ export function AppNav({
             href="/supporter"
             className="mb-1 block rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
           >
-            Support Bunchy
+            {t("nav.support")}
           </Link>
           <Link
             href="/whats-new"
             className="mb-1 flex items-center justify-between gap-2 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-sunken"
           >
-            What&rsquo;s new
+            {t("nav.whatsNew")}
             {unreadAnnouncements > 0 && (
               <span className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-[var(--color-on-accent)]">
                 {unreadAnnouncements}
@@ -186,7 +196,7 @@ export function AppNav({
               href="/admin"
               className="mb-1 block rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-teal transition-colors hover:bg-surface-sunken"
             >
-              Staff area
+              {t("nav.staffArea")}
             </Link>
           )}
           <Link
@@ -210,18 +220,23 @@ export function AppNav({
               disabled={signingOut}
               className="flex-1 rounded-[var(--radius-control)] px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-surface-sunken hover:text-ink disabled:opacity-60"
             >
-              {signingOut ? "Signing out…" : "Sign out"}
+              {signingOut ? t("nav.signingOut") : t("nav.signOut")}
             </button>
             {/* Beside sign out rather than in the list above: it is a setting,
                 not a destination. */}
             <ThemeToggle />
           </div>
+          {/* Under both, and spelled out rather than abbreviated. Somebody
+              looking for this is by definition reading a language they would
+              rather not, so the one control that helps them says "Nederlands"
+              in Dutch rather than a two-letter code they have to decode. */}
+          <LanguageSwitcher className="mt-1 justify-start px-1" />
         </div>
       </nav>
 
       {/* Mobile bottom bar */}
       <nav
-        aria-label="Main"
+        aria-label={t("nav.main")}
         className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-sm md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
@@ -230,7 +245,7 @@ export function AppNav({
             <li key={item.href} className="flex-1">
               <MobileLink
                 href={item.href}
-                label={item.label}
+                label={t(item.label)}
                 icon={item.icon}
                 active={isActive(item.href)}
                 badge={badgeFor(item.href)}
@@ -242,7 +257,7 @@ export function AppNav({
           <li className="flex shrink-0 items-center px-1">
             <Link
               href="/start"
-              aria-label="Start a bunch"
+              aria-label={t("nav.startBunch")}
               aria-current={isActive("/start") ? "page" : undefined}
               className="flex size-12 items-center justify-center rounded-full bg-accent text-[var(--color-on-accent)] shadow-[0_4px_14px_-4px_var(--color-accent)]"
             >
@@ -254,7 +269,7 @@ export function AppNav({
             <li key={item.href} className="flex-1">
               <MobileLink
                 href={item.href}
-                label={item.label}
+                label={t(item.label)}
                 icon={item.icon}
                 active={isActive(item.href)}
                 badge={badgeFor(item.href)}
@@ -264,7 +279,7 @@ export function AppNav({
           <li className="flex-1">
             <MobileLink
               href="/profile"
-              label="You"
+              label={t("nav.you")}
               icon={PersonIcon}
               active={isActive("/profile")}
               badge={pendingRequests + unreadNotifications}
