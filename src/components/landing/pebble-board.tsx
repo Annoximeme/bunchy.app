@@ -1,5 +1,9 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import type { PhrasePath } from "@/lib/i18n/translate";
+
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
@@ -28,9 +32,13 @@ import { motion, useReducedMotion } from "framer-motion";
 
 interface Idea {
   emoji: string;
-  tag: string;
-  title: string;
-  when: string;
+  /**
+   * Phrase paths, not words. This list is module scope and the language is a
+   * fact about the request, so the words are looked up at render.
+   */
+  tag: PhrasePath<Dictionary>;
+  title: PhrasePath<Dictionary>;
+  when: PhrasePath<Dictionary>;
   going: number;
   fills: string[];
 }
@@ -38,31 +46,32 @@ interface Idea {
 const IDEAS: Idea[] = [
   {
     emoji: "🎮",
-    tag: "Gaming",
-    title: "Co-op night, someone else picks",
-    when: "Thursday, 20:00",
+    tag: "pebbles.gamingTag",
+    title: "pebbles.gamingTitle",
+    when: "pebbles.gamingWhen",
     going: 4,
     fills: ["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"],
   },
   {
     emoji: "☕",
-    tag: "Coffee",
-    title: "Saturday morning, nothing planned after",
-    when: "Saturday, 10:30",
+    tag: "pebbles.coffeeTag",
+    title: "pebbles.coffeeTitle",
+    when: "pebbles.coffeeWhen",
     going: 3,
     fills: ["#55D6BE", "#FF5C6C", "#9B85FF"],
   },
   {
     emoji: "🥾",
-    tag: "Walking",
-    title: "Slow one, we stop for chips",
-    when: "Sunday, 11:00",
+    tag: "pebbles.walkingTag",
+    title: "pebbles.walkingTitle",
+    when: "pebbles.walkingWhen",
     going: 5,
     fills: ["#FFC857", "#7657FF", "#55D6BE", "#FF5C6C", "#9B85FF"],
   },
 ];
 
 export function PebbleBoard() {
+  const t = useTranslate();
   const still = useReducedMotion();
 
   return (
@@ -102,13 +111,13 @@ export function PebbleBoard() {
               <span aria-hidden className="text-base">
                 {idea.emoji}
               </span>
-              {idea.tag}
+              {t(idea.tag)}
             </span>
 
             <h3 className="mt-6 text-balance text-lg font-bold leading-snug tracking-tight text-ink-text">
-              {idea.title}
+              {t(idea.title)}
             </h3>
-            <p className="mt-2 text-[15px] text-muted">{idea.when}</p>
+            <p className="mt-2 text-[15px] text-muted">{t(idea.when)}</p>
 
             <div className="mt-7 flex items-center">
               <div className="flex -space-x-3">
@@ -122,7 +131,7 @@ export function PebbleBoard() {
                 ))}
               </div>
               <span className="ml-4 text-sm font-medium text-muted">
-                {idea.going} going
+                {t("counts.going", { count: idea.going })}
               </span>
             </div>
           </motion.article>

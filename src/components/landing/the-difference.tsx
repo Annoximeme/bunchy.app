@@ -1,3 +1,6 @@
+import { brand } from "@/lib/brand";
+import { getTranslations } from "@/server/i18n";
+
 /**
  * Everywhere else, and here, side by side.
  *
@@ -36,22 +39,23 @@ const BUNCH = [
   { fill: "#FFC857", initial: "T" },
 ];
 
-export function TheDifference() {
+export async function TheDifference() {
+  const t = await getTranslations();
   return (
     <section className="bg-canvas px-5 py-24 text-ink">
       <div className="mx-auto max-w-6xl">
         <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
-          THE DIFFERENCE
+          {t("difference.eyebrow")}
         </p>
         <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-          The same Saturday, on two different products.
+          {t("difference.title")}
         </h2>
 
         <div className="mt-14 grid grid-cols-1 items-start gap-8 md:grid-cols-2 md:gap-10">
           {/* --- Everywhere else -------------------------------------- */}
           <div>
             <p className="mb-4 text-sm font-bold uppercase tracking-widest text-muted">
-              Everywhere else
+              {t("difference.elsewhere")}
             </p>
 
             {/*
@@ -66,28 +70,28 @@ export function TheDifference() {
                 <span className="size-9 rounded-none bg-gray-sterile" />
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-bold text-neutral-900">
-                    someone_you_met_once
+                    {t("difference.handle")}
                   </p>
                   <p className="text-[11px] text-neutral-500">
-                    1,284 followers · 312 following
+                    {t("difference.stats")}
                   </p>
                 </div>
                 <span className="rounded-none border border-gray-sterile px-2 py-1 text-[11px] font-bold text-neutral-900">
-                  Follow
+                  {t("difference.follow")}
                 </span>
               </div>
 
               <div className="mt-1.5 border border-gray-sterile bg-white p-2.5">
                 <div className="h-20 w-full bg-gray-sterile" />
                 <p className="mt-1.5 text-[11px] text-neutral-500">
-                  17 likes · 4 comments · 2h
+                  {t("difference.postOne")}
                 </p>
               </div>
 
               <div className="mt-1.5 border border-gray-sterile bg-white p-2.5">
                 <div className="h-20 w-full bg-gray-sterile" />
                 <p className="mt-1.5 text-[11px] text-neutral-500">
-                  9 likes · 1 comment · 3h
+                  {t("difference.postTwo")}
                 </p>
               </div>
 
@@ -97,15 +101,14 @@ export function TheDifference() {
             </div>
 
             <p className="mt-4 text-[15px] leading-relaxed text-muted">
-              You scrolled for eleven minutes. You know what forty people did on
-              Saturday. None of them know you were free.
+              {t("difference.elsewhereClosing")}
             </p>
           </div>
 
           {/* --- On Bunchy -------------------------------------------- */}
           <div>
             <p className="mb-4 text-sm font-bold uppercase tracking-widest text-accent-ink">
-              On Bunchy
+              {t("difference.here", { brand: brand.name })}
             </p>
 
             {/*
@@ -118,13 +121,13 @@ export function TheDifference() {
             <div className="reveal-stagger rounded-squircle bg-surface p-8 shadow-pebble">
               <div>
                 <span className="inline-flex items-center gap-2 rounded-full bg-mint-soft px-3.5 py-1.5 text-sm font-semibold text-mint-ink">
-                  <span aria-hidden>🥾</span> Hiking
+                  <span aria-hidden>🥾</span> {t("difference.hiking")}
                 </span>
               </div>
 
               <p className="mt-6 text-2xl font-extrabold leading-snug tracking-tight text-ink-text"
               >
-                We&rsquo;re going Saturday.
+                {t("difference.goingSaturday")}
               </p>
 
               {/*
@@ -149,18 +152,17 @@ export function TheDifference() {
                   ))}
                 </div>
                 <span className="ml-4 text-[15px] font-medium text-muted">
-                  4 going
+                  {t("difference.going")}
                 </span>
               </div>
 
               <p className="mt-7 text-[15px] leading-relaxed text-ink-soft">
-                That is the whole screen. There is nothing under it.
+                {t("difference.wholeScreen")}
               </p>
             </div>
 
             <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
-              You said you were free. Four people who like walking said the same
-              thing. Saturday exists now.
+              {t("difference.hereClosing")}
             </p>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { ACTIVITIES, PLACES, TIMES } from "@/lib/up-for";
+import { getTranslations } from "@/server/i18n";
 
 /**
  * "What are you up for?", the product, starting on the landing page.
@@ -20,7 +21,9 @@ import { ACTIVITIES, PLACES, TIMES } from "@/lib/up-for";
  * would quietly say the opposite before anyone has read a word.
  */
 
-export function UpFor() {
+export async function UpFor() {
+  const t = await getTranslations();
+
   return (
     <form
       action="/signup"
@@ -29,7 +32,7 @@ export function UpFor() {
     >
       <fieldset>
         <legend className="text-xs font-bold tracking-widest text-white/55">
-          WHAT ARE YOU UP FOR?
+          {t("upFor.want")}
         </legend>
         <div className="mt-4 flex flex-wrap gap-2.5">
           {ACTIVITIES.map((a, i) => (
@@ -37,7 +40,7 @@ export function UpFor() {
               key={a.value}
               name="want"
               value={a.value}
-              label={a.label}
+              label={t(a.label)}
               defaultChecked={i === 0}
               tone="#FF5C6C"
             />
@@ -48,7 +51,7 @@ export function UpFor() {
       <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <fieldset>
           <legend className="text-xs font-bold tracking-widest text-white/55">
-            WHERE
+            {t("upFor.where")}
           </legend>
           <div className="mt-4 flex flex-wrap gap-2.5">
             {PLACES.map((p) => (
@@ -56,7 +59,7 @@ export function UpFor() {
                 key={p.value}
                 name="where"
                 value={p.value}
-                label={p.label}
+                label={t(p.label)}
                 defaultChecked={p.value === "either"}
                 tone="#55D6BE"
               />
@@ -66,16 +69,16 @@ export function UpFor() {
 
         <fieldset>
           <legend className="text-xs font-bold tracking-widest text-white/55">
-            WHEN
+            {t("upFor.when")}
           </legend>
           <div className="mt-4 flex flex-wrap gap-2.5">
-            {TIMES.map((t) => (
+            {TIMES.map((time) => (
               <Chip
-                key={t.value}
+                key={time.value}
                 name="when"
-                value={t.value}
-                label={t.label}
-                defaultChecked={t.value === "tonight"}
+                value={time.value}
+                label={t(time.label)}
+                defaultChecked={time.value === "tonight"}
                 tone="#FFC857"
               />
             ))}
@@ -88,11 +91,11 @@ export function UpFor() {
           type="submit"
           className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-7 py-3.5 text-base font-bold tracking-wide text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
         >
-          Find my bunch
+          {t("upFor.submit")}
           <ArrowRight size={18} aria-hidden />
         </button>
         <p className="text-sm text-white/55">
-          Takes you to sign-up with this already filled in.
+          {t("upFor.note")}
         </p>
       </div>
     </form>

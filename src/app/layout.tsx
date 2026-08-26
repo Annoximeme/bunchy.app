@@ -15,6 +15,9 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await currentLocale();
   const alternates = await languageAlternates();
+  const t = await getTranslations();
+  const title = `${brand.name}, ${t("brand.tagline")}`;
+  const description = t("brand.subtitle");
 
   return {
     /**
@@ -30,10 +33,10 @@ export async function generateMetadata(): Promise<Metadata> {
      */
     metadataBase: new URL(env().APP_URL),
     title: {
-      default: `${brand.name}, ${brand.tagline}`,
+      default: title,
       template: `%s · ${brand.name}`,
     },
-    description: brand.subtitle,
+    description,
     applicationName: brand.name,
     /**
      * The canonical address, and this page's address in the other two
@@ -52,8 +55,8 @@ export async function generateMetadata(): Promise<Metadata> {
      */
     alternates,
     openGraph: {
-      title: `${brand.name}, ${brand.tagline}`,
-      description: brand.subtitle,
+      title,
+      description,
       siteName: brand.name,
       type: "website",
       locale: OG_LOCALES[locale],
@@ -66,8 +69,8 @@ export async function generateMetadata(): Promise<Metadata> {
      */
     twitter: {
       card: "summary_large_image",
-      title: `${brand.name}, ${brand.tagline}`,
-      description: brand.subtitle,
+      title,
+      description,
     },
     // This is a place to meet people, not a page to be indexed for.
     robots: { index: true, follow: true },

@@ -75,6 +75,8 @@ export const en = {
      * built on and translates the instruction around it, which is the same
      * rule the rest of this file follows.
      */
+    subtitle:
+      "Bunchy finds you a handful of people who are into the same things you are, and free when you are.",
     tagline: "Find your bunch.",
   },
 
@@ -343,6 +345,337 @@ export const en = {
     pickMore: {
       one: "Pick 1 more",
       other: "Pick {count} more",
+    },
+  },
+
+  siteLinks: {
+    about: "About",
+    safety: "Safety",
+    volunteer: "Volunteer",
+    privacy: "Privacy",
+    terms: "Terms",
+    changelog: "Changelog",
+    home: "Home",
+    discord: "Discord",
+    feedback: "Feedback",
+  },
+
+  upFor: {
+    want: "WHAT ARE YOU UP FOR?",
+    where: "WHERE",
+    when: "WHEN",
+    submit: "Find my bunch",
+    note: "Takes you to sign-up with this already filled in.",
+    activities: {
+      gaming: "🎮 Gaming",
+      watch: "🎬 Watch something",
+      food: "🍜 Food",
+      music: "🎧 Music",
+      "hang-out": "💬 Hang out",
+      create: "🎨 Create something",
+      study: "📚 Study",
+      "co-work": "💻 Co-work",
+      sports: "🏀 Sports",
+      outdoors: "🥾 Outdoors",
+      "board-games": "🎲 Board games",
+      surprise: "🤷 Surprise me",
+    },
+    places: {
+      online: "Online",
+      "in-person": "In person",
+      either: "Either",
+    },
+    times: {
+      now: "Now",
+      tonight: "Tonight",
+      weekend: "This weekend",
+      sometime: "Sometime",
+    },
+  },
+
+  landing: {
+    signIn: "Sign in",
+    join: "Join {brand}",
+    badge: "No feed. No followers. Just people.",
+    headlineBefore: "Making friends as an adult is",
+    headlineEmphasis: "absurdly hard.",
+    headlineAfter: "It shouldn’t be.",
+    lead: "Tell us what you want to do. We’ll find your people.",
+    body: "Gaming tonight, a film on Saturday, coffee next week. {brand} finds people who are into the same things and free when you are:",
+    online: "online",
+    nearby: "nearby",
+    orBoth: ", or both.",
+    findMyBunch: "Find my bunch",
+    surpriseMe: "Surprise me",
+    alreadyKnow: "Already know what you’re looking for?",
+    exploreBunches: "Explore Bunches",
+
+    problemEyebrow: "THE PROBLEM",
+    problemTitle:
+      "You don’t need more followers. You need four people who answer the group chat.",
+    everywhereElse: "EVERYWHERE ELSE",
+    followers: "1,284 followers",
+    likes: "17 likes",
+    comments: "3 comments",
+    stillNobody: "Still nobody to go out with.",
+    onBunchy: "ON {brand}",
+    tagGaming: "🎮 Gaming",
+    tagFood: "🍜 Food",
+    tagHiking: "🥾 Hiking",
+    onlineTag: "ONLINE",
+    quoteAsk: "“Anyone up for co-op?”",
+    quoteYep: "“Yep, 9pm.”",
+    goingSaturday: "We’re going Saturday.",
+    problemClosing:
+      "An audience is not a social life. The number that matters is the one you could text tonight.",
+
+    boardTitle: "This is what fills up instead of a feed.",
+    boardBody:
+      "Three real evenings, with the people already going. Nothing under them, and nothing arriving while you read.",
+
+    momentEyebrow: "THE BUNCH MOMENT",
+    momentTitle: "This is the whole product, in one gesture.",
+    momentBody:
+      "Matching looks at interests, goals, distance and when you are free then stops. There is no feed to fall into afterwards.",
+
+    stagesEyebrow: "HOW {brand} WORKS",
+    stagesTitle: "Five stages, and none of them are scrolling.",
+    stagesClosing:
+      "Most social products are built to keep you at stage one. {brand} is built to get you to stage five and then leave you alone.",
+    stages: {
+      discover: {
+        name: "Discover",
+        body: "People, bunches and activities, online or nearby, each with a plain-English reason it was shown.",
+      },
+      match: {
+        name: "Match",
+        body: "Eight weighted signals, not a tag intersection. Including the ones you’re curious about but haven’t done.",
+      },
+      bunch: {
+        name: "Bunch",
+        body: "Four to six people come together. Small enough that everyone speaks.",
+      },
+      plan: {
+        name: "Plan",
+        body: "Somebody suggests Thursday. The bunch agrees on something real.",
+      },
+      together: {
+        name: "Together",
+        body: "A voice channel on Thursday, a table on Saturday. Both count. This is the only stage that does.",
+      },
+    },
+
+    waysEyebrow: "WHAT YOU CAN ACTUALLY DO",
+    waysTitle: "Three ways in, depending on what you turned up for.",
+    waysBody:
+      "Seven features, grouped by the reason you opened the app rather than by what each one is called.",
+
+    plansEyebrow: "ONLINE · IN PERSON · EITHER",
+    plansTitle: "A voice channel counts. So does a table. So does both.",
+    plansBody:
+      "{brand} is not trying to get you off your screen, and it is not trying to keep you on it. These are the shapes of plans bunches make. Real ones replace them, with permission, the day there are real ones to show.",
+    plansTagOnline: "Online",
+    plansTagInPerson: "In person",
+    plans: {
+      coop: {
+        title: "Co-op night, six going",
+        detail: "A bunch that lives in its own voice channel and likes it there. No plan to meet, and none needed.",
+      },
+      focus: {
+        title: "Focus session, 9am Tuesday",
+        detail: "Four people who work alone, working alone together. Cameras optional.",
+      },
+      watch: {
+        title: "Watch party, 20:00",
+        detail: "Same film, six places, one chat. Somebody always talks through the ending.",
+      },
+      coffee: {
+        title: "Saturday coffee, no agenda",
+        detail: "The low-stakes first meet a lot of bunches start with.",
+      },
+      walk: {
+        title: "Sunday walk, whoever is free",
+        detail: "Availability is a real field here, so “whoever is free” is a query rather than a guess in a group chat.",
+      },
+      boardGames: {
+        title: "Board games, table or tabletop",
+        detail: "The same bunch, one week around a table and the next around a server. Nothing about that is a compromise.",
+      },
+    },
+    plansBecome: "And sometimes one becomes the other.",
+    plansBecomeBody:
+      "A gaming bunch plays every Thursday for two months, and one week somebody asks whether anyone fancies pizza. That is a good outcome. So is playing every Thursday for two years and never asking. {brand} will never nudge you toward the first one. The group decides, and both endings are the product working.",
+
+    recurringEyebrow: "RECURRING BUNCHES",
+    recurringTitle: "Find people you’ll want to see again.",
+    recurringBody:
+      "The hard part was never one good evening. It is the second one, and the eighth. A bunch is built to keep going: a standing night, the same people, no reintroductions.",
+    recurringOne: "Gaming every Thursday",
+    recurringTwo: "Friday film night",
+    recurringThree: "Weekday focus sessions",
+    recurringFour: "Sunday walks",
+    recurringFive: "Monthly board games",
+    recurringSix: "Sunday anime",
+
+    faqTitle: "Before you sign up.",
+    faqDatingQ: "Is this a dating app?",
+    faqDatingA:
+      "No, and it is not one with the labels changed either. No swiping, no romantic intent field, nothing that ranks people by attractiveness. It is for friends.",
+    faqFreeQ: "Is it actually free?",
+    faqFreeA: "Yes. No trial, no card, no paid tier holding the useful half hostage.",
+    faqProfileQ: "Who can see my profile?",
+    faqProfileA:
+      "Signed-in members only, never search engines, never the open internet. Your location is stored as an approximate area, never an address.",
+    faqEmptyQ: "What if nobody near me has joined yet?",
+    faqEmptyA:
+      "Then Discover says so plainly, with the number of people nearby rather than an empty page. Online bunches work at any distance from day one.",
+
+    closingOne: "Find your people.",
+    closingTwo: "Do something together.",
+    closingSubtitle: "Online. In person. Or both.",
+    closingBody:
+      "Three minutes to say what you are into and when you are free. The next step is an actual evening with actual people.",
+    closingNote: "Free, 16+, and you can delete everything in two clicks.",
+  },
+
+  antiFeed: {
+    free: "Free Thursday evening",
+    findMe: "Find me a bunch",
+    matchFound: "Match found",
+    thursdayCoffee: "Thursday Coffee",
+    going: "4 going",
+    allSet: "You’re all set. Close the app and go enjoy your Thursday.",
+  },
+
+  cluster: {
+    people: "6 people",
+    disclaimer: "An example bunch. {brand} hasn’t launched yet, these aren’t real people.",
+    gamingTonight: "Gaming tonight",
+    coffeeSaturday: "Coffee Saturday",
+    coopNight: "Co-op Night",
+  },
+
+  moment: {
+    alone: "on your own",
+    searching: "finding your people…",
+    found: "Bunch found",
+    plan: "Thursday, 8pm",
+    tagGaming: "Gaming",
+    tagHiking: "Hiking",
+    tagFood: "Food",
+    tagFilms: "Films",
+    you: "You",
+    boardGames: "Board games at Tom’s",
+    going: "5 going · Thursday",
+    again: "Again",
+    findABunch: "Find a bunch",
+  },
+
+  happeningNow: {
+    eyebrow: "WHAT’S HAPPENING RIGHT NOW",
+    title: "This is the board. It fills up as people arrive.",
+    body: "{brand} hasn’t launched, so there is nothing real to show here yet. And we would rather show you an empty board than invent a busy one. Every card below is an example of what this looks like once people are on it.",
+    diary: {
+      one: "{count} person has something in the diary.",
+      other: "{count} people have something in the diary.",
+    },
+    either: "either",
+    whenTonight: "Tonight",
+    whenEvening: "20:00",
+    whenNow: "Now",
+    whenSaturday: "Saturday",
+    whenSunday: "Sunday",
+    whenThisWeek: "This week",
+    example: "EXAMPLE",
+    online: "online",
+    inPerson: "in person",
+    peopleGoing: "people going",
+    lineGaming: "4 people are looking for a gaming bunch",
+    lineWatch: "6 people want to watch something",
+    lineCowork: "3 people want a co-working session",
+    lineCoffee: "4 people want coffee",
+    lineHiking: "5 people want to go hiking",
+    lineBoardGames: "6 people are up for board games",
+  },
+
+  moderation: {
+    title: "Actively moderated by real humans.",
+    body: "Meeting people from the internet requires trust. {brand} doesn’t rely on algorithms to keep the community safe. We are actively moderated by a dedicated team of volunteer humans. No tolerance for creeps, harassment, or bad faith behavior. Just good vibes and real plans.",
+    link: "What a moderator can and cannot do",
+    linkAfter: ", written out in full. Applications are open.",
+  },
+
+  difference: {
+    eyebrow: "THE DIFFERENCE",
+    title: "The same Saturday, on two different products.",
+    elsewhere: "Everywhere else",
+    handle: "someone_you_met_once",
+    stats: "1,284 followers · 312 following",
+    follow: "Follow",
+    postOne: "17 likes · 4 comments · 2h",
+    postTwo: "9 likes · 1 comment · 3h",
+    elsewhereClosing:
+      "You scrolled for eleven minutes. You know what forty people did on Saturday. None of them know you were free.",
+    here: "On {brand}",
+    hiking: "Hiking",
+    goingSaturday: "We’re going Saturday.",
+    going: "4 going",
+    wholeScreen: "That is the whole screen. There is nothing under it.",
+    hereClosing:
+      "You said you were free. Four people who like walking said the same thing. Saturday exists now.",
+  },
+
+  ways: {
+    label: "Ways into {brand}",
+    know: {
+      intent: "I know what to do",
+      blurb: "You have the idea already. Set a time and an activity, and let the app do the finding.",
+      startName: "Start a bunch",
+      startLine: "Say what you’d like to do. We’ll find people who might be up for it. No form to fill in first.",
+      plansName: "Plans",
+      plansLine: "Turn “we should do something” into a date, a place and a count of who is coming.",
+    },
+    happening: {
+      intent: "Show me what’s happening",
+      blurb: "Have a look first. Approximate areas near you, or a voice channel tonight, without committing to anything.",
+      discoverName: "Discover",
+      discoverLine: "People, bunches and activities ranked by how well they actually fit, and finite, so it ends.",
+      radarName: "Radar",
+      radarLine: "Bunches and activities around you. Areas, never addresses.",
+    },
+    out: {
+      intent: "Get me out of the house",
+      blurb: "No browsing and no typing. Five taps and you have something to do tonight.",
+      doName: "Do something",
+      doLine: "Say what you have (money, time, energy) and get an evening back. Five taps, no typing.",
+      surpriseName: "Surprise me",
+      surpriseLine: "The opposite of a recommendation: someone whose interests don’t look like yours, but whose evenings do.",
+    },
+  },
+
+  pebbles: {
+    gamingTag: "Gaming",
+    gamingTitle: "Co-op night, someone else picks",
+    gamingWhen: "Thursday, 20:00",
+    coffeeTag: "Coffee",
+    coffeeTitle: "Saturday morning, nothing planned after",
+    coffeeWhen: "Saturday, 10:30",
+    walkingTag: "Walking",
+    walkingTitle: "Slow one, we stop for chips",
+    walkingWhen: "Sunday, 11:00",
+  },
+
+  signup: {
+    intentNote: "We’ll pick this up once you’re in. You can change it any time.",
+  },
+  counts: {
+    going: {
+      one: "{count} going",
+      other: "{count} going",
+    },
+    free: {
+      one: "{count} free",
+      other: "{count} free",
     },
   },
 } as const;

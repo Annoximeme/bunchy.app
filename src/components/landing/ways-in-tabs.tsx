@@ -1,6 +1,10 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { brand } from "@/lib/brand";
+import { useTranslate } from "@/components/link";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import type { PhrasePath } from "@/lib/i18n/translate";
 
 /**
  * Seven ways in, grouped into the three things somebody actually arrives
@@ -31,73 +35,67 @@ import { useId, useRef, useState } from "react";
 
 interface Way {
   id: string;
-  /** What the visitor would say, not what the feature is called. */
-  intent: string;
-  blurb: string;
-  features: { name: string; line: string; colour: string }[];
+  /**
+   * Phrase paths. What the visitor would say, not what the feature is called,
+   * looked up in whichever language they are reading.
+   */
+  intent: PhrasePath<Dictionary>;
+  blurb: PhrasePath<Dictionary>;
+  features: {
+    name: PhrasePath<Dictionary>;
+    line: PhrasePath<Dictionary>;
+    colour: string;
+  }[];
 }
 
 const WAYS: Way[] = [
   {
     id: "know",
-    intent: "I know what to do",
-    blurb:
-      "You have the idea already. Set a time and an activity, and let the app do the finding.",
+    intent: "ways.know.intent",
+    blurb: "ways.know.blurb",
     features: [
-      {
-        name: "Start a bunch",
-        colour: "#7657FF",
-        line: "Say what you'd like to do. We'll find people who might be up for it. No form to fill in first.",
-      },
-      {
-        name: "Plans",
-        colour: "#55D6BE",
-        line: "Turn “we should do something” into a date, a place and a count of who is coming.",
-      },
+      { name: "ways.know.startName", colour: "#7657FF", line: "ways.know.startLine" },
+      { name: "ways.know.plansName", colour: "#55D6BE", line: "ways.know.plansLine" },
     ],
   },
   {
     id: "happening",
-    intent: "Show me what's happening",
-    blurb:
-      "Have a look first. Approximate areas near you, or a voice channel tonight, without committing to anything.",
+    intent: "ways.happening.intent",
+    blurb: "ways.happening.blurb",
     features: [
       {
-        name: "Discover",
+        name: "ways.happening.discoverName",
         colour: "#FF5C6C",
-        line: "People, bunches and activities ranked by how well they actually fit, and finite, so it ends.",
+        line: "ways.happening.discoverLine",
       },
       {
-        name: "Radar",
+        name: "ways.happening.radarName",
         colour: "#FFC857",
-        line: "Bunches and activities around you. Areas, never addresses.",
+        line: "ways.happening.radarLine",
       },
     ],
   },
   {
     id: "out",
-    intent: "Get me out of the house",
-    blurb:
-      "No browsing and no typing. Five taps and you have something to do tonight.",
+    intent: "ways.out.intent",
+    blurb: "ways.out.blurb",
     features: [
+      { name: "ways.out.doName", colour: "#FFC857", line: "ways.out.doLine" },
       {
-        name: "Do something",
-        colour: "#FFC857",
-        line: "Say what you have (money, time, energy) and get an evening back. Five taps, no typing.",
-      },
-      {
-        name: "Surprise me",
+        name: "ways.out.surpriseName",
         colour: "#7657FF",
-        line: "The opposite of a recommendation: someone whose interests don't look like yours, but whose evenings do.",
+        line: "ways.out.surpriseLine",
       },
     ],
   },
 ];
 
 function Features({ way }: { way: Way }) {
+  const t = useTranslate();
+
   return (
     <>
-      <p className="max-w-2xl text-white/60">{way.blurb}</p>
+      <p className="max-w-2xl text-white/60">{t(way.blurb)}</p>
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {way.features.map((feature) => (
           <li
@@ -110,10 +108,10 @@ function Features({ way }: { way: Way }) {
                 className="inline-block h-2 w-2 shrink-0 rounded-full"
                 style={{ backgroundColor: feature.colour }}
               />
-              {feature.name}
+              {t(feature.name)}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-white/60">
-              {feature.line}
+              {t(feature.line)}
             </p>
           </li>
         ))}
@@ -123,6 +121,7 @@ function Features({ way }: { way: Way }) {
 }
 
 export function WaysInTabs() {
+  const t = useTranslate();
   const [active, setActive] = useState(0);
   const base = useId();
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -153,7 +152,7 @@ export function WaysInTabs() {
       <div className="hidden sm:block">
         <div
           role="tablist"
-          aria-label="Ways into Bunchy"
+          aria-label={t("ways.label", { brand: brand.name })}
           onKeyDown={onKeyDown}
           className="flex flex-wrap gap-2 border-b border-white/10 pb-px"
         >
@@ -180,7 +179,7 @@ export function WaysInTabs() {
                     : "border-transparent text-white/50 hover:text-white/80"
                 }`}
               >
-                {way.intent}
+                {t(way.intent)}
               </button>
             );
           })}
@@ -219,7 +218,7 @@ export function WaysInTabs() {
             className="rounded-2xl bg-white/[0.04] ring-1 ring-white/10 [&[open]>summary>span:last-child]:rotate-45"
           >
             <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 font-semibold marker:content-['']">
-              {way.intent}
+              {t(way.intent)}
               <span
                 aria-hidden
                 className="text-xl leading-none text-white/40 transition-transform duration-200"

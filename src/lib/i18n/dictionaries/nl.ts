@@ -57,6 +57,8 @@ export const nl: Dictionary = {
   },
 
   brand: {
+    subtitle:
+      "Bunchy vindt een handvol mensen die met dezelfde dingen bezig zijn als jij, en vrij zijn wanneer jij vrij bent.",
     tagline: "Vind je bunch.",
   },
 
@@ -325,6 +327,337 @@ export const nl: Dictionary = {
     pickMore: {
       one: "Kies er nog 1",
       other: "Kies er nog {count}",
+    },
+  },
+
+  siteLinks: {
+    about: "Over Bunchy",
+    safety: "Veiligheid",
+    volunteer: "Vrijwilliger worden",
+    privacy: "Privacy",
+    terms: "Voorwaarden",
+    changelog: "Wijzigingen",
+    home: "Start",
+    discord: "Discord",
+    feedback: "Feedback",
+  },
+
+  upFor: {
+    want: "WAAR HEB JE ZIN IN?",
+    where: "WAAR",
+    when: "WANNEER",
+    submit: "Vind mijn bunch",
+    note: "Je gaat naar de registratie met dit al ingevuld.",
+    activities: {
+      gaming: "🎮 Gamen",
+      watch: "🎬 Iets kijken",
+      food: "🍜 Eten",
+      music: "🎧 Muziek",
+      "hang-out": "💬 Rondhangen",
+      create: "🎨 Iets maken",
+      study: "📚 Studeren",
+      "co-work": "💻 Samen werken",
+      sports: "🏀 Sport",
+      outdoors: "🥾 Buiten",
+      "board-games": "🎲 Gezelschapsspelen",
+      surprise: "🤷 Verras me",
+    },
+    places: {
+      online: "Online",
+      "in-person": "In het echt",
+      either: "Maakt niet uit",
+    },
+    times: {
+      now: "Nu",
+      tonight: "Vanavond",
+      weekend: "Dit weekend",
+      sometime: "Ooit",
+    },
+  },
+
+  landing: {
+    signIn: "Aanmelden",
+    join: "Word lid van {brand}",
+    badge: "Geen feed. Geen volgers. Gewoon mensen.",
+    headlineBefore: "Vrienden maken als volwassene is",
+    headlineEmphasis: "absurd moeilijk.",
+    headlineAfter: "Dat hoeft niet.",
+    lead: "Zeg wat je wil doen. Wij vinden jouw mensen.",
+    body: "Vanavond gamen, zaterdag een film, volgende week koffie. {brand} vindt mensen die met dezelfde dingen bezig zijn en vrij zijn wanneer jij vrij bent:",
+    online: "online",
+    nearby: "in de buurt",
+    orBoth: ", of allebei.",
+    findMyBunch: "Vind mijn bunch",
+    surpriseMe: "Verras me",
+    alreadyKnow: "Weet je al wat je zoekt?",
+    exploreBunches: "Bekijk de bunches",
+
+    problemEyebrow: "HET PROBLEEM",
+    problemTitle:
+      "Je hebt geen extra volgers nodig. Je hebt vier mensen nodig die in de groepschat antwoorden.",
+    everywhereElse: "OVERAL ELDERS",
+    followers: "1.284 volgers",
+    likes: "17 likes",
+    comments: "3 reacties",
+    stillNobody: "En nog altijd niemand om mee weg te gaan.",
+    onBunchy: "OP {brand}",
+    tagGaming: "🎮 Gamen",
+    tagFood: "🍜 Eten",
+    tagHiking: "🥾 Wandelen",
+    onlineTag: "ONLINE",
+    quoteAsk: "“Iemand zin in co-op?”",
+    quoteYep: "“Ja, 21u.”",
+    goingSaturday: "Wij gaan zaterdag.",
+    problemClosing:
+      "Een publiek is geen sociaal leven. Het getal dat telt, is het getal dat je vanavond kan sms’en.",
+
+    boardTitle: "Dit loopt vol in plaats van een feed.",
+    boardBody:
+      "Drie echte avonden, met de mensen die al meegaan. Niets eronder, en er komt niets bij terwijl je leest.",
+
+    momentEyebrow: "HET BUNCH-MOMENT",
+    momentTitle: "Dit is het hele product, in één beweging.",
+    momentBody:
+      "Het matchen kijkt naar interesses, doelen, afstand en wanneer je vrij bent en stopt dan. Er is geen feed om daarna in weg te zakken.",
+
+    stagesEyebrow: "HOE {brand} WERKT",
+    stagesTitle: "Vijf stappen, en scrollen is er geen van.",
+    stagesClosing:
+      "De meeste sociale producten zijn gebouwd om je bij stap één te houden. {brand} is gebouwd om je bij stap vijf te krijgen en je daarna met rust te laten.",
+    stages: {
+      discover: {
+        name: "Ontdekken",
+        body: "Mensen, bunches en activiteiten, online of in de buurt, elk met een gewone zin erbij waarom het getoond wordt.",
+      },
+      match: {
+        name: "Matchen",
+        body: "Acht gewogen signalen, geen doorsnede van labels. Ook de dingen waar je nieuwsgierig naar bent maar nog nooit deed.",
+      },
+      bunch: {
+        name: "Bunch",
+        body: "Vier tot zes mensen komen samen. Klein genoeg dat iedereen aan het woord komt.",
+      },
+      plan: {
+        name: "Plannen",
+        body: "Iemand stelt donderdag voor. De bunch spreekt iets echts af.",
+      },
+      together: {
+        name: "Samen",
+        body: "Donderdag een voicekanaal, zaterdag een tafel. Allebei tellen ze. Dit is de enige stap die telt.",
+      },
+    },
+
+    waysEyebrow: "WAT JE HIER ECHT KAN DOEN",
+    waysTitle: "Drie manieren binnen, afhankelijk van waarvoor je kwam.",
+    waysBody:
+      "Zeven functies, gegroepeerd naar de reden waarom je de app opende in plaats van naar hoe ze heten.",
+
+    plansEyebrow: "ONLINE · IN HET ECHT · ALLEBEI",
+    plansTitle: "Een voicekanaal telt. Een tafel ook. Allebei ook.",
+    plansBody:
+      "{brand} probeert je niet van je scherm weg te krijgen, en probeert je er ook niet aan vast te houden. Dit zijn de vormen die plannen van bunches aannemen. Echte vervangen ze, met toestemming, de dag dat er echte te tonen zijn.",
+    plansTagOnline: "Online",
+    plansTagInPerson: "In het echt",
+    plans: {
+      coop: {
+        title: "Co-opavond, zes gaan mee",
+        detail: "Een bunch die in zijn eigen voicekanaal leeft en het daar goed vindt. Geen plan om af te spreken, en dat hoeft ook niet.",
+      },
+      focus: {
+        title: "Focussessie, dinsdag 9u",
+        detail: "Vier mensen die alleen werken, samen alleen aan het werk. Camera mag uit.",
+      },
+      watch: {
+        title: "Kijkavond, 20u",
+        detail: "Dezelfde film, zes plekken, één chat. Er praat altijd iemand door het einde heen.",
+      },
+      coffee: {
+        title: "Koffie op zaterdag, zonder agenda",
+        detail: "De eerste, lichte kennismaking waar veel bunches mee beginnen.",
+      },
+      walk: {
+        title: "Zondagse wandeling, wie vrij is",
+        detail: "Beschikbaarheid is hier een echt veld, dus “wie vrij is” is een zoekopdracht en geen gok in een groepschat.",
+      },
+      boardGames: {
+        title: "Gezelschapsspelen, aan tafel of online",
+        detail: "Dezelfde bunch, de ene week rond een tafel en de volgende rond een server. Daar is niets aan ingeleverd.",
+      },
+    },
+    plansBecome: "En soms wordt het ene het andere.",
+    plansBecomeBody:
+      "Een gamebunch speelt twee maanden lang elke donderdag, en op een week vraagt iemand of er zin is in pizza. Dat is een goede afloop. Twee jaar elke donderdag spelen en het nooit vragen, is er ook een. {brand} zal je nooit naar de eerste duwen. De groep beslist, en allebei zijn ze het product dat werkt.",
+
+    recurringEyebrow: "VASTE BUNCHES",
+    recurringTitle: "Vind mensen die je opnieuw wil zien.",
+    recurringBody:
+      "Het moeilijke was nooit die ene goede avond. Het is de tweede, en de achtste. Een bunch is gemaakt om door te gaan: een vaste avond, dezelfde mensen, geen voorstelrondjes meer.",
+    recurringOne: "Elke donderdag gamen",
+    recurringTwo: "Filmavond op vrijdag",
+    recurringThree: "Focussessies in de week",
+    recurringFour: "Zondagse wandelingen",
+    recurringFive: "Maandelijks gezelschapsspelen",
+    recurringSix: "Anime op zondag",
+
+    faqTitle: "Voor je je aanmeldt.",
+    faqDatingQ: "Is dit een datingapp?",
+    faqDatingA:
+      "Nee, en ook geen datingapp met andere labels erop. Geen swipen, geen veld voor romantische bedoelingen, niets dat mensen op uiterlijk rangschikt. Het is voor vriendschap.",
+    faqFreeQ: "Is het echt gratis?",
+    faqFreeA: "Ja. Geen proefperiode, geen kaart, geen betalende versie die de nuttige helft gijzelt.",
+    faqProfileQ: "Wie kan mijn profiel zien?",
+    faqProfileA:
+      "Alleen aangemelde leden, nooit zoekmachines, nooit het open internet. Je locatie wordt bewaard als een ruwe streek, nooit als een adres.",
+    faqEmptyQ: "Wat als er nog niemand in mijn buurt is?",
+    faqEmptyA:
+      "Dan zegt Ontdekken dat gewoon, met het aantal mensen in de buurt in plaats van een lege pagina. Online bunches werken vanaf dag één op eender welke afstand.",
+
+    closingOne: "Vind je mensen.",
+    closingTwo: "Doe samen iets.",
+    closingSubtitle: "Online. In het echt. Of allebei.",
+    closingBody:
+      "Drie minuten om te zeggen waar je mee bezig bent en wanneer je vrij bent. De volgende stap is een echte avond met echte mensen.",
+    closingNote: "Gratis, 16+, en je wist alles met twee klikken.",
+  },
+
+  antiFeed: {
+    free: "Donderdagavond vrij",
+    findMe: "Zoek een bunch voor me",
+    matchFound: "Match gevonden",
+    thursdayCoffee: "Koffie op donderdag",
+    going: "4 gaan mee",
+    allSet: "Alles is geregeld. Sluit de app en geniet van je donderdag.",
+  },
+
+  cluster: {
+    people: "6 mensen",
+    disclaimer: "Een voorbeeld van een bunch. {brand} is nog niet gelanceerd, dit zijn geen echte mensen.",
+    gamingTonight: "Vanavond gamen",
+    coffeeSaturday: "Koffie op zaterdag",
+    coopNight: "Co-opavond",
+  },
+
+  moment: {
+    alone: "in je eentje",
+    searching: "jouw mensen zoeken…",
+    found: "Bunch gevonden",
+    plan: "Donderdag, 20u",
+    tagGaming: "Gamen",
+    tagHiking: "Wandelen",
+    tagFood: "Eten",
+    tagFilms: "Films",
+    you: "Jij",
+    boardGames: "Gezelschapsspelen bij Tom",
+    going: "5 gaan mee · donderdag",
+    again: "Opnieuw",
+    findABunch: "Vind een bunch",
+  },
+
+  happeningNow: {
+    eyebrow: "WAT ER NU GEBEURT",
+    title: "Dit is het bord. Het loopt vol naarmate er mensen bijkomen.",
+    body: "{brand} is nog niet gelanceerd, dus er is hier nog niets echts te tonen. En we tonen liever een leeg bord dan dat we een druk bord verzinnen. Elke kaart hieronder is een voorbeeld van hoe dit eruitziet zodra er mensen op zitten.",
+    diary: {
+      one: "{count} persoon heeft iets in de agenda staan.",
+      other: "{count} mensen hebben iets in de agenda staan.",
+    },
+    either: "allebei",
+    whenTonight: "Vanavond",
+    whenEvening: "20u",
+    whenNow: "Nu",
+    whenSaturday: "Zaterdag",
+    whenSunday: "Zondag",
+    whenThisWeek: "Deze week",
+    example: "VOORBEELD",
+    online: "online",
+    inPerson: "in het echt",
+    peopleGoing: "mensen gaan mee",
+    lineGaming: "4 mensen zoeken een gamebunch",
+    lineWatch: "6 mensen willen samen iets kijken",
+    lineCowork: "3 mensen willen samen werken",
+    lineCoffee: "4 mensen willen koffie",
+    lineHiking: "5 mensen willen gaan wandelen",
+    lineBoardGames: "6 mensen hebben zin in gezelschapsspelen",
+  },
+
+  moderation: {
+    title: "Actief gemodereerd door echte mensen.",
+    body: "Mensen van het internet ontmoeten vraagt vertrouwen. {brand} rekent niet op algoritmes om de gemeenschap veilig te houden. We worden actief gemodereerd door een toegewijd team van vrijwilligers. Geen ruimte voor creeps, intimidatie of kwade trouw. Wel voor een goede sfeer en echte plannen.",
+    link: "Wat een moderator wel en niet kan doen",
+    linkAfter: ", volledig uitgeschreven. Je kan je kandidaat stellen.",
+  },
+
+  difference: {
+    eyebrow: "HET VERSCHIL",
+    title: "Dezelfde zaterdag, op twee verschillende producten.",
+    elsewhere: "Overal elders",
+    handle: "iemand_die_je_ooit_zag",
+    stats: "1.284 volgers · 312 volgend",
+    follow: "Volgen",
+    postOne: "17 likes · 4 reacties · 2u",
+    postTwo: "9 likes · 1 reactie · 3u",
+    elsewhereClosing:
+      "Je hebt elf minuten gescrold. Je weet wat veertig mensen zaterdag deden. Geen van hen weet dat jij vrij was.",
+    here: "Op {brand}",
+    hiking: "Wandelen",
+    goingSaturday: "Wij gaan zaterdag.",
+    going: "4 gaan mee",
+    wholeScreen: "Dat is het hele scherm. Er staat niets onder.",
+    hereClosing:
+      "Jij zei dat je vrij was. Vier mensen die graag wandelen zeiden hetzelfde. Zaterdag bestaat nu.",
+  },
+
+  ways: {
+    label: "Manieren om in {brand} te stappen",
+    know: {
+      intent: "Ik weet wat ik wil doen",
+      blurb: "Je hebt het idee al. Zet een tijdstip en een activiteit, en laat de app het zoekwerk doen.",
+      startName: "Start een bunch",
+      startLine: "Zeg wat je graag zou doen. Wij vinden mensen die er zin in hebben. Geen formulier vooraf.",
+      plansName: "Plannen",
+      plansLine: "Maak van “we zouden eens iets moeten doen” een datum, een plek en een aantal dat komt.",
+    },
+    happening: {
+      intent: "Toon me wat er gebeurt",
+      blurb: "Kijk eerst eens rond. Ruwe streken bij jou in de buurt, of vanavond een voicekanaal, zonder je ergens toe te verbinden.",
+      discoverName: "Ontdekken",
+      discoverLine: "Mensen, bunches en activiteiten, gerangschikt op hoe goed ze echt passen, en eindig, dus het houdt op.",
+      radarName: "Radar",
+      radarLine: "Bunches en activiteiten in je omgeving. Streken, nooit adressen.",
+    },
+    out: {
+      intent: "Krijg me het huis uit",
+      blurb: "Niet rondkijken en niet typen. Vijf tikken en je hebt iets te doen vanavond.",
+      doName: "Doe iets",
+      doLine: "Zeg wat je hebt (geld, tijd, energie) en krijg er een avond voor terug. Vijf tikken, geen typwerk.",
+      surpriseName: "Verras me",
+      surpriseLine: "Het tegendeel van een aanbeveling: iemand wiens interesses niet op de jouwe lijken, maar wiens avonden dat wel doen.",
+    },
+  },
+
+  pebbles: {
+    gamingTag: "Gamen",
+    gamingTitle: "Co-opavond, iemand anders kiest",
+    gamingWhen: "Donderdag, 20u",
+    coffeeTag: "Koffie",
+    coffeeTitle: "Zaterdagochtend, niets gepland erna",
+    coffeeWhen: "Zaterdag, 10.30u",
+    walkingTag: "Wandelen",
+    walkingTitle: "Rustig, we stoppen voor frietjes",
+    walkingWhen: "Zondag, 11u",
+  },
+
+  signup: {
+    intentNote: "We pikken dit op zodra je binnen bent. Je kan het altijd aanpassen.",
+  },
+  counts: {
+    going: {
+      one: "{count} gaat mee",
+      other: "{count} gaan mee",
+    },
+    free: {
+      one: "{count} vrij",
+      other: "{count} vrij",
     },
   },
 };

@@ -58,6 +58,8 @@ export const fr: Dictionary = {
   },
 
   brand: {
+    subtitle:
+      "Bunchy te trouve une poignée de gens qui aiment les mêmes choses que toi, et qui sont libres quand tu l’es.",
     tagline: "Trouve ton bunch.",
   },
 
@@ -329,6 +331,337 @@ export const fr: Dictionary = {
     pickMore: {
       one: "Choisis-en encore 1",
       other: "Choisis-en encore {count}",
+    },
+  },
+
+  siteLinks: {
+    about: "À propos",
+    safety: "Sécurité",
+    volunteer: "Devenir bénévole",
+    privacy: "Confidentialité",
+    terms: "Conditions",
+    changelog: "Journal des modifications",
+    home: "Accueil",
+    discord: "Discord",
+    feedback: "Retour",
+  },
+
+  upFor: {
+    want: "TU AS ENVIE DE QUOI ?",
+    where: "OÙ",
+    when: "QUAND",
+    submit: "Trouver mon bunch",
+    note: "Tu arrives à l’inscription avec tout ça déjà rempli.",
+    activities: {
+      gaming: "🎮 Jouer",
+      watch: "🎬 Regarder quelque chose",
+      food: "🍜 Manger",
+      music: "🎧 Musique",
+      "hang-out": "💬 Traîner",
+      create: "🎨 Créer quelque chose",
+      study: "📚 Étudier",
+      "co-work": "💻 Travailler ensemble",
+      sports: "🏀 Sport",
+      outdoors: "🥾 Dehors",
+      "board-games": "🎲 Jeux de société",
+      surprise: "🤷 Surprends-moi",
+    },
+    places: {
+      online: "En ligne",
+      "in-person": "En vrai",
+      either: "Peu importe",
+    },
+    times: {
+      now: "Maintenant",
+      tonight: "Ce soir",
+      weekend: "Ce week-end",
+      sometime: "Un de ces jours",
+    },
+  },
+
+  landing: {
+    signIn: "Se connecter",
+    join: "Rejoindre {brand}",
+    badge: "Pas de fil. Pas d’abonnés. Juste des gens.",
+    headlineBefore: "Se faire des amis à l’âge adulte, c’est",
+    headlineEmphasis: "absurdement difficile.",
+    headlineAfter: "Ça ne devrait pas.",
+    lead: "Dis-nous ce que tu as envie de faire. On trouve tes gens.",
+    body: "Une partie ce soir, un film samedi, un café la semaine prochaine. {brand} trouve des gens qui aiment les mêmes choses et qui sont libres quand tu l’es :",
+    online: "en ligne",
+    nearby: "près de chez toi",
+    orBoth: ", ou les deux.",
+    findMyBunch: "Trouver mon bunch",
+    surpriseMe: "Surprends-moi",
+    alreadyKnow: "Tu sais déjà ce que tu cherches ?",
+    exploreBunches: "Voir les bunches",
+
+    problemEyebrow: "LE PROBLÈME",
+    problemTitle:
+      "Tu n’as pas besoin de plus d’abonnés. Tu as besoin de quatre personnes qui répondent dans la conversation de groupe.",
+    everywhereElse: "PARTOUT AILLEURS",
+    followers: "1 284 abonnés",
+    likes: "17 j’aime",
+    comments: "3 commentaires",
+    stillNobody: "Et toujours personne avec qui sortir.",
+    onBunchy: "SUR {brand}",
+    tagGaming: "🎮 Jeux",
+    tagFood: "🍜 Manger",
+    tagHiking: "🥾 Randonnée",
+    onlineTag: "EN LIGNE",
+    quoteAsk: "« Quelqu’un pour une coop ? »",
+    quoteYep: "« Oui, 21h. »",
+    goingSaturday: "On y va samedi.",
+    problemClosing:
+      "Une audience n’est pas une vie sociale. Le nombre qui compte, c’est celui que tu pourrais écrire ce soir.",
+
+    boardTitle: "Voilà ce qui se remplit, à la place d’un fil.",
+    boardBody:
+      "Trois vraies soirées, avec les gens qui y vont déjà. Rien en dessous, et rien qui arrive pendant que tu lis.",
+
+    momentEyebrow: "LE MOMENT BUNCH",
+    momentTitle: "C’est tout le produit, en un seul geste.",
+    momentBody:
+      "L’appariement regarde les intérêts, les objectifs, la distance et tes disponibilités, puis il s’arrête. Il n’y a pas de fil dans lequel tomber ensuite.",
+
+    stagesEyebrow: "COMMENT MARCHE {brand}",
+    stagesTitle: "Cinq étapes, et aucune ne consiste à faire défiler.",
+    stagesClosing:
+      "La plupart des produits sociaux sont faits pour te garder à l’étape un. {brand} est fait pour t’amener à l’étape cinq, puis te laisser tranquille.",
+    stages: {
+      discover: {
+        name: "Découvrir",
+        body: "Des gens, des bunches et des activités, en ligne ou près de chez toi, chacun avec une phrase claire expliquant pourquoi il apparaît.",
+      },
+      match: {
+        name: "Apparier",
+        body: "Huit signaux pondérés, pas une intersection d’étiquettes. Y compris ce qui t’intrigue sans que tu l’aies déjà fait.",
+      },
+      bunch: {
+        name: "Bunch",
+        body: "Quatre à six personnes se retrouvent. Assez peu pour que chacun parle.",
+      },
+      plan: {
+        name: "Planifier",
+        body: "Quelqu’un propose jeudi. Le bunch se met d’accord sur quelque chose de concret.",
+      },
+      together: {
+        name: "Ensemble",
+        body: "Un salon vocal le jeudi, une table le samedi. Les deux comptent. C’est la seule étape qui compte.",
+      },
+    },
+
+    waysEyebrow: "CE QUE TU PEUX VRAIMENT FAIRE",
+    waysTitle: "Trois façons d’entrer, selon ce pour quoi tu es venu.",
+    waysBody:
+      "Sept fonctions, regroupées selon la raison pour laquelle tu as ouvert l’appli plutôt que selon leur nom.",
+
+    plansEyebrow: "EN LIGNE · EN VRAI · LES DEUX",
+    plansTitle: "Un salon vocal compte. Une table aussi. Les deux aussi.",
+    plansBody:
+      "{brand} n’essaie pas de t’éloigner de ton écran, et n’essaie pas non plus de t’y garder. Voici les formes que prennent les plans des bunches. Les vrais les remplaceront, avec autorisation, le jour où il y en aura à montrer.",
+    plansTagOnline: "En ligne",
+    plansTagInPerson: "En vrai",
+    plans: {
+      coop: {
+        title: "Soirée coop, six participants",
+        detail: "Un bunch qui vit dans son propre salon vocal et s’y plaît. Aucun projet de se voir, et aucun besoin.",
+      },
+      focus: {
+        title: "Session de concentration, mardi 9h",
+        detail: "Quatre personnes qui travaillent seules, seules ensemble. Caméra facultative.",
+      },
+      watch: {
+        title: "Séance à plusieurs, 20h",
+        detail: "Le même film, six endroits, une seule conversation. Il y en a toujours un qui parle pendant la fin.",
+      },
+      coffee: {
+        title: "Café du samedi, sans programme",
+        detail: "La première rencontre sans enjeu par laquelle beaucoup de bunches commencent.",
+      },
+      walk: {
+        title: "Balade du dimanche, qui est libre",
+        detail: "La disponibilité est un vrai champ ici, donc « qui est libre » est une recherche et non une supposition dans une conversation de groupe.",
+      },
+      boardGames: {
+        title: "Jeux de société, autour d’une table ou d’un serveur",
+        detail: "Le même bunch, une semaine autour d’une table et la suivante autour d’un serveur. Il n’y a là aucun compromis.",
+      },
+    },
+    plansBecome: "Et parfois l’un devient l’autre.",
+    plansBecomeBody:
+      "Un bunch de jeu joue tous les jeudis pendant deux mois, et une semaine quelqu’un demande si ça dit à quelqu’un d’aller manger une pizza. C’est une bonne fin. Jouer tous les jeudis pendant deux ans sans jamais le demander en est une aussi. {brand} ne te poussera jamais vers la première. Le groupe décide, et les deux fins sont le produit qui fonctionne.",
+
+    recurringEyebrow: "DES BUNCHES QUI DURENT",
+    recurringTitle: "Trouve des gens que tu auras envie de revoir.",
+    recurringBody:
+      "Le difficile n’a jamais été la première bonne soirée. C’est la deuxième, et la huitième. Un bunch est fait pour continuer : un rendez-vous fixe, les mêmes gens, plus de présentations.",
+    recurringOne: "Jouer tous les jeudis",
+    recurringTwo: "Soirée film le vendredi",
+    recurringThree: "Sessions de travail en semaine",
+    recurringFour: "Balades du dimanche",
+    recurringFive: "Jeux de société une fois par mois",
+    recurringSix: "Anime le dimanche",
+
+    faqTitle: "Avant de t’inscrire.",
+    faqDatingQ: "C’est une appli de rencontres ?",
+    faqDatingA:
+      "Non, et ce n’en est pas une avec d’autres étiquettes non plus. Pas de swipe, pas de champ d’intention amoureuse, rien qui classe les gens sur leur physique. C’est pour se faire des amis.",
+    faqFreeQ: "C’est vraiment gratuit ?",
+    faqFreeA: "Oui. Pas d’essai, pas de carte, pas de version payante qui retient la moitié utile en otage.",
+    faqProfileQ: "Qui peut voir mon profil ?",
+    faqProfileA:
+      "Seulement les membres connectés, jamais les moteurs de recherche, jamais l’internet ouvert. Ta localisation est gardée comme une zone approximative, jamais comme une adresse.",
+    faqEmptyQ: "Et si personne près de chez moi ne s’est encore inscrit ?",
+    faqEmptyA:
+      "Alors Découvrir te le dit franchement, avec le nombre de gens dans les environs plutôt qu’une page vide. Les bunches en ligne fonctionnent à n’importe quelle distance dès le premier jour.",
+
+    closingOne: "Trouve tes gens.",
+    closingTwo: "Faites quelque chose ensemble.",
+    closingSubtitle: "En ligne. En vrai. Ou les deux.",
+    closingBody:
+      "Trois minutes pour dire ce qui te plaît et quand tu es libre. L’étape suivante, c’est une vraie soirée avec de vraies personnes.",
+    closingNote: "Gratuit, 16 ans et plus, et tu peux tout supprimer en deux clics.",
+  },
+
+  antiFeed: {
+    free: "Jeudi soir de libre",
+    findMe: "Trouve-moi un bunch",
+    matchFound: "Correspondance trouvée",
+    thursdayCoffee: "Café du jeudi",
+    going: "4 participants",
+    allSet: "Tout est réglé. Ferme l’appli et profite de ton jeudi.",
+  },
+
+  cluster: {
+    people: "6 personnes",
+    disclaimer: "Un exemple de bunch. {brand} n’a pas encore ouvert, ce ne sont pas de vraies personnes.",
+    gamingTonight: "Jouer ce soir",
+    coffeeSaturday: "Café samedi",
+    coopNight: "Soirée coop",
+  },
+
+  moment: {
+    alone: "tout seul",
+    searching: "on cherche tes gens…",
+    found: "Bunch trouvé",
+    plan: "Jeudi, 20h",
+    tagGaming: "Jeux",
+    tagHiking: "Randonnée",
+    tagFood: "Manger",
+    tagFilms: "Films",
+    you: "Toi",
+    boardGames: "Jeux de société chez Tom",
+    going: "5 participants · jeudi",
+    again: "Encore",
+    findABunch: "Trouver un bunch",
+  },
+
+  happeningNow: {
+    eyebrow: "CE QUI SE PASSE MAINTENANT",
+    title: "Voici le tableau. Il se remplit à mesure que les gens arrivent.",
+    body: "{brand} n’a pas encore ouvert, il n’y a donc rien de réel à montrer ici. Et on préfère te montrer un tableau vide plutôt que d’en inventer un bien rempli. Chaque carte ci-dessous est un exemple de ce à quoi ça ressemble une fois que les gens sont là.",
+    diary: {
+      one: "{count} personne a quelque chose de prévu.",
+      other: "{count} personnes ont quelque chose de prévu.",
+    },
+    either: "les deux",
+    whenTonight: "Ce soir",
+    whenEvening: "20h",
+    whenNow: "Maintenant",
+    whenSaturday: "Samedi",
+    whenSunday: "Dimanche",
+    whenThisWeek: "Cette semaine",
+    example: "EXEMPLE",
+    online: "en ligne",
+    inPerson: "en vrai",
+    peopleGoing: "participants",
+    lineGaming: "4 personnes cherchent un bunch de jeu",
+    lineWatch: "6 personnes veulent regarder quelque chose",
+    lineCowork: "3 personnes veulent une session de travail",
+    lineCoffee: "4 personnes veulent un café",
+    lineHiking: "5 personnes veulent aller marcher",
+    lineBoardGames: "6 personnes sont partantes pour des jeux de société",
+  },
+
+  moderation: {
+    title: "Modéré activement par de vraies personnes.",
+    body: "Rencontrer des gens rencontrés sur internet demande de la confiance. {brand} ne compte pas sur des algorithmes pour garder la communauté saine. Nous sommes modérés activement par une équipe de bénévoles. Aucune tolérance pour les comportements malsains, le harcèlement ou la mauvaise foi. Juste une bonne ambiance et de vrais plans.",
+    link: "Ce qu’un modérateur peut et ne peut pas faire",
+    linkAfter: ", écrit noir sur blanc. Les candidatures sont ouvertes.",
+  },
+
+  difference: {
+    eyebrow: "LA DIFFÉRENCE",
+    title: "Le même samedi, sur deux produits différents.",
+    elsewhere: "Partout ailleurs",
+    handle: "quelqu_un_croise_une_fois",
+    stats: "1 284 abonnés · 312 abonnements",
+    follow: "Suivre",
+    postOne: "17 j’aime · 4 commentaires · 2 h",
+    postTwo: "9 j’aime · 1 commentaire · 3 h",
+    elsewhereClosing:
+      "Tu as fait défiler pendant onze minutes. Tu sais ce que quarante personnes ont fait samedi. Aucune ne sait que tu étais libre.",
+    here: "Sur {brand}",
+    hiking: "Randonnée",
+    goingSaturday: "On y va samedi.",
+    going: "4 participants",
+    wholeScreen: "C’est tout l’écran. Il n’y a rien en dessous.",
+    hereClosing:
+      "Tu as dit que tu étais libre. Quatre personnes qui aiment marcher ont dit la même chose. Samedi existe maintenant.",
+  },
+
+  ways: {
+    label: "Façons d’entrer dans {brand}",
+    know: {
+      intent: "Je sais quoi faire",
+      blurb: "Tu as déjà l’idée. Choisis un moment et une activité, et laisse l’appli chercher.",
+      startName: "Créer un bunch",
+      startLine: "Dis ce que tu aimerais faire. On trouve des gens que ça pourrait tenter. Aucun formulaire d’abord.",
+      plansName: "Plans",
+      plansLine: "Transforme « on devrait faire quelque chose » en une date, un lieu et un nombre de participants.",
+    },
+    happening: {
+      intent: "Montre-moi ce qui se passe",
+      blurb: "Regarde d’abord. Des zones approximatives près de chez toi, ou un salon vocal ce soir, sans t’engager à rien.",
+      discoverName: "Découvrir",
+      discoverLine: "Des gens, des bunches et des activités classés selon ce qui te correspond vraiment, et en nombre fini, donc ça se termine.",
+      radarName: "Radar",
+      radarLine: "Les bunches et les activités autour de toi. Des zones, jamais des adresses.",
+    },
+    out: {
+      intent: "Fais-moi sortir de chez moi",
+      blurb: "Rien à parcourir et rien à taper. Cinq tapes et tu as quelque chose à faire ce soir.",
+      doName: "Faire quelque chose",
+      doLine: "Dis ce que tu as (argent, temps, énergie) et récupère une soirée. Cinq tapes, rien à taper.",
+      surpriseName: "Surprends-moi",
+      surpriseLine: "L’inverse d’une recommandation : quelqu’un dont les intérêts ne ressemblent pas aux tiens, mais dont les soirées si.",
+    },
+  },
+
+  pebbles: {
+    gamingTag: "Jeux",
+    gamingTitle: "Soirée coop, quelqu’un d’autre choisit",
+    gamingWhen: "Jeudi, 20h",
+    coffeeTag: "Café",
+    coffeeTitle: "Samedi matin, rien de prévu après",
+    coffeeWhen: "Samedi, 10h30",
+    walkingTag: "Marche",
+    walkingTitle: "Tranquille, on s’arrête pour des frites",
+    walkingWhen: "Dimanche, 11h",
+  },
+
+  signup: {
+    intentNote: "On reprend ça une fois que tu es entré. Tu peux le changer quand tu veux.",
+  },
+  counts: {
+    going: {
+      one: "{count} participant",
+      other: "{count} participants",
+    },
+    free: {
+      one: "{count} libre",
+      other: "{count} libres",
     },
   },
 };

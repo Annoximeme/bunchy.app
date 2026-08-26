@@ -4,7 +4,7 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { SignUpForm } from "@/components/auth-forms";
 import { resolveIntent } from "@/lib/up-for";
-import { localeHref } from "@/server/i18n";
+import { getTranslations, localeHref } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Join" };
 
@@ -32,6 +32,7 @@ export default async function SignUpPage({
   const one = (v: string | string[] | undefined) =>
     Array.isArray(v) ? v[0] : v;
 
+  const t = await getTranslations();
   const intent = resolveIntent({
     want: one(params.want),
     where: one(params.where),
@@ -43,14 +44,13 @@ export default async function SignUpPage({
       {intent && (
         <div className="mx-auto mb-6 max-w-md rounded-2xl border border-line bg-surface-sunken p-4">
           <p className="text-xs font-semibold tracking-widest text-muted">
-            WHAT YOU&rsquo;RE LOOKING FOR
+            {t("onboarding.goalsTitle").toUpperCase()}
           </p>
           <p className="mt-2 font-semibold text-ink">
-            {intent.want.label} · {intent.where.label} · {intent.when.label}
+            {t(intent.want.label)} · {t(intent.where.label)} · {t(intent.when.label)}
           </p>
           <p className="mt-1.5 text-sm text-muted">
-            We&rsquo;ll pick this up once you&rsquo;re in. You can change it any
-            time.
+            {t("signup.intentNote")}
           </p>
         </div>
       )}

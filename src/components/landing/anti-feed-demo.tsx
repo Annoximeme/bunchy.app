@@ -1,3 +1,5 @@
+import { getTranslations } from "@/server/i18n";
+
 /**
  * The manifesto, shown rather than claimed.
  *
@@ -16,7 +18,9 @@
  * copy already states, and a screen reader walking four cross-fading frames of
  * a fake interface would get noise instead of the argument.
  */
-export function AntiFeedDemo() {
+export async function AntiFeedDemo() {
+  const t = await getTranslations();
+
   return (
     <div
       aria-hidden
@@ -56,7 +60,7 @@ export function AntiFeedDemo() {
               style={{ animationName: "af-button" }}
             >
               <p className="text-center text-[11px] leading-snug text-white/45">
-                Free Thursday evening
+                {t("antiFeed.free")}
               </p>
               <span
                 className="af-stage rounded-full px-5 py-2.5 text-[12px] font-bold"
@@ -69,7 +73,7 @@ export function AntiFeedDemo() {
                   color: "var(--color-on-accent)",
                 }}
               >
-                Find me a bunch
+                {t("antiFeed.findMe")}
               </span>
             </div>
 
@@ -95,10 +99,10 @@ export function AntiFeedDemo() {
             >
               <div className="rounded-2xl bg-white/[0.07] p-3.5 ring-1 ring-white/10">
                 <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#55D6BE]">
-                  Match found
+                  {t("antiFeed.matchFound")}
                 </p>
                 <p className="mt-1.5 text-[13px] font-bold leading-tight text-white">
-                  Thursday Coffee
+                  {t("antiFeed.thursdayCoffee")}
                 </p>
                 <div className="mt-2.5 flex items-center gap-1.5">
                   {["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"].map((fill) => (
@@ -108,7 +112,9 @@ export function AntiFeedDemo() {
                       style={{ backgroundColor: fill }}
                     />
                   ))}
-                  <span className="ml-0.5 text-[10px] text-white/50">4 going</span>
+                  <span className="ml-0.5 text-[10px] text-white/50">
+                    {t("antiFeed.going")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -120,7 +126,7 @@ export function AntiFeedDemo() {
               style={{ animationName: "af-done" }}
             >
               <p className="text-balance text-center text-[12px] font-medium leading-relaxed text-white/70">
-                You&rsquo;re all set. Close the app and go enjoy your Thursday.
+                {t("antiFeed.allSet")}
               </p>
             </div>
           </div>

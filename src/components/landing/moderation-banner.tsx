@@ -1,4 +1,6 @@
 import { Link } from "@/components/link";
+import { brand } from "@/lib/brand";
+import { getTranslations } from "@/server/i18n";
 import { ShieldCheck } from "lucide-react";
 
 /**
@@ -19,7 +21,8 @@ import { ShieldCheck } from "lucide-react";
  * written up in full including the unglamorous parts, and a trust section that
  * cannot be verified is just more copy.
  */
-export function ModerationBanner() {
+export async function ModerationBanner() {
+  const t = await getTranslations();
   return (
     <section className="px-5 py-24">
       <div className="mx-auto max-w-4xl">
@@ -34,14 +37,10 @@ export function ModerationBanner() {
 
             <div className="min-w-0">
               <h2 className="text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">
-                Actively moderated by real humans.
+                {t("moderation.title")}
               </h2>
               <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-ink-soft">
-                Meeting people from the internet requires trust. Bunchy
-                doesn&rsquo;t rely on algorithms to keep the community safe. We
-                are actively moderated by a dedicated team of volunteer humans.
-                No tolerance for creeps, harassment, or bad faith behavior. Just
-                good vibes and real plans.
+                {t("moderation.body", { brand: brand.name })}
               </p>
 
               <p className="mt-6 text-sm text-muted">
@@ -49,9 +48,9 @@ export function ModerationBanner() {
                   href="/moderators"
                   className="font-semibold text-accent-ink underline underline-offset-2"
                 >
-                  What a moderator can and cannot do
+                  {t("moderation.link")}
                 </Link>
-                , written out in full. Applications are open.
+                {t("moderation.linkAfter")}
               </p>
             </div>
           </div>

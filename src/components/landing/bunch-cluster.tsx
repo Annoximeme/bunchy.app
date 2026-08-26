@@ -1,5 +1,7 @@
 import { Gamepad2, Coffee, Users } from "lucide-react";
 import { person } from "@/lib/example-people";
+import { brand } from "@/lib/brand";
+import { getTranslations } from "@/server/i18n";
 
 /**
  * The hero visual: separate people, drawn as a bunch.
@@ -43,7 +45,8 @@ const PEOPLE: Person[] = [
   { initial: "W", x: 17, y: 25, seconds: 6.5, delay: 1.5 },
 ].map((p) => ({ ...p, ...person(p.initial) }));
 
-export function BunchCluster() {
+export async function BunchCluster() {
+  const t = await getTranslations();
   return (
     <div className="w-full">
       <div className="relative mx-auto h-[330px] w-full max-w-[520px] sm:h-[520px]">
@@ -113,7 +116,7 @@ export function BunchCluster() {
             </span>
             {/* Not "nearby": half of what a bunch does never has a location. */}
             <span className="mt-0.5 text-[11px] font-medium text-white/75">
-              6 people
+              {t("cluster.people")}
             </span>
           </div>
         </div>
@@ -148,8 +151,8 @@ export function BunchCluster() {
           delay={0.4}
           tone="#FFC857"
           icon={<Gamepad2 size={18} aria-hidden />}
-          title="Gaming tonight"
-          detail="4 going"
+          title={t("cluster.gamingTonight")}
+          detail={t("counts.going", { count: 4 })}
           trailing={
             <span className="rounded-full bg-coral-primary/20 px-2.5 py-1 text-xs font-semibold text-coral-primary">
               92%
@@ -162,8 +165,8 @@ export function BunchCluster() {
           delay={1.1}
           tone="#55D6BE"
           icon={<Coffee size={18} aria-hidden />}
-          title="Coffee Saturday"
-          detail="3 free"
+          title={t("cluster.coffeeSaturday")}
+          detail={t("counts.free", { count: 3 })}
           trailing={
             <span className="size-2.5 rounded-full bg-mint-status shadow-[0_0_12px_var(--color-mint-status)]" />
           }
@@ -174,8 +177,8 @@ export function BunchCluster() {
           delay={0.8}
           tone="#7657FF"
           icon={<Users size={18} aria-hidden />}
-          title="Co-op Night"
-          detail="6 going"
+          title={t("cluster.coopNight")}
+          detail={t("counts.going", { count: 6 })}
         />
       </div>
 
@@ -188,8 +191,8 @@ export function BunchCluster() {
         <MobilePlan
           icon={<Gamepad2 size={16} aria-hidden />}
           tone="#FFC857"
-          title="Gaming tonight"
-          detail="4 going"
+          title={t("cluster.gamingTonight")}
+          detail={t("counts.going", { count: 4 })}
           trailing={
             <span className="rounded-full bg-coral-primary/20 px-2.5 py-1 text-xs font-semibold text-coral-primary">
               92%
@@ -199,8 +202,8 @@ export function BunchCluster() {
         <MobilePlan
           icon={<Coffee size={16} aria-hidden />}
           tone="#55D6BE"
-          title="Coffee Saturday"
-          detail="3 free"
+          title={t("cluster.coffeeSaturday")}
+          detail={t("counts.free", { count: 3 })}
           trailing={
             <span className="size-2.5 rounded-full bg-mint-status shadow-[0_0_12px_var(--color-mint-status)]" />
           }
@@ -208,8 +211,8 @@ export function BunchCluster() {
         <MobilePlan
           icon={<Users size={16} aria-hidden />}
           tone="#7657FF"
-          title="Co-op Night"
-          detail="6 going"
+          title={t("cluster.coopNight")}
+          detail={t("counts.going", { count: 6 })}
         />
       </div>
 
@@ -220,8 +223,7 @@ export function BunchCluster() {
         does not exist on the one page most people will only ever see.
       */}
       <p className="mt-6 text-center text-xs text-white/55">
-        An example bunch. Bunchy hasn&rsquo;t launched yet, these aren&rsquo;t
-        real people.
+        {t("cluster.disclaimer", { brand: brand.name })}
       </p>
     </div>
   );

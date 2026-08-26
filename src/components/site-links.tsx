@@ -1,6 +1,9 @@
 import { Link } from "@/components/link";
 import { brand } from "@/lib/brand";
 import { cn } from "@/components/ui";
+import { getTranslations } from "@/server/i18n";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import type { PhrasePath } from "@/lib/i18n/translate";
 
 /**
  * The pages that exist outside the product, in one list.
@@ -22,7 +25,13 @@ import { cn } from "@/components/ui";
 
 interface SiteLink {
   href: string;
-  label: string;
+  /**
+   * Where the label is, not the label.
+   *
+   * This list is defined at module scope and the language is only known once a
+   * request is being served, so what is stored is the phrase path.
+   */
+  label: PhrasePath<Dictionary>;
   /**
    * Leaves the site.
    *
@@ -36,22 +45,22 @@ interface SiteLink {
 }
 
 export const SITE_LINKS: readonly SiteLink[] = [
-  { href: "/about", label: "About" },
-  { href: "/safety", label: "Safety" },
-  { href: "/moderators", label: "Volunteer" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
+  { href: "/about", label: "siteLinks.about" },
+  { href: "/safety", label: "siteLinks.safety" },
+  { href: "/moderators", label: "siteLinks.volunteer" },
+  { href: "/privacy", label: "siteLinks.privacy" },
+  { href: "/terms", label: "siteLinks.terms" },
   // Next to the two documents it is the history of, which is the only place it
   // makes sense: on its own it reads as a product changelog, and beside them it
   // reads as what it is, the record of how those two have changed.
-  { href: "/changelog", label: "Changelog" },
+  { href: "/changelog", label: "siteLinks.changelog" },
   // Carries the flag, because `/` on its own bounces a signed-in member
   // straight back to Discover. Without it this link would look broken from
   // inside the product, which is the only place this footer renders.
-  { href: "/?home=1", label: "Home" },
+  { href: "/?home=1", label: "siteLinks.home" },
   // Last, and deliberately. It is the only entry that takes somebody off the
   // site, and the product's whole argument is that leaving is the point.
-  { href: brand.discordUrl, label: "Discord", external: true },
+  { href: brand.discordUrl, label: "siteLinks.discord", external: true },
 ] as const;
 
 /**
@@ -72,9 +81,11 @@ export const SITE_LINKS: readonly SiteLink[] = [
  * handle this file exists to complain about. Sending feedback needs an account
  * for a real reason: there is nowhere to put the reply otherwise.
  */
-const SIGNED_IN_LINKS: readonly SiteLink[] = [{ href: "/feedback", label: "Feedback" }];
+const SIGNED_IN_LINKS: readonly SiteLink[] = [
+  { href: "/feedback", label: "siteLinks.feedback" },
+];
 
-export function SiteFooter({
+export async function SiteFooter({
   className,
   signedIn = false,
 }: {
@@ -82,6 +93,7 @@ export function SiteFooter({
   signedIn?: boolean;
 }) {
   const links = signedIn ? [...SITE_LINKS, ...SIGNED_IN_LINKS] : SITE_LINKS;
+  const t = await getTranslations();
 
   return (
     <footer
@@ -92,9 +104,9 @@ export function SiteFooter({
     >
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-6">
         <p>
-          {brand.name}. {brand.tagline}
+          {brand.name}. {t("brand.tagline")}
         </p>
-        <nav aria-label="About Bunchy">
+        <nav aria-label={t("siteLinks.about")}>
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {links.map((link) => (
               <li key={link.href}>
@@ -105,14 +117,14 @@ export function SiteFooter({
                     rel="noopener noreferrer"
                     className="transition-colors hover:text-ink"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </a>
                 ) : (
                   <Link
                     href={link.href}
                     className="transition-colors hover:text-ink"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 )}
               </li>

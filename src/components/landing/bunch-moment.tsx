@@ -1,5 +1,9 @@
 "use client";
 
+import { useTranslate } from "@/components/link";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import type { PhrasePath } from "@/lib/i18n/translate";
+
 import { useEffect, useRef, useState } from "react";
 import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
 
@@ -25,22 +29,24 @@ import { Sparkles, RotateCcw, CalendarCheck } from "lucide-react";
  */
 
 const MATCHES = [
-  { initial: "M", colour: "#7657FF", x: -104, y: -58, tag: "Gaming" },
-  { initial: "E", colour: "#55D6BE", x: 104, y: -58, tag: "Hiking" },
-  { initial: "T", colour: "#FFC857", x: -104, y: 58, tag: "Food" },
-  { initial: "P", colour: "#FF5C6C", x: 104, y: 58, tag: "Films" },
-];
+  { initial: "M", colour: "#7657FF", x: -104, y: -58, tag: "moment.tagGaming" },
+  { initial: "E", colour: "#55D6BE", x: 104, y: -58, tag: "moment.tagHiking" },
+  { initial: "T", colour: "#FFC857", x: -104, y: 58, tag: "moment.tagFood" },
+  { initial: "P", colour: "#FF5C6C", x: 104, y: 58, tag: "moment.tagFilms" },
+] as const;
 
 type Stage = "alone" | "searching" | "found" | "plan";
 
-const CAPTIONS: Record<Stage, string> = {
-  alone: "on your own",
-  searching: "finding your people…",
-  found: "Bunch found",
-  plan: "Thursday, 8pm",
-};
+/** The caption under each stage, as phrase paths. */
+const CAPTIONS = {
+  alone: "moment.alone",
+  searching: "moment.searching",
+  found: "moment.found",
+  plan: "moment.plan",
+} as const satisfies Record<Stage, PhrasePath<Dictionary>>;
 
 export function BunchMoment() {
+  const t = useTranslate();
   const [stage, setStage] = useState<Stage>("alone");
   const timers = useRef<number[]>([]);
 
@@ -116,7 +122,7 @@ export function BunchMoment() {
               {match.initial}
             </span>
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
-              {match.tag}
+              {t(match.tag)}
             </span>
           </div>
         ))}
@@ -133,10 +139,10 @@ export function BunchMoment() {
               boxShadow: "0 18px 50px -18px rgba(255,92,108,0.9)",
             }}
           >
-            You
+            {t("moment.you")}
           </span>
           <span className="text-xs font-medium tracking-wide text-white/60">
-            {CAPTIONS[stage]}
+            {t(CAPTIONS[stage])}
           </span>
         </div>
 
@@ -156,9 +162,9 @@ export function BunchMoment() {
             <CalendarCheck size={18} aria-hidden />
           </span>
           <span className="text-sm font-semibold text-white">
-            Board games at Tom&rsquo;s
+            {t("moment.boardGames")}
             <span className="block text-xs font-medium text-white/60">
-              5 going · Thursday
+              {t("moment.going")}
             </span>
           </span>
         </div>
@@ -172,12 +178,12 @@ export function BunchMoment() {
         {stage === "plan" ? (
           <>
             <RotateCcw size={16} aria-hidden />
-            Again
+            {t("moment.again")}
           </>
         ) : (
           <>
             <Sparkles size={16} aria-hidden />
-            Find a bunch
+            {t("moment.findABunch")}
           </>
         )}
       </button>

@@ -16,12 +16,14 @@ import { brand } from "@/lib/brand";
 import { person } from "@/lib/example-people";
 import { BunchyLogo, BunchyMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { SITE_LINKS } from "@/components/site-links";
 import { BunchCluster } from "@/components/landing/bunch-cluster";
 import { BunchMoment } from "@/components/landing/bunch-moment";
 import { UpFor } from "@/components/landing/up-for";
 import { HappeningNow } from "@/components/landing/happening-now";
-import { localeHref } from "@/server/i18n";
+import { currentLocale, getTranslations, localeHref } from "@/server/i18n";
+import { LOCALE_TAGS, type Locale } from "@/lib/i18n/config";
 
 /**
  * The landing page.
@@ -57,7 +59,7 @@ const display = Plus_Jakarta_Sans({
  * The price is a real claim the page already makes out loud, so it is safe to
  * make it here as well.
  */
-function structuredData(origin: string) {
+function structuredData(origin: string, locale: Locale, description: string) {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -66,15 +68,15 @@ function structuredData(origin: string) {
         "@id": `${origin}/#website`,
         url: `${origin}/`,
         name: brand.name,
-        description: brand.subtitle,
-        inLanguage: "en",
+        description,
+        inLanguage: LOCALE_TAGS[locale],
       },
       {
         "@type": "WebApplication",
         "@id": `${origin}/#app`,
         name: brand.name,
         url: `${origin}/`,
-        description: brand.subtitle,
+        description,
         applicationCategory: "SocialNetworkingApplication",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript for some features.",
@@ -121,7 +123,13 @@ export default async function LandingPage({
   // Carries the CSP nonce: this app runs a nonce-based policy with no
   // `unsafe-inline`, and an unnonced inline script is refused outright.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  const jsonLd = structuredData(env().APP_URL.replace(/\/$/, ""));
+  const locale = await currentLocale();
+  const t = await getTranslations();
+  const jsonLd = structuredData(
+    env().APP_URL.replace(/\/$/, ""),
+    locale,
+    t("brand.subtitle"),
+  );
 
   return (
     <div className={`${display.className} min-h-dvh bg-band-deep text-white`}>
@@ -135,17 +143,21 @@ export default async function LandingPage({
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
           <BunchyLogo height={24} color="#FFFFFF" />
           <nav className="flex items-center gap-2">
+            {/* Before the two calls to action rather than in the footer. The
+                one visitor who needs it most is the one who has not read the
+                headline yet. */}
+            <LanguageSwitcher className="mr-1 text-white/70" compact />
             <Link
               href="/login"
               className="rounded-full px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:text-white"
             >
-              Sign in
+              {t("landing.signIn")}
             </Link>
             <Link
               href="/signup"
               className="rounded-full bg-coral-primary px-5 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
             >
-              Join {brand.name}
+              {t("landing.join", { brand: brand.name })}
             </Link>
           </nav>
         </div>
@@ -167,11 +179,11 @@ export default async function LandingPage({
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-mint-status/30 bg-mint-status/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-mint-status">
                 <span className="size-1.5 rounded-full bg-mint-status" />
-                No feed. No followers. Just people.
+                {t("landing.badge")}
               </span>
 
               <h1 className="mt-6 text-balance text-[2.75rem] font-extrabold leading-[1.03] tracking-tight sm:text-6xl">
-                Making friends as an adult is{" "}
+                {t("landing.headlineBefore")}{" "}
                 <span
                   style={{
                     background:
@@ -181,22 +193,25 @@ export default async function LandingPage({
                     color: "transparent",
                   }}
                 >
-                  absurdly hard.
+                  {t("landing.headlineEmphasis")}
                 </span>{" "}
-                It shouldn&rsquo;t be.
+                {t("landing.headlineAfter")}
               </h1>
 
               <p className="mt-6 max-w-lg text-xl font-semibold leading-snug text-white/90">
-                Tell us what you want to do. We&rsquo;ll find your people.
+                {t("landing.lead")}
               </p>
 
               <p className="mt-3 max-w-lg text-lg leading-relaxed text-white/65">
-                Gaming tonight, a film on Saturday, coffee next week.{" "}
-                {brand.name} finds people who are into the same things and free
-                when you are:{" "}
-                <span className="font-semibold text-mint-status">online</span>,{" "}
-                <span className="font-semibold text-yellow-fun">nearby</span>,
-                or both.
+                {t("landing.body", { brand: brand.name })}{" "}
+                <span className="font-semibold text-mint-status">
+                  {t("landing.online")}
+                </span>
+                ,{" "}
+                <span className="font-semibold text-yellow-fun">
+                  {t("landing.nearby")}
+                </span>
+                {t("landing.orBoth")}
               </p>
 
               <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -204,7 +219,7 @@ export default async function LandingPage({
                   href="/signup"
                   className="inline-flex items-center gap-2 rounded-full bg-coral-primary px-8 py-4 text-base font-bold tracking-wide text-[var(--color-on-accent)] shadow-[0_18px_40px_-18px_#FF5C6C] transition-transform duration-200 hover:scale-[1.04]"
                 >
-                  Find my bunch
+                  {t("landing.findMyBunch")}
                   <ArrowRight size={18} aria-hidden />
                 </Link>
                 <Link
@@ -212,17 +227,17 @@ export default async function LandingPage({
                   className="inline-flex items-center gap-2 rounded-full border border-purple-glow bg-transparent px-6 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-purple-glow/15 hover:shadow-[0_0_40px_-8px_#7657FF]"
                 >
                   <Sparkles size={18} aria-hidden />
-                  Surprise me
+                  {t("landing.surpriseMe")}
                 </Link>
               </div>
 
               <p className="mt-5 text-sm text-white/50">
-                Already know what you&rsquo;re looking for?{" "}
+                {t("landing.alreadyKnow")}{" "}
                 <Link
                   href="/signup"
                   className="font-medium text-white/80 underline underline-offset-4 hover:text-white"
                 >
-                  Explore Bunches
+                  {t("landing.exploreBunches")}
                 </Link>
               </p>
             </div>
@@ -245,11 +260,10 @@ export default async function LandingPage({
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
-              THE PROBLEM
+              {t("landing.problemEyebrow")}
             </p>
             <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-              You don&rsquo;t need more followers. You need four people who
-              answer the group chat.
+              {t("landing.problemTitle")}
             </h2>
 
             {/*
@@ -268,22 +282,23 @@ export default async function LandingPage({
               {/* Everywhere else. Sterile on purpose. */}
               <div className="rounded-2xl border border-line bg-band-warm p-8">
                 <p className="text-xs font-semibold tracking-widest text-muted">
-                  EVERYWHERE ELSE
+                  {t("landing.everywhereElse")}
                 </p>
                 <div className="mt-6 space-y-3">
                   <p className="text-3xl font-bold text-muted">
-                    1,284 followers
+                    {t("landing.followers")}
                   </p>
                   <p className="flex items-center gap-2 text-muted">
                     <Heart size={18} aria-hidden />
-                    17 likes
+                    {t("landing.likes")}
                   </p>
                   <p className="flex items-center gap-2 text-muted">
-                    <MessageCircle size={18} aria-hidden />3 comments
+                    <MessageCircle size={18} aria-hidden />
+                    {t("landing.comments")}
                   </p>
                 </div>
                 <p className="mt-8 border-t border-line pt-5 text-muted">
-                  Still nobody to go out with.
+                  {t("landing.stillNobody")}
                 </p>
               </div>
 
@@ -332,7 +347,7 @@ export default async function LandingPage({
                 </div>
 
                 <p className="relative z-10 text-xs font-semibold tracking-widest text-accent-ink">
-                  ON {brand.name.toUpperCase()}
+                  {t("landing.onBunchy", { brand: brand.name.toUpperCase() })}
                 </p>
 
                 {/* Bigger than the old avatars and overlapping harder. Each one
@@ -381,25 +396,24 @@ export default async function LandingPage({
                   }}
                 >
                   <span className="text-[11px] font-bold tracking-widest text-mint-ink">
-                    ONLINE
+                    {t("landing.onlineTag")}
                   </span>
                   <span className="font-semibold text-ink">
-                    &ldquo;Anyone up for co-op?&rdquo;
+                    {t("landing.quoteAsk")}
                   </span>
-                  <span className="text-ink-soft">&ldquo;Yep, 9pm.&rdquo;</span>
+                  <span className="text-ink-soft">{t("landing.quoteYep")}</span>
                 </div>
 
                 {/* The payoff, in the same position as "Still nobody to go out
                     with." on the left. The two lines are the whole section. */}
                 <p className="relative z-10 mt-8 text-2xl font-extrabold tracking-tight text-ink">
-                  We&rsquo;re going Saturday.
+                  {t("landing.goingSaturday")}
                 </p>
               </div>
             </div>
 
             <p className="reveal mx-auto mt-10 max-w-2xl text-balance text-center text-lg text-ink-soft">
-              An audience is not a social life. The number that matters is the
-              one you could text tonight.
+              {t("landing.problemClosing")}
             </p>
           </div>
         </section>
@@ -414,11 +428,10 @@ export default async function LandingPage({
         <section className="bg-canvas px-5 pb-24 text-ink">
           <div className="mx-auto max-w-6xl">
             <h2 className="reveal max-w-2xl text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">
-              This is what fills up instead of a feed.
+              {t("landing.boardTitle")}
             </h2>
             <p className="reveal mt-3 max-w-2xl text-ink-soft">
-              Three real evenings, with the people already going. Nothing under
-              them, and nothing arriving while you read.
+              {t("landing.boardBody")}
             </p>
             <div className="mt-10">
               <PebbleBoard />
@@ -430,14 +443,13 @@ export default async function LandingPage({
         <section className="px-5 py-24">
           <div className="reveal mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
-              THE BUNCH MOMENT
+              {t("landing.momentEyebrow")}
             </p>
             <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              This is the whole product, in one gesture.
+              {t("landing.momentTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-white/65">
-              Matching looks at interests, goals, distance and when you are free
-              then stops. There is no feed to fall into afterwards.
+              {t("landing.momentBody")}
             </p>
           </div>
 
@@ -450,10 +462,10 @@ export default async function LandingPage({
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
-              HOW {brand.name.toUpperCase()} WORKS
+              {t("landing.stagesEyebrow", { brand: brand.name.toUpperCase() })}
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Five stages, and none of them are scrolling.
+              {t("landing.stagesTitle")}
             </h2>
 
             {/*
@@ -504,32 +516,32 @@ export default async function LandingPage({
               <Stage
                 index={0}
                 colour="#FF5C6C"
-                name="Discover"
-                body="People, bunches and activities, online or nearby, each with a plain-English reason it was shown."
+                name={t("landing.stages.discover.name")}
+                body={t("landing.stages.discover.body")}
               />
               <Stage
                 index={1}
                 colour="#9250FF"
-                name="Match"
-                body="Eight weighted signals, not a tag intersection. Including the ones you're curious about but haven't done."
+                name={t("landing.stages.match.name")}
+                body={t("landing.stages.match.body")}
               />
               <Stage
                 index={2}
                 colour="#7657FF"
-                name="Bunch"
-                body="Four to six people come together. Small enough that everyone speaks."
+                name={t("landing.stages.bunch.name")}
+                body={t("landing.stages.bunch.body")}
               />
               <Stage
                 index={3}
                 colour="#22A08B"
-                name="Plan"
-                body="Somebody suggests Thursday. The bunch agrees on something real."
+                name={t("landing.stages.plan.name")}
+                body={t("landing.stages.plan.body")}
               />
               <Stage
                 index={4}
                 colour="#55D6BE"
-                name="Together"
-                body="A voice channel on Thursday, a table on Saturday. Both count. This is the only stage that does."
+                name={t("landing.stages.together.name")}
+                body={t("landing.stages.together.body")}
                 emphasis
               />
             </ol>
@@ -552,8 +564,7 @@ export default async function LandingPage({
             */}
             <div className="reveal mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_17rem] md:gap-14">
               <p className="max-w-2xl text-lg text-ink-soft">
-                Most social products are built to keep you at stage one. Bunchy
-                is built to get you to stage five and then leave you alone.
+                {t("landing.stagesClosing", { brand: brand.name })}
               </p>
               <AntiFeedDemo />
             </div>
@@ -564,14 +575,13 @@ export default async function LandingPage({
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-[#9B85FF]">
-              WHAT YOU CAN ACTUALLY DO
+              {t("landing.waysEyebrow")}
             </p>
             <h2 className="reveal mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Three ways in, depending on what you turned up for.
+              {t("landing.waysTitle")}
             </h2>
             <p className="reveal mt-4 max-w-2xl text-white/60">
-              Seven features, grouped by the reason you opened the app rather
-              than by what each one is called.
+              {t("landing.waysBody")}
             </p>
 
             <div className="reveal">
@@ -584,10 +594,10 @@ export default async function LandingPage({
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-mint-status">
-              ONLINE · IN PERSON · EITHER
+              {t("landing.plansEyebrow")}
             </p>
             <h2 className="reveal mt-3 max-w-3xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              A voice channel counts. So does a table. So does both.
+              {t("landing.plansTitle")}
             </h2>
             {/*
               No photographs and no testimonials. Bunchy has not launched, so
@@ -598,10 +608,7 @@ export default async function LandingPage({
               such, and they get replaced the moment there are real ones to show.
             */}
             <p className="reveal mt-4 max-w-2xl text-white/60">
-              Bunchy is not trying to get you off your screen, and it is not
-              trying to keep you on it. These are the shapes of plans bunches
-              make. Real ones replace them, with permission, the day there are
-              real ones to show.
+              {t("landing.plansBody", { brand: brand.name })}
             </p>
 
             {/*
@@ -615,49 +622,49 @@ export default async function LandingPage({
               <Moment
                 index={0}
                 shape="#55D6BE"
-                tag="Online"
-                title="Co-op night, six going"
-                detail="A bunch that lives in its own voice channel and likes it there. No plan to meet, and none needed."
+                tag={t("landing.plansTagOnline")}
+                title={t("landing.plans.coop.title")}
+                detail={t("landing.plans.coop.detail")}
                 people={["M", "W", "S", "P"]}
               />
               <Moment
                 index={1}
                 shape="#55D6BE"
-                tag="Online"
-                title="Focus session, 9am Tuesday"
-                detail="Four people who work alone, working alone together. Cameras optional."
+                tag={t("landing.plansTagOnline")}
+                title={t("landing.plans.focus.title")}
+                detail={t("landing.plans.focus.detail")}
                 people={["E", "T", "M"]}
               />
               <Moment
                 index={2}
                 shape="#55D6BE"
-                tag="Online"
-                title="Watch party, 20:00"
-                detail="Same film, six places, one chat. Somebody always talks through the ending."
+                tag={t("landing.plansTagOnline")}
+                title={t("landing.plans.watch.title")}
+                detail={t("landing.plans.watch.detail")}
                 people={["S", "P", "W", "T"]}
               />
               <Moment
                 index={3}
                 shape="#FFC857"
-                tag="In person"
-                title="Saturday coffee, no agenda"
-                detail="The low-stakes first meet a lot of bunches start with."
+                tag={t("landing.plansTagInPerson")}
+                title={t("landing.plans.coffee.title")}
+                detail={t("landing.plans.coffee.detail")}
                 people={["E", "T", "M"]}
               />
               <Moment
                 index={4}
                 shape="#FFC857"
-                tag="In person"
-                title="Sunday walk, whoever is free"
-                detail="Availability is a real field here, so “whoever is free” is a query rather than a guess in a group chat."
+                tag={t("landing.plansTagInPerson")}
+                title={t("landing.plans.walk.title")}
+                detail={t("landing.plans.walk.detail")}
                 people={["T", "S", "E", "W"]}
               />
               <Moment
                 index={5}
                 shape="#9B85FF"
-                tag="Either"
-                title="Board games, table or tabletop"
-                detail="The same six people, playing the same game, in whichever form the week allows."
+                tag={t("happeningNow.either")}
+                title={t("landing.plans.boardGames.title")}
+                detail={t("landing.plans.boardGames.detail")}
                 people={["S", "M", "E", "T", "P", "W"]}
               />
             </div>
@@ -665,14 +672,10 @@ export default async function LandingPage({
             {/* The optional evolution, offered, never required. */}
             <div className="reveal mt-8 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8">
               <h3 className="text-xl font-bold tracking-tight">
-                And sometimes one becomes the other.
+                {t("landing.plansBecome")}
               </h3>
               <p className="mt-3 max-w-2xl leading-relaxed text-white/60">
-                A gaming bunch plays every Thursday for two months, and one week
-                somebody asks whether anyone fancies pizza. That is a good
-                outcome. So is playing every Thursday for two years and never
-                asking. Bunchy will never nudge you toward the first one. The
-                group decides, and both endings are the product working.
+                {t("landing.plansBecomeBody", { brand: brand.name })}
               </p>
             </div>
           </div>
@@ -682,25 +685,23 @@ export default async function LandingPage({
         <section className="px-5 pb-24">
           <div className="reveal mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 sm:p-12">
             <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
-              RECURRING BUNCHES
+              {t("landing.recurringEyebrow")}
             </p>
             <h2 className="mt-3 max-w-2xl text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Find people you&rsquo;ll want to see again.
+              {t("landing.recurringTitle")}
             </h2>
             <p className="mt-4 max-w-2xl text-white/60">
-              The hard part was never one good evening. It is the second one, and
-              the eighth. A bunch is built to keep going: a standing night, the
-              same people, no reintroductions.
+              {t("landing.recurringBody")}
             </p>
 
             <ul className="mt-9 flex flex-wrap gap-2.5">
               {[
-                "Gaming every Thursday",
-                "Friday film night",
-                "Weekday focus sessions",
-                "Sunday walks",
-                "Monthly board games",
-                "Sunday anime",
+                t("landing.recurringOne"),
+                t("landing.recurringTwo"),
+                t("landing.recurringThree"),
+                t("landing.recurringFour"),
+                t("landing.recurringFive"),
+                t("landing.recurringSix"),
               ].map((r) => (
                 <li
                   key={r}
@@ -717,27 +718,18 @@ export default async function LandingPage({
         <section className="bg-band-soft px-5 py-24 text-ink">
           <div className="reveal mx-auto max-w-3xl">
             <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Before you sign up.
+              {t("landing.faqTitle")}
             </h2>
             <dl className="mt-10 divide-y divide-line border-y border-line">
-              <Question q="Is this a dating app?">
-                No, and it is not one with the labels changed either. No swiping,
-                no romantic intent field, nothing that ranks people by
-                attractiveness. It is for friends.
+              <Question q={t("landing.faqDatingQ")}>
+                {t("landing.faqDatingA")}
               </Question>
-              <Question q="Is it actually free?">
-                Yes. No trial, no card, no paid tier holding the useful half
-                hostage.
+              <Question q={t("landing.faqFreeQ")}>{t("landing.faqFreeA")}</Question>
+              <Question q={t("landing.faqProfileQ")}>
+                {t("landing.faqProfileA")}
               </Question>
-              <Question q="Who can see my profile?">
-                Signed-in members only, never search engines, never the open
-                internet. Your location is stored as an approximate area, never
-                an address.
-              </Question>
-              <Question q="What if nobody near me has joined yet?">
-                Then Discover says so plainly, with the number of people nearby
-                rather than an empty page. Online bunches work at any distance
-                from day one.
+              <Question q={t("landing.faqEmptyQ")}>
+                {t("landing.faqEmptyA")}
               </Question>
             </dl>
           </div>
@@ -777,25 +769,24 @@ export default async function LandingPage({
               a wrap rather than as the two-line statement this is meant to be.
             */}
             <h2 className="mx-auto max-w-3xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              <span className="block">Find your people.</span>
-              <span className="block">Do something together.</span>
+              <span className="block">{t("landing.closingOne")}</span>
+              <span className="block">{t("landing.closingTwo")}</span>
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-lg font-semibold text-white/90">
-              Online. In person. Or both.
+              {t("landing.closingSubtitle")}
             </p>
             <p className="mx-auto mt-6 max-w-lg text-white/80">
-              Three minutes to say what you are into and when you are free. The
-              next step is an actual evening with actual people.
+              {t("landing.closingBody")}
             </p>
             <Link
               href="/signup"
               className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 text-base font-bold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.04]"
             >
-              Find my bunch
+              {t("landing.findMyBunch")}
               <ArrowRight size={18} aria-hidden />
             </Link>
             <p className="mx-auto mt-5 max-w-sm text-sm text-white/75">
-              Free, 16+, and you can delete everything in two clicks.
+              {t("landing.closingNote")}
             </p>
           </div>
         </section>
@@ -806,7 +797,7 @@ export default async function LandingPage({
           <div className="flex items-center gap-3">
             <BunchyMark size={26} />
             <span>
-              {brand.name}. {brand.tagline}
+              {brand.name}. {t("brand.tagline")}
             </span>
           </div>
           {/*
