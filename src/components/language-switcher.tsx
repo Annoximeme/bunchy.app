@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense } from "react";
-import NextLink from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/components/ui";
 import { useLanguage } from "@/components/link";
@@ -28,6 +27,14 @@ import {
  * whose cookie said Dutch was returned to Dutch by the very control they
  * pressed to leave it. `/en/discover` says English, and the proxy records that
  * and bounces to `/discover`, which is where they land.
+ *
+ * Plain anchors rather than `next/link`, which is the other half of the same
+ * bug. A client-side navigation keeps the layout it is already inside, and the
+ * language lives in that layout: the address changed, the cookie changed, and
+ * the page went on rendering every word in the language the reader had just
+ * left, until something forced a real load. The `lang` attribute on `html`
+ * stayed behind too, so a screen reader kept the old voice. A language is a
+ * property of the document, so changing it is a document load.
  *
  * Each name is written in its own language, and carries `lang` and `hreflang`
  * so a screen reader pronounces "Nederlands" as Dutch rather than reading it
@@ -78,13 +85,9 @@ function Switcher({
       {LOCALES.map((option) => {
         const current = option === locale;
         return (
-          <NextLink
+          <a
             key={option}
             href={`${localeChoicePath(option, path)}${query}`}
-            // Nothing to fetch ahead of time: every one of these three answers
-            // is a redirect, and fetching them early is what silently changed
-            // the reader's language before they touched anything.
-            prefetch={false}
             hrefLang={LOCALE_TAGS[option]}
             lang={LOCALE_TAGS[option]}
             aria-current={current ? "true" : undefined}
@@ -96,7 +99,7 @@ function Switcher({
             )}
           >
             {compact ? option : LOCALE_NAMES[option]}
-          </NextLink>
+          </a>
         );
       })}
     </nav>
