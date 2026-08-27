@@ -61,9 +61,12 @@ describe("the language switcher", () => {
       </LanguageProvider>,
     );
 
+    // `/en/search`, not `/search`. The bare address names no language, so the
+    // proxy answers it with the cookie, which still says Dutch: the switcher
+    // would hand the reader straight back to the language they left.
     expect(screen.getByRole("link", { name: "English" })).toHaveAttribute(
       "href",
-      "/search?q=board+games",
+      "/en/search?q=board+games",
     );
     expect(screen.getByRole("link", { name: "Français" })).toHaveAttribute(
       "href",

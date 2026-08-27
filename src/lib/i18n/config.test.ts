@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_LOCALE,
+  localeChoicePath,
   localePath,
   preferredLocale,
   splitLocale,
@@ -50,6 +51,16 @@ describe("writing an address in a language", () => {
     for (const path of ["/", "/discover", "/bunches/board-games"]) {
       expect(splitLocale(localePath("fr", path)).path).toBe(path);
     }
+  });
+
+  it("names English out loud when the address is a choice of language", () => {
+    // The switcher's link, which has to say English rather than say nothing:
+    // an address that names no language is answered with the cookie, and the
+    // cookie is what the reader is trying to change.
+    expect(localeChoicePath(DEFAULT_LOCALE, "/discover")).toBe("/en/discover");
+    expect(localeChoicePath(DEFAULT_LOCALE, "/")).toBe("/en");
+    expect(localeChoicePath("nl", "/discover")).toBe("/nl/discover");
+    expect(localeChoicePath("nl", "https://example.com")).toBe("https://example.com");
   });
 });
 

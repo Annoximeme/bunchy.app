@@ -9,7 +9,7 @@ import {
   LOCALES,
   LOCALE_NAMES,
   LOCALE_TAGS,
-  localePath,
+  localeChoicePath,
   splitLocale,
 } from "@/lib/i18n/config";
 
@@ -17,10 +17,17 @@ import {
  * Changing language, without leaving the page you were on.
  *
  * Three links rather than a select and a form. A link can be opened in a new
- * tab, copied, and read by anything that reads links, and it lands on the
- * address that *is* this page in that language, so the change is a navigation
- * and not a piece of state the next request has to be told about. The proxy
+ * tab, copied, and read by anything that reads links, and it lands on an
+ * address that names the language out loud, so the change is a navigation and
+ * not a piece of state the next request has to be told about. The proxy
  * remembers the choice on the way past.
+ *
+ * All three hrefs carry a prefix, English included, which is the one place in
+ * the app that does not use the canonical address. A bare `/discover` says
+ * nothing about language, so the proxy reads it with the cookie, and a reader
+ * whose cookie said Dutch was returned to Dutch by the very control they
+ * pressed to leave it. `/en/discover` says English, and the proxy records that
+ * and bounces to `/discover`, which is where they land.
  *
  * Each name is written in its own language, and carries `lang` and `hreflang`
  * so a screen reader pronounces "Nederlands" as Dutch rather than reading it
@@ -73,7 +80,7 @@ function Switcher({
         return (
           <NextLink
             key={option}
-            href={`${localePath(option, path)}${query}`}
+            href={`${localeChoicePath(option, path)}${query}`}
             hrefLang={LOCALE_TAGS[option]}
             lang={LOCALE_TAGS[option]}
             aria-current={current ? "true" : undefined}

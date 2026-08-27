@@ -119,7 +119,16 @@ www.{$DOMAIN} {
 		# notice would be readable in one language and gated in the other two,
 		# which is the compliance problem this list exists to avoid, wearing a
 		# different hat.
-		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /sitemap.xml /_next/* /api/waitlist /api/unsubscribe /unsubscribe /nl/unsubscribe /fr/unsubscribe /api/health /api/webhooks/* /privacy /nl/privacy /fr/privacy /terms /nl/terms /fr/terms
+		#
+		# /en and /en/* are here for the language switcher, which points every
+		# one of its three links at an address that names a language. Nothing
+		# is served under that prefix: the app writes the choice down and
+		# redirects to the address with no prefix on it, which arrives back
+		# here and is gated like anything else. Without this the English link
+		# was rewritten to the coming-soon page before the app could read it,
+		# the choice was never recorded, and a Dutch reader was handed straight
+		# back to Dutch.
+		not path /icon.svg /favicon.ico /apple-icon.png /manifest.webmanifest /opengraph-image /robots.txt /sitemap.xml /_next/* /api/waitlist /api/unsubscribe /unsubscribe /nl/unsubscribe /fr/unsubscribe /api/health /api/webhooks/* /privacy /nl/privacy /fr/privacy /terms /nl/terms /fr/terms /en /en/*
 	}
 	handle @soon {
 		# Rewritten to the real page rather than a static file. The coming-soon

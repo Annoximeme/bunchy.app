@@ -24,6 +24,12 @@
  * at a bare address later gets the language they picked. The address wins
  * whenever the two disagree: a link somebody sent in French opens in French,
  * whatever the reader last chose here.
+ *
+ * That leaves English needing an address of its own, because a bare one does
+ * not say "English" to the proxy, it says nothing, and something that says
+ * nothing loses to the cookie. `/en/discover` is that address: it is not a
+ * page, it is a request to be read in English, and it exists so the switcher
+ * has something to point at. See `localeChoicePath`.
  */
 
 export const LOCALES = ["en", "nl", "fr"] as const;
@@ -112,6 +118,29 @@ export function splitLocale(pathname: string): {
 export function localePath(locale: Locale, path: string): string {
   if (!path.startsWith("/")) return path;
   if (locale === DEFAULT_LOCALE) return path;
+  return localeChoicePath(locale, path);
+}
+
+/**
+ * The address that names a language out loud, for the control whose whole job
+ * is to change it.
+ *
+ * Two of the three are the address the page already has. English is the
+ * awkward one, and it was broken: the English link pointed at the bare
+ * address, which is not a claim about language at all, so the proxy answered
+ * it with whatever the cookie said. A Dutch reader clicking English asked for
+ * `/discover`, was recognised as Dutch from the cookie, and was sent straight
+ * back to `/nl/discover`. English was unreachable for exactly as long as the
+ * cookie disagreed, which is forever, since only an address ever updates it.
+ *
+ * `/en/discover` fixes it without giving the page a second address. The proxy
+ * writes the choice down and bounces to the canonical `/discover`, so the
+ * reader still ends up on the one English address and the address bar never
+ * shows the prefix. The cost is one redirect, on a click that was a navigation
+ * anyway.
+ */
+export function localeChoicePath(locale: Locale, path: string): string {
+  if (!path.startsWith("/")) return path;
   return path === "/" ? `/${locale}` : `/${locale}${path}`;
 }
 

@@ -115,17 +115,54 @@ function isLocaleless(path: string): boolean {
   );
 }
 
+/**
+ * Writes the chosen language down, unless it is already what is written.
+ *
+ * Only an address ever gets here, never a guess: a language worked out from
+ * `Accept-Language` is this request's best answer, not a decision the reader
+ * made, and saving it would freeze a guess into a preference nobody chose.
+ */
+function remember(
+  response: NextResponse,
+  request: NextRequest,
+  locale: Locale,
+): NextResponse {
+  if (request.cookies.get(LOCALE_COOKIE)?.value === locale) return response;
+  response.cookies.set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: LOCALE_COOKIE_MAX_AGE,
+    sameSite: "lax",
+  });
+  return response;
+}
+
 export function proxy(request: NextRequest) {
   const { locale, fromPath, path } = resolveLocale(request);
   const localeless = isLocaleless(path);
 
-  // `/en/...` is not a second address for an English page. It is the one
-  // address people will type by analogy with the other two, so it redirects
-  // rather than 404s, and the prefix-free URL stays the only one that exists.
+  // `/en/...` is not a second address for an English page. It is the address
+  // people type by analogy with the other two, and it is the one the language
+  // switcher points at, so it redirects rather than 404s and the prefix-free
+  // URL stays the only one that exists.
+  //
+  // The cookie is written on the way past, which is the whole reason English
+  // is reachable at all. A bare `/discover` names no language, so the block
+  // below reads it with the cookie: a Dutch reader clicking English asked for
+  // `/discover` and was sent back to `/nl/discover`, by the control whose only
+  // job was to get them out. This is where they say English out loud.
+  //
+  // 307 rather than the 308 this used to be, and never cached. A permanent
+  // redirect is kept by the browser for good, so the second time somebody
+  // switched back to English it would be served from that cache, the request
+  // would never reach here, and the cookie would never be written: the bug
+  // again, and harder to see, because it needs the same person to change their
+  // mind twice.
   if (fromPath && locale === DEFAULT_LOCALE && !localeless) {
     const canonical = request.nextUrl.clone();
     canonical.pathname = path;
-    return NextResponse.redirect(canonical, 308);
+    const response = NextResponse.redirect(canonical, 307);
+    response.headers.set("Cache-Control", "no-store");
+    return remember(response, request, locale);
   }
 
   // A remembered or guessed language, on an address that does not say which.
@@ -188,13 +225,7 @@ export function proxy(request: NextRequest) {
   // Remember the language named in the address, so the next bare link opens
   // in it. Written on the way past rather than by the switcher alone: most
   // people will change language by following a link, not by finding a control.
-  if (fromPath && request.cookies.get(LOCALE_COOKIE)?.value !== locale) {
-    response.cookies.set(LOCALE_COOKIE, locale, {
-      path: "/",
-      maxAge: LOCALE_COOKIE_MAX_AGE,
-      sameSite: "lax",
-    });
-  }
+  if (fromPath) remember(response, request, locale);
 
   // A bare address answers differently depending on the cookie and the
   // browser's language list, and a cache that ignores that would serve one
