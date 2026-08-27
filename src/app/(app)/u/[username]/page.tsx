@@ -87,216 +87,214 @@ export default async function PublicProfilePage({
   const curious = profile.interests.filter((i) => i.intent === "CURIOUS");
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-3xl space-y-8">
-        {isSelf && (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3">
-            <p className="text-sm text-ink-soft">
-              This is your profile as another member sees it.
-            </p>
-            <Link
-              href="/profile"
-              className="text-sm font-medium text-accent-ink underline underline-offset-2"
-            >
-              Back to editing
-            </Link>
-          </div>
-        )}
+    <PageShell width="reading">
+      {isSelf && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3">
+          <p className="text-sm text-ink-soft">
+            This is your profile as another member sees it.
+          </p>
+          <Link
+            href="/profile"
+            className="text-sm font-medium text-accent-ink underline underline-offset-2"
+          >
+            Back to editing
+          </Link>
+        </div>
+      )}
 
-        <ProfileHero profile={profile}>
-          {!isSelf && (
-            <ConnectButton
-              profileId={profile.id}
-              state={profile.connectionState}
-            />
-          )}
-        </ProfileHero>
-
-        {match && (
-          <OverlapSection
-            overlap={{
-              score: match.score,
-              highlights: match.highlights,
-              signals: match.signals,
-              shared: match.sharedInterests,
-              complementary: match.complementaryInterests,
-            }}
-          />
-        )}
-
-        <section>
-          <SectionHeading
-            eyebrow="Them"
-            title={isSelf ? "What you show" : `About ${firstNameOf(profile.displayName)}`}
-          />
-
-          <div className="space-y-4">
-            {/*
-              What they have arranged, as a sentence rather than a badge.
-
-              Above the interests because it is the only line on this page that
-              is evidence rather than self-description: everything else here is
-              what somebody typed about themselves, and this is what other
-              people said happened. It renders nothing at all below three
-              evenings, so being new is silence rather than a zero.
-            */}
-            {hostLine(hosting) && (
-              <p className="flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-soft">
-                <CalendarCheck
-                  size={17}
-                  aria-hidden
-                  className="mt-0.5 shrink-0 text-teal"
-                />
-                {hostLine(hosting)}
-              </p>
-            )}
-
-            {practices.length > 0 && (
-              <Card>
-                <h3 className="text-sm font-bold uppercase tracking-widest text-teal">
-                  Into
-                </h3>
-                <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {practices.map((interest) => (
-                    <li key={interest.slug}>
-                      <Chip tone="teal">
-                        {interestLabel(locale, interest.slug, interest.label)}
-                        {/* A star is the member saying this one matters most,
-                            so it is announced rather than left as decoration
-                            a screen reader reads as "black star". */}
-                        {interest.strength === 3 && (
-                          <>
-                            <span aria-hidden> ★</span>
-                            <span className="sr-only"> (really into this)</span>
-                          </>
-                        )}
-                      </Chip>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            {curious.length > 0 && (
-              <Card>
-                <h3 className="text-sm font-bold uppercase tracking-widest text-accent-ink">
-                  Wants to get into
-                </h3>
-                <p className="mt-1 text-sm text-muted">
-                  If you already do any of these, that&rsquo;s an easy first
-                  conversation.
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {curious.map((interest) => (
-                    <li key={interest.slug}>
-                      <Chip tone="accent">
-                        {interestLabel(locale, interest.slug, interest.label)}
-                      </Chip>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {profile.goals.length > 0 && (
-                <Card>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-muted">
-                    Looking for
-                  </h3>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {profile.goals.map((goal) => (
-                      <li key={goal}>
-                        <Chip>{goal}</Chip>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              )}
-
-              {profile.availability.length > 0 && (
-                <Card>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-muted">
-                    Usually free
-                  </h3>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {profile.availability.map((window) => (
-                      <li key={window}>
-                        <Chip>{window}</Chip>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              )}
-            </div>
-
-            {profile.traits.length > 0 && (
-              <Card>
-                <h3 className="text-sm font-bold uppercase tracking-widest text-purple-ink">
-                  Social style
-                </h3>
-                {/* Said out loud, because these are the one set of labels on
-                    the page the member did not write: they are inferred from
-                    the style questions, and purple means "worked out" in this
-                    product's vocabulary. */}
-                <p className="mt-1 text-sm text-muted">
-                  Worked out from their answers, not written by them.
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {profile.traits.map((trait) => (
-                    <li key={trait}>
-                      <Chip tone="suggested">{trait}</Chip>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            {/*
-              A profile with nothing on it is a real state, somebody who
-              signed up and stopped. Better to say so plainly than to render an
-              empty stretch of page that looks like the app failed to load.
-            */}
-            {practices.length === 0 &&
-              curious.length === 0 &&
-              profile.goals.length === 0 &&
-              profile.availability.length === 0 &&
-              profile.traits.length === 0 && (
-                <Card>
-                  <p className="text-ink-soft">
-                    {isSelf
-                      ? "You haven't filled any of this in yet, so there is nothing here for anyone to read."
-                      : "They haven't filled this in yet. There is not much to go on beyond saying hello."}
-                  </p>
-                  {isSelf && (
-                    <Link
-                      href="/onboarding/interests"
-                      className="mt-3 inline-block text-sm font-medium text-accent-ink underline underline-offset-2"
-                    >
-                      Fill it in
-                    </Link>
-                  )}
-                </Card>
-              )}
-          </div>
-        </section>
-
+      <ProfileHero profile={profile}>
         {!isSelf && (
-          <section>
-            <Card>
-              <h2 className="text-sm font-semibold">Not going well?</h2>
-              <div className="mt-3 flex flex-wrap items-center gap-4">
-                <BlockButton
-                  profileId={profile.id}
-                  displayName={profile.displayName}
-                  isBlocked={blocked}
-                />
-                <ReportButton targetType="PROFILE" targetId={profile.id} />
-              </div>
-            </Card>
-          </section>
+          <ConnectButton
+            profileId={profile.id}
+            state={profile.connectionState}
+          />
         )}
-      </div>
+      </ProfileHero>
+
+      {match && (
+        <OverlapSection
+          overlap={{
+            score: match.score,
+            highlights: match.highlights,
+            signals: match.signals,
+            shared: match.sharedInterests,
+            complementary: match.complementaryInterests,
+          }}
+        />
+      )}
+
+      <section>
+        <SectionHeading
+          eyebrow="Them"
+          title={isSelf ? "What you show" : `About ${firstNameOf(profile.displayName)}`}
+        />
+
+        <div className="space-y-4">
+          {/*
+            What they have arranged, as a sentence rather than a badge.
+
+            Above the interests because it is the only line on this page that
+            is evidence rather than self-description: everything else here is
+            what somebody typed about themselves, and this is what other
+            people said happened. It renders nothing at all below three
+            evenings, so being new is silence rather than a zero.
+          */}
+          {hostLine(hosting) && (
+            <p className="flex items-start gap-2.5 text-[15px] leading-relaxed text-ink-soft">
+              <CalendarCheck
+                size={17}
+                aria-hidden
+                className="mt-0.5 shrink-0 text-teal"
+              />
+              {hostLine(hosting)}
+            </p>
+          )}
+
+          {practices.length > 0 && (
+            <Card>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-teal">
+                Into
+              </h3>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {practices.map((interest) => (
+                  <li key={interest.slug}>
+                    <Chip tone="teal">
+                      {interestLabel(locale, interest.slug, interest.label)}
+                      {/* A star is the member saying this one matters most,
+                          so it is announced rather than left as decoration
+                          a screen reader reads as "black star". */}
+                      {interest.strength === 3 && (
+                        <>
+                          <span aria-hidden> ★</span>
+                          <span className="sr-only"> (really into this)</span>
+                        </>
+                      )}
+                    </Chip>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {curious.length > 0 && (
+            <Card>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-accent-ink">
+                Wants to get into
+              </h3>
+              <p className="mt-1 text-sm text-muted">
+                If you already do any of these, that&rsquo;s an easy first
+                conversation.
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {curious.map((interest) => (
+                  <li key={interest.slug}>
+                    <Chip tone="accent">
+                      {interestLabel(locale, interest.slug, interest.label)}
+                    </Chip>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {profile.goals.length > 0 && (
+              <Card>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted">
+                  Looking for
+                </h3>
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {profile.goals.map((goal) => (
+                    <li key={goal}>
+                      <Chip>{goal}</Chip>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
+
+            {profile.availability.length > 0 && (
+              <Card>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted">
+                  Usually free
+                </h3>
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {profile.availability.map((window) => (
+                    <li key={window}>
+                      <Chip>{window}</Chip>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
+          </div>
+
+          {profile.traits.length > 0 && (
+            <Card>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-purple-ink">
+                Social style
+              </h3>
+              {/* Said out loud, because these are the one set of labels on
+                  the page the member did not write: they are inferred from
+                  the style questions, and purple means "worked out" in this
+                  product's vocabulary. */}
+              <p className="mt-1 text-sm text-muted">
+                Worked out from their answers, not written by them.
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {profile.traits.map((trait) => (
+                  <li key={trait}>
+                    <Chip tone="suggested">{trait}</Chip>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {/*
+            A profile with nothing on it is a real state, somebody who
+            signed up and stopped. Better to say so plainly than to render an
+            empty stretch of page that looks like the app failed to load.
+          */}
+          {practices.length === 0 &&
+            curious.length === 0 &&
+            profile.goals.length === 0 &&
+            profile.availability.length === 0 &&
+            profile.traits.length === 0 && (
+              <Card>
+                <p className="text-ink-soft">
+                  {isSelf
+                    ? "You haven't filled any of this in yet, so there is nothing here for anyone to read."
+                    : "They haven't filled this in yet. There is not much to go on beyond saying hello."}
+                </p>
+                {isSelf && (
+                  <Link
+                    href="/onboarding/interests"
+                    className="mt-3 inline-block text-sm font-medium text-accent-ink underline underline-offset-2"
+                  >
+                    Fill it in
+                  </Link>
+                )}
+              </Card>
+            )}
+        </div>
+      </section>
+
+      {!isSelf && (
+        <section>
+          <Card>
+            <h2 className="text-sm font-semibold">Not going well?</h2>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              <BlockButton
+                profileId={profile.id}
+                displayName={profile.displayName}
+                isBlocked={blocked}
+              />
+              <ReportButton targetType="PROFILE" targetId={profile.id} />
+            </div>
+          </Card>
+        </section>
+      )}
     </PageShell>
   );
 }

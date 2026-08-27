@@ -16,17 +16,15 @@ export default async function NewBunchPage() {
   });
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-2xl">
-        <PageHeader
-          title={t("bunchForm.title")}
-          subtitle={t("bunchForm.subtitle")}
-        />
-        <BunchForm
-          defaultCity={profile.cityLabel}
-          defaultCountry={profile.countryCode}
-        />
-      </div>
+    <PageShell width="reading">
+      <PageHeader
+        title={t("bunchForm.title")}
+        subtitle={t("bunchForm.subtitle")}
+      />
+      <BunchForm
+        defaultCity={profile.cityLabel}
+        defaultCountry={profile.countryCode}
+      />
     </PageShell>
   );
 }

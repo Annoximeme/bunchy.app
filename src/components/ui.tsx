@@ -635,7 +635,21 @@ export function EmptyState({
   */
   return (
     <div className="flex flex-col items-center rounded-squircle bg-surface px-6 py-16 text-center shadow-pebble">
-      {icon && <div className="mb-4 text-3xl">{icon}</div>}
+      {/*
+        One object, whatever the page passes.
+
+        This used to be `text-3xl` around an emoji, which meant every empty
+        state in the product was illustrated with somebody else's artwork, at a
+        weight and a palette nobody here chose, and different on every operating
+        system. It now holds an icon from the product's own set on a soft disc,
+        so the empty Notifications page shows the same bell as the nav item that
+        leads to it.
+      */}
+      {icon && (
+        <div className="mb-5 flex size-12 items-center justify-center rounded-full bg-surface-sunken text-muted [&>svg]:size-6">
+          {icon}
+        </div>
+      )}
       <Heading className="text-lg font-bold tracking-tight text-ink">
         {title}
       </Heading>

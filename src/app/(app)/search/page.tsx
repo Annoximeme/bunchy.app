@@ -29,7 +29,7 @@ export default async function SearchPage({
   const results = await search(viewer.profileId, query);
 
   return (
-    <PageShell>
+    <PageShell width="reading">
       <PageHeader
         title="Search"
         subtitle="People you know, bunches you're in, plans you've made, things that were said."

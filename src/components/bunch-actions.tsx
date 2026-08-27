@@ -1,5 +1,6 @@
 "use client";
 
+import { LogOut } from "lucide-react";
 import { useTranslate } from "@/components/link";
 
 import { useRouter } from "next/navigation";
@@ -88,6 +89,7 @@ export function BunchMembershipButton({
       }
       return (
         <Button variant="ghost" size="sm" onClick={() => setConfirmingLeave(true)}>
+          <LogOut size={16} aria-hidden />
           {t("bunch.leaveBunch")}
         </Button>
       );

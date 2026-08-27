@@ -534,6 +534,7 @@ export const nl: Dictionary = {
     free: "Donderdagavond vrij",
     findMe: "Zoek een bunch voor me",
     matchFound: "Match gevonden",
+    settled: "Geregeld",
     thursdayCoffee: "Koffie op donderdag",
     going: "4 gaan mee",
     allSet: "Alles is geregeld. Sluit de app en geniet van je donderdag.",
@@ -1280,6 +1281,8 @@ export const nl: Dictionary = {
     worthLook: "De moeite om te bekijken",
     worthLookSubtitle: "In je buurt, op een moment dat je meestal vrij bent.",
     everything: "Alles wat eraan komt",
+    everythingElse: "Alles wat er verder aankomt",
+    everythingShown: "Dat is alles, en het staat allemaal hierboven.",
     nothingPlanned: "Nog niets gepland",
     nothingPlannedBody:
       "Wees de eerste. Eén iemand die koffie voorstelt, is hoe dit meestal begint.",

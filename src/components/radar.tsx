@@ -1,5 +1,6 @@
 "use client";
 
+import { RadarIcon } from "@/components/icons";
 import { useState } from "react";
 import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
 import { interestInSentence } from "@/lib/interests";
@@ -193,13 +194,16 @@ export function Radar({
 
       {data.items.length === 0 ? (
         <EmptyState
-          icon="📡"
+          icon={<RadarIcon />}
           title={t("radar.emptyTitle")}
           description="No public bunches or open activities match that. Starting something is how the first person always fixes it. And it gives whoever looks next somewhere to land."
           action={<LinkButton href="/start">Start a bunch</LinkButton>}
         />
       ) : (
-        <ul className="space-y-3">
+        // Two columns once the window allows it. A single column of these at
+        // 1024px left 500px of empty card between a title and the one line of
+        // metadata that belongs to it.
+        <ul className="grid gap-3 xl:grid-cols-2">
           {data.items.map((item) => (
             <li key={`${item.kind}-${item.id}`}>
               <Link

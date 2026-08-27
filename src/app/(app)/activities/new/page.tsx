@@ -28,21 +28,19 @@ export default async function NewActivityPage({
   ]);
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-2xl">
-        <PageHeader
-          title={t("activityForm.title")}
-          subtitle={t("activityForm.subtitle")}
-        />
-        <ActivityForm
-          bunches={memberships.map((m) => m.bunch)}
-          defaultBunchId={params.bunchId}
-          defaultTitle={params.title}
-          defaultDescription={params.description}
-          defaultCity={profile.cityLabel}
-          defaultCountry={profile.countryCode}
-        />
-      </div>
+    <PageShell width="reading">
+      <PageHeader
+        title={t("activityForm.title")}
+        subtitle={t("activityForm.subtitle")}
+      />
+      <ActivityForm
+        bunches={memberships.map((m) => m.bunch)}
+        defaultBunchId={params.bunchId}
+        defaultTitle={params.title}
+        defaultDescription={params.description}
+        defaultCity={profile.cityLabel}
+        defaultCountry={profile.countryCode}
+      />
     </PageShell>
   );
 }

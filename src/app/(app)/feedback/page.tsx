@@ -25,18 +25,18 @@ export default async function FeedbackPage() {
   const mine = await feedbackFrom(viewer.profileId);
 
   return (
-    <PageShell>
+    <PageShell width="reading">
       <PageHeader
         title="Feedback"
         subtitle={`One person builds ${brand.name}, and he reads all of these. You will get an answer, including when the answer is no.`}
       />
 
-      <Card className="max-w-2xl">
+      <Card>
         <FeedbackForm />
       </Card>
 
       {mine.length > 0 && (
-        <section className="mt-10 max-w-2xl">
+        <section className="mt-10">
           <SectionHeading
             title="What you have sent"
             subtitle="Between you and us. None of it is public, and nothing is ranked against anybody else's."

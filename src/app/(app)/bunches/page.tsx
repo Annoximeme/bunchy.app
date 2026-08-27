@@ -1,3 +1,4 @@
+import { BunchesIcon, SearchIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { requireViewer } from "@/server/auth/current-user";
 import { browseBunches, listMyBunches } from "@/server/modules/bunches/service";
@@ -58,7 +59,7 @@ export default async function BunchesPage({
           <SectionHeading title={t("bunches.yours")} />
           {active.length === 0 ? (
             <EmptyState
-              icon="○"
+              icon={<BunchesIcon />}
               title={t("bunches.noneTitle")}
               description="A bunch is the easiest way in. You join a group that already talks to each other instead of starting from a blank conversation."
               action={<LinkButton href="/bunches/new">{t("bunches.startOne")}</LinkButton>}
@@ -113,7 +114,7 @@ export default async function BunchesPage({
 
           {browse.length === 0 ? (
             <EmptyState
-              icon="🔍"
+              icon={<SearchIcon />}
               title={q ? t("bunches.nothingMatching", { query: q }) : t("bunches.quiet")}
               description={
                 q

@@ -43,52 +43,50 @@ export default async function ConversationPage({
   }
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-2xl">
-        <header className="mb-6 flex items-center justify-between gap-4">
-          <Link
-            href={`/u/${conversation.other.username}`}
-            className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
-          >
-            <Avatar
-              name={conversation.other.displayName}
-              src={conversation.other.avatarUrl}
-            />
-            {/*
-              The name is the page's heading, so it is one. It looked like a
-              heading and was a `span`, which left this the only screen in the
-              app with no `h1` on it: a screen reader announcing the page had
-              nothing to announce it as, and the audit said so.
-            */}
-            <div className="min-w-0">
-              <h1 className="truncate text-lg font-semibold tracking-tight">
-                {conversation.other.displayName}
-              </h1>
-              <span className="block truncate text-sm text-muted">
-                @{conversation.other.username}
-              </span>
-            </div>
-          </Link>
-          <Link href="/messages" className="shrink-0 text-sm text-muted hover:text-ink">
-            All messages
-          </Link>
-        </header>
-
-        <DirectThread
-          conversationId={conversation.id}
-          otherName={conversation.other.displayName}
-          initialMessages={conversation.messages}
-          readOnly={conversation.readOnly}
-          initialOtherLastReadAt={conversation.otherLastReadAt}
-        />
-
-        <div className="mt-6 border-t border-line pt-4">
-          <ReportButton
-            targetType="PROFILE"
-            targetId={conversation.other.id}
-            label="Report this person"
+    <PageShell width="reading">
+      <header className="mb-6 flex items-center justify-between gap-4">
+        <Link
+          href={`/u/${conversation.other.username}`}
+          className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
+        >
+          <Avatar
+            name={conversation.other.displayName}
+            src={conversation.other.avatarUrl}
           />
-        </div>
+          {/*
+            The name is the page's heading, so it is one. It looked like a
+            heading and was a `span`, which left this the only screen in the
+            app with no `h1` on it: a screen reader announcing the page had
+            nothing to announce it as, and the audit said so.
+          */}
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-semibold tracking-tight">
+              {conversation.other.displayName}
+            </h1>
+            <span className="block truncate text-sm text-muted">
+              @{conversation.other.username}
+            </span>
+          </div>
+        </Link>
+        <Link href="/messages" className="shrink-0 text-sm text-muted hover:text-ink">
+          All messages
+        </Link>
+      </header>
+
+      <DirectThread
+        conversationId={conversation.id}
+        otherName={conversation.other.displayName}
+        initialMessages={conversation.messages}
+        readOnly={conversation.readOnly}
+        initialOtherLastReadAt={conversation.otherLastReadAt}
+      />
+
+      <div className="mt-6 border-t border-line pt-4">
+        <ReportButton
+          targetType="PROFILE"
+          targetId={conversation.other.id}
+          label="Report this person"
+        />
       </div>
     </PageShell>
   );

@@ -24,22 +24,20 @@ export default async function StartPage({
   const { q } = await searchParams;
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-3xl">
-        <PageHeader
-          title="Start a bunch"
-          subtitle="Say what you'd like to do. We'll find people who might be up for it."
-        />
-        <StartBunch initialQuery={q?.slice(0, 280) ?? ""} />
+    <PageShell width="reading">
+      <PageHeader
+        title="Start a bunch"
+        subtitle="Say what you'd like to do. We'll find people who might be up for it."
+      />
+      <StartBunch initialQuery={q?.slice(0, 280) ?? ""} />
 
-        <p className="mt-8 text-sm text-muted">
-          Know exactly what you want to build?{" "}
-          <Link href="/bunches/new" className="font-medium text-accent-ink underline underline-offset-2">
-            Use the full form
-          </Link>
-          .
-        </p>
-      </div>
+      <p className="mt-8 text-sm text-muted">
+        Know exactly what you want to build?{" "}
+        <Link href="/bunches/new" className="font-medium text-accent-ink underline underline-offset-2">
+          Use the full form
+        </Link>
+        .
+      </p>
     </PageShell>
   );
 }

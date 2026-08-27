@@ -1,3 +1,4 @@
+import { SproutIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
@@ -194,7 +195,7 @@ export default async function DiscoverPage() {
       {nothingAtAll ? (
         <>
           <EmptyState
-            icon="🌱"
+            icon={<SproutIcon />}
             title={
               neighbourhood.label
                 ? t("discover.nearbyCount", {

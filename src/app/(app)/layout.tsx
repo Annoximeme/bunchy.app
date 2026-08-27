@@ -3,7 +3,6 @@ import { getViewer } from "@/server/auth/current-user";
 import { onboardingPath } from "@/server/modules/profile/service";
 import { db } from "@/server/db/client";
 import { AppNav } from "@/components/nav";
-import { SiteFooter } from "@/components/site-links";
 import { isStaff } from "@/server/modules/admin/guard";
 import { unreadCount } from "@/server/modules/notifications/service";
 import {
@@ -60,7 +59,11 @@ export default async function AppLayout({
   ]);
 
   return (
-    <div className="relative min-h-dvh md:pl-60">
+    // A flex column, so the footer can be pushed to the bottom of a short page
+    // rather than landing wherever the content happened to stop. Connections put
+    // it at 47% of the window height with 520px of nothing under it, which reads
+    // as a page that failed to finish loading.
+    <div className="relative flex min-h-dvh flex-col md:pl-60">
       {/*
         The same two washes the landing hero opens with, carried into the app so
         the product does not go flat the moment somebody signs in. Kept far
@@ -90,22 +93,22 @@ export default async function AppLayout({
         <AnnouncementBanner
           slug={banner.slug}
           title={banner.title}
-          summary={banner.summary}
           linkHref={banner.linkHref}
           linkLabel={banner.linkLabel}
           effectiveAt={banner.effectiveAt?.toISOString() ?? null}
         />
       )}
-      <main id="main" className="pb-24 md:pb-10">
-        {children}
+      <main id="main" className="flex flex-1 flex-col pb-24 md:pb-10">
         {/*
-          The only route from inside the product to the pages that explain it.
-          Without this, signing in made About, Safety, Volunteer, Privacy and
-          Terms unreachable, they were linked from the landing page footer
-          alone, and a signed-in visitor to the landing page is redirected to
-          Discover before they ever see it.
+          The footer is rendered by `PageShell`, which every page in here uses,
+          so that it inherits the width the page chose. It is the only route
+          from inside the product to the pages that explain it: without it,
+          signing in made About, Safety, Volunteer, Privacy and Terms
+          unreachable, since they were linked from the landing page alone and a
+          signed-in visitor to the landing page is redirected to Discover
+          before they ever see it.
         */}
-        <SiteFooter signedIn />
+        {children}
       </main>
       <RouteAnnouncer />
     </div>

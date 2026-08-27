@@ -131,8 +131,12 @@ export function SupporterPitch({
       </section>
 
       {/* The dark interlude. One sentence, in the serif, doing the work a
-          paragraph of reassurance would do worse. */}
-      <section className="mt-8 overflow-hidden rounded-[var(--radius-card)] bg-band-deep px-6 py-14 text-center text-white sm:px-12">
+          paragraph of reassurance would do worse.
+
+          On `emphasis` rather than on `band-deep`: this panel is inside the app,
+          where the ground behind it changes with the theme, and a near-black
+          slab on a near-black canvas is not an interlude, it is wallpaper. */}
+      <section className="mt-8 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-emphasis-edge)] bg-emphasis px-6 py-14 text-center text-[var(--color-on-emphasis)] sm:px-12">
         <span
           aria-hidden
           className="mx-auto block h-px w-16 bg-coral-primary"
@@ -142,7 +146,7 @@ export function SupporterPitch({
         >
           It is meant to be a tip jar rather than a deal.
         </p>
-        <p className="mx-auto mt-6 max-w-md text-[15px] leading-relaxed text-white/60">
+        <p className="mx-auto mt-6 max-w-md text-[15px] leading-relaxed text-[var(--color-on-emphasis)]/70">
           Which is why the list below is short enough to check, and why nothing
           on it changes who you meet.
         </p>

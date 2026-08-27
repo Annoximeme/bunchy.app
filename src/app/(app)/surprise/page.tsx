@@ -17,7 +17,7 @@ export default async function SurprisePage() {
   await requireViewer();
 
   return (
-    <PageShell>
+    <PageShell width="reading">
       <PageHeader
         title="Surprise me"
         subtitle="The opposite of a recommendation: someone whose interests do not look like yours, but whose evenings do."

@@ -1,3 +1,4 @@
+import { CalendarIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { requireViewer } from "@/server/auth/current-user";
 import { listActivities } from "@/server/modules/activities/service";
@@ -26,7 +27,18 @@ export default async function ActivitiesPage() {
     outcomeReview(viewer.profileId),
   ]);
 
+  /*
+    Three sections, and each activity appears in exactly one of them.
+
+    "Everything coming up" used to be the unfiltered list, so it repeated both
+    sections above it: a screen showing eight cards was showing four
+    activities, and the repetition buried the one section that is actually a
+    recommendation. It is now what its name says, everything *else*.
+  */
   const mineIds = new Set(mine.map((a) => a.id));
+  const worthLooking = suggested.filter((a) => !mineIds.has(a.id));
+  const shownAbove = new Set([...mineIds, ...worthLooking.map((a) => a.id)]);
+  const rest = upcoming.filter((a) => !shownAbove.has(a.id));
 
   return (
     <PageShell>
@@ -59,13 +71,13 @@ export default async function ActivitiesPage() {
           <SectionHeading title={t("activities.yours")} />
           {mine.length === 0 ? (
             <EmptyState
-              icon="📍"
+              icon={<CalendarIcon />}
               title={t("activities.emptyCalendar")}
               description={t("activities.emptyCalendarBody")}
               action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
             />
           ) : (
-            <div className="space-y-3">
+            <div className="grid gap-3 xl:grid-cols-2">
               {mine.map((activity) => (
                 <ActivityCard
                   key={activity.id}
@@ -87,15 +99,14 @@ export default async function ActivitiesPage() {
           )}
         </section>
 
-        {suggested.length > 0 && (
+        {worthLooking.length > 0 && (
           <section>
             <SectionHeading
               title={t("activities.worthLook")}
               subtitle={t("activities.worthLookSubtitle")}
             />
-            <div className="space-y-3">
-              {suggested
-                .filter((a) => !mineIds.has(a.id))
+            <div className="grid gap-3 xl:grid-cols-2">
+              {worthLooking
                 .map((activity) => (
                   <ActivityCard
                     key={activity.id}
@@ -118,17 +129,25 @@ export default async function ActivitiesPage() {
         )}
 
         <section>
-          <SectionHeading title={t("activities.everything")} />
+          <SectionHeading
+            title={
+              shownAbove.size > 0
+                ? t("activities.everythingElse")
+                : t("activities.everything")
+            }
+          />
           {upcoming.length === 0 ? (
             <EmptyState
-              icon="🗓"
+              icon={<CalendarIcon />}
               title={t("activities.nothingPlanned")}
               description={t("activities.nothingPlannedBody")}
               action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
             />
+          ) : rest.length === 0 ? (
+            <p className="text-sm text-muted">{t("activities.everythingShown")}</p>
           ) : (
-            <div className="space-y-3">
-              {upcoming.map((activity) => (
+            <div className="grid gap-3 xl:grid-cols-2">
+              {rest.map((activity) => (
                 <ActivityCard
                   key={activity.id}
                   activity={{

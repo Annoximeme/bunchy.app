@@ -41,7 +41,7 @@ export async function AntiFeedDemo() {
         {/* `band-deep`, the token, rather than the navy literal this shipped
             with. That hex predated the warm palette and was the one cold thing
             left on the page. */}
-        <div className="relative aspect-[9/17] overflow-hidden rounded-[1.7rem] bg-band-deep">
+        <div className="relative aspect-[9/16] overflow-hidden rounded-[1.7rem] bg-band-deep">
           {/*
             No fake status bar.
 
@@ -119,13 +119,42 @@ export async function AntiFeedDemo() {
               </div>
             </div>
 
-            {/* 4. The point. An empty screen and permission to leave. */}
+            {/*
+              4. The point. The plan, settled, and permission to leave.
+
+              This beat used to be one sentence in the middle of an otherwise
+              empty screen. It is also the frame that stands still for anybody
+              who asked for reduced motion, and as a still it read as an image
+              that had failed to load rather than as an app with nothing left to
+              show. The plan stays on screen, dimmed to say it is done, and the
+              sentence sits under it where it belongs.
+            */}
             <div
               data-final="true"
-              className="af-stage absolute inset-0 flex items-center justify-center px-6"
+              className="af-stage absolute inset-0 flex flex-col justify-center gap-4 px-4"
               style={{ animationName: "af-done" }}
             >
-              <p className="text-balance text-center text-[12px] font-medium leading-relaxed text-white/70">
+              <div className="rounded-2xl bg-white/[0.05] p-3.5 opacity-60 ring-1 ring-white/10">
+                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#55D6BE]">
+                  {t("antiFeed.settled")}
+                </p>
+                <p className="mt-1.5 text-[13px] font-bold leading-tight text-white">
+                  {t("antiFeed.thursdayCoffee")}
+                </p>
+                <div className="mt-2.5 flex items-center gap-1.5">
+                  {["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"].map((fill) => (
+                    <span
+                      key={fill}
+                      className="inline-block h-4 w-4 rounded-full ring-2 ring-[#0F1524]"
+                      style={{ backgroundColor: fill }}
+                    />
+                  ))}
+                  <span className="ml-0.5 text-[10px] text-white/50">
+                    {t("antiFeed.going")}
+                  </span>
+                </div>
+              </div>
+              <p className="text-balance px-2 text-center text-[12px] font-medium leading-relaxed text-white/70">
                 {t("antiFeed.allSet")}
               </p>
             </div>

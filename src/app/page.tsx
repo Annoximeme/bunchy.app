@@ -579,7 +579,10 @@ export default async function LandingPage({
               the frames overlapped, and the last line of the message was cut
               off. A named width breaks the loop.
             */}
-            <div className="reveal mt-12 grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_17rem] md:gap-14">
+            {/* 14rem rather than 17. At 17 the frame stood 514px tall next to a
+                two-line sentence, and the row was mostly the empty cream
+                between them. */}
+            <div className="reveal mt-12 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_14rem] md:gap-12">
               <p className="max-w-2xl text-lg text-ink-soft">
                 {t("landing.stagesClosing", { brand: brand.name })}
               </p>

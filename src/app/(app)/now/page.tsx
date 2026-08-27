@@ -1,3 +1,4 @@
+import { EyeOffIcon, MoonIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { interestInSentence } from "@/lib/interests";
 import { Link } from "@/components/link";
@@ -118,7 +119,7 @@ export default async function BunchyNowPage({
 
       {board.hidden ? (
         <EmptyState
-          icon="🙈"
+          icon={<EyeOffIcon />}
           title={t("now.hiddenTitle", { brand: brand.name })}
           description="Availability is switched off in your privacy settings, so you cannot see who is up and nobody can see you. Turning it back on takes one tap."
           action={<LinkButton href="/profile">{t("now.privacySettings")}</LinkButton>}
@@ -160,7 +161,7 @@ export default async function BunchyNowPage({
 
             {board.people.people.length === 0 ? (
               <EmptyState
-                icon="🌙"
+                icon={<MoonIcon />}
                 title={
                   totalUp > 0
                     ? t("now.noMatch")

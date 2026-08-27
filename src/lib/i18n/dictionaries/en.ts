@@ -552,6 +552,7 @@ export const en = {
     free: "Free Thursday evening",
     findMe: "Find me a bunch",
     matchFound: "Match found",
+    settled: "Settled",
     thursdayCoffee: "Thursday Coffee",
     going: "4 going",
     allSet: "You’re all set. Close the app and go enjoy your Thursday.",
@@ -1303,6 +1304,8 @@ export const en = {
     worthLook: "Worth a look",
     worthLookSubtitle: "Near you, at a time you’re usually free.",
     everything: "Everything coming up",
+    everythingElse: "Everything else coming up",
+    everythingShown: "That is everything, and it is all further up this page.",
     nothingPlanned: "Nothing planned yet",
     nothingPlannedBody:
       "Be the first. One person suggesting a coffee is how most of this starts.",

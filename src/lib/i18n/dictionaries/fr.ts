@@ -538,6 +538,7 @@ export const fr: Dictionary = {
     free: "Jeudi soir de libre",
     findMe: "Trouve-moi un bunch",
     matchFound: "Correspondance trouvée",
+    settled: "C’est réglé",
     thursdayCoffee: "Café du jeudi",
     going: "4 participants",
     allSet: "Tout est réglé. Ferme l’appli et profite de ton jeudi.",
@@ -1287,6 +1288,8 @@ export const fr: Dictionary = {
     worthLook: "Ça vaut un coup d’œil",
     worthLookSubtitle: "Près de chez toi, à une heure où tu es d’habitude libre.",
     everything: "Tout ce qui arrive",
+    everythingElse: "Tout le reste à venir",
+    everythingShown: "C’est tout, et c’est déjà plus haut sur cette page.",
     nothingPlanned: "Rien de prévu pour l’instant",
     nothingPlannedBody:
       "Sois le premier. Une personne qui propose un café, c’est comme ça que ça commence le plus souvent.",

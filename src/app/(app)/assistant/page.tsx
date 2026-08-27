@@ -20,14 +20,12 @@ export default async function AssistantPage({
   const { q } = await searchParams;
 
   return (
-    <PageShell>
-      <div className="mx-auto max-w-3xl">
-        <PageHeader
-          title="Ask Bunchy"
-          subtitle="Ask about people, bunches, activities or your own recommendations."
-        />
-        <Assistant initialQuery={q?.slice(0, 280) ?? ""} />
-      </div>
+    <PageShell width="reading">
+      <PageHeader
+        title="Ask Bunchy"
+        subtitle="Ask about people, bunches, activities or your own recommendations."
+      />
+      <Assistant initialQuery={q?.slice(0, 280) ?? ""} />
     </PageShell>
   );
 }

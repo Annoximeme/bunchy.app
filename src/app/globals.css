@@ -177,6 +177,24 @@
      theme's own canvas, or the alternation the public pages are built from
      inverts at night, and #1C1917 is fractionally lighter than #181614. */
   --color-band-deep: #14110f;
+
+  /* --- Emphasis ------------------------------------------------------------
+     A panel that has to be heavier than the page around it, inside the app,
+     where the page around it changes with the theme.
+
+     `band-deep` cannot do this job. It is deliberately the same near-black in
+     both themes because the public pages alternate against a cream ground and
+     need a fixed floor. Inside the app that same value sits on a dark canvas at
+     night, where it stops being emphasis and becomes slightly darker wallpaper:
+     the tip-jar statement on Supporter was carrying its whole meaning in a
+     contrast that only existed by day.
+
+     So emphasis is a pair that resolves per theme. Dark ink by day, a raised
+     warm surface with a coral hairline by night, and the component stops caring
+     which one it is in. */
+  --color-emphasis: #14110f;
+  --color-on-emphasis: #ffffff;
+  --color-emphasis-edge: transparent;
   /* Aliases, not copies. The reading ground of a public page and the canvas of
      a signed-in page are the same surface doing the same job, and writing the
      hex twice is how they drift apart the first time one of them is tuned. */
@@ -260,6 +278,10 @@
     --color-teal-soft: #10302b;
     --color-on-teal: #172033;
 
+    --color-emphasis: #322c26;
+    --color-on-emphasis: #f4efe9;
+    --color-emphasis-edge: rgb(255 92 108 / 0.32);
+
     --color-positive: #55d6be;
     --color-positive-soft: #10302b;
     --color-danger: #ff8a7d;
@@ -327,6 +349,10 @@
     --color-teal: #55d6be;
     --color-teal-soft: #10302b;
     --color-on-teal: #172033;
+
+    --color-emphasis: #322c26;
+    --color-on-emphasis: #f4efe9;
+    --color-emphasis-edge: rgb(255 92 108 / 0.32);
 
     --color-positive: #55d6be;
     --color-positive-soft: #10302b;

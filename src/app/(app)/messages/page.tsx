@@ -1,3 +1,4 @@
+import { ChatIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
@@ -19,7 +20,7 @@ export default async function MessagesPage() {
   const conversations = await listConversations(viewer.profileId);
 
   return (
-    <PageShell>
+    <PageShell width="reading">
       <PageHeader
         title={t("messages.title")}
         subtitle={t("messages.subtitle")}
@@ -27,7 +28,7 @@ export default async function MessagesPage() {
 
       {conversations.length === 0 ? (
         <EmptyState
-          icon="💬"
+          icon={<ChatIcon />}
           title={t("messages.emptyTitle")}
           description={t("messages.emptyBody")}
           action={<LinkButton href="/discover">{t("messages.findPeople")}</LinkButton>}

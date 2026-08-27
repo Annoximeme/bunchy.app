@@ -67,12 +67,34 @@ describe("the shared site links", () => {
   });
 });
 
+/** Every file under a directory, for the shell-wide checks below. */
+function walk(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = `${dir}/${entry.name}`;
+    return entry.isDirectory() ? walk(path) : [path];
+  });
+}
+
 describe("reachability", () => {
   it("is mounted in the signed-in shell", () => {
     // Without this the whole list is unreachable to anyone with an account,
     // which is precisely the bug.
-    const layout = readFileSync(`${ROOT}(app)/layout.tsx`, "utf8");
-    expect(layout).toContain("SiteFooter");
+    //
+    // The mount moved from the layout into `PageShell` so the footer inherits
+    // whichever width the page chose rather than always taking the wide one.
+    // That is only safe while every page in the shell goes through `PageShell`,
+    // so this checks both halves of it.
+    const shell = readFileSync(
+      new URL("../src/components/page-header.tsx", import.meta.url).pathname,
+      "utf8",
+    );
+    expect(shell).toContain("SiteFooter");
+
+    const pages = walk(`${ROOT}(app)`).filter((f) => f.endsWith("page.tsx"));
+    expect(pages.length).toBeGreaterThan(20);
+    for (const page of pages) {
+      expect(readFileSync(page, "utf8")).toContain("PageShell");
+    }
   });
 
   it("is mounted on the policy pages", () => {

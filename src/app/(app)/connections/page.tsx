@@ -1,3 +1,4 @@
+import { PeopleIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
@@ -25,7 +26,7 @@ export default async function ConnectionsPage() {
   ]);
 
   return (
-    <PageShell>
+    <PageShell width="reading">
       <PageHeader
         title="Connections"
         subtitle="Both people have to agree. That's the whole rule."
@@ -78,7 +79,7 @@ export default async function ConnectionsPage() {
           <SectionHeading title={`Your connections (${connections.length})`} />
           {connections.length === 0 ? (
             <EmptyState
-              icon="🤝"
+              icon={<PeopleIcon />}
               title="Nobody here yet, and that is the normal beginning"
               description="Discover suggests a handful of people at a time. Send a request to anyone who looks like your kind of person."
               action={<LinkButton href="/discover">Find people</LinkButton>}

@@ -129,7 +129,7 @@ export default async function ComingSoonPage({
               {/* The point of the page. */}
               <section
                 id="waitlist"
-                className="mt-10 scroll-mt-8 rounded-[1.75rem] border border-white/10 bg-white/[0.05] p-6 sm:p-8"
+                className="mt-10 scroll-mt-8 rounded-[1.75rem] border border-coral-primary/25 bg-white/[0.07] p-6 shadow-[0_24px_70px_-40px_rgba(255,92,108,0.55)] sm:p-8"
               >
                 {waitlist === "joined" ? (
                   <div>
@@ -279,7 +279,7 @@ export default async function ComingSoonPage({
 
           {/* The differentiator, stated as a refusal. */}
           <section className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2">
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7">
+            <div className="rounded-[1.5rem] border border-white/[0.16] bg-white/[0.03] p-7">
               <h2 className="text-xl font-bold tracking-tight">
                 {t("comingSoon.refusalTitle")}
               </h2>
@@ -294,7 +294,7 @@ export default async function ComingSoonPage({
               </p>
             </div>
 
-            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7">
+            <div className="rounded-[1.5rem] border border-white/[0.16] bg-white/[0.03] p-7">
               <h2 className="text-xl font-bold tracking-tight">
                 {t("comingSoon.onlineTitle")}
               </h2>
@@ -322,7 +322,10 @@ export default async function ComingSoonPage({
           </section>
 
           {/* Who is behind it. The honest part. */}
-          <section className="mt-16 flex flex-col items-start gap-6 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-7 sm:flex-row sm:items-center">
+          {/* No box. Every block on this page was the same object, so nothing on
+              it led. A note about who builds this is an aside, and an aside
+              gets a rule above it rather than a frame around it. */}
+          <section className="mt-16 flex flex-col items-start gap-6 border-t border-white/[0.16] pt-8 sm:flex-row sm:items-center">
             <div className="flex -space-x-3">
               {["S", "M", "E", "T", "P"].map((initial) => (
                 <span
@@ -353,7 +356,7 @@ export default async function ComingSoonPage({
             Nothing to offer someone who has already joined, so it is skipped.
           */}
           {waitlist !== "joined" && (
-            <section className="mt-16 flex flex-col items-center gap-5 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-6 py-12 text-center">
+            <section className="mt-16 flex flex-col items-center gap-5 rounded-[1.5rem] border border-coral-primary/25 bg-white/[0.07] px-6 py-12 text-center shadow-[0_24px_70px_-40px_rgba(255,92,108,0.55)]">
               <h2 className="max-w-lg text-balance text-2xl font-bold tracking-tight sm:text-3xl">
                 {t("brand.tagline")}
               </h2>
@@ -386,7 +389,7 @@ export default async function ComingSoonPage({
             and a set of requests the reader did not ask for, on a site whose
             About page promises no third-party anything.
           */}
-          <section className="mt-6 flex flex-col items-center gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-6 py-10 text-center">
+          <section className="mt-6 flex flex-col items-center gap-4 rounded-[1.5rem] border border-white/[0.16] bg-white/[0.03] px-6 py-10 text-center">
             <span
               aria-hidden
               className="inline-flex size-11 items-center justify-center rounded-2xl bg-white/[0.06] text-white/70"
@@ -431,7 +434,7 @@ function Beat({
   body: string;
 }) {
   return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6">
+    <div className="rounded-[1.5rem] border border-white/[0.16] bg-white/[0.03] p-6">
       <span
         className="text-xs font-bold tabular-nums tracking-widest"
         style={{ color: tone }}

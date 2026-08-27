@@ -1,3 +1,4 @@
+import { InboxIcon, SearchIcon } from "@/components/icons";
 import type { Metadata } from "next";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
@@ -128,7 +129,7 @@ export default async function WhatsNewPage({
       {total === 0 ? (
         <EmptyState
           level={2}
-          icon="📭"
+          icon={<InboxIcon />}
           title="Nothing to report"
           description="When something changes that affects you, whether that is what we hold, what the terms say, or whether the site is up, it lands here. The important ones find you rather than waiting to be found."
         />
@@ -172,7 +173,7 @@ export default async function WhatsNewPage({
           {page.announcements.length === 0 ? (
             <EmptyState
               level={2}
-              icon="🔎"
+              icon={<SearchIcon />}
               title="Nothing under that filter"
               description={
                 unreadOnly

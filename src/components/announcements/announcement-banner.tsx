@@ -24,14 +24,12 @@ import { api } from "@/lib/api";
 export function AnnouncementBanner({
   slug,
   title,
-  summary,
   linkHref,
   linkLabel,
   effectiveAt,
 }: {
   slug: string;
   title: string;
-  summary: string;
   linkHref: string | null;
   linkLabel: string | null;
   /** ISO string, formatted on the client so it reads in the member's locale. */
@@ -69,38 +67,57 @@ export function AnnouncementBanner({
       // emergency, and an assertive live region interrupts a screen reader
       // mid-sentence.
       role="status"
-      className="border-b border-line bg-band-deep px-5 py-4 text-white"
-    >
-      <div className="mx-auto flex max-w-5xl items-start gap-4">
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold tracking-tight">{title}</p>
-          <p className="mt-1 text-sm leading-relaxed text-white/70">{summary}</p>
+      /*
+        One line, on a surface of its own.
 
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm">
-            {linkHref && (
-              <Link
-                href={linkHref}
-                className="font-semibold text-coral-primary underline underline-offset-4"
-              >
-                {linkLabel ?? "Read it"}
-              </Link>
-            )}
-            <Link
-              href="/whats-new"
-              className="text-white/60 underline underline-offset-4 hover:text-white"
-            >
-              All announcements
-            </Link>
-            {effective && (
-              <span className="text-white/60">Takes effect {effective}</span>
-            )}
-          </div>
-        </div>
+        This used to be a full-bleed black band carrying a title, a summary, two
+        links and a date: 110px on a desktop and 181px on a phone, which is a
+        fifth of the screen, above the page title on every screen until it was
+        dismissed. It was the loudest thing in the product by a wide margin.
+
+        And in dark mode it was the quietest. Near-black on a near-black page
+        meant the one component whose whole job is "you must see this" had less
+        contrast against its background than an ordinary card. Loud where it
+        should be calm, invisible where it should be clear.
+
+        So: the accent wash, which is a notice colour in both themes, a coral
+        edge to catch the eye, and one row. The summary is not lost, it is on
+        the page the link goes to, which is where somebody who wants it is
+        going anyway.
+      */
+      // The coral edge belongs to the band, not to the column inside it. On the
+      // container it floated in the middle of the strip with pale pink either
+      // side of it; on the band it starts where the band starts, which is right
+      // where the sidebar ends.
+      className="border-b border-l-4 border-line border-l-accent bg-accent-soft"
+    >
+      <div className="mx-auto flex max-w-5xl items-center gap-3 px-5 py-2.5">
+        <p className="min-w-0 flex-1 truncate text-sm font-semibold tracking-tight text-ink">
+          {title}
+        </p>
+
+        {linkHref && (
+          <Link
+            href={linkHref}
+            className="shrink-0 whitespace-nowrap text-sm font-semibold text-accent-ink underline underline-offset-4"
+          >
+            {linkLabel ?? "Read it"}
+          </Link>
+        )}
+
+        {/* The date is the first thing to go when there is no room for it: on a
+            phone the title and the way in are what matter, and both of them are
+            repeated on the page the link opens. */}
+        {effective && (
+          <span className="hidden shrink-0 whitespace-nowrap text-sm text-muted sm:inline">
+            Takes effect {effective}
+          </span>
+        )}
 
         <button
           type="button"
           onClick={dismiss}
-          className="shrink-0 rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+          className="shrink-0 rounded-full p-1.5 text-muted transition-colors hover:bg-accent/15 hover:text-ink"
         >
           <X size={16} aria-hidden />
           <span className="sr-only">Dismiss, and mark as read</span>
