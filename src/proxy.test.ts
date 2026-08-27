@@ -79,6 +79,14 @@ describe("choosing a language", () => {
     expect(guessed.cookies.get(LOCALE_COOKIE)).toBeUndefined();
   });
 
+  it("never hands back the gate's own address", () => {
+    // While the coming-soon gate is up the page is rendered from an internal
+    // path, so its English link arrives as `/en/coming-soon`. The reader was
+    // looking at the front page, and that is what they should end up on.
+    expect(target(proxy(request("/en/coming-soon", { cookie: "nl" })))).toBe("/");
+    expect(target(proxy(request("/coming-soon", { cookie: "nl" })))).toBe("/nl");
+  });
+
   it("leaves the addresses that have no language alone", () => {
     expect(target(proxy(request("/api/health", { cookie: "nl" })))).toBeNull();
     expect(target(proxy(request("/en/api/health", { cookie: "nl" })))).toBeNull();

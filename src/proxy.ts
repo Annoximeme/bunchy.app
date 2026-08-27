@@ -159,7 +159,14 @@ export function proxy(request: NextRequest) {
   // mind twice.
   if (fromPath && locale === DEFAULT_LOCALE && !localeless) {
     const canonical = request.nextUrl.clone();
-    canonical.pathname = path;
+    // `/coming-soon` is an internal path and never an address to hand back,
+    // for the same reason it is not one below. While the gate is up, Caddy has
+    // already rewritten the request, so the page renders its switcher against
+    // `/coming-soon` and the English link arrives here as `/en/coming-soon`.
+    // Answering that with the path as it stands would put the gate's own
+    // address in the reader's bar. The page they were looking at was the front
+    // one, so that is where they go, and the gate rewrites it again on the way.
+    canonical.pathname = path === "/coming-soon" ? "/" : path;
     const response = NextResponse.redirect(canonical, 307);
     response.headers.set("Cache-Control", "no-store");
     return remember(response, request, locale);
