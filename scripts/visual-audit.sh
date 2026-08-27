@@ -3,6 +3,11 @@
 #
 #   ./scripts/visual-audit.sh [output-directory]   # defaults to ./screenshots
 #
+# PAGES_FILTER is a regular expression matched against the page names, for
+# re-checking one corner after a fix rather than sitting through all of them:
+#
+#   PAGES_FILTER='^bunch' ./scripts/visual-audit.sh
+#
 # Brings up a preview container, points the audit at it, and removes it again
 # whether the audit passed, failed or was interrupted.
 #
@@ -108,6 +113,7 @@ STATUS=0
 docker run --rm --network "$NETWORK" \
   -v "$PWD":/app -v "$OUT_ABS":/out -w /app \
   -e BASE_URL="http://${CONTAINER}:3000" -e OUT_DIR=/out \
+  -e PAGES_FILTER="${PAGES_FILTER:-}" \
   --user "$(id -u):$(id -g)" \
   "$PLAYWRIGHT_IMAGE" node_modules/.bin/tsx scripts/visual-audit.ts || STATUS=$?
 

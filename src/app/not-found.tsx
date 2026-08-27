@@ -2,7 +2,7 @@ import { LinkButton } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-dvh items-center justify-center px-5">
+    <div data-page="not-found" className="flex min-h-dvh items-center justify-center px-5">
       <div className="card-surface max-w-md p-8 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Nothing here

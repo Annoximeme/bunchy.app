@@ -30,11 +30,64 @@ const OUT = process.env.OUT_DIR ?? "/out";
 const EMAIL = process.env.DEMO_EMAIL ?? "sarah@example.com";
 const PASSWORD = process.env.DEMO_PASSWORD ?? "bunchydemo1234";
 
+interface Target {
+  path: string;
+  name: string;
+  /** Shot through a window with no session, because that is who reads it. */
+  signedOut?: boolean;
+  /**
+   * A page whose address only exists once there is data in the database.
+   *
+   * The list page is opened, the first link matching this pattern is taken,
+   * and that becomes the path. Hard-coding an id would tie the audit to one
+   * seed run; hard-coding a slug survives until somebody renames a bunch.
+   */
+  discover?: { from: string; match: string };
+}
+
 /** The pages a member actually passes through, in roughly that order. */
-const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
+const PAGES: Target[] = [
   // The one page a first-time visitor sees before deciding whether to stay, and
   // for a long time the only one this script did not look at.
   { path: "/", name: "landing", signedOut: true },
+
+  /*
+    The way in, which had never been looked at.
+
+    Every one of these is shot signed out, because a member never sees them
+    again after their first ten minutes and the audit holds a session for the
+    rest of the run. They are also the pages where a visual fault costs the
+    most: somebody who cannot read the sign-up form does not become a member,
+    and there is nobody to tell about it.
+
+    /reset-password and /verify-email are opened with no token on purpose.
+    That is the state a reader reaches by clicking a link that has expired or
+    been mangled by their mail client, and it is the only state of those two
+    pages this script can reach without minting one.
+  */
+  { path: "/coming-soon", name: "coming-soon", signedOut: true },
+  { path: "/signup", name: "signup", signedOut: true },
+  { path: "/login", name: "login", signedOut: true },
+  { path: "/forgot-password", name: "forgot-password", signedOut: true },
+  { path: "/reset-password", name: "reset-password", signedOut: true },
+  { path: "/verify-email", name: "verify-email", signedOut: true },
+  { path: "/unsubscribe", name: "unsubscribe", signedOut: true },
+
+  /*
+    Onboarding, all five steps.
+
+    The layout guards on being signed in and nothing else, so the session the
+    audit already holds opens every step with its answers filled in. That is
+    the returning shape rather than the blank one a new member sees, and it is
+    the more useful of the two here: a full field is what tests whether the
+    control is big enough for what goes in it.
+  */
+  { path: "/onboarding/basics", name: "onboarding-basics" },
+  { path: "/onboarding/interests", name: "onboarding-interests" },
+  { path: "/onboarding/personality", name: "onboarding-personality" },
+  { path: "/onboarding/availability", name: "onboarding-availability" },
+  { path: "/onboarding/goals", name: "onboarding-goals" },
+
   { path: "/discover", name: "discover" },
   { path: "/whats-new", name: "whats-new" },
   { path: "/whats-new/privacy-policy-update", name: "whats-new-item" },
@@ -44,9 +97,31 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/u/milan", name: "profile-public" },
   { path: "/now", name: "now" },
   { path: "/bunches", name: "bunches" },
+  { path: "/bunches/new", name: "bunch-new" },
+  // The detail pages, which is where most of the design actually lives: a list
+  // is rows, and everything that makes a bunch feel like a place is on the page
+  // behind the row. None of them had ever been in a screenshot.
+  {
+    path: "/bunches",
+    name: "bunch-detail",
+    discover: { from: "/bunches", match: "^/bunches/(?!new$)[a-z0-9-]+$" },
+  },
   { path: "/activities", name: "activities" },
+  { path: "/activities/new", name: "activity-new" },
+  {
+    path: "/activities",
+    name: "activity-detail",
+    discover: { from: "/activities", match: "^/activities/(?!new$)[a-zA-Z0-9-]+$" },
+  },
   { path: "/radar", name: "radar" },
   { path: "/messages", name: "messages" },
+  {
+    path: "/messages",
+    name: "message-thread",
+    discover: { from: "/messages", match: "^/messages/[a-zA-Z0-9-]+$" },
+  },
+  { path: "/search?q=board+games", name: "search" },
+  { path: "/assistant", name: "assistant" },
   { path: "/notifications", name: "notifications" },
   { path: "/connections", name: "connections" },
   { path: "/do", name: "do" },
@@ -58,6 +133,7 @@ const PAGES: Array<{ path: string; name: string; signedOut?: boolean }> = [
   { path: "/safety", name: "safety", signedOut: true },
   { path: "/terms", name: "terms", signedOut: true },
   { path: "/privacy", name: "privacy", signedOut: true },
+  { path: "/changelog", name: "changelog", signedOut: true },
 
   /*
     The staff area, which had never been in here.
@@ -318,6 +394,56 @@ async function signInOnce(browser: Browser) {
 }
 
 /**
+ * Fills in the addresses that only exist once there is data behind them.
+ *
+ * A bunch, an activity and a conversation all live at an id or a slug the seed
+ * generates, so the audit finds them the way a member does: it opens the list
+ * and takes the first link that looks like one. A target that finds nothing is
+ * dropped and recorded rather than shot as its own list page a second time,
+ * which is what made the earlier version of this look like it was working.
+ */
+async function resolveDiscovered(browser: Browser, storageState: Awaited<ReturnType<typeof signInOnce>>) {
+  const pending = PAGES.filter((target) => target.discover);
+  if (pending.length === 0) return;
+
+  const context = await browser.newContext({ storageState, reducedMotion: "reduce" });
+  const page = await context.newPage();
+
+  for (const target of pending) {
+    const { from, match } = target.discover!;
+    try {
+      await page.goto(`${BASE}${from}`, { waitUntil: "load", timeout: 30_000 });
+      const href = await page.evaluate((pattern) => {
+        const re = new RegExp(pattern);
+        for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+          // The language prefix comes off first. These patterns are written in
+          // the English spelling of a path, and a run whose session had drifted
+          // into Dutch matched none of them and reported the pages as missing
+          // rather than as a language it had not expected to be in.
+          const value = (a.getAttribute("href") ?? "").replace(/^\/(?:nl|fr)(?=\/)/, "");
+          if (re.test(value)) return value;
+        }
+        return null;
+      }, match);
+
+      if (href) {
+        target.path = href;
+        console.log(`  → ${target.name} resolved to ${href}`);
+      } else {
+        target.path = "";
+        probeFailures.push(`${target.name}: no link matching ${match} on ${from}`);
+        console.error(`  ✗ ${target.name}: nothing on ${from} matched ${match}`);
+      }
+    } catch (error) {
+      target.path = "";
+      probeFailures.push(`${target.name}: ${String(error).slice(0, 120)}`);
+    }
+  }
+
+  await context.close();
+}
+
+/**
  * Every context asks for reduced motion, and that is load-bearing rather than
  * polite.
  *
@@ -338,6 +464,17 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
   const storageState = await signInOnce(browser);
+  await resolveDiscovered(browser, storageState);
+
+  // A name filter, for the second run of a session. Looking at forty-eight
+  // pages is the right thing to do once; re-shooting all of them to check one
+  // fix is fifteen minutes of waiting to look at a single image.
+  //   PAGES_FILTER='^(bunch|activity)' ./scripts/visual-audit.sh
+  const filter = process.env.PAGES_FILTER ? new RegExp(process.env.PAGES_FILTER) : null;
+  const targets = PAGES.filter(
+    (target) => target.path !== "" && (!filter || filter.test(target.name)),
+  );
+  if (targets.length === 0) throw new Error("PAGES_FILTER matched no pages");
 
   for (const viewport of VIEWPORTS) {
     for (const theme of ["light", "dark"] as const) {
@@ -367,7 +504,7 @@ async function main() {
       signedInPage.on("pageerror", onError);
       anonPage.on("pageerror", onError);
 
-      for (const target of PAGES) {
+      for (const target of targets) {
         const page = target.signedOut ? anonPage : signedInPage;
         try {
           // `networkidle` is the right wait for a screenshot, it means the
@@ -401,6 +538,30 @@ async function main() {
                 .map((img) => img.decode().catch(() => undefined)),
             );
           });
+
+          /*
+            Refuse to call an error page a page.
+
+            Every signed-in screenshot in one run was the "That didn't load"
+            card, because the preview database was four migrations behind and
+            every query that selected a column added since then threw. The run
+            still wrote 166 files and still reported no accessibility problems,
+            because an error card is small, legible and perfectly accessible.
+            That is the most expensive kind of green.
+
+            The three pages that mean "you are not looking at the product" now
+            say so in the markup, so this can be checked without reading prose
+            that changes with the language.
+          */
+          const failed = await page.evaluate(() => {
+            const el = document.querySelector("[data-page]");
+            const kind = el?.getAttribute("data-page") ?? "";
+            return ["error", "global-error", "not-found"].includes(kind) ? kind : null;
+          });
+          if (failed) {
+            probeFailures.push(`${target.name} ${viewport.name} ${theme}: rendered the ${failed} page`);
+            console.error(`  ✗ ${target.name} ${viewport.name} ${theme}: ${failed} page`);
+          }
 
           // Let the reveal animations settle so screenshots are not caught
           // mid-transition, which reads as a broken layout.
