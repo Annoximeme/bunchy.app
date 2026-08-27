@@ -116,17 +116,43 @@ function isLocaleless(path: string): boolean {
 }
 
 /**
+ * A request the reader did not make.
+ *
+ * Next fetches the pages behind the links on a page before anybody clicks
+ * them, so the three links in the language switcher are all fetched the moment
+ * a page carrying it is rendered. Chrome sends `Next-Router-Prefetch: 1` on
+ * those; `Purpose` and `Sec-Purpose` cover a browser speculating on its own.
+ */
+function isPrefetch(request: NextRequest): boolean {
+  const headers = request.headers;
+  return (
+    headers.get("next-router-prefetch") === "1" ||
+    headers.get("purpose") === "prefetch" ||
+    (headers.get("sec-purpose") ?? "").includes("prefetch")
+  );
+}
+
+/**
  * Writes the chosen language down, unless it is already what is written.
  *
  * Only an address ever gets here, never a guess: a language worked out from
  * `Accept-Language` is this request's best answer, not a decision the reader
  * made, and saving it would freeze a guess into a preference nobody chose.
+ *
+ * And never on a prefetch, which is the same rule seen from the other side.
+ * Loading the English front page left the reader with a French cookie: the
+ * switcher's three links were all fetched before anybody touched them, each
+ * answer wrote the language it named, and the last one to arrive won. Nothing
+ * on screen changed, so the next bare address they opened came back in French
+ * for no reason they could see. A response to a request nobody made must not
+ * change what the next page says.
  */
 function remember(
   response: NextResponse,
   request: NextRequest,
   locale: Locale,
 ): NextResponse {
+  if (isPrefetch(request)) return response;
   if (request.cookies.get(LOCALE_COOKIE)?.value === locale) return response;
   response.cookies.set(LOCALE_COOKIE, locale, {
     path: "/",

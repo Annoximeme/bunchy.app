@@ -81,6 +81,10 @@ function Switcher({
           <NextLink
             key={option}
             href={`${localeChoicePath(option, path)}${query}`}
+            // Nothing to fetch ahead of time: every one of these three answers
+            // is a redirect, and fetching them early is what silently changed
+            // the reader's language before they touched anything.
+            prefetch={false}
             hrefLang={LOCALE_TAGS[option]}
             lang={LOCALE_TAGS[option]}
             aria-current={current ? "true" : undefined}

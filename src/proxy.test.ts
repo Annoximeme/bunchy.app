@@ -11,10 +11,14 @@ import { LOCALE_COOKIE } from "@/lib/i18n/config";
  * the cookie still said Dutch. Every case below is a step on the path a reader
  * takes through the switcher, so the loop cannot come back unnoticed.
  */
-function request(path: string, init: { cookie?: string; accept?: string } = {}) {
+function request(
+  path: string,
+  init: { cookie?: string; accept?: string; prefetch?: boolean } = {},
+) {
   const headers = new Headers();
   if (init.cookie) headers.set("cookie", `${LOCALE_COOKIE}=${init.cookie}`);
   if (init.accept) headers.set("accept-language", init.accept);
+  if (init.prefetch) headers.set("next-router-prefetch", "1");
   return new NextRequest(new URL(path, "https://bunchy.app"), { headers });
 }
 
@@ -85,6 +89,26 @@ describe("choosing a language", () => {
     // looking at the front page, and that is what they should end up on.
     expect(target(proxy(request("/en/coming-soon", { cookie: "nl" })))).toBe("/");
     expect(target(proxy(request("/coming-soon", { cookie: "nl" })))).toBe("/nl");
+  });
+
+  it("is not changed by the browser looking ahead", () => {
+    /*
+      The bug this exists to stop, which was live and invisible.
+
+      Next fetches the pages behind the links on a page before anybody clicks
+      them, so the switcher's own three links were all fetched on arrival.
+      Each answer wrote the language it named and the last one won, which left
+      somebody who had just loaded the English front page with a French cookie
+      and no idea why the next page was in French.
+    */
+    for (const path of ["/en/discover", "/nl/discover", "/fr/discover"]) {
+      const looked = proxy(request(path, { cookie: "en", prefetch: true }));
+      expect(looked.cookies.get(LOCALE_COOKIE)).toBeUndefined();
+    }
+
+    // A click still counts, which is the whole point of keeping the cookie.
+    const clicked = proxy(request("/fr/discover", { cookie: "en" }));
+    expect(clicked.cookies.get(LOCALE_COOKIE)?.value).toBe("fr");
   });
 
   it("leaves the addresses that have no language alone", () => {
