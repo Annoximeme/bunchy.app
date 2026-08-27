@@ -34,7 +34,14 @@ export default async function UnsubscribePage({
   const target = token ? verifyUnsubscribe(token) : null;
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-canvas px-5 py-16 text-ink">
+    // `main`, and carrying the id the skip link points at. This page sits
+    // outside the app shell, so it had neither: the skip link in the root
+    // layout aimed at an element that did not exist here, and everything on
+    // the page sat outside any landmark.
+    <main
+      id="main"
+      className="flex min-h-dvh flex-col items-center justify-center bg-canvas px-5 py-16 text-ink"
+    >
       <div className="w-full max-w-md">
         <BunchyLogo height={24} />
 
@@ -46,7 +53,7 @@ export default async function UnsubscribePage({
           <Confirm token={token!} target={target.kind} />
         )}
       </div>
-    </div>
+    </main>
   );
 }
 

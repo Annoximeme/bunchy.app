@@ -316,7 +316,9 @@ function IntentButton({
       aria-pressed={active}
       className={cn(
         "rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-        active ? "bg-teal text-white" : "text-muted hover:bg-surface hover:text-ink",
+        active
+          ? "bg-teal text-[var(--color-on-teal)]"
+          : "text-muted hover:bg-surface hover:text-ink",
       )}
     >
       {children}

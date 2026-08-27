@@ -40,6 +40,10 @@ export interface Formats {
   messageTime(value: string | Date): string;
   /** "Today", "Yesterday", "Thursday 12 Mar", for a day divider. */
   dayLabel(value: string | Date, now?: Date): string;
+  /** "7 September 2026", for a date that is spelled out in a sentence. */
+  longDate(value: string | Date): string;
+  /** "20:00" for later today, "Sat 14:00" for another day. */
+  untilTime(value: string | Date, now?: Date): string;
 }
 
 export function createFormats(
@@ -95,6 +99,31 @@ export function createFormats(
 
     messageTime(value) {
       return clock(asDate(value));
+    },
+
+    longDate(value) {
+      return asDate(value).toLocaleDateString(tag, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    },
+
+    /*
+      When a status runs out, said the way a person would.
+
+      The clock alone if it is still today, the weekday in front of it if it is
+      not, which is the shape "until 23:00" and "until Sat 14:00" need. It is
+      here rather than inline in the component because the component was
+      calling `toLocaleString` with no locale at all: an English reader on an
+      American browser was told a status lasted "until Fri 02:43 AM", two cards
+      below an activity at "20:00", and a Dutch reader got an English weekday.
+    */
+    untilTime(value, now = new Date()) {
+      const date = asDate(value);
+      const time = clock(date);
+      if (date.toDateString() === now.toDateString()) return time;
+      return `${date.toLocaleDateString(tag, { weekday: "short" })} ${time}`;
     },
 
     dayLabel(value, now = new Date()) {

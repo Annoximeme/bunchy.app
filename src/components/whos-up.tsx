@@ -6,7 +6,7 @@ import type { AvailabilityKind } from "@/generated/prisma/enums";
 
 import { useState } from "react";
 import { interestInSentence } from "@/lib/interests";
-import { Link, useTranslate } from "@/components/link";
+import { Link, useFormats, useTranslate } from "@/components/link";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, ErrorNotice, cn } from "@/components/ui";
@@ -61,6 +61,7 @@ export function WhosUp({
   disabled: boolean;
 }) {
   const t = useTranslate();
+  const formats = useFormats();
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [note, setNote] = useState("");
@@ -136,7 +137,7 @@ export function WhosUp({
           <div className="flex flex-wrap items-center gap-2">
             <Chip tone="positive">{t(status.label)}</Chip>
             <span className="text-sm text-muted">
-              until {formatExpiry(status.expiresAt)}
+              {t("whosUp.until", { time: formats.untilTime(status.expiresAt) })}
             </span>
           </div>
           {status.note && <p className="mt-2 text-sm text-ink-soft">“{status.note}”</p>}
@@ -224,13 +225,3 @@ export function WhosUp({
   );
 }
 
-/** "18:30" for something today, "Sat 14:00" otherwise. */
-function formatExpiry(iso: string): string {
-  const at = new Date(iso);
-  const sameDay = at.toDateString() === new Date().toDateString();
-  return at.toLocaleString(undefined, {
-    ...(sameDay ? {} : { weekday: "short" }),
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}

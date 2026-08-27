@@ -140,24 +140,41 @@ export default async function LandingPage({
       />
       {/* 1: Navigation */}
       <header className="absolute inset-x-0 top-0 z-40">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
+        {/*
+          Four things do not fit across a phone, and this row was proof of it:
+          at 390px the language pills sat on top of the wordmark, "Sign in"
+          broke across two lines, and the join button ran 31px off the side of
+          the screen and took the whole page's horizontal scroll with it. In
+          Dutch, where the same button reads "Word lid van Bunchy", it was
+          worse. So the phone gets three of the four.
+
+          Signing in is the one that goes. It is the action a returning member
+          takes, they know where it is, and it is still in the footer of this
+          page and on the sign-up card itself. The language switcher stays,
+          because the visitor who needs it most cannot read the header, and the
+          button that ends the page stays because it is the point of the page.
+        */}
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 sm:px-5">
           <BunchyLogo height={24} color="#FFFFFF" />
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
             {/* Before the two calls to action rather than in the footer. The
                 one visitor who needs it most is the one who has not read the
                 headline yet. */}
-            <LanguageSwitcher className="mr-1 text-white/70" compact />
+            <LanguageSwitcher className="text-white/70 sm:mr-1" compact />
             <Link
               href="/login"
-              className="rounded-full px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:text-white"
+              className="hidden rounded-full px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:text-white sm:inline-block"
             >
               {t("landing.signIn")}
             </Link>
             <Link
               href="/signup"
-              className="rounded-full bg-coral-primary px-5 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03]"
+              className="whitespace-nowrap rounded-full bg-coral-primary px-4 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] transition-transform duration-200 hover:scale-[1.03] sm:px-5"
             >
-              {t("landing.join", { brand: brand.name })}
+              <span className="sm:hidden">{t("landing.joinShort")}</span>
+              <span className="hidden sm:inline">
+                {t("landing.join", { brand: brand.name })}
+              </span>
             </Link>
           </nav>
         </div>

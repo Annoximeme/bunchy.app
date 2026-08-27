@@ -24,7 +24,13 @@ import { ShieldCheck } from "lucide-react";
 export async function ModerationBanner() {
   const t = await getTranslations();
   return (
-    <section className="px-5 py-24">
+    // `text-ink` is not decoration here. The landing page sets `text-white` on
+    // the whole document for its dark bands, and every light section switches
+    // it back. This one did not, so the heading, the only line in the card
+    // without a colour of its own, rendered white on a white card and was
+    // simply absent: the safety claim on the page, one screen above the sign-up
+    // button, was an empty gap that read as a spacing mistake.
+    <section className="px-5 py-24 text-ink">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-[var(--radius-card)] border border-line bg-surface p-8 sm:p-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">

@@ -391,6 +391,7 @@ export const fr: Dictionary = {
   landing: {
     signIn: "Se connecter",
     join: "Rejoindre {brand}",
+    joinShort: "Rejoindre",
     badge: "Pas de fil. Pas d’abonnés. Juste des gens.",
     headlineBefore: "Se faire des amis à l’âge adulte, c’est",
     headlineEmphasis: "absurdement difficile.",
@@ -1381,6 +1382,7 @@ export const fr: Dictionary = {
     whoCanSee: "Qui peut voir ça",
     change: "Changer",
     clearIt: "Effacer",
+    until: "jusqu’à {time}",
     intro:
       "Fais savoir aux gens qui te correspondent que tu es là. Ça s’efface tout seul. Rien ne reste.",
     setStatus: "Mettre un statut",

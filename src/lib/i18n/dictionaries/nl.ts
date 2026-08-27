@@ -387,6 +387,7 @@ export const nl: Dictionary = {
   landing: {
     signIn: "Aanmelden",
     join: "Word lid van {brand}",
+    joinShort: "Word lid",
     badge: "Geen feed. Geen volgers. Gewoon mensen.",
     headlineBefore: "Vrienden maken als volwassene is",
     headlineEmphasis: "absurd moeilijk.",
@@ -1374,6 +1375,7 @@ export const nl: Dictionary = {
     whoCanSee: "Wie dit kan zien",
     change: "Wijzigen",
     clearIt: "Wissen",
+    until: "tot {time}",
     intro:
       "Laat mensen die bij je passen weten dat je er bent. Het wist zichzelf. Er blijft niets staan.",
     setStatus: "Zet een status",

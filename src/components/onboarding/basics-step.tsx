@@ -197,19 +197,30 @@ export function BasicsStep({
         htmlFor="birthYear"
         hint={t("basics.bornHint")}
       >
+        {/*
+          The width lives on a wrapper rather than on the input.
+
+          `Input` carries `w-full` in its own class list and `cn` here is a
+          plain join, so a `w-32` passed in sat next to `w-full` and lost to
+          whichever Tailwind emitted later. The year field took the whole row
+          and the month select, `flex-1` and free to shrink, collapsed to its
+          chevron: a control 30px wide showing no text at all, which reads as
+          broken rather than optional.
+        */}
         <div className="flex gap-2.5">
-          <Input
-            id="birthYear"
-            name="birthYear"
-            type="number"
-            inputMode="numeric"
-            required
-            min={CURRENT_YEAR - 100}
-            max={CURRENT_YEAR - 16}
-            placeholder="1996"
-            defaultValue={initial.birthYear ?? ""}
-            className="w-32"
-          />
+          <div className="w-32 shrink-0">
+            <Input
+              id="birthYear"
+              name="birthYear"
+              type="number"
+              inputMode="numeric"
+              required
+              min={CURRENT_YEAR - 100}
+              max={CURRENT_YEAR - 16}
+              placeholder="1996"
+              defaultValue={initial.birthYear ?? ""}
+            />
+          </div>
           <select
             id="birthMonth"
             name="birthMonth"

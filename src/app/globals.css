@@ -78,6 +78,11 @@
      already speak it keep working; it resolves to mint. */
   --color-teal: #0e7a69;
   --color-teal-soft: #e3f8f3;
+  /* The label that goes on the fill, which teal was missing. Every other fill
+     in this palette has one, and the single control that fills with teal wrote
+     `text-white` instead: correct in this theme, unreadable in the other, where
+     the fill flips to a light mint and the label stayed white. */
+  --color-on-teal: #ffffff;
 
   --color-positive: #0e7a69;
   --color-positive-soft: #e3f8f3;
@@ -253,6 +258,7 @@
 
     --color-teal: #55d6be;
     --color-teal-soft: #10302b;
+    --color-on-teal: #172033;
 
     --color-positive: #55d6be;
     --color-positive-soft: #10302b;
@@ -320,6 +326,7 @@
 
     --color-teal: #55d6be;
     --color-teal-soft: #10302b;
+    --color-on-teal: #172033;
 
     --color-positive: #55d6be;
     --color-positive-soft: #10302b;

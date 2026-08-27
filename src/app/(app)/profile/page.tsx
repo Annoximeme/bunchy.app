@@ -23,7 +23,7 @@ import { unreadCount as announcementsUnread } from "@/server/modules/announcemen
 import { db } from "@/server/db/client";
 import { env, pushEnabled } from "@/server/env";
 import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
-import { currentLocale, getTranslations } from "@/server/i18n";
+import { currentLocale, getFormats, getTranslations } from "@/server/i18n";
 import { interestLabel } from "@/lib/i18n/interests";
 import { brand } from "@/lib/brand";
 
@@ -49,6 +49,7 @@ export const dynamic = "force-dynamic";
  */
 export default async function ProfilePage() {
   const t = await getTranslations();
+  const formats = await getFormats();
   const locale = await currentLocale();
   const viewer = await requireViewer();
   const [
@@ -279,7 +280,11 @@ export default async function ProfilePage() {
                 <Detail label={t("profile.bunches")} value={String(profile.bunchCount)} />
                 <Detail
                   label={t("profile.joined")}
-                  value={new Date(profile.joinedAt).toLocaleDateString()}
+                  // Not `toLocaleDateString()` with nothing in it. Every other
+                  // line of this card is translated, and the one date on it was
+                  // being written in whatever language and order the reader's
+                  // browser happened to prefer.
+                  value={formats.longDate(profile.joinedAt)}
                 />
               </dl>
             </EditableCard>

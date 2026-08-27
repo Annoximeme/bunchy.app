@@ -54,14 +54,20 @@ export default async function ConversationPage({
               name={conversation.other.displayName}
               src={conversation.other.avatarUrl}
             />
-            <span className="min-w-0">
-              <span className="block truncate text-lg font-semibold tracking-tight">
+            {/*
+              The name is the page's heading, so it is one. It looked like a
+              heading and was a `span`, which left this the only screen in the
+              app with no `h1` on it: a screen reader announcing the page had
+              nothing to announce it as, and the audit said so.
+            */}
+            <div className="min-w-0">
+              <h1 className="truncate text-lg font-semibold tracking-tight">
                 {conversation.other.displayName}
-              </span>
+              </h1>
               <span className="block truncate text-sm text-muted">
                 @{conversation.other.username}
               </span>
-            </span>
+            </div>
           </Link>
           <Link href="/messages" className="shrink-0 text-sm text-muted hover:text-ink">
             All messages

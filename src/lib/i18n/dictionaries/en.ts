@@ -405,6 +405,7 @@ export const en = {
   landing: {
     signIn: "Sign in",
     join: "Join {brand}",
+    joinShort: "Join",
     badge: "No feed. No followers. Just people.",
     headlineBefore: "Making friends as an adult is",
     headlineEmphasis: "absurdly hard.",
@@ -1397,6 +1398,7 @@ export const en = {
     whoCanSee: "Who can see this",
     change: "Change",
     clearIt: "Clear it",
+    until: "until {time}",
     intro:
       "Let compatible people know you’re around. It clears itself. Nothing stays set.",
     setStatus: "Set a status",

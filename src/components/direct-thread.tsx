@@ -374,9 +374,14 @@ export function DirectThread({
                     </p>
                     <p
                       className={cn(
+                        // Full strength on the coral bubble. At 70% the ink
+                        // blended into the coral behind it and came out at
+                        // 4.0:1, under the 4.5 that 11px text has to clear.
+                        // The size is what marks it as secondary; it does not
+                        // also need to be faded.
                         "mt-0.5 text-[11px]",
                         message.fromViewer
-                          ? "text-[var(--color-on-accent)]/70"
+                          ? "text-[var(--color-on-accent)]"
                           : "text-muted",
                       )}
                     >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { X } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -39,6 +39,7 @@ export function AnnouncementBanner({
 }) {
   const [gone, setGone] = useState(false);
   const [, start] = useTransition();
+  const formats = useFormats();
 
   if (gone) return null;
 
@@ -56,13 +57,11 @@ export function AnnouncementBanner({
     });
   }
 
-  const effective = effectiveAt
-    ? new Date(effectiveAt).toLocaleDateString(undefined, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : null;
+  // Through the app's own formatter, not the browser's idea of a date. With
+  // `undefined` for the locale this said "September 7, 2026" to everybody: an
+  // American date on a Belgian product, in English no matter which of the
+  // three languages the rest of the banner was written in.
+  const effective = effectiveAt ? formats.longDate(effectiveAt) : null;
 
   return (
     <div

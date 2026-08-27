@@ -178,10 +178,19 @@ export function ActivityJoinButton({
           */}
           <label className="flex items-center gap-2 text-sm text-muted">
             Bringing
+            {/*
+              `w-auto` here never took effect: `Select` brings its own `w-full`
+              and the two sat side by side in the class list, where the winner
+              is whichever Tailwind emitted last rather than whichever was
+              written last. Overriding the width property itself is the one
+              spelling that cannot lose the argument, and a dropdown holding
+              the word "nobody" should be as wide as the word.
+            */}
             <Select
               value={String(guests)}
               onChange={(event) => setGuests(Number(event.target.value))}
-              className="w-auto py-1.5 pl-3 pr-8 text-sm"
+              style={{ width: "auto" }}
+              className="py-1.5 pl-3 pr-8 text-sm"
             >
               <option value="0">nobody</option>
               <option value="1">1 person</option>

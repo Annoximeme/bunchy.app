@@ -40,6 +40,7 @@ export default async function SearchPage({
       {query.length === 0 ? (
         <div className="mt-10">
           <EmptyState
+            level={2}
             title="What are you looking for?"
             description="A name, a place, half a sentence somebody wrote. This searches your own connections, bunches, activities and messages, and the bunches anybody can join."
           />
@@ -51,6 +52,7 @@ export default async function SearchPage({
       ) : results.total === 0 ? (
         <div className="mt-10">
           <EmptyState
+            level={2}
             title={`Nothing for “${query}”`}
             description="Nothing in your bunches, plans, people or messages matches that. Spelling and a shorter word are the two things worth trying."
           />

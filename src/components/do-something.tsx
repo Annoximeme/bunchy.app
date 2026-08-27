@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/components/link";
+import { Link, useFormats } from "@/components/link";
 import { api, errorMessage } from "@/lib/api";
 import { Button, Card, Chip, cn } from "@/components/ui";
 import { COST_LABELS, type ActivityIdea, type Mood } from "@/lib/activity-ideas";
@@ -65,6 +65,7 @@ interface Result {
 }
 
 export function DoSomething() {
+  const formats = useFormats();
   const [budget, setBudget] = useState<number | undefined>();
   const [hours, setHours] = useState<number | undefined>();
   const [mood, setMood] = useState<Mood | undefined>();
@@ -191,7 +192,7 @@ export function DoSomething() {
                         {activity.title}
                       </p>
                       <p className="mt-1 text-sm text-muted">
-                        {new Date(activity.startsAt).toLocaleString()} ·{" "}
+                        {formats.activityWhen(activity.startsAt)} ·{" "}
                         {activity.locationLabel ?? "Online"}
                       </p>
                       <p className="mt-2 text-xs text-teal">
