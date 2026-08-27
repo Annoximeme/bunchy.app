@@ -85,7 +85,7 @@ export function PageShell({
         page instead of halfway up the window.
       */}
       <div className="mt-auto pt-12">
-        <SiteFooter signedIn className="max-w-none px-0" />
+        <SiteFooter signedIn />
       </div>
     </div>
   );

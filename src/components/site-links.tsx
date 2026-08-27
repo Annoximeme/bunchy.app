@@ -95,12 +95,13 @@ export async function SiteFooter({
   const t = await getTranslations();
 
   return (
-    <footer
-      className={cn(
-        "mx-auto w-full max-w-5xl px-5 pb-10 pt-4 text-sm text-muted",
-        className,
-      )}
-    >
+    // No container of its own. The one thing that renders this is `PageShell`,
+    // which already carries the page's width and its horizontal padding, and a
+    // second `px-5` inside it inset the footer twenty pixels further than the
+    // content it sits under. Passing `px-0` from outside would not have fixed
+    // it either: `cn` joins class names without merging them, so the loser is
+    // whichever Tailwind happened to emit first.
+    <footer className={cn("w-full pb-10 pt-4 text-sm text-muted", className)}>
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-6">
         <p>
           {brand.name}. {t("brand.tagline")}
