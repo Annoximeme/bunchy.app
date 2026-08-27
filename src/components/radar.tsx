@@ -203,7 +203,7 @@ export function Radar({
         // Two columns once the window allows it. A single column of these at
         // 1024px left 500px of empty card between a title and the one line of
         // metadata that belongs to it.
-        <ul className="grid gap-3 xl:grid-cols-2">
+        <ul className="grid grid-cols-[minmax(0,1fr)] gap-3 xl:grid-cols-[repeat(2,minmax(0,1fr))]">
           {data.items.map((item) => (
             <li key={`${item.kind}-${item.id}`}>
               <Link

@@ -77,7 +77,7 @@ export default async function ActivitiesPage() {
               action={<LinkButton href="/activities/new">{t("activities.plan")}</LinkButton>}
             />
           ) : (
-            <div className="grid gap-3 xl:grid-cols-2">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 xl:grid-cols-[repeat(2,minmax(0,1fr))]">
               {mine.map((activity) => (
                 <ActivityCard
                   key={activity.id}
@@ -105,7 +105,7 @@ export default async function ActivitiesPage() {
               title={t("activities.worthLook")}
               subtitle={t("activities.worthLookSubtitle")}
             />
-            <div className="grid gap-3 xl:grid-cols-2">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 xl:grid-cols-[repeat(2,minmax(0,1fr))]">
               {worthLooking
                 .map((activity) => (
                   <ActivityCard
@@ -146,7 +146,7 @@ export default async function ActivitiesPage() {
           ) : rest.length === 0 ? (
             <p className="text-sm text-muted">{t("activities.everythingShown")}</p>
           ) : (
-            <div className="grid gap-3 xl:grid-cols-2">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-3 xl:grid-cols-[repeat(2,minmax(0,1fr))]">
               {rest.map((activity) => (
                 <ActivityCard
                   key={activity.id}

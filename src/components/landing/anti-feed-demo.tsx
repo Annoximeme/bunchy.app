@@ -134,7 +134,7 @@ export async function AntiFeedDemo() {
               className="af-stage absolute inset-0 flex flex-col justify-center gap-4 px-4"
               style={{ animationName: "af-done" }}
             >
-              <div className="rounded-2xl bg-white/[0.05] p-3.5 opacity-60 ring-1 ring-white/10">
+              <div className="rounded-2xl bg-white/[0.04] p-3.5 ring-1 ring-white/[0.08]">
                 <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#55D6BE]">
                   {t("antiFeed.settled")}
                 </p>
