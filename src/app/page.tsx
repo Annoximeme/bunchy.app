@@ -405,7 +405,7 @@ export default async function LandingPage({
                     the argument is against followers, not against screens, so
                     the online plan stays visible. */}
                 <div
-                  className="float relative z-10 mt-7 inline-flex max-w-full flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-3xl rounded-bl-lg bg-surface px-5 py-3.5 shadow-[0_18px_40px_-28px_rgba(23,32,51,0.55)]"
+                  className="float relative z-10 mt-7 inline-flex max-w-full flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-3xl rounded-bl-lg bg-surface px-5 py-3.5 shadow-[0_18px_40px_-28px_rgba(39,31,22,0.55)]"
                   style={{
                     ["--float-distance" as string]: "5px",
                     ["--float-duration" as string]: "6.1s",
