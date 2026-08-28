@@ -80,13 +80,13 @@
   --color-yellow: #ffc857;
   --color-yellow-soft: #fff3dc;
   --color-yellow-ink: #8a5e00;
-  --color-on-yellow: #172033;
+  --color-on-yellow: #271f16;
 
   /* Mint, success, connection, community health. */
   --color-mint: #55d6be;
   --color-mint-soft: #e3f8f3;
   --color-mint-ink: #0e7a69;
-  --color-on-mint: #172033;
+  --color-on-mint: #271f16;
 
   /* `teal` predates the palette and is kept as an alias so the components that
      already speak it keep working; it resolves to mint. */
@@ -286,16 +286,16 @@
     --color-yellow: #ffc857;
     --color-yellow-soft: #33270f;
     --color-yellow-ink: #ffc857;
-    --color-on-yellow: #172033;
+    --color-on-yellow: #271f16;
 
     --color-mint: #55d6be;
     --color-mint-soft: #10302b;
     --color-mint-ink: #55d6be;
-    --color-on-mint: #172033;
+    --color-on-mint: #271f16;
 
     --color-teal: #55d6be;
     --color-teal-soft: #10302b;
-    --color-on-teal: #172033;
+    --color-on-teal: #271f16;
 
     --color-emphasis: #322c26;
     --color-on-emphasis: #f4efe9;
@@ -358,16 +358,16 @@
     --color-yellow: #ffc857;
     --color-yellow-soft: #33270f;
     --color-yellow-ink: #ffc857;
-    --color-on-yellow: #172033;
+    --color-on-yellow: #271f16;
 
     --color-mint: #55d6be;
     --color-mint-soft: #10302b;
     --color-mint-ink: #55d6be;
-    --color-on-mint: #172033;
+    --color-on-mint: #271f16;
 
     --color-teal: #55d6be;
     --color-teal-soft: #10302b;
-    --color-on-teal: #172033;
+    --color-on-teal: #271f16;
 
     --color-emphasis: #322c26;
     --color-on-emphasis: #f4efe9;

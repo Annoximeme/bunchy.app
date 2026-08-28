@@ -218,7 +218,7 @@ export const aboutFr: AboutDocument = {
           {REFUSALS.map(([what, why]) => (
             <li
               key={what}
-              className="mb-5 break-inside-avoid rounded-2xl border border-line bg-surface p-7 shadow-[0_1px_2px_rgb(23_32_51/0.04),0_12px_32px_-20px_rgb(23_32_51/0.25)]"
+              className="mb-5 break-inside-avoid rounded-2xl border border-line bg-surface p-7 shadow-[0_1px_2px_rgb(39_31_22/0.04),0_12px_32px_-20px_rgb(39_31_22/0.25)]"
             >
               <span
                 aria-hidden
@@ -264,7 +264,7 @@ export const aboutFr: AboutDocument = {
                 style={{
                   backgroundColor: "var(--color-surface)",
                   border: "1px solid var(--color-line)",
-                  boxShadow: "0 18px 40px -24px rgb(23 32 51 / 0.45)",
+                  boxShadow: "0 18px 40px -24px rgb(39 31 22 / 0.45)",
                 }}
               >
                 <Image

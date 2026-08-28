@@ -137,7 +137,7 @@ export function AppNav({
 
         <Link
           href="/start"
-          className="mb-5 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-4 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] shadow-[0_1px_2px_rgb(23_32_51/0.08)] transition-shadow hover:shadow-[0_6px_18px_-6px_var(--color-accent)]"
+          className="mb-5 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-accent px-4 py-2.5 text-sm font-semibold text-[var(--color-on-accent)] shadow-[0_1px_2px_rgb(39_31_22/0.08)] transition-shadow hover:shadow-[0_6px_18px_-6px_var(--color-accent)]"
         >
           <PlusIcon className="size-4" />
           {t("nav.startBunch")}

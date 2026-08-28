@@ -35,7 +35,7 @@ const BUTTON_BASE =
  */
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   primary:
-    "bg-accent text-[var(--color-on-accent)] hover:bg-accent-hover shadow-[0_1px_2px_rgb(23_32_51/0.08)] hover:shadow-[0_6px_18px_-6px_var(--color-accent)]",
+    "bg-accent text-[var(--color-on-accent)] hover:bg-accent-hover shadow-[0_1px_2px_rgb(39_31_22/0.08)] hover:shadow-[0_6px_18px_-6px_var(--color-accent)]",
   secondary:
     "bg-surface text-ink border border-line hover:border-ink-soft hover:bg-surface-sunken",
   ghost: "text-ink-soft hover:text-ink hover:bg-surface-sunken",
