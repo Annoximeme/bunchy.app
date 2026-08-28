@@ -49,7 +49,7 @@ export default function GlobalError({
           justifyContent: "center",
           padding: "1.25rem",
           background: "#fff9f3",
-          color: "#172033",
+          color: "#271f16",
           fontFamily:
             'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
           WebkitFontSmoothing: "antialiased",
@@ -125,7 +125,7 @@ export default function GlobalError({
                 // 3.00:1 and fails AA, which is the whole reason the palette
                 // carries an `on-accent` token.
                 background: "#ff5c6c",
-                color: "#172033",
+                color: "#271f16",
                 fontFamily: "inherit",
               }}
             >

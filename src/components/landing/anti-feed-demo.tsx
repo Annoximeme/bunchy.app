@@ -108,7 +108,7 @@ export async function AntiFeedDemo() {
                   {["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"].map((fill) => (
                     <span
                       key={fill}
-                      className="inline-block h-4 w-4 rounded-full ring-2 ring-[#0F1524]"
+                      className="inline-block h-4 w-4 rounded-full ring-2 ring-band-deep"
                       style={{ backgroundColor: fill }}
                     />
                   ))}
@@ -145,7 +145,7 @@ export async function AntiFeedDemo() {
                   {["#FF5C6C", "#7657FF", "#55D6BE", "#FFC857"].map((fill) => (
                     <span
                       key={fill}
-                      className="inline-block h-4 w-4 rounded-full ring-2 ring-[#0F1524]"
+                      className="inline-block h-4 w-4 rounded-full ring-2 ring-band-deep"
                       style={{ backgroundColor: fill }}
                     />
                   ))}

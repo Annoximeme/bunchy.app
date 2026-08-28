@@ -33,12 +33,26 @@
   --color-canvas: #fff9f3;
   --color-surface: #ffffff;
   --color-surface-sunken: #f9f0e6;
-  --color-ink: #172033;
-  --color-ink-soft: #3d4759;
-  /* Was #6b7280, which is 4.29:1 on --color-surface-sunken, under AA, and
-     sunken is the admin dashboard's page background, so every muted caption in
-     there was failing. This clears 4.5:1 on all three light grounds. */
-  --color-muted: #646977;
+  /* --- The ink, which is warm now ------------------------------------------
+     These three were the last of the navy era. The grounds above sit at hue
+     67-75 in OKLCH, a warm cream family, and the ink sat at 262-270, which is
+     the opposite side of the wheel: warm paper, cool text, a pairing that
+     reads faintly grey because the two temperatures cancel each other. Dark
+     mode never had the problem, every one of its neutrals is warm, and
+     `band-deep` was already moved for exactly this reason ("a cold slab beside
+     a cream page and a warm dark theme").
+
+     So they are warm, at the same OKLCH lightness they had before. Every
+     contrast ratio in the product moves by less than 0.05: this is a change of
+     temperature, not of legibility. Chroma stays low, 0.014 to 0.020, so it
+     reads as a warm neutral rather than as sepia. */
+  --color-ink: #271f16;
+  --color-ink-soft: #4d453c;
+  /* The lightness here is load-bearing. It was raised from #6b7280 because
+     4.29:1 on --color-surface-sunken is under AA and sunken is the staff
+     dashboard's page background, so every muted caption in there was failing.
+     The warm version holds the same lightness, and so the same 4.87:1. */
+  --color-muted: #6f6861;
   --color-line: #efe6da;
 
   /* The app's ambient washes, carried over from the landing hero. Light mode
@@ -54,7 +68,7 @@
   /* Was #ce2f45. That reads on cream, but on --color-accent-soft, which is
      what the status pills use behind it, it is 4.40:1, just under AA. */
   --color-accent-ink: #c42a40;
-  --color-on-accent: #172033;
+  --color-on-accent: #271f16;
 
   /* Purple: suggestions, recommendations, supporter cosmetics. */
   --color-purple: #7657ff;
@@ -110,10 +124,10 @@
 
   /* Ambient rather than directional: no hard edge, no visible offset, just
      enough to lift an object off the ground it rests on. */
-  --shadow-pebble: 0 8px 30px rgba(28, 25, 23, 0.04);
+  --shadow-pebble: 0 8px 30px rgb(39 31 22 / 0.05);
   /* The lifted state. Same character, more distance, so a hover reads as the
      object rising rather than as a different shadow being swapped in. */
-  --shadow-pebble-lift: 0 14px 40px rgba(28, 25, 23, 0.08);
+  --shadow-pebble-lift: 0 14px 40px rgb(39 31 22 / 0.09);
 
   /* The warm ink of the tactile surfaces.
      
@@ -132,8 +146,13 @@
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto,
     "Helvetica Neue", Arial, sans-serif;
 
-  --shadow-card: 0 1px 2px rgb(23 32 51 / 0.04), 0 8px 24px -12px rgb(23 32 51 / 0.14);
-  --shadow-lift: 0 2px 4px rgb(23 32 51 / 0.06), 0 18px 40px -20px rgb(23 32 51 / 0.26);
+  /* Cast in the ink rather than in the old navy. These two carried
+     rgb(23 32 51), the colour the text used to be, so every card on the cream
+     dropped a faintly blue shadow: warm paper lit by cold light.
+     `shadow-pebble` was already warm, which left the product with two shadow
+     temperatures depending on which surface you happened to be looking at. */
+  --shadow-card: 0 1px 2px rgb(39 31 22 / 0.05), 0 8px 24px -12px rgb(39 31 22 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(39 31 22 / 0.07), 0 18px 40px -20px rgb(39 31 22 / 0.28);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -257,7 +276,7 @@
     --color-accent-hover: #ff7180;
     --color-accent-soft: #3a1d22;
     --color-accent-ink: #ff8391;
-    --color-on-accent: #172033;
+    --color-on-accent: #271f16;
 
     --color-purple: #7657ff;
     --color-purple-soft: #241c4a;
@@ -329,7 +348,7 @@
     --color-accent-hover: #ff7180;
     --color-accent-soft: #3a1d22;
     --color-accent-ink: #ff8391;
-    --color-on-accent: #172033;
+    --color-on-accent: #271f16;
 
     --color-purple: #7657ff;
     --color-purple-soft: #241c4a;

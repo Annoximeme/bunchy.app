@@ -53,11 +53,11 @@ export default async function AdminBrandPage() {
               className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-black/10"
               style={{ background: "#FFF9F3" }}
             >
-              <BunchyLogo height={28} color="#172033" />
+              <BunchyLogo height={28} color="#271F16" />
             </div>
             <div
               className="flex items-center justify-center rounded-[var(--radius-control)] px-4 py-8 ring-1 ring-white/10"
-              style={{ background: "#172033" }}
+              style={{ background: "#14110F" }}
             >
               <BunchyLogo height={28} color="#FFFFFF" monochrome="#FFFFFF" />
             </div>

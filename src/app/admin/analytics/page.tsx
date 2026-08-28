@@ -127,7 +127,12 @@ export default async function AdminAnalyticsPage() {
                   </div>
                   <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-sunken">
                     <div
-                      className="h-full rounded-full bg-accent"
+                      /* Teal, like the volume bars below. Coral is what the
+                         product uses for something you can press, and a funnel
+                         is not something you can press: two quantities on one
+                         screen were being drawn in two colours that mean
+                         different things elsewhere. */
+                      className="h-full rounded-full bg-teal/70"
                       style={{
                         width: `${
                           funnel[0] && funnel[0].count > 0

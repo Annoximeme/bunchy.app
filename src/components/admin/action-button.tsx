@@ -99,9 +99,23 @@ export function AdminAction({
       <button
         type="button"
         onClick={() => setOpen(true)}
+        /*
+          Red means destructive, and nothing else in the row is coloured.
+
+          Both of these used to be coloured: destructive actions in `danger`
+          and everything else in `accent-ink`. Those two are ten degrees of hue
+          apart, so a row reading "Suspend  Ban  Change role" rendered three
+          links in what looks like one colour, and the two that end somebody's
+          account were the same red as the one that does not. Twelve rows of
+          that is a page where the destructive actions are also the loudest
+          thing on it.
+
+          A neutral action is now the page's own text colour. Red is left doing
+          one job, which is the only way it stays a warning.
+        */
         className={cn(
           "text-xs font-medium underline-offset-2 transition-colors hover:underline",
-          danger ? "text-danger" : "text-accent-ink",
+          danger ? "text-danger" : "text-ink-soft hover:text-ink",
         )}
       >
         {label}
