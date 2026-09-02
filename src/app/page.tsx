@@ -109,6 +109,44 @@ function wantsTheLandingPage(params: { home?: string }): boolean {
   return params.home !== undefined;
 }
 
+/**
+ * A run of dark sections, lit from somewhere.
+ *
+ * The hero opens with two radial washes and then the page forgets about them:
+ * everything below it was four thousand pixels of one flat near-black, broken
+ * only where a cream band starts. Flat black is not a background, it is the
+ * absence of one, and on a page whose argument is that this product is warm
+ * it was the loudest thing arguing back.
+ *
+ * So every dark run gets a light source of its own, at roughly half the hero's
+ * strength, because the hero should stay the brightest thing here. The colour
+ * is not decoration: it is the accent the section is already about, coral for
+ * the brand, purple for what the software worked out, mint for online, yellow
+ * for activities, which is the same rule the palette runs on everywhere else.
+ *
+ * Written as literal rgba rather than as the wash tokens, like every other
+ * colour in this composition: the deep band is deliberately the same
+ * near-black in both themes, so what is painted on it does not move either.
+ */
+function Lit({
+  light,
+  children,
+}: {
+  light: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: light }}
+      />
+      <div className="relative">{children}</div>
+    </div>
+  );
+}
+
 export default async function LandingPage({
   searchParams,
 }: {
@@ -132,7 +170,7 @@ export default async function LandingPage({
   );
 
   return (
-    <div className={`${display.className} min-h-dvh bg-band-deep text-white`}>
+    <div className={`${display.className} relative min-h-dvh bg-band-deep text-white`}>
       <script
         type="application/ld+json"
         nonce={nonce}
@@ -179,6 +217,12 @@ export default async function LandingPage({
           </nav>
         </div>
       </header>
+
+      {/* Over the whole composition rather than inside any one band: the point
+          of it is that both grounds are the same piece of paper. See the note
+          on the utility, the dull reason is that it dithers the gradient
+          banding the washes above would otherwise draw on a near-black. */}
+      <div aria-hidden className="grain" />
 
       <main id="main">
         {/* 2: Hero */}
@@ -263,6 +307,15 @@ export default async function LandingPage({
           </div>
         </section>
 
+        {/*
+          The hero's own wash stops at the hero, and the run does not: the
+          board and the two rows under it were another thirteen hundred pixels
+          of flat ground carrying the first thing anybody is asked to look at.
+          This is the hero's light continuing down the page and going out, low
+          and on the other side, rather than being switched off at a section
+          boundary nobody can see.
+        */}
+        <Lit light="radial-gradient(50rem 30rem at 78% 100%, rgba(118,87,255,0.09), transparent 62%), radial-gradient(40rem 26rem at 2% 40%, rgba(255,92,108,0.07), transparent 60%)">
         {/* 2b, The product, starting here */}
         <section className="px-5 pb-4">
           <div className="reveal mx-auto max-w-6xl">
@@ -272,9 +325,25 @@ export default async function LandingPage({
 
         {/* 2c, What's happening */}
         <HappeningNow />
+        </Lit>
 
         {/* 3: The contrast, in daylight */}
-        <section className="bg-band-soft px-5 py-24 text-ink">
+        {/*
+          The daylight bands were as flat as the dark ones, which on a cream
+          this warm reads less like paper and more like a fill. These are the
+          same two washes the signed-in app opens with, through the tokens
+          rather than as literals, because unlike the deep band the reading
+          ground does move with the theme and anything painted on it has to
+          move with it. In light they are a seven percent whisper; at night,
+          where the ground is dark, they carry twice that and do the same job.
+        */}
+        <section
+          className="bg-band-soft px-5 py-24 text-ink"
+          style={{
+            backgroundImage:
+              "radial-gradient(50rem 26rem at 88% 0%, var(--wash-purple), transparent 60%), radial-gradient(44rem 24rem at 2% 22%, var(--wash-coral), transparent 58%)",
+          }}
+        >
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
               {t("landing.problemEyebrow")}
@@ -457,6 +526,12 @@ export default async function LandingPage({
         </section>
 
         {/* 5: The signature moment */}
+        {/*
+          Lit from directly behind the gesture, because that is what the
+          section is: one purple pebble in the middle of a wide dark band. The
+          wash gives it somewhere to be.
+        */}
+        <Lit light="radial-gradient(40rem 30rem at 50% 62%, rgba(118,87,255,0.16), transparent 66%)">
         <section className="px-5 py-24">
           <div className="reveal mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold tracking-widest text-[#9B85FF]">
@@ -474,9 +549,16 @@ export default async function LandingPage({
             <BunchMoment />
           </div>
         </section>
+        </Lit>
 
         {/* 6: How it works, in daylight */}
-        <section className="bg-band-soft px-5 py-24 text-ink">
+        <section
+          className="bg-band-soft px-5 py-24 text-ink"
+          style={{
+            backgroundImage:
+              "radial-gradient(48rem 26rem at 4% 0%, var(--wash-coral), transparent 58%), radial-gradient(42rem 26rem at 96% 96%, var(--wash-purple), transparent 60%)",
+          }}
+        >
           <div className="mx-auto max-w-6xl">
             <p className="reveal text-sm font-bold tracking-widest text-accent-ink">
               {t("landing.stagesEyebrow", { brand: brand.name.toUpperCase() })}
@@ -591,6 +673,14 @@ export default async function LandingPage({
           </div>
         </section>
 
+        {/*
+          Sections 7 to 9 are one dark run of nearly three thousand pixels, and
+          they are the three that say where the product actually happens:
+          online, in person, and again next week. Mint high on the left and
+          yellow low on the right, the two accents that carry exactly that,
+          moving the light down the run as you scroll it.
+        */}
+        <Lit light="radial-gradient(46rem 34rem at 6% 6%, rgba(85,214,190,0.10), transparent 64%), radial-gradient(44rem 32rem at 98% 74%, rgba(255,200,87,0.09), transparent 62%)">
         {/* 7: What you can actually do */}
         <section className="px-5 py-24">
           <div className="mx-auto max-w-6xl">
@@ -734,8 +824,16 @@ export default async function LandingPage({
           </div>
         </section>
 
+        </Lit>
+
         {/* Objections, kept from the previous page, because they convert */}
-        <section className="bg-band-soft px-5 py-24 text-ink">
+        <section
+          className="bg-band-soft px-5 py-24 text-ink"
+          style={{
+            backgroundImage:
+              "radial-gradient(46rem 24rem at 96% 4%, var(--wash-coral), transparent 58%)",
+          }}
+        >
           <div className="reveal mx-auto max-w-3xl">
             <h2 className="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">
               {t("landing.faqTitle")}
@@ -755,6 +853,14 @@ export default async function LandingPage({
           </div>
         </section>
 
+        {/*
+          The page closes on the two colours it opened with, turned down and
+          turned over: coral on the right this time, purple on the left. The
+          closing card is itself a coral-to-purple gradient, and a card that
+          bright dropped on flat black is a sticker; this gives it a ground to
+          have been cut from.
+        */}
+        <Lit light="radial-gradient(44rem 30rem at 92% 8%, rgba(255,92,108,0.13), transparent 62%), radial-gradient(40rem 28rem at 4% 88%, rgba(118,87,255,0.14), transparent 62%)">
         <ModerationBanner />
 
         {/* 7: Final CTA */}
@@ -810,6 +916,7 @@ export default async function LandingPage({
             </p>
           </div>
         </section>
+        </Lit>
       </main>
 
       <footer className="border-t border-white/10 py-10">
