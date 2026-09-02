@@ -3,26 +3,37 @@
 import { Link, useLanguage } from "@/components/link";
 import { INTL_TAGS } from "@/lib/i18n/config";
 import { Tag } from "@/components/ui";
-import { CalendarDays, Globe, MapPin, Repeat } from "lucide-react";
+import { Globe, MapPin, Repeat } from "lucide-react";
 
 /**
- * What you have coming, above everything the product is guessing at.
+ * What you have coming, beside everything the product is guessing at.
  *
  * Discover opened on recommendations: eight strangers, then bunches, then
  * things happening. All of it inferred, and none of it something the member had
  * already decided to do. So somebody with three plans this week had to scroll
  * past the product's suggestions to reach their own commitments.
  *
- * This sits above all of it and answers the only question a returning member
- * actually has. It is the difference between "what should I look at" and "what
- * am I doing", which is the difference the whole product is arguing for.
+ * This answers the only question a returning member actually has. It is the
+ * difference between "what should I look at" and "what am I doing", which is
+ * the difference the whole product is arguing for.
+ *
+ * ## Why it is shaped for a rail
+ *
+ * It used to be a full-width list with a 96px column of weekdays down the left,
+ * sitting above the recommendations. It now lives in Discover's rail, where it
+ * stays on screen while somebody reads through eight strangers instead of
+ * scrolling away after the first one. A rail is about 320px, so the weekday
+ * column had to go: the when is a line above the title rather than a column
+ * beside it, and it is yellow, because yellow is what marks the "when" on every
+ * activity card in the product and a member should not have to learn a second
+ * convention for the same fact.
  *
  * ## Why it is short and finite
  *
  * Seven days, nothing else, and no more rows than a week can hold. It is not a
  * feed and must never become one: an empty week is a real answer and it says so
  * plainly rather than padding itself with suggestions to look busy. What fills
- * an empty week is the discovery that already sits underneath.
+ * an empty week is the discovery sitting next to it.
  */
 
 export interface WeekItem {
@@ -80,9 +91,9 @@ export function YourWeek({
   if (items.length === 0) return null;
 
   return (
-    <section className="mb-10">
-      <div className="mb-4 flex items-baseline justify-between gap-4">
-        <h2 className="text-lg font-bold tracking-tight">{t("week.title")}</h2>
+    <section className="card-surface p-5">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="text-lg font-semibold tracking-tight">{t("week.title")}</h2>
         <Link
           href="/activities"
           className="text-sm font-medium text-accent-ink underline underline-offset-2"
@@ -91,58 +102,57 @@ export function YourWeek({
         </Link>
       </div>
 
-      <ol className="space-y-2.5">
+      <ol className="mt-4 space-y-2.5">
         {items.map((item) => (
           <li key={item.id}>
+            {/*
+              Sunken rather than raised. These rows sit inside a card already,
+              and a second shadow inside the first reads as two cards that
+              failed to line up; a warm inset reads as a list.
+            */}
             <Link
               href={`/activities/${item.id}`}
-              className="flex items-center gap-4 rounded-squircle bg-surface p-5 shadow-pebble transition-shadow hover:shadow-[var(--shadow-pebble-lift)]"
+              className="group block rounded-[var(--radius-control)] border border-line bg-canvas p-3.5 transition-colors hover:border-accent/40 hover:bg-surface-sunken"
             >
-              {/*
-                The day is the anchor, not the title. Somebody scanning this is
-                answering "when", and the column of weekdays is what makes that
-                answerable without reading a word of the rest.
-              */}
-              <div className="w-24 shrink-0">
-                <p className="font-bold tracking-tight">
-                  {dayLabel(item.startsAt, now, tag, t("week.today"), t("week.tomorrow"))}
-                </p>
-                <p className="text-sm tabular-nums text-muted">
-                  {timeLabel(item.startsAt, tag)}
-                </p>
-              </div>
+              <p className="text-xs font-semibold tracking-wide text-yellow-ink">
+                {dayLabel(
+                  item.startsAt,
+                  now,
+                  tag,
+                  t("week.today"),
+                  t("week.tomorrow"),
+                )}
+                <span className="tabular-nums"> · {timeLabel(item.startsAt, tag)}</span>
+              </p>
 
-              <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-2 truncate font-semibold">
+              <p className="mt-1 flex items-center gap-1.5">
+                <span className="truncate font-semibold tracking-tight group-hover:underline">
                   {item.title}
-                  {item.recurring && (
-                    <Tag tone="suggested" title={t("week.standing")}>
-                      <Repeat size={10} aria-hidden />
-                      {t("week.everyWeek")}
-                    </Tag>
-                  )}
-                </p>
-                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
-                  <span className="inline-flex items-center gap-1.5">
-                    {item.mode === "ONLINE" ? (
-                      <Globe size={13} aria-hidden />
-                    ) : (
-                      <MapPin size={13} aria-hidden />
-                    )}
-                    {item.mode === "ONLINE"
-                      ? t("week.online")
-                      : (item.locationLabel ?? t("week.inPerson"))}
-                  </span>
-                  <span>{item.going} going</span>
-                  {item.bunch && <span className="truncate">{item.bunch.name}</span>}
-                </p>
-              </div>
+                </span>
+                {item.recurring && (
+                  <Tag tone="suggested" title={t("week.standing")}>
+                    <Repeat size={10} aria-hidden />
+                    {t("week.everyWeek")}
+                  </Tag>
+                )}
+              </p>
 
-              <CalendarDays
-                size={18}
-                aria-hidden
-                className="hidden shrink-0 text-muted sm:block"
-              />
+              <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-muted">
+                {item.mode === "ONLINE" ? (
+                  <Globe size={12} aria-hidden className="shrink-0" />
+                ) : (
+                  <MapPin size={12} aria-hidden className="shrink-0" />
+                )}
+                <span className="truncate">
+                  {item.mode === "ONLINE"
+                    ? t("week.online")
+                    : (item.locationLabel ?? t("week.inPerson"))}
+                </span>
+                <span aria-hidden>·</span>
+                <span className="shrink-0">
+                  {t("counts.going", { count: item.going })}
+                </span>
+              </p>
             </Link>
           </li>
         ))}

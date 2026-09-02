@@ -53,24 +53,34 @@ export function PageHeader({
  * overrides sat *inside* the shell, so the site footer went on being laid out at
  * the full width and started 156px to the left of the page it was under.
  *
- * Two widths, and the page says which kind of thing it is:
+ * Three widths, and the page says which kind of thing it is:
  *
- * - `wide` (the default, 1024px) for lists, grids and anything with a right rail.
+ * - `wide` (the default, 1024px) for lists and grids in a single column.
+ * - `broad` (1216px) for the one layout that puts a second column beside the
+ *   first. Discover carries a rail of the member's own week and status next to
+ *   the recommendations, and at the wide width that rail squeezes the person
+ *   grid down to one card per row on every screen size. The extra 192px is what
+ *   buys back the second column, and it is spent only where there is a rail to
+ *   pay for it.
  * - `reading` (720px) for a single column of prose or one form, where a longer
  *   line is harder to read rather than more generous.
  */
+const WIDTHS = {
+  wide: "max-w-5xl",
+  broad: "max-w-[76rem]",
+  reading: "max-w-[45rem]",
+} as const;
+
 export function PageShell({
   children,
   width = "wide",
 }: {
   children: ReactNode;
-  width?: "wide" | "reading";
+  width?: keyof typeof WIDTHS;
 }) {
   return (
     <div
-      className={`mx-auto flex w-full flex-1 flex-col px-5 py-8 md:py-12 ${
-        width === "reading" ? "max-w-[45rem]" : "max-w-5xl"
-      }`}
+      className={`mx-auto flex w-full flex-1 flex-col px-5 py-8 md:py-12 ${WIDTHS[width]}`}
     >
       {children}
 

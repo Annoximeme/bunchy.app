@@ -2,7 +2,7 @@
 
 import { Link, useTranslate } from "@/components/link";
 import { phrase, type PhraseRef } from "@/lib/i18n/phrase";
-import { Compass, Dices, Map, Radio } from "lucide-react";
+import { ArrowRight, Compass, Dices, Map, Radio } from "lucide-react";
 import { cn } from "@/components/ui";
 
 /**
@@ -24,6 +24,13 @@ import { cn } from "@/components/ui";
  * the page exists to show. They are what you want when the recommendations did
  * not appeal, so they belong exactly where that becomes true, at the end.
  * That also turns a dead-end ("that's everything") into a door.
+ *
+ * ## The shape
+ *
+ * Stacked rather than side by side, so four of them make a row across the foot
+ * of the page instead of a two-by-two block of text. The arrow is the only
+ * thing that moves: it slides in on hover, which is a door opening, and it is
+ * `aria-hidden` because the link already says where it goes.
  */
 
 interface Shortcut {
@@ -81,7 +88,14 @@ export function DiscoverShortcuts() {
   const t = useTranslate();
 
   return (
-    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    /*
+      Three columns rather than four. The radar tile is `md:hidden`, because
+      the radar has a nav entry of its own on a wide screen, so a four-column
+      grid would leave a hole in the row on exactly the sizes where the grid is
+      widest. At `lg` there are three tiles and three columns, and below that
+      all four are visible and fall into two.
+    */
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {SHORTCUTS.map((shortcut) => (
         <li
           key={shortcut.href}
@@ -89,22 +103,33 @@ export function DiscoverShortcuts() {
         >
           <Link
             href={shortcut.href}
-            className="card-surface group flex h-full items-start gap-3.5 p-4 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)]"
+            /*
+              A row on a phone and a tile from `sm` up. Stacking the icon above
+              the label everywhere added about a hundred pixels of height per
+              shortcut on the narrowest screen, four times over, on the page
+              that is already the longest in the product.
+            */
+            className="card-surface group flex h-full items-start gap-3.5 p-4 transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:flex-col sm:items-stretch sm:p-5"
           >
             <span
               aria-hidden
               className={cn(
-                "flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)]",
+                "flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-control)] transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover:scale-105",
                 TONES[shortcut.tone],
               )}
             >
-              <shortcut.icon size={19} />
+              <shortcut.icon size={20} />
             </span>
             <span className="min-w-0">
-              <span className="block font-semibold tracking-tight group-hover:underline">
+              <span className="flex items-center gap-1.5 font-semibold tracking-tight group-hover:underline">
                 {t(shortcut.label)}
+                <ArrowRight
+                  size={15}
+                  aria-hidden
+                  className="-translate-x-1 opacity-0 transition-all duration-300 ease-[var(--ease-out-soft)] group-hover:translate-x-0 group-hover:opacity-100"
+                />
               </span>
-              <span className="mt-0.5 block text-sm text-muted">
+              <span className="mt-1 block text-sm leading-relaxed text-muted">
                 {t(shortcut.description)}
               </span>
             </span>

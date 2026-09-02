@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PersonCard } from "@/components/cards";
-import { DiscoverSummary } from "@/components/discover/summary";
+import { DiscoverMasthead } from "@/components/discover/masthead";
 import { DiscoverShortcuts } from "@/components/discover/shortcuts";
 
 const api = vi.hoisted(() => vi.fn());
@@ -97,7 +97,7 @@ describe("dismissing somebody", () => {
 describe("the page head", () => {
   it("says what is on the page and jumps to it", () => {
     render(
-      <DiscoverSummary
+      <DiscoverMasthead
         firstName="Gianni"
         counts={{ people: 3, bunches: 1, activities: 4 }}
       />,
@@ -116,7 +116,7 @@ describe("the page head", () => {
 
   it("says nothing about a section that is not there", () => {
     render(
-      <DiscoverSummary
+      <DiscoverMasthead
         firstName="Gianni"
         counts={{ people: 2, bunches: 0, activities: 0 }}
       />,
@@ -131,13 +131,50 @@ describe("the page head", () => {
 
   it("still greets somebody with nothing recommended at all", () => {
     const { container } = render(
-      <DiscoverSummary
+      <DiscoverMasthead
         firstName="Gianni"
         counts={{ people: 0, bunches: 0, activities: 0 }}
       />,
     );
     expect(screen.getByText("Hey Gianni")).toBeInTheDocument();
     expect(container.querySelector("nav")).toBeNull();
+  });
+
+  /*
+    The faces are a preview of the cards below, not a second copy of them.
+
+    Every person in the pile is a named, linked card a few hundred pixels
+    further down. Exposing them here as well gives a screen reader eight extra
+    stops that lead nowhere and say nothing, so the whole block is hidden from
+    the accessibility tree and the initials never reach it.
+  */
+  it("draws the people it is about, without announcing them twice", () => {
+    render(
+      <DiscoverMasthead
+        firstName="Gianni"
+        counts={{ people: 7, bunches: 0, activities: 0 }}
+        faces={Array.from({ length: 7 }, (_, i) => ({
+          profileId: `p${i}`,
+          displayName: `Person ${i}`,
+          avatarUrl: null,
+        }))}
+      />,
+    );
+
+    // Five drawn, and the seventh and sixth counted rather than crowded in.
+    expect(screen.getByText("+2")).toBeInTheDocument();
+    expect(screen.queryByText("P5")).toBeNull();
+    expect(screen.getByText("+2").closest("[aria-hidden]")).not.toBeNull();
+  });
+
+  it("draws no pile at all when there is nobody to draw", () => {
+    const { container } = render(
+      <DiscoverMasthead
+        firstName="Gianni"
+        counts={{ people: 0, bunches: 0, activities: 0 }}
+      />,
+    );
+    expect(container.textContent).not.toMatch(/\+/);
   });
 });
 

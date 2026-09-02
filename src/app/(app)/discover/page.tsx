@@ -1,5 +1,6 @@
 import { SproutIcon } from "@/components/icons";
 import type { Metadata } from "next";
+import { MailCheck } from "lucide-react";
 import { Link } from "@/components/link";
 import { requireViewer } from "@/server/auth/current-user";
 import { recommendPeople } from "@/server/modules/matching/engine";
@@ -24,7 +25,7 @@ import { ActivityCard, BunchCard, PersonCard } from "@/components/cards";
 import { IntroductionCard } from "@/components/introduction-card";
 import { WhosUp } from "@/components/whos-up";
 import { OutcomePrompt } from "@/components/outcome-prompt";
-import { DiscoverSummary } from "@/components/discover/summary";
+import { DiscoverMasthead } from "@/components/discover/masthead";
 import { DiscoverShortcuts } from "@/components/discover/shortcuts";
 import { EmptyState, LinkButton, SectionHeading } from "@/components/ui";
 import { getTranslations } from "@/server/i18n";
@@ -46,6 +47,29 @@ export const dynamic = "force-dynamic";
  * There is no pagination, no "you might also like", nothing to keep scrolling
  * for. A good session here ends with the tab closed.
  *
+ * ## The shape
+ *
+ * Two panes above about 1280px, one below it, and which pane a thing belongs to
+ * follows from who wrote it.
+ *
+ * The **rail** holds what the member decided themselves: their own week, and
+ * whether they are up for something. Both used to sit in the single column
+ * above the recommendations, which meant they scrolled away after the first
+ * card and were gone for the rest of the page. Both are also the two things
+ * most worth having on screen *while* reading about strangers: "am I free" is
+ * the question every one of those cards is really asking.
+ *
+ * The **main pane** holds what the product worked out: the introduction, then
+ * people, bunches and things happening.
+ *
+ * Below the breakpoint the rail simply comes first, which is the order the
+ * single-column version already argued for, and it is written that way in the
+ * markup so the reading order and the tab order are the same in both layouts.
+ * The main pane declares a container query rather than reading the viewport, so
+ * the person grid goes to two columns when *the column* has room for two cards,
+ * which is the actual question and one the viewport cannot answer once there is
+ * a rail taking 320px out of it.
+ *
  * ## The order, and why it changed
  *
  * The page used to put up to five blocks of chrome, a verification banner, an
@@ -56,12 +80,14 @@ export const dynamic = "force-dynamic";
  *
  * What is here now is ordered by what a member actually opens this for:
  *
- * 1. **What is on the page**, the head, with counts that jump to each section.
- * 2. **Anything owed**, confirm your email, how did Thursday go. Short, and
- *    genuinely unfinished business rather than an interruption.
- * 3. **The introduction**, one person, chosen deliberately. The highest-value
+ * 1. **What is on the page**, the masthead, with counts that jump to each
+ *    section and the faces of the people those counts are about.
+ * 2. **Anything owed**, confirm your email, finish your profile, how did
+ *    Thursday go. Short lines, and genuinely unfinished business rather than an
+ *    interruption.
+ * 3. **Yours**, the week and the status, in the rail.
+ * 4. **The introduction**, one person, chosen deliberately. The highest-value
  *    thing on the page when it exists, and it usually does not.
- * 4. **Who is around now**, time-critical, and worthless an hour later.
  * 5. **The recommendations**, the reason for the page.
  * 6. **The other ways in**, the shortcuts, at the point where "none of these
  *    appeal" becomes true.
@@ -129,223 +155,291 @@ export default async function DiscoverPage() {
   const nothingAtAll =
     people.length === 0 && bunches.length === 0 && activities.length === 0;
 
+  /*
+    Whether anything is owed at all, asked once.
+
+    The three asks are independent components that each decide to render
+    nothing, which is right for them and useless here: without this the strip
+    that holds them would still take its own top margin on the great majority of
+    loads, where all three are quiet, and leave a gap under the masthead with
+    nothing in it.
+  */
+  const owed =
+    !viewer.emailVerified || outstanding.length > 0 || Boolean(outcome);
+
   return (
-    <PageShell>
-      <DiscoverSummary
+    <PageShell width="broad">
+      <DiscoverMasthead
         firstName={viewer.displayName.split(" ")[0] ?? viewer.displayName}
         counts={{
           people: people.length,
           bunches: bunches.length,
           activities: activities.length,
         }}
+        faces={people.map((person) => ({
+          profileId: person.profileId,
+          displayName: person.displayName,
+          avatarUrl: person.avatarUrl,
+        }))}
       />
 
       {/*
-        Their own week, above everything the product is guessing at. Somebody
-        with three plans should not have to scroll past eight strangers to
-        reach their own commitments.
+        Unfinished business, as lines rather than cards. All of these are asks,
+        and an ask that takes as much room as a recommendation reads as being as
+        important as one.
       */}
-      <YourWeek items={week} />
+      {owed && (
+        <div className="mt-6 space-y-3">
+          {!viewer.emailVerified && (
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-yellow/40 bg-yellow-soft px-4 py-3 text-sm">
+              <MailCheck
+                size={16}
+                aria-hidden
+                className="shrink-0 text-yellow-ink"
+              />
+              <span className="text-yellow-ink">{t("discover.verifyEmail")}</span>
+              <Link
+                href="/profile"
+                className="font-semibold text-yellow-ink underline underline-offset-2"
+              >
+                {t("discover.resendLink")}
+              </Link>
+            </div>
+          )}
+
+          <FinishProfile outstanding={outstanding} />
+
+          {outcome && <OutcomePrompt prompt={outcome} />}
+        </div>
+      )}
 
       {/*
-        Unfinished business, as a line rather than a card. Both of these are
-        asks, and an ask that takes as much room as a recommendation reads as
-        being as important as one.
+        The two panes. A flex column that becomes a grid, with both children
+        placed explicitly, so the rail is written first (which is the order a
+        phone reads it in) and drawn second (which is the side a rail goes on).
+        `items-start` is what lets the rail be sticky: a stretched grid item is
+        as tall as its row and has nothing to stick within.
       */}
-      {!viewer.emailVerified && (
-        <div className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-yellow/40 bg-yellow-soft px-4 py-3 text-sm">
-          <span className="text-yellow-ink">
-            {t("discover.verifyEmail")}
-          </span>
-          <Link
-            href="/profile"
-            className="font-semibold text-yellow-ink underline underline-offset-2"
-          >
-            {t("discover.resendLink")}
-          </Link>
+      <div className="mt-8 flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+        <aside className="space-y-5 xl:sticky xl:top-6 xl:col-start-2 xl:row-start-1">
+          <YourWeek items={week} />
+          <WhosUp
+            status={
+              status
+                ? { ...status, expiresAt: status.expiresAt.toISOString() }
+                : null
+            }
+            clusters={clusters}
+            disabled={whosUpOff}
+          />
+        </aside>
+
+        <div className="@container min-w-0 xl:col-start-1 xl:row-start-1">
+          {introduction && (
+            <div className="mb-10">
+              <IntroductionCard intro={introduction} />
+            </div>
+          )}
+
+          {nothingAtAll ? (
+            <EmptyState
+              icon={<SproutIcon />}
+              level={2}
+              title={
+                neighbourhood.label
+                  ? t("discover.nearbyCount", {
+                      count: neighbourhood.count,
+                      place: neighbourhood.label,
+                    })
+                  : t("discover.quietTitle")
+              }
+              /*
+                A count and a target, rather than an apology. The emptiness is
+                the same either way; this version says what has to happen and
+                who can make it happen, which is the only honest ask when a
+                matching product has not reached the density its introductions
+                depend on.
+              */
+              description={
+                neighbourhood.label
+                  ? t("discover.nearbyTarget", { target: neighbourhood.target })
+                  : t("discover.quietBody", { brand: brand.name })
+              }
+              action={
+                <div className="flex flex-wrap justify-center gap-3">
+                  <LinkButton href="/start">
+                    {t("discover.startBunch")}
+                  </LinkButton>
+                  <LinkButton href="/profile#invite" variant="secondary">
+                    {t("discover.inviteLink")}
+                  </LinkButton>
+                </div>
+              }
+            />
+          ) : (
+            <div className="space-y-14">
+              {people.length > 0 && (
+                /* scroll-mt clears the sticky top bar when jumped to from the head. */
+                <section id="people" className="scroll-mt-20">
+                  <SectionHeading
+                    eyebrow={t("discover.matchedForYou")}
+                    eyebrowTone="suggested"
+                    title={t("discover.peopleTitle")}
+                    subtitle={t("discover.peopleBody")}
+                  />
+                  <hr className="edge-fade mb-6" />
+                  {/*
+                    `reveal-stagger` is scroll-driven CSS with no observer and
+                    no JavaScript, and it is guarded twice in globals.css:
+                    browsers without `animation-timeline` never see the rule,
+                    and anyone who asked their system for less motion is
+                    excluded before that. Both get the cards plainly visible.
+
+                    `@2xl` is the *column*, not the window: two cards per row
+                    once this pane is 672px or wider, which is the only
+                    measurement that answers the question, since the rail takes
+                    320px out of the window without telling it.
+
+                    672 is the person card at its phone width, twice. A card is
+                    342px wide on a 390px phone and reads perfectly well there,
+                    so anything that fits two of those fits two of these. The
+                    threshold was 768 first, and 768 is wrong by exactly the
+                    amount that matters: a 1366 laptop, which is the commonest
+                    width there is after a phone, leaves this pane 734px and
+                    would have dropped to one card per row for no reason a
+                    reader could see.
+                  */}
+                  <div className="reveal-stagger grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+                    {people.map((person) => (
+                      <PersonCard
+                        key={person.profileId}
+                        person={{
+                          profileId: person.profileId,
+                          username: person.username,
+                          displayName: person.displayName,
+                          avatarUrl: person.avatarUrl,
+                          bio: person.bio,
+                          age: person.age,
+                          locationLabel: person.locationLabel,
+                          score: person.score,
+                          highlights: person.highlights,
+                          sharedInterests: person.sharedInterests,
+                          goals: person.goals,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {bunches.length > 0 && (
+                <section id="bunches" className="scroll-mt-20">
+                  <SectionHeading
+                    eyebrow={t("discover.groups")}
+                    eyebrowTone="accent"
+                    title={t("discover.bunchesTitle")}
+                    subtitle={t("discover.bunchesBody")}
+                    action={
+                      <LinkButton href="/bunches" variant="ghost" size="sm">
+                        {t("discover.browseAll")}
+                      </LinkButton>
+                    }
+                  />
+                  <hr className="edge-fade mb-6" />
+                  <div className="reveal-stagger grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+                    {bunches.map((bunch) => (
+                      <BunchCard key={bunch.id} bunch={bunch} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {activities.length > 0 && (
+                <section id="activities" className="scroll-mt-20">
+                  <SectionHeading
+                    eyebrow={t("discover.activities")}
+                    eyebrowTone="teal"
+                    title={t("discover.activitiesTitle")}
+                    subtitle={t("discover.activitiesBody")}
+                    action={
+                      <LinkButton href="/activities" variant="ghost" size="sm">
+                        {t("discover.seeAll")}
+                      </LinkButton>
+                    }
+                  />
+                  <hr className="edge-fade mb-6" />
+                  <div className="reveal-stagger space-y-3">
+                    {activities.map((activity) => (
+                      <ActivityCard
+                        key={activity.id}
+                        activity={{
+                          id: activity.id,
+                          title: activity.title,
+                          startsAt: activity.startsAt.toISOString(),
+                          mode: activity.mode,
+                          locationLabel: activity.locationLabel,
+                          cityLabel: activity.cityLabel,
+                          participantCount: activity.participantCount,
+                          maxParticipants: activity.maxParticipants,
+                          bunch: activity.bunch,
+                          highlights: activity.highlights,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
         </div>
-      )}
-
-      <FinishProfile outstanding={outstanding} />
-
-      {outcome && (
-        <div className="mb-6">
-          <OutcomePrompt prompt={outcome} />
-        </div>
-      )}
-
-      {introduction && (
-        <div className="mb-8">
-          <IntroductionCard intro={introduction} />
-        </div>
-      )}
-
-      <div className="mb-10">
-        <WhosUp
-          status={
-            status
-              ? { ...status, expiresAt: status.expiresAt.toISOString() }
-              : null
-          }
-          clusters={clusters}
-          disabled={whosUpOff}
-        />
       </div>
 
-      {nothingAtAll ? (
-        <>
-          <EmptyState
-            icon={<SproutIcon />}
-            title={
-              neighbourhood.label
-                ? t("discover.nearbyCount", {
-                    count: neighbourhood.count,
-                    place: neighbourhood.label,
-                  })
-                : t("discover.quietTitle")
-            }
-            /*
-              A count and a target, rather than an apology. The emptiness is the
-              same either way; this version says what has to happen and who can
-              make it happen, which is the only honest ask when a matching
-              product has not reached the density its introductions depend on.
-            */
-            description={
-              neighbourhood.label
-                ? t("discover.nearbyTarget", { target: neighbourhood.target })
-                : t("discover.quietBody", { brand: brand.name })
-            }
-            action={
-              <div className="flex flex-wrap justify-center gap-3">
-                <LinkButton href="/start">{t("discover.startBunch")}</LinkButton>
-                <LinkButton href="/profile#invite" variant="secondary">
-                  {t("discover.inviteLink")}
-                </LinkButton>
-              </div>
-            }
-          />
+      {/*
+        The other ways in, across the foot of both panes.
 
-          {/*
-            The shortcuts matter *more* when there is nothing to recommend, not
-            less: an empty Discover is exactly when somebody needs another way
-            in. They were previously above the empty state, where they read as
-            navigation; here they read as the answer to it.
-          */}
-          <section className="mt-10">
-            <SectionHeading
-              title={t("discover.otherWaysTitle")}
-              subtitle={t("discover.notWhatBody")}
-            />
-            <DiscoverShortcuts />
-          </section>
-        </>
-      ) : (
-        <div className="space-y-12">
-          {people.length > 0 && (
-            /* scroll-mt clears the sticky top bar when jumped to from the head. */
-            <section id="people" className="scroll-mt-20">
-              <SectionHeading
-                eyebrow={t("discover.matchedForYou")}
-                eyebrowTone="suggested"
-                title={t("discover.peopleTitle")}
-                subtitle={t("discover.peopleBody")}
-              />
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {people.map((person) => (
-                  <PersonCard
-                    key={person.profileId}
-                    person={{
-                      profileId: person.profileId,
-                      username: person.username,
-                      displayName: person.displayName,
-                      avatarUrl: person.avatarUrl,
-                      bio: person.bio,
-                      age: person.age,
-                      locationLabel: person.locationLabel,
-                      score: person.score,
-                      highlights: person.highlights,
-                      sharedInterests: person.sharedInterests,
-                      goals: person.goals,
-                    }}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
+        They matter *more* when there is nothing to recommend, not less: an
+        empty Discover is exactly when somebody needs another way in. So the
+        heading changes with the case, and in the empty one they read as the
+        answer to it rather than as navigation.
+      */}
+      <section className="mt-14">
+        <SectionHeading
+          title={
+            nothingAtAll
+              ? t("discover.otherWaysTitle")
+              : t("discover.notWhatTitle")
+          }
+          subtitle={
+            nothingAtAll ? t("discover.notWhatBody") : t("discover.otherWaysBody")
+          }
+        />
+        <hr className="edge-fade mb-6" />
+        <DiscoverShortcuts />
+      </section>
 
-          {bunches.length > 0 && (
-            <section id="bunches" className="scroll-mt-20">
-              <SectionHeading
-                eyebrow={t("discover.groups")}
-                eyebrowTone="accent"
-                title={t("discover.bunchesTitle")}
-                subtitle={t("discover.bunchesBody")}
-                action={
-                  <LinkButton href="/bunches" variant="ghost" size="sm">
-                    {t("discover.browseAll")}
-                  </LinkButton>
-                }
-              />
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {bunches.map((bunch) => (
-                  <BunchCard key={bunch.id} bunch={bunch} />
-                ))}
-              </div>
-            </section>
-          )}
+      {/*
+        The ending, which is the argument.
 
-          {activities.length > 0 && (
-            <section id="activities" className="scroll-mt-20">
-              <SectionHeading
-                eyebrow={t("discover.activities")}
-                eyebrowTone="teal"
-                title={t("discover.activitiesTitle")}
-                subtitle={t("discover.activitiesBody")}
-                action={
-                  <LinkButton href="/activities" variant="ghost" size="sm">
-                    {t("discover.seeAll")}
-                  </LinkButton>
-                }
-              />
-              <div className="space-y-3">
-                {activities.map((activity) => (
-                  <ActivityCard
-                    key={activity.id}
-                    activity={{
-                      id: activity.id,
-                      title: activity.title,
-                      startsAt: activity.startsAt.toISOString(),
-                      mode: activity.mode,
-                      locationLabel: activity.locationLabel,
-                      cityLabel: activity.cityLabel,
-                      participantCount: activity.participantCount,
-                      maxParticipants: activity.maxParticipants,
-                      bunch: activity.bunch,
-                      highlights: activity.highlights,
-                    }}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section>
-            <SectionHeading
-              title={t("discover.notWhatTitle")}
-              subtitle={t("discover.otherWaysBody")}
-            />
-            <DiscoverShortcuts />
-          </section>
-
-          <section className="border-t border-line pt-10 text-center">
-            <p className="text-lg font-medium tracking-tight">
-              {t("discover.everything")}
-            </p>
-            <p className="mt-1.5 text-sm text-muted">
-              {t("discover.foundYourBunch")}
-            </p>
-          </section>
-        </div>
+        Set as an object rather than as a footnote under a rule, because it is
+        the one line on the page that is trying to get somebody to close the
+        tab, and a product saying "that's everything" in grey 12px does not mean
+        it.
+      */}
+      {!nothingAtAll && (
+        <section className="mt-14 rounded-squircle bg-surface px-6 py-12 text-center shadow-pebble">
+          <span
+            aria-hidden
+            className="mx-auto mb-4 flex size-11 items-center justify-center rounded-full bg-mint-soft text-mint-ink [&>svg]:size-5"
+          >
+            <SproutIcon />
+          </span>
+          <p className="text-lg font-bold tracking-tight">
+            {t("discover.everything")}
+          </p>
+          <p className="mt-1.5 text-sm text-muted">
+            {t("discover.foundYourBunch")}
+          </p>
+        </section>
       )}
     </PageShell>
   );

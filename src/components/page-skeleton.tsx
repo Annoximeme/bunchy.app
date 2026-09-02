@@ -4,12 +4,19 @@ import { SkeletonCard } from "@/components/ui";
 /**
  * The shape of a page that has not arrived yet.
  *
- * One component with five shapes rather than fifty hand-written files. A
+ * One component with six shapes rather than fifty hand-written files. A
  * skeleton earns its place by reserving the space the real content will occupy,
  * which is the difference between a page settling and a page jumping; a
  * skeleton that looks nothing like what follows is just a different kind of
- * flash. Five shapes cover every route in the product, so each `loading.tsx` is
+ * flash. Six shapes cover every route in the product, so each `loading.tsx` is
  * three lines and the shapes stay consistent because there is only one of each.
+ *
+ * `discover` is the only one belonging to a single page, and it is here rather
+ * than in a bespoke `loading.tsx` for the reason the other five are: one file
+ * that knows what a skeleton looks like. Discover earns its own shape because
+ * it is the only two-pane layout in the product and the only one that opens on
+ * a masthead, so the `grid` shape stood in for it by reserving a 36px title bar
+ * where a 200px panel was about to land.
  *
  * ## What it deliberately does not do
  *
@@ -26,7 +33,7 @@ import { SkeletonCard } from "@/components/ui";
  * is what a person using assistive technology actually needs to know.
  */
 
-type Shape = "list" | "grid" | "detail" | "table" | "form";
+type Shape = "list" | "grid" | "detail" | "table" | "form" | "discover";
 
 function Bar({ className }: { className: string }) {
   return (
@@ -60,6 +67,36 @@ function Row() {
   );
 }
 
+/** The head of Discover: a tall panel with a greeting and a row of jump pills. */
+function Masthead() {
+  return (
+    <div
+      className="mb-6 rounded-squircle bg-surface p-6 shadow-pebble sm:p-8"
+      aria-hidden
+    >
+      <Bar className="h-10 w-64 max-w-full" />
+      <Bar className="mt-4 h-4 w-96 max-w-full" />
+      <div className="mt-6 flex flex-wrap gap-2">
+        {["w-24", "w-24", "w-28"].map((w, i) => (
+          <Bar key={i} className={`h-8 ${w} rounded-full`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** A rail card: a heading and a few rows under it. */
+function Panel({ lines }: { lines: number }) {
+  return (
+    <div className="card-surface space-y-3 p-5" aria-hidden>
+      <Bar className="h-4 w-24" />
+      {Array.from({ length: lines }, (_, i) => (
+        <Bar key={i} className="h-14 w-full" />
+      ))}
+    </div>
+  );
+}
+
 export function PageSkeleton({
   shape = "list",
   /** What is being fetched, said once, politely. */
@@ -78,10 +115,14 @@ export function PageSkeleton({
   label?: string;
   bare?: boolean;
 }) {
-  const Shell = bare ? "div" : PageShell;
-  return (
-    <Shell>
-      <Header />
+  /*
+    Discover is the one page on the broad width, and a skeleton drawn 192px
+    narrower than the page replacing it is a skeleton that causes the jump it
+    exists to prevent.
+  */
+  const body = (
+    <>
+      {shape === "discover" ? <Masthead /> : <Header />}
 
       {/*
         `polite`, never `assertive`. This interrupts nothing: the page is
@@ -167,6 +208,30 @@ export function PageSkeleton({
           </div>
         </div>
       )}
-    </Shell>
+
+      {shape === "discover" && (
+        <div
+          className="flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start"
+          aria-hidden
+        >
+          <div className="space-y-5 xl:col-start-2 xl:row-start-1">
+            <Panel lines={3} />
+            <Panel lines={2} />
+          </div>
+          <div className="@container min-w-0 xl:col-start-1 xl:row-start-1">
+            <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+              {Array.from({ length: 4 }, (_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  if (bare) return <div>{body}</div>;
+  return (
+    <PageShell width={shape === "discover" ? "broad" : "wide"}>{body}</PageShell>
   );
 }

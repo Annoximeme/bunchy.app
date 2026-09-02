@@ -16,6 +16,10 @@ import { Link, useTranslate } from "@/components/link";
  * important as one. It disappears the moment the answers exist, and nothing
  * about it nags. A member who never answers gets slightly worse suggestions
  * and no reproach for it.
+ *
+ * It carries no margin of its own. Discover stacks the three asks in one strip
+ * and spaces them from there, and a component that renders nothing most of the
+ * time cannot be trusted to own the gap above the thing after it.
  */
 export function FinishProfile({
   outstanding,
@@ -29,7 +33,7 @@ export function FinishProfile({
   const availability = outstanding.includes("availability");
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3 text-sm">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[var(--radius-control)] border border-line bg-surface-sunken px-4 py-3 text-sm">
       <span className="text-ink-soft">
         {goals && availability
           ? t("finishProfile.both")
