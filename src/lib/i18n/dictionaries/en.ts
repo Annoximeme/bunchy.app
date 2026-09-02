@@ -163,6 +163,10 @@ export const en = {
     haveAccount: "Already have an account?",
     signIn: "Sign in",
     welcomeBack: "Welcome back",
+    signInBody:
+      "Your bunches, your plans and your messages are where you left them.",
+    showPassword: "Show password",
+    hidePassword: "Hide password",
     forgot: "Forgot your password?",
     newHere: "New here?",
     createOne: "Create an account",

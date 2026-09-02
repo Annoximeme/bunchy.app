@@ -376,12 +376,23 @@ export function Field({
   hint,
   error,
   htmlFor,
+  action,
   children,
 }: {
   label: string;
   hint?: string;
   error?: string;
   htmlFor?: string;
+  /**
+   * A small control that belongs to this field and reads as part of its
+   * heading, such as the "Forgot your password?" link beside a password box.
+   *
+   * It sits on the label's own line rather than under the form, because a link
+   * about this field placed three controls below it has to be found before it
+   * can be used. The label keeps its `block` layout when there is no action, so
+   * the click target of every other field in the product is untouched.
+   */
+  action?: ReactNode;
   children: ReactNode;
 }) {
   // The error replaces the hint visually, so it replaces it as the description
@@ -404,11 +415,22 @@ export function Field({
         })
       : children;
 
+  const labelText = (
+    <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
+      {label}
+    </label>
+  );
+
   return (
     <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
-        {label}
-      </label>
+      {action ? (
+        <div className="flex items-baseline justify-between gap-3">
+          {labelText}
+          {action}
+        </div>
+      ) : (
+        labelText
+      )}
       {control}
       {error ? (
         <p id={errorId} className="text-sm text-danger" role="alert">

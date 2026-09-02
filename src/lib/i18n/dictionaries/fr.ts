@@ -146,6 +146,10 @@ export const fr: Dictionary = {
     haveAccount: "Tu as déjà un compte ?",
     signIn: "Se connecter",
     welcomeBack: "Content de te revoir",
+    signInBody:
+      "Tes bunches, tes plans et tes messages sont là où tu les as laissés.",
+    showPassword: "Afficher le mot de passe",
+    hidePassword: "Masquer le mot de passe",
     forgot: "Mot de passe oublié ?",
     newHere: "Nouveau ici ?",
     createOne: "Créer un compte",

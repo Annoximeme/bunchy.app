@@ -80,11 +80,23 @@ export default async function AuthLayout({
             </p>
 
             <div className="mt-10 flex items-center gap-4">
+              {/*
+                The padding is what makes the initials readable.
+
+                Each circle is overlapped on its right by the next one, twelve
+                pixels of it plus that circle's four-pixel ring, so a letter
+                centred in the full forty-four had its right edge shaved off by
+                the neighbour. Every initial in the row except the last was
+                being read through a bite taken out of it. `pr-4` centres the
+                letter in the part of the circle you can actually see.
+              */}
               <div className="flex -space-x-3">
-                {CAST.map((initial) => (
+                {CAST.map((initial, index) => (
                   <span
                     key={initial}
-                    className="flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-band-deep"
+                    className={`flex size-11 items-center justify-center rounded-full text-sm font-bold ring-4 ring-band-deep ${
+                      index < CAST.length - 1 ? "pr-4" : ""
+                    }`}
                     style={{
                       background: person(initial).fill,
                       color: person(initial).ink,
@@ -102,9 +114,9 @@ export default async function AuthLayout({
 
           {/*
             The half you came here to use. No card styling here, each form
-            already brings its own `card-surface`, and wrapping a card in a card
-            is how you get two borders and a shadow inside a shadow. This adds
-            only the width, the centring and the lift off the dark ground.
+            already brings its own surface, and wrapping a card in a card is how
+            you get two borders and a shadow inside a shadow. This adds only the
+            width, the centring and the lift off the dark ground.
           */}
           <div className="mx-auto w-full max-w-md animate-rise [&>*]:shadow-[0_30px_70px_-40px_rgba(0,0,0,0.85)]">
             {children}

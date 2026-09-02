@@ -3,8 +3,10 @@
 import { Link, useLocaleRouter, useTranslate } from "@/components/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api";
-import { Button, ErrorNotice, Field, Input } from "@/components/ui";
+import { Button, ErrorNotice, Field, Input, cn } from "@/components/ui";
+import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import { FormError, useFormSubmit } from "@/components/form-state";
 
 /**
@@ -15,6 +17,33 @@ import { FormError, useFormSubmit } from "@/components/form-state";
  * cannot get into their account is the moment a vague "something went wrong"
  * costs you a member.
  */
+
+/**
+ * The card every one of these forms is drawn on.
+ *
+ * Sign in and sign up had drifted into two different objects, a squircle with
+ * an ambient shadow on one and a bordered, tighter-cornered panel on the other,
+ * and the password flow you reach from the sign-in card was a third. Somebody
+ * clicking "Forgot your password?" watched the card change shape under them.
+ * One shell, one heading scale, so the whole way in is a single surface with
+ * different words on it.
+ */
+function AuthCard({ children }: { children: ReactNode }) {
+  return <div className="rounded-squircle bg-surface p-8 shadow-pebble">{children}</div>;
+}
+
+function AuthTitle({ children }: { children: ReactNode }) {
+  return (
+    <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-ink">
+      {children}
+    </h1>
+  );
+}
+
+/** The line under the title. Reading size, because it is there to be read. */
+function AuthBody({ children }: { children: ReactNode }) {
+  return <p className="mt-3 leading-relaxed text-ink-soft">{children}</p>;
+}
 
 export function SignUpForm() {
   const router = useLocaleRouter();
@@ -49,13 +78,15 @@ export function SignUpForm() {
       the door rather than in front of it. That was the existing design and it
       is what the copy below is describing.
     */
-    <div className="rounded-squircle bg-surface p-8 shadow-pebble">
-      <h1 className="text-balance text-3xl font-extrabold leading-tight tracking-tight text-ink">
+    <AuthCard>
+      <AuthTitle>
         {t("auth.signUpTitle")}
-      </h1>
-      <p className="mt-3 leading-relaxed text-ink-soft">
-        {referralCode ? `${t("auth.signUpInvited")} ${t("auth.signUpBody")}` : t("auth.signUpBody")}
-      </p>
+      </AuthTitle>
+      <AuthBody>
+        {referralCode
+          ? `${t("auth.signUpInvited")} ${t("auth.signUpBody")}`
+          : t("auth.signUpBody")}
+      </AuthBody>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
@@ -121,6 +152,42 @@ export function SignUpForm() {
           {t("auth.signIn")}
         </Link>
       </p>
+    </AuthCard>
+  );
+}
+
+/**
+ * A password box you can look at.
+ *
+ * Signing in fails most often for the dullest reason there is: a typo in a
+ * field that shows you nothing. The eye is a plain button inside the box rather
+ * than a checkbox under it, so it sits where the mistake is.
+ *
+ * Every prop is forwarded, including the `aria-describedby` and
+ * `aria-invalid` that `Field` clones onto whatever it is given. Field talks to
+ * this component, this component talks to the real input, and the error text
+ * stays attached to the control it is about.
+ */
+function PasswordInput({ className, ...props }: ComponentProps<"input">) {
+  const t = useTranslate();
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <div className="relative">
+      <Input
+        {...props}
+        type={revealed ? "text" : "password"}
+        className={cn("pr-12", className)}
+      />
+      <button
+        type="button"
+        onClick={() => setRevealed((current) => !current)}
+        aria-label={revealed ? t("auth.hidePassword") : t("auth.showPassword")}
+        aria-pressed={revealed}
+        className="absolute inset-y-0 right-0 flex items-center px-3.5 text-muted transition-colors duration-200 hover:text-ink"
+      >
+        {revealed ? <EyeOffIcon className="size-5" /> : <EyeIcon className="size-5" />}
+      </button>
     </div>
   );
 }
@@ -142,8 +209,18 @@ export function SignInForm() {
   });
 
   return (
-    <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.welcomeBack")}</h1>
+    /*
+      The same object as the sign-up card, which it had drifted away from: a
+      tighter radius, less padding, a heading two steps smaller and no line of
+      copy under it. Two doors into one building should be built out of the
+      same materials, and the one for people who already live here should not
+      be the shabbier of the two.
+    */
+    <AuthCard>
+      <AuthTitle>
+        {t("auth.welcomeBack")}
+      </AuthTitle>
+      <AuthBody>{t("auth.signInBody")}</AuthBody>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
@@ -155,14 +232,28 @@ export function SignInForm() {
             type="email"
             autoComplete="email"
             required
+            placeholder="you@example.com"
           />
         </Field>
 
-        <Field label={t("auth.password")} htmlFor="password" error={form.fields.password}>
-          <Input
+        <Field
+          label={t("auth.password")}
+          htmlFor="password"
+          error={form.fields.password}
+          /* Beside the field it is about, rather than in the stack of three
+             underlined links this card used to end with. */
+          action={
+            <Link
+              href="/forgot-password"
+              className="text-sm font-medium text-accent-ink underline underline-offset-2"
+            >
+              {t("auth.forgot")}
+            </Link>
+          }
+        >
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             required
           />
@@ -173,23 +264,15 @@ export function SignInForm() {
         </Button>
       </form>
 
-      <div className="mt-5 space-y-2 text-center text-sm text-muted">
-        <p>
-          <Link
-            href="/forgot-password"
-            className="font-medium text-accent-ink underline underline-offset-2"
-          >
-            {t("auth.forgot")}
-          </Link>
-        </p>
-        <p>
-          {t("auth.newHere")}{" "}
-          <Link href="/signup" className="font-medium text-accent-ink underline underline-offset-2">
-            {t("auth.createOne")}
-          </Link>
-        </p>
-      </div>
-    </div>
+      {/* The hairline and the single quiet line are the sign-up card's ending,
+          read in the other direction. */}
+      <p className="mt-6 border-t border-line pt-4 text-center text-sm text-muted">
+        {t("auth.newHere")}{" "}
+        <Link href="/signup" className="font-medium text-accent-ink underline underline-offset-2">
+          {t("auth.createOne")}
+        </Link>
+      </p>
+    </AuthCard>
   );
 }
 
@@ -207,27 +290,34 @@ export function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.checkEmail")}</h1>
-        <p className="mt-2 text-sm text-ink-soft">{t("auth.checkEmailBody")}</p>
+      <AuthCard>
+        <AuthTitle>{t("auth.checkEmail")}</AuthTitle>
+        <AuthBody>{t("auth.checkEmailBody")}</AuthBody>
         <p className="mt-5 text-sm text-muted">
           <Link href="/login" className="font-medium text-accent-ink underline underline-offset-2">
             {t("auth.backToSignIn")}
           </Link>
         </p>
-      </div>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.resetTitle")}</h1>
-      <p className="mt-1.5 text-sm text-muted">{t("auth.resetBody")}</p>
+    <AuthCard>
+      <AuthTitle>{t("auth.resetTitle")}</AuthTitle>
+      <AuthBody>{t("auth.resetBody")}</AuthBody>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
         <Field label={t("auth.email")} htmlFor="email" error={form.fields.email}>
-          <Input id="email" name="email" type="email" autoComplete="email" required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder="you@example.com"
+          />
         </Field>
         <Button type="submit" loading={form.pending} className="w-full" size="lg">
           {t("auth.sendResetLink")}
@@ -239,7 +329,7 @@ export function ForgotPasswordForm() {
           {t("auth.backToSignIn")}
         </Link>
       </p>
-    </div>
+    </AuthCard>
   );
 }
 
@@ -259,9 +349,9 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   if (!token) {
     return (
-      <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.linkNotValid")}</h1>
-        <p className="mt-2 text-sm text-ink-soft">{t("auth.linkNotValidBody")}</p>
+      <AuthCard>
+        <AuthTitle>{t("auth.linkNotValid")}</AuthTitle>
+        <AuthBody>{t("auth.linkNotValidBody")}</AuthBody>
         <p className="mt-5 text-sm">
           <Link
             href="/forgot-password"
@@ -270,22 +360,22 @@ export function ResetPasswordForm({ token }: { token: string }) {
             {t("auth.requestNewLink")}
           </Link>
         </p>
-      </div>
+      </AuthCard>
     );
   }
 
   if (done) {
     return (
-      <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.passwordUpdated")}</h1>
-        <p className="mt-2 text-sm text-ink-soft">{t("auth.passwordUpdatedBody")}</p>
-      </div>
+      <AuthCard>
+        <AuthTitle>{t("auth.passwordUpdated")}</AuthTitle>
+        <AuthBody>{t("auth.passwordUpdatedBody")}</AuthBody>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.chooseNewPassword")}</h1>
+    <AuthCard>
+      <AuthTitle>{t("auth.chooseNewPassword")}</AuthTitle>
 
       <form onSubmit={form.onSubmit} className="mt-6 space-y-4">
         <FormError state={form} />
@@ -308,7 +398,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           {t("auth.updatePassword")}
         </Button>
       </form>
-    </div>
+    </AuthCard>
   );
 }
 
@@ -332,33 +422,33 @@ export function VerifyEmailPanel({ token }: { token: string }) {
 
   if (!token) {
     return (
-      <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">
+      <AuthCard>
+        <AuthTitle>
           {t("auth.confirmMissing")}
-        </h1>
-        <p className="mt-2 text-sm text-ink-soft">{t("auth.confirmMissingBody")}</p>
-      </div>
+        </AuthTitle>
+        <AuthBody>{t("auth.confirmMissingBody")}</AuthBody>
+      </AuthCard>
     );
   }
 
   if (state === "done") {
     return (
-      <div className="card-surface p-7">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("auth.emailConfirmed")}</h1>
-        <p className="mt-2 text-sm text-ink-soft">{t("auth.allSet")}</p>
+      <AuthCard>
+        <AuthTitle>{t("auth.emailConfirmed")}</AuthTitle>
+        <AuthBody>{t("auth.allSet")}</AuthBody>
         <div className="mt-5">
           <Link href="/discover" className="font-medium text-accent-ink underline underline-offset-2">
             {t("auth.goToDiscover")}
           </Link>
         </div>
-      </div>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="card-surface p-7">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("auth.confirmTitle")}</h1>
-      <p className="mt-2 text-sm text-ink-soft">{t("auth.confirmBody")}</p>
+    <AuthCard>
+      <AuthTitle>{t("auth.confirmTitle")}</AuthTitle>
+      <AuthBody>{t("auth.confirmBody")}</AuthBody>
       {state === "failed" && message && (
         <div className="mt-4">
           <ErrorNotice message={message} />
@@ -372,6 +462,6 @@ export function VerifyEmailPanel({ token }: { token: string }) {
       >
         {t("auth.confirmCta")}
       </Button>
-    </div>
+    </AuthCard>
   );
 }
