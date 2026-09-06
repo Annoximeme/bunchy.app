@@ -419,7 +419,12 @@ model PrivacySettings {
   /// Separate from `discoverable`: someone can be happy to be found in search
   /// and still not want the product proposing people to them unprompted. The
   /// two questions have genuinely different answers, so they get two switches.
-  aiIntroductions      Boolean       @default(true)
+  ///
+  /// It does not govern an introduction *a member* makes, which is somebody
+  /// asking on behalf of two people they know and is gated by
+  /// `whoCanSendRequests` like any other request. This one is about the
+  /// suggestions the product works out by itself, which is what the name says.
+  suggestedIntroductions Boolean     @default(true)
   /// Who may see a "Who's Up" status, when one is set.
   ///
   /// EVERYONE by default, which sounds like the wrong choice and is not. The

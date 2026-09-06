@@ -59,7 +59,7 @@ async function member(
           privacy: {
             create: {
               discoverable: true,
-              aiIntroductions: options.introductions ?? true,
+              suggestedIntroductions: options.introductions ?? true,
             },
           },
           interests: {

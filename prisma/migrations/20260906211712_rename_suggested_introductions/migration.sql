@@ -1,0 +1,14 @@
+-- Renamed, not recreated.
+--
+-- Prisma generates a DROP plus an ADD for this, which would set every member's
+-- answer back to the default: somebody who had switched suggested
+-- introductions off would silently have them switched back on, which is the
+-- one outcome a privacy column must never produce. A rename keeps every row's
+-- value and the column's default.
+--
+-- The name was `aiIntroductions`, which was also inaccurate. There is no model
+-- behind these suggestions: they come out of the deterministic scorer in
+-- src/server/modules/matching. "Suggested" says what the column actually
+-- governs, which is the introductions the product works out for itself, as
+-- opposed to the ones a member makes for two people they know.
+ALTER TABLE "PrivacySettings" RENAME COLUMN "aiIntroductions" TO "suggestedIntroductions";

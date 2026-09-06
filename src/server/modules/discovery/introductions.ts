@@ -26,7 +26,7 @@ import {
  * - **A high bar, plus a real reason.** A good score built from a pile of
  *   mediocre signals produces a sentence that says nothing; `worthIntroducing`
  *   refuses those. Better to show no introduction than an empty one.
- * - **Opt-out that means it.** `aiIntroductions` is checked before anything is
+ * - **Opt-out that means it.** `suggestedIntroductions` is checked before anything is
  *   computed, so switching it off does not merely hide the card.
  * - **Nothing is sent without a press.** "Send" creates an ordinary connection
  *   request, which the other person accepts or declines. Bunchy does not
@@ -158,8 +158,8 @@ export async function respondToIntroduction(
 export async function introductionsEnabled(profileId: string): Promise<boolean> {
   const privacy = await db.privacySettings.findUnique({
     where: { profileId },
-    select: { aiIntroductions: true },
+    select: { suggestedIntroductions: true },
   });
   // No row means the defaults, and the column defaults to on.
-  return privacy?.aiIntroductions ?? true;
+  return privacy?.suggestedIntroductions ?? true;
 }

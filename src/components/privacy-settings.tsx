@@ -15,7 +15,7 @@ export interface PrivacyValues {
   showApproxLocation: boolean;
   invitableToBunches: boolean;
   showExactAge: boolean;
-  aiIntroductions: boolean;
+  suggestedIntroductions: boolean;
   whoCanSeeAvailability: string;
 }
 
@@ -164,9 +164,9 @@ export function PrivacySettings({ initial }: { initial: PrivacyValues }) {
             description={t("privacy.showAgeNote")}
           />
           <Toggle
-            id="aiIntroductions"
-            checked={values.aiIntroductions}
-            onChange={(v) => set("aiIntroductions", v)}
+            id="suggestedIntroductions"
+            checked={values.suggestedIntroductions}
+            onChange={(v) => set("suggestedIntroductions", v)}
             label={t("privacy.introductions", { brand: brand.name })}
             description={t("privacy.introductionsNote")}
           />
