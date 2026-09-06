@@ -1088,6 +1088,28 @@ model Activity {
   /// have been posted on every five-minute pass until it started.
   discordAnnouncedAt DateTime?
 
+  /// When the confirmation round went out for this activity.
+  ///
+  /// On the activity rather than per person, because it is one round: the job
+  /// asks everybody at once, the day before, and this is what stops it asking
+  /// again on the next hourly pass.
+  confirmationsAskedAt DateTime?
+
+  /// When unconfirmed seats were returned to the room.
+  ///
+  /// Set once, so an hourly job cannot release the same seats twice or, worse,
+  /// release seats that a promoted member has since taken.
+  seatsReleasedAt DateTime?
+
+  /// When the host opened the door.
+  ///
+  /// Null means check-in is closed, which is the normal state of an activity:
+  /// nobody is asked to tap anything at a coffee for two. Opening it is the
+  /// host saying "we are here", and it is what makes the tap mean something,
+  /// because a check-in that can be pressed from the sofa a week early is not
+  /// evidence of anything.
+  checkInOpenedAt DateTime?
+
   /// When an open call stops being open. Null for an ordinary plan.
   ///
   /// Only set on a quick call: "anyone want to play right now". Those are made
@@ -1114,6 +1136,16 @@ enum ParticipationStatus {
   JOINED
   WAITLISTED
   LEFT
+  /// The seat went back to the room because nobody confirmed it.
+  ///
+  /// Distinct from LEFT on purpose. LEFT is somebody deciding not to come,
+  /// which is a decision they made and should be able to see they made. This
+  /// is a seat quietly returning to a waitlist because the day before came and
+  /// went without an answer, and recording it as though they had pressed
+  /// "leave" would put words in their mouth. It also keeps the two separable
+  /// later, when somebody asks how many seats a confirmation round actually
+  /// freed.
+  RELEASED
 }
 
 model ActivityParticipant {
@@ -1135,6 +1167,23 @@ model ActivityParticipant {
   /// person about their own commitment: two people joining the same evening
   /// each get one, and one of them unlinking does not silence the other.
   discordRemindedAt DateTime?
+
+  /// When they said they were still coming.
+  ///
+  /// Only ever set by the member pressing a button. A seat that has one of
+  /// these survives the release pass; a seat that does not, on an activity
+  /// that asked, goes back to the room. Null on every activity that never
+  /// asked, which is most of them.
+  confirmedAt DateTime?
+
+  /// When they turned up, as recorded at the door rather than afterwards.
+  ///
+  /// This is the only attendance record in the product that is not
+  /// self-reported after the fact. `ActivityOutcome.attended` is somebody's own
+  /// answer about themselves, which `hosting.ts` is right to say is weak
+  /// evidence to publish; a check-in happens inside a window the host opened,
+  /// at the place and the hour, which is a different kind of claim.
+  checkedInAt DateTime?
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)

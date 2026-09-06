@@ -7,6 +7,7 @@ import { getActivity } from "@/server/modules/activities/service";
 import { env } from "@/server/env";
 import { PageShell } from "@/components/page-header";
 import { ActivityJoinButton } from "@/components/activity-actions";
+import { Turnout } from "@/components/turnout";
 import { ReportButton } from "@/components/moderation-actions";
 import { TellSomeone } from "@/components/tell-someone";
 import { Avatar, Card, Chip } from "@/components/ui";
@@ -121,6 +122,20 @@ export default async function ActivityPage({
               </p>
             </div>
           )}
+
+          <Turnout
+            activityId={activity.id}
+            startsAt={activity.startsAt}
+            status={activity.status}
+            viewerStatus={activity.viewerStatus}
+            viewerIsOrganizer={activity.viewerIsOrganizer}
+            confirmationAsked={activity.confirmationAsked}
+            viewerConfirmed={activity.viewerConfirmed}
+            checkInOpen={activity.checkInOpen}
+            viewerCheckedIn={activity.viewerCheckedIn}
+            checkedInCount={activity.checkedInCount}
+            memberCount={activity.memberCount}
+          />
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <ActivityJoinButton

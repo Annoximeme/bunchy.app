@@ -104,6 +104,19 @@ export const en = {
     confirm: "Put it in the diary",
   },
 
+  turnout: {
+    stillComing: "Still coming?",
+    stillComingWhy:
+      "Say yes and the seat is yours. Say nothing and it goes back to whoever is waiting, a few hours before the start.",
+    confirmSeat: "Yes, I’m coming",
+    openDoor: "Are you there?",
+    openDoorWhy: "Opening check-in lets everybody tap in, so you can see who has arrived.",
+    openCheckIn: "Open check-in",
+    doorOpen: "Check-in is open",
+    here: "I’m here",
+    hereCount: "{count} of {of} have tapped in.",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",

@@ -5,6 +5,10 @@ import { deliverAnnouncementEmails } from "@/server/modules/announcements/delive
 import { materialiseDueOccurrences } from "@/server/modules/activities/series";
 import { expireStaleCalls } from "@/server/modules/activities/quick";
 import { pruneExpiredLinkCodes } from "@/server/modules/discord/link";
+import {
+  askForConfirmations,
+  releaseUnconfirmedSeats,
+} from "@/server/modules/activities/turnout";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -44,6 +48,13 @@ async function main() {
   // Not needed for correctness, redeem checks the expiry itself. This is so a
   // spent five-minute credential is not still sitting in a backup next week.
   const codes = await pruneExpiredLinkCodes();
+  // The day before, everybody holding a scarce seat is asked whether they are
+  // still coming; a few hours before, the seats nobody answered for go back to
+  // the room and the waitlist takes them. Both are guarded by a timestamp on
+  // the activity, so an overlapping pass asks nothing twice and cannot release
+  // a seat that has already been given to somebody else.
+  const confirmations = await askForConfirmations();
+  const releases = await releaseUnconfirmedSeats();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -55,7 +66,9 @@ async function main() {
       `announcement reminders: ${announcements.reminders}, ` +
       `occurrences created: ${series.created}, ` +
       `calls expired: ${calls.expired}, ` +
-      `link codes pruned: ${codes} ` +
+      `link codes pruned: ${codes}, ` +
+      `seats asked about: ${confirmations}, ` +
+      `seats released: ${releases} ` +
       `(${Date.now() - started}ms)`,
   );
 }

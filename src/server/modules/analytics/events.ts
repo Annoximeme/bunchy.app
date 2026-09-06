@@ -52,6 +52,14 @@ export const ANALYTICS_EVENTS = {
    */
   ACTIVITY_OUTCOME_ANSWERED: "activity.outcome_answered",
   ACTIVITY_MET_SOMEONE: "activity.met_someone",
+  /**
+   * Somebody tapped in at the door.
+   *
+   * The other event about what happened, and the only one recorded at the time
+   * and the place rather than afterwards. It is what makes turnout something
+   * the product knows rather than something it asks about later.
+   */
+  ACTIVITY_CHECKED_IN: "activity.checked_in",
 
   // --- Starting something ---------------------------------------------------
   /// Someone described what they wanted to do. Paired with the created event
@@ -129,6 +137,8 @@ export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [
   ANALYTICS_EVENTS.INTRODUCTION_ACCEPTED,
   ANALYTICS_EVENTS.PLAN_CREATED,
   ANALYTICS_EVENTS.PLAN_VOTED,
+  // Turning up is the most real thing anybody does here.
+  ANALYTICS_EVENTS.ACTIVITY_CHECKED_IN,
 ];
 
 /** The onboarding funnel, in order. Drives the drop-off chart. */

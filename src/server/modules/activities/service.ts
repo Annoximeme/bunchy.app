@@ -35,6 +35,8 @@ const ACTIVITY_SELECT = {
   maxParticipants: true,
   status: true,
   createdAt: true,
+  confirmationsAskedAt: true,
+  checkInOpenedAt: true,
   organizerId: true,
   organizer: {
     select: { id: true, username: true, displayName: true, avatarUrl: true },
@@ -45,6 +47,8 @@ const ACTIVITY_SELECT = {
     select: {
       status: true,
       guests: true,
+      confirmedAt: true,
+      checkedInAt: true,
       profile: {
         select: { id: true, username: true, displayName: true, avatarUrl: true },
       },
@@ -67,12 +71,16 @@ type ActivityRow = {
   maxParticipants: number;
   status: string;
   createdAt: Date;
+  confirmationsAskedAt: Date | null;
+  checkInOpenedAt: Date | null;
   organizerId: string;
   organizer: { id: string; username: string; displayName: string; avatarUrl: string | null };
   bunch: { id: string; slug: string; name: string } | null;
   participants: Array<{
     status: string;
     guests: number;
+    confirmedAt: Date | null;
+    checkedInAt: Date | null;
     profile: { id: string; username: string; displayName: string; avatarUrl: string | null };
   }>;
 };
@@ -130,6 +138,18 @@ export function toActivityView(row: ActivityRow, viewerProfileId: string) {
     waitlistCount: waitlisted.length,
     viewerStatus: viewerEntry?.status ?? null,
     viewerIsOrganizer: row.organizerId === viewerProfileId,
+
+    // --- Turnout ------------------------------------------------------------
+    //
+    // Four facts rather than a verdict. Whether the round has gone out, what
+    // this viewer answered, whether the door is open, and how many people are
+    // actually in the room. Nothing here is a score and nothing is attributed
+    // to anybody but the person reading it: the count is a count.
+    confirmationAsked: row.confirmationsAskedAt !== null,
+    viewerConfirmed: Boolean(viewerEntry?.confirmedAt),
+    checkInOpen: row.checkInOpenedAt !== null,
+    viewerCheckedIn: Boolean(viewerEntry?.checkedInAt),
+    checkedInCount: joined.filter((p) => p.checkedInAt !== null).length,
   };
 }
 
@@ -352,8 +372,14 @@ export async function leaveActivity(
   if (entry.status === "JOINED") await promoteFromWaitlist(activityId, activity.title);
 }
 
-/** A freed spot goes to whoever has been waiting longest. */
-async function promoteFromWaitlist(
+/**
+ * A freed spot goes to whoever has been waiting longest.
+ *
+ * Exported for the confirmation round in `turnout.ts`, which frees seats for a
+ * different reason and must fill them the same way. Two implementations of
+ * "who gets the spot" is how a product ends up with two answers to it.
+ */
+export async function promoteFromWaitlist(
   activityId: string,
   title: string,
 ): Promise<void> {

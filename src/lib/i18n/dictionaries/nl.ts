@@ -77,6 +77,19 @@ export const nl: Dictionary = {
     confirm: "In de agenda zetten",
   },
 
+  turnout: {
+    stillComing: "Kom je nog?",
+    stillComingWhy:
+      "Zeg ja en de plek is van jou. Zeg niets en ze gaat een paar uur op voorhand naar wie op de wachtlijst staat.",
+    confirmSeat: "Ja, ik kom",
+    openDoor: "Ben je er?",
+    openDoorWhy: "Als je het inchecken opent, kan iedereen aantikken en zie je wie er is.",
+    openCheckIn: "Inchecken openen",
+    doorOpen: "Inchecken staat open",
+    here: "Ik ben er",
+    hereCount: "{count} van {of} hebben aangetikt.",
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",

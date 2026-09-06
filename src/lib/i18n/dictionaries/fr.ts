@@ -78,6 +78,19 @@ export const fr: Dictionary = {
     confirm: "Le mettre à l’agenda",
   },
 
+  turnout: {
+    stillComing: "Tu viens toujours ?",
+    stillComingWhy:
+      "Dis oui et la place est à toi. Ne dis rien et elle repart vers ceux qui attendent, quelques heures avant le début.",
+    confirmSeat: "Oui, je viens",
+    openDoor: "Tu y es ?",
+    openDoorWhy: "Ouvrir l’enregistrement permet à chacun de pointer, et tu vois qui est arrivé.",
+    openCheckIn: "Ouvrir l’enregistrement",
+    doorOpen: "L’enregistrement est ouvert",
+    here: "Je suis là",
+    hereCount: "{count} sur {of} ont pointé.",
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",

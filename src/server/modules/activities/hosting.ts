@@ -31,6 +31,16 @@ import { db } from "@/server/db/client";
  * A host with nothing behind them gets no sentence at all rather than a zero.
  * "0 evenings hosted" is a mark against somebody for being new, which is the
  * opposite of the intent.
+ *
+ * ## What check-in changed here
+ *
+ * The evidence used to be entirely `ActivityOutcome.attended`: somebody's own
+ * answer, days later, about whether they went. That is still counted, and it
+ * is still the weaker half. A check-in is somebody tapping in during a window
+ * the host opened, at the hour and the place, which cannot be produced from a
+ * sofa a week later, so an evening with either counts as an evening people
+ * turned up to and the stronger record simply covers the gaps in the weaker
+ * one.
  */
 
 export interface HostStats {
@@ -61,9 +71,20 @@ export async function hostStats(
         // Somebody *other than the host*. Without this a host answering their
         // own prompt would be counted as turnout at their own event, which is
         // the self-report problem this module exists to avoid.
-        outcomes: {
-          some: { attended: true, profileId: { not: profileId } },
-        },
+        OR: [
+          {
+            outcomes: {
+              some: { attended: true, profileId: { not: profileId } },
+            },
+          },
+          // Recorded at the door rather than remembered afterwards. Same rule
+          // about the host: a host tapping themselves in is not turnout.
+          {
+            participants: {
+              some: { checkedInAt: { not: null }, profileId: { not: profileId } },
+            },
+          },
+        ],
       },
     }),
   ]);
