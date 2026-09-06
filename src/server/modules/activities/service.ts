@@ -4,6 +4,7 @@ import { conflict, forbidden, notFound } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { notify } from "@/server/modules/notifications/service";
+import { invitedViaMeetup } from "@/server/modules/bunches/meetups";
 import { markRecommendationActed } from "@/server/modules/matching/engine";
 import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
@@ -299,7 +300,10 @@ export async function joinActivity(
     throw conflict("That activity has already started.");
   }
 
-  // Anything hosted in a private bunch is members-only.
+  // Anything hosted in a private bunch is members-only, unless another bunch
+  // was asked along and said yes. That is what an accepted meetup *is*: the
+  // second group being let in for one evening, and without this the invitation
+  // would arrive with no way to answer it.
   if (activity.bunchId && activity.bunch?.visibility === "PRIVATE") {
     const membership = await db.bunchMembership.findUnique({
       where: {
@@ -308,7 +312,8 @@ export async function joinActivity(
       select: { status: true },
     });
     if (membership?.status !== "ACTIVE") {
-      throw notFound("That activity no longer exists.");
+      const guest = await invitedViaMeetup(activityId, profileId);
+      if (!guest) throw notFound("That activity no longer exists.");
     }
   }
 
@@ -553,6 +558,21 @@ export async function listActivities(
         {
           bunch: {
             memberships: { some: { profileId: viewerProfileId, status: "ACTIVE" } },
+          },
+        },
+        // An evening their own bunch was asked along to. Without this, a
+        // member of the guest bunch could take a seat from the notification
+        // and then never see it in their own list again.
+        {
+          meetups: {
+            some: {
+              status: "ACCEPTED",
+              guestBunch: {
+                memberships: {
+                  some: { profileId: viewerProfileId, status: "ACTIVE" },
+                },
+              },
+            },
           },
         },
       ],

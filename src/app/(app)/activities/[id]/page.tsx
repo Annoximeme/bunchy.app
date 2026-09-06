@@ -8,6 +8,11 @@ import { env } from "@/server/env";
 import { PageShell } from "@/components/page-header";
 import { ActivityJoinButton } from "@/components/activity-actions";
 import { Turnout } from "@/components/turnout";
+import { BunchMeetups } from "@/components/bunch-meetup";
+import {
+  meetupsForActivity,
+  moderatesBunch,
+} from "@/server/modules/bunches/meetups";
 import { ReportButton } from "@/components/moderation-actions";
 import { TellSomeone } from "@/components/tell-someone";
 import { Avatar, Card, Chip } from "@/components/ui";
@@ -46,6 +51,16 @@ export default async function ActivityPage({
     if (isAppError(error) && error.code === "not_found") notFound();
     throw error;
   }
+
+  // Who else is coming, at the group level. The candidate list is not loaded
+  // here: working it out means scoring every pair across two bunches, and only
+  // a moderator who has pressed the button is asking that question.
+  const meetups = activity.bunch
+    ? await meetupsForActivity(activity.id, viewer.profileId)
+    : [];
+  const canInvite = activity.bunch
+    ? await moderatesBunch(activity.bunch.id, viewer.profileId)
+    : false;
 
   return (
     <PageShell>
@@ -188,6 +203,14 @@ export default async function ActivityPage({
                 Meeting safely
               </Link>
             </p>
+          )}
+
+          {activity.bunch && (
+            <BunchMeetups
+              activityId={activity.id}
+              meetups={meetups}
+              canInvite={canInvite}
+            />
           )}
 
           {!activity.viewerIsOrganizer && (

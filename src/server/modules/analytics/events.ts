@@ -86,6 +86,13 @@ export const ANALYTICS_EVENTS = {
   INTRODUCTION_MADE: "introduction.made",
   INTRODUCTION_TOOK: "introduction.took",
 
+  // --- Two bunches ----------------------------------------------------------
+  /// Proposed, then accepted. The gap between them is the only honest measure
+  /// of whether groups actually want to meet groups, which is a question the
+  /// product has never been able to ask before.
+  MEETUP_PROPOSED: "meetup.proposed",
+  MEETUP_ACCEPTED: "meetup.accepted",
+
   // --- What a bunch does to itself ------------------------------------------
   PLAN_CREATED: "plan.created",
   PLAN_VOTED: "plan.voted",

@@ -145,6 +145,28 @@ export const en = {
     closeIt: "Yes, close it",
   },
 
+  meetup: {
+    title: "Another bunch",
+    bothComing: "{host} and {guest} are both coming.",
+    asked: "{host} asked your bunch along to this.",
+    waiting: "Waiting to hear from {guest}.",
+    accept: "We’re in",
+    decline: "Not this time",
+    withdraw: "Call the invitation off",
+    findOne: "Ask another bunch along",
+    findOneWhy:
+      "One evening, two groups, and everybody goes home to the bunch they came with.",
+    nobodyYet:
+      "Nothing worth suggesting yet. There has to be a group where everybody would have somebody to talk to.",
+    note: "A line for them",
+    notePlaceholder: "We’ve got room for six and there’s a decent bar next door.",
+    askThem: "Ask them",
+    members: {
+      one: "{count} member",
+      other: "{count} members",
+    },
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",

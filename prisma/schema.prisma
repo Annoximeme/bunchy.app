@@ -319,6 +319,7 @@ model Profile {
   /// The live "I'm free right now" status, if they have set one. At most one.
   availabilityStatus AvailabilityStatus?
   plansCreated       SocialPlan[]       @relation("PlanCreator")
+  meetupsProposed    BunchMeetup[]      @relation("MeetupProposer")
   planVotes          SocialPlanVote[]   @relation("PlanVoter")
   icebreakersAsked   IcebreakerAsk[]    @relation("IcebreakerAsker")
   challengesStarted  BunchChallenge[]   @relation("ChallengeStarter")
@@ -542,6 +543,70 @@ model ProfileAvailability {
 
   @@id([profileId, window])
   @@index([window])
+}
+
+enum BunchMeetupStatus {
+  PROPOSED
+  ACCEPTED
+  DECLINED
+  /// The host changed their mind before the other bunch answered.
+  WITHDRAWN
+}
+
+/// One evening, opened to a second bunch.
+///
+/// ## Why groups needed a way to meet groups
+///
+/// A member could find a bunch, and a bunch could not find a bunch. Every
+/// group here was an island: eight people who get on, with no way to meet
+/// another eight except by each of them going back to Discover as individuals.
+/// This is the one mechanic in the product that grows the graph the way the
+/// product claims to want it grown, which is through the people somebody
+/// already trusts rather than through a list of strangers.
+///
+/// ## Why it hangs off an activity rather than the two bunches
+///
+/// Nothing merges. Two groups share one evening and go home as two groups,
+/// which is why the row points at the activity: it is that evening being
+/// opened, not a relationship between the bunches. A second meetup is a second
+/// row, and a bunch that declines once has declined once rather than forever.
+///
+/// ## Consent, twice
+///
+/// A moderator of the host bunch opens it, and a moderator of the guest bunch
+/// accepts. Neither can put the other's members anywhere: acceptance makes the
+/// evening joinable by the guest bunch, and every member of it still decides
+/// for themselves whether to take a seat.
+model BunchMeetup {
+  id           String @id @default(cuid())
+  /// The bunch whose evening it is.
+  hostBunchId  String
+  /// The bunch being asked along.
+  guestBunchId String
+  activityId   String
+
+  /// A line from whoever opened it, shown to the other bunch.
+  note String?
+
+  status BunchMeetupStatus @default(PROPOSED)
+
+  proposedById  String?
+  respondedById String?
+
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+
+  hostBunch  Bunch    @relation("MeetupHost", fields: [hostBunchId], references: [id], onDelete: Cascade)
+  guestBunch Bunch    @relation("MeetupGuest", fields: [guestBunchId], references: [id], onDelete: Cascade)
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  proposedBy Profile? @relation("MeetupProposer", fields: [proposedById], references: [id], onDelete: SetNull)
+
+  /// One invitation per evening per bunch. Asking twice is asking again, and
+  /// an evening that has already been declined by a group should be proposed
+  /// to a different one rather than to the same one harder.
+  @@unique([activityId, guestBunchId])
+  @@index([guestBunchId, status])
+  @@index([hostBunchId, status])
 }
 
 // ---------------------------------------------------------------------------
@@ -832,6 +897,8 @@ model Bunch {
   plans       SocialPlan[]
   icebreakers IcebreakerAsk[]
   challenges  BunchChallenge[]
+  meetupsHosted  BunchMeetup[] @relation("MeetupHost")
+  meetupsInvited BunchMeetup[] @relation("MeetupGuest")
 
   @@index([visibility, archivedAt])
   @@index([cityLabel])
@@ -1214,6 +1281,8 @@ model Activity {
   bunch       Bunch?               @relation(fields: [bunchId], references: [id], onDelete: SetNull)
   participants ActivityParticipant[]
   outcomes     ActivityOutcome[]
+  /// Other bunches this evening has been opened to.
+  meetups      BunchMeetup[]
   /// The plan this came out of, when it came out of one.
   plan         SocialPlan?
 

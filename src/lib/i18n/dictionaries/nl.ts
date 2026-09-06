@@ -118,6 +118,28 @@ export const nl: Dictionary = {
     closeIt: "Ja, sluit ze",
   },
 
+  meetup: {
+    title: "Een andere bunch",
+    bothComing: "{host} en {guest} komen allebei.",
+    asked: "{host} heeft jullie bunch hiervoor uitgenodigd.",
+    waiting: "Wachten op antwoord van {guest}.",
+    accept: "Wij doen mee",
+    decline: "Deze keer niet",
+    withdraw: "Uitnodiging intrekken",
+    findOne: "Nodig een andere bunch uit",
+    findOneWhy:
+      "Eén avond, twee groepen, en iedereen gaat naar huis met de bunch waarmee die kwam.",
+    nobodyYet:
+      "Nog niets om voor te stellen. Er moet een groep zijn waar iedereen iemand zou hebben om mee te praten.",
+    note: "Een lijntje voor hen",
+    notePlaceholder: "We hebben plaats voor zes en er is een goed café naast.",
+    askThem: "Vraag het hun",
+    members: {
+      one: "{count} lid",
+      other: "{count} leden",
+    },
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",

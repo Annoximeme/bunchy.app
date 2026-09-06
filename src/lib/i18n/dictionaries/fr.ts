@@ -119,6 +119,28 @@ export const fr: Dictionary = {
     closeIt: "Oui, ferme-la",
   },
 
+  meetup: {
+    title: "Une autre bunch",
+    bothComing: "{host} et {guest} viennent toutes les deux.",
+    asked: "{host} a invité ta bunch à venir.",
+    waiting: "En attente de la réponse de {guest}.",
+    accept: "On vient",
+    decline: "Pas cette fois",
+    withdraw: "Retirer l’invitation",
+    findOne: "Inviter une autre bunch",
+    findOneWhy:
+      "Une soirée, deux groupes, et chacun rentre avec la bunch avec laquelle il est venu.",
+    nobodyYet:
+      "Rien à proposer pour l’instant. Il faut un groupe où tout le monde aurait quelqu’un à qui parler.",
+    note: "Un mot pour eux",
+    notePlaceholder: "On a de la place pour six et il y a un bon bar juste à côté.",
+    askThem: "Leur demander",
+    members: {
+      one: "{count} membre",
+      other: "{count} membres",
+    },
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",
