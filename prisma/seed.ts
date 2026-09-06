@@ -45,6 +45,13 @@ interface PersonSeed {
   interests: Array<[slug: string, strength: number, intent?: Intent]>;
   goals: string[];
   availability: string[];
+  /**
+   * What they would meet somebody in. Everybody here has some, because the
+   * matcher now treats two people with no language in common as two people who
+   * cannot meet, and a seeded member with an empty list would quietly be
+   * exempt from the rule the seed exists to demonstrate.
+   */
+  languages: Array<[code: string, fluency: "FLUENT" | "CONVERSATIONAL" | "LEARNING"]>;
   personality: {
     introversionExtraversion: number;
     spontaneityPlanning: number;
@@ -75,6 +82,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["GAMING_FRIENDS", "NEW_FRIENDS", "LOCAL_COMMUNITIES"],
     availability: ["WEEKDAY_EVENING", "WEEKEND_AFTERNOON", "WEEKEND_EVENING"],
+    languages: [["nl", "FLUENT"], ["en", "FLUENT"], ["fr", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 35,
       spontaneityPlanning: 65,
@@ -103,6 +111,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["HOBBY_PARTNERS", "GAMING_FRIENDS", "LOCAL_COMMUNITIES"],
     availability: ["WEEKDAY_EVENING", "WEEKEND_AFTERNOON"],
+    languages: [["nl", "FLUENT"], ["en", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 45,
       spontaneityPlanning: 70,
@@ -132,6 +141,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["HOBBY_PARTNERS", "LOCAL_COMMUNITIES", "CREATIVE_COLLABORATORS"],
     availability: ["WEEKEND_MORNING", "WEEKEND_AFTERNOON", "WEEKDAY_EVENING"],
+    languages: [["es", "FLUENT"], ["en", "FLUENT"], ["nl", "LEARNING"]],
     personality: {
       introversionExtraversion: 55,
       spontaneityPlanning: 40,
@@ -160,6 +170,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["HOBBY_PARTNERS", "NEW_FRIENDS", "LOCAL_COMMUNITIES"],
     availability: ["WEEKEND_MORNING", "WEEKEND_AFTERNOON"],
+    languages: [["nl", "FLUENT"], ["en", "FLUENT"]],
     personality: {
       introversionExtraversion: 40,
       spontaneityPlanning: 45,
@@ -187,6 +198,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["NEW_FRIENDS", "SIMILAR_INTERESTS", "HOBBY_PARTNERS"],
     availability: ["WEEKEND_AFTERNOON", "WEEKDAY_EVENING", "LATE_NIGHT"],
+    languages: [["ja", "FLUENT"], ["en", "FLUENT"], ["nl", "LEARNING"]],
     personality: {
       introversionExtraversion: 20,
       spontaneityPlanning: 60,
@@ -215,6 +227,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["FITNESS_PARTNERS", "GOING_OUT", "NEW_FRIENDS"],
     availability: ["WEEKDAY_MORNING", "WEEKDAY_EVENING", "WEEKEND_MORNING"],
+    languages: [["nl", "FLUENT"], ["fr", "CONVERSATIONAL"], ["en", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 85,
       spontaneityPlanning: 25,
@@ -243,6 +256,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["BUSINESS_PARTNERS", "CREATIVE_COLLABORATORS", "NEW_FRIENDS"],
     availability: ["WEEKDAY_MORNING", "WEEKDAY_EVENING", "WEEKEND_MORNING"],
+    languages: [["hi", "FLUENT"], ["en", "FLUENT"], ["nl", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 65,
       spontaneityPlanning: 80,
@@ -271,6 +285,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["GAMING_FRIENDS", "NEW_FRIENDS", "STUDY_PARTNERS"],
     availability: ["LATE_NIGHT", "WEEKDAY_EVENING", "WEEKEND_EVENING"],
+    languages: [["nl", "FLUENT"], ["de", "CONVERSATIONAL"], ["en", "FLUENT"]],
     personality: {
       introversionExtraversion: 30,
       spontaneityPlanning: 30,
@@ -298,6 +313,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["NEW_FRIENDS", "HOBBY_PARTNERS", "LOCAL_COMMUNITIES"],
     availability: ["WEEKEND_MORNING", "WEEKEND_AFTERNOON"],
+    languages: [["nl", "FLUENT"], ["en", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 50,
       spontaneityPlanning: 75,
@@ -326,6 +342,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["GOING_OUT", "NEW_FRIENDS", "CREATIVE_COLLABORATORS"],
     availability: ["WEEKDAY_EVENING", "WEEKEND_EVENING", "LATE_NIGHT"],
+    languages: [["pt", "FLUENT"], ["es", "CONVERSATIONAL"], ["en", "FLUENT"]],
     personality: {
       introversionExtraversion: 75,
       spontaneityPlanning: 25,
@@ -354,6 +371,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["CREATIVE_COLLABORATORS", "HOBBY_PARTNERS", "NEW_FRIENDS"],
     availability: ["WEEKDAY_EVENING", "WEEKEND_AFTERNOON"],
+    languages: [["nl", "FLUENT"], ["fr", "FLUENT"], ["en", "FLUENT"]],
     personality: {
       introversionExtraversion: 45,
       spontaneityPlanning: 55,
@@ -382,6 +400,7 @@ const PEOPLE: PersonSeed[] = [
     ],
     goals: ["GAMING_FRIENDS", "SIMILAR_INTERESTS"],
     availability: ["WEEKDAY_EVENING", "LATE_NIGHT"],
+    languages: [["ja", "FLUENT"], ["en", "CONVERSATIONAL"]],
     personality: {
       introversionExtraversion: 30,
       spontaneityPlanning: 70,
@@ -663,6 +682,12 @@ async function main() {
             availability: {
               create: person.availability.map((window) => ({
                 window: window as never,
+              })),
+            },
+            languages: {
+              create: person.languages.map(([code, fluency]) => ({
+                code,
+                fluency: fluency as never,
               })),
             },
             interests: {

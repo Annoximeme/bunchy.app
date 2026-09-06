@@ -233,7 +233,12 @@ describe("finding someone", () => {
     const visible = await findPeople(seeker.profileId, "gaming", {
       now: NOW,
     });
-    expect(visible.people[0]!.availability?.label).toBe("Up for gaming");
+    // A phrase ref rather than a sentence. The label stopped being an English
+    // string when Who's Up was translated, and this assertion was left behind
+    // comparing the ref to the words it replaced.
+    expect(visible.people[0]!.availability?.label.path).toBe(
+      "availability.upforgaming",
+    );
 
     await db.privacySettings.update({
       where: { profileId: open.profileId },

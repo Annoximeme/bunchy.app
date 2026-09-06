@@ -113,6 +113,25 @@ Phase 1 of the roadmap is complete and working end to end.
   detached, people whose plans are affected are told first, and reports outlive
   the person who filed them.
 
+- **Languages**, what a member would meet somebody in, and what a bunch runs
+  its evenings in. A ninth matching signal that scores from the weaker side of
+  a shared pair, and a hard filter when two people share none, because every
+  other signal assumed a conversation was possible.
+- **Plans for two**, the same vote a bunch uses, pointed at a conversation.
+  Times are proposed from both people's usual free hours rather than typed into
+  an empty picker, and either of them can settle it.
+- **Turnout**, a confirmation round the day before on evenings where seats are
+  scarce, seats returning to the waitlist when nobody answers, and a check-in
+  the host opens at the door. No reliability score, by design.
+- **Member-made introductions**, "you two should meet", from somebody connected
+  to both. Both have to say yes and neither is told who said no.
+- **Quiet bunches**, told once when a group has stopped, with a way into the
+  next formation round that does not require leaving, and a way to close it by
+  agreement rather than by rank.
+- **Bunch meets bunch**, one evening opened to a second group, scored on the
+  person most likely to stand at the edge of the room. Two groups share a night
+  and go home as two groups.
+
 - **Privacy policy & terms**, at `/privacy` and `/terms`, written from the
   schema rather than a template, with a test that fails if the copy drifts from
   the code. Both are engineer-written drafts pending legal review; the company

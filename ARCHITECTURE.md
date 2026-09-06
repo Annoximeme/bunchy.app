@@ -1159,3 +1159,168 @@ no amount of waiting fixes. It is resolved once, before the loop.
 `env.ts` refuses `EMAIL_PROVIDER=smtp` without a host at boot, and warns when
 production is left on `console`, silently logging reset links is the worst of
 both options.
+
+---
+
+## 28. Six mechanics, and what each one was for
+
+They were added together and they are separate features, but they answer one
+question: where does this product still leave somebody standing on their own?
+Each section below is the answer, and the rule the answer produced.
+
+### Language, the signal every other signal assumed
+
+`signals.ts` had eight axes and every one of them quietly assumed a
+conversation was possible. Two members could share an obsession, a free
+Thursday and a tram stop, share no language at all, and be scored in the
+nineties. In this country that is not an edge case, it is a Tuesday.
+
+A member now lists the languages they would meet somebody in, with three steps
+rather than a CEFR level: **learning it**, **conversational**, **fluent**. The
+question a form can usefully ask is "could you spend an evening in this", not
+"which certificate do you hold".
+
+Two decisions worth recording:
+
+- **The pair scores from the weaker side.** A fluent speaker and a beginner do
+  not average out to two conversational people, they add up to a beginner being
+  carried through an evening. `FLUENCY_SCORE` takes the minimum.
+- **No shared language is policy, not a low score.** It joins blocks and
+  `discoverable: false` in the candidate query (§4), because it is a fact about
+  whether two people *can* meet rather than a guess about whether they would
+  enjoy it. Silence stays silence: somebody who skipped the question has not
+  told us they speak nothing, so nobody who joined before this existed is
+  filtered out of anything.
+
+Each language is shown in its own name, which means the catalogue needs no
+translating and the person looking for their own language can find it without
+reading the interface it is written in.
+
+### Plans for two
+
+A bunch could plan an evening, break the ice and take on a challenge. Two
+people who had just agreed to talk got a message box. That is the exact moment
+a friendship either starts or quietly does not, and the north-star metric
+(§14) counts pairs who spoke *or* attended the same thing, so half of it had no
+feature behind it.
+
+`SocialPlan` gained a nullable `conversationId` alongside its now-nullable
+`bunchId`, with a check constraint saying exactly one is set, because Prisma
+cannot express "one of these two" and a row belonging to both is one every
+screen would have to defend itself against.
+
+The pair differs from the group in two ways, and both are about what a group
+needs that two people do not:
+
+- **One time is a complete question.** Nine people need something to choose
+  between; one other person needs something to answer. `MIN_OPTIONS` is 1 here
+  and 2 there.
+- **There are no ranks.** Deciding for a group needs standing, so it is the
+  proposer or a moderator. Between two people, requiring standing would mean
+  one half of a pair could settle a Thursday and the other could not.
+
+The times are proposed rather than typed. `availability/slots.ts` reads both
+members' windows in their own zones and offers the next few hours that suit
+both, at most one per day, with twelve hours' notice: four options that are all
+Tuesday evening is a vote that answers nothing. When their weeks genuinely do
+not meet it offers nothing and says so, because inventing an evening neither of
+them is free on is worse than admitting we cannot tell.
+
+### Turnout: a seat that goes back, and a door that opens
+
+An evening for six where three people quietly do not come is how offline plans
+die. The obvious answer is a reliability score, and `hosting.ts` had already
+argued against it: an outcome row is somebody's own answer about themselves, and
+a trust signal that can be typed into existence looks like proof. Nothing in
+`turnout.ts` scores anybody.
+
+Two pieces of scheduling instead:
+
+- **A confirmation round**, the day before, but only where seats are scarce:
+  four or more taken, or anybody on the waitlist. A coffee for two needs no
+  round, and asking about one is the product being anxious on somebody's
+  behalf.
+- **A release**, a few hours before the start, which returns unconfirmed seats
+  through the same promotion path as somebody leaving. The status is
+  `RELEASED`, not `LEFT`, because they never said they were not coming, and the
+  pass spares the organiser and anybody who joined after the round went out.
+
+Both are guarded by a timestamp on the activity rather than a group key, so an
+hourly job that overlaps a deploy cannot ask twice or release a seat that has
+already been given away.
+
+The door is the other half. A host opens check-in when they arrive, people tap
+in from half an hour before the start until well after, and that is the first
+attendance record in this product that is not a self-report: it cannot be
+produced from a sofa a week later. `hostStats` now counts an evening with
+either kind of evidence, so the stronger record covers the gaps in the weaker
+one.
+
+### The other kind of introduction
+
+Everything that put two members in front of each other was software working
+from what they had typed into forms. A person who knows both of them has what
+none of it has, which is having met them.
+
+`introduce.ts` is deliberately the most constrained thing in the codebase that
+a member can trigger: connected to both, blocked by neither, both have to say
+yes, neither of them and not the introducer is ever told which one said no, and
+five a day, because an introduction spends two other people's attention rather
+than the sender's own. Somebody who has closed connection requests has closed
+them; being vouched for by a mutual friend does not reopen a door they shut.
+
+Nothing is counted. No total, no badge, nothing on a profile. The moment being
+the person who introduces people is worth points, the introductions stop being
+about the two people.
+
+### A bunch is allowed to end
+
+`lifecycleOf` could already say a bunch was quiet and `BunchChemistry` could
+already say its confidence was low. Neither acted, and the formation pool
+selects members in no active bunch, so sitting in a dead group was precisely
+what kept somebody out of the next one being assembled.
+
+After six weeks with nothing said and nothing arranged, and only when there is
+no evening coming, every member is told once. The words are about the group:
+no count of anybody's silence, nobody named, and no suggestion to post
+something. `lookingForABunchAt` is the way on, a timestamp the pool reads, so
+somebody can be considered for a new group without leaving the old one and
+emptying their friends' room to do it. Closing becomes any member's to do once
+the notice has gone out, because the failure mode here is an owner who stopped
+coming and making the end depend on them is how a dead bunch stays on five
+screens forever.
+
+`BUNCH_QUIET` is the first notification that is neither a person waiting nor a
+suggestion of ours, so `inApp` became something a type can state rather than
+something derived from `person`. Push still follows `person`, and there is a
+test holding that line: an inbox entry is read when somebody looks, a push is
+an interruption.
+
+### Bunch meets bunch
+
+A member could find a bunch; a bunch could not find a bunch. Every group was an
+island, and this is the mechanic that grows the graph through people somebody
+already trusts rather than through a list of strangers.
+
+The scoring rule is the interesting part, and it is *not* formation's.
+`proposeBunches` admits to a permanent group on its weakest pair, because a
+group is only as good as its worst relationship. Two groups of eight sharing an
+evening are not going to produce sixty-four friendships, and grading them as
+though they should would refuse every pairing that ever existed. What decides a
+mixed evening is whether everybody has somebody, so `pairGroups` scores each
+person by their best match across the other group and judges the pairing by
+whoever's best is worst. Fifteen people clicking and one stranded is a
+beautiful average and a bad evening.
+
+Consent twice: a moderator opens the evening, a moderator of the other bunch
+accepts, and every member still decides for themselves. An accepted meetup is
+what lets a private bunch's evening be joined by the guests, which is checked in
+`joinActivity` rather than assumed by the page. Nothing merges: the row points
+at the activity, so a second evening is a second invitation and a bunch that
+said no once has said no once.
+
+The pairing number is never printed. "82% compatible with the Tuesday Lot"
+invites two groups to compare themselves; "everybody would have somebody to
+talk to" says the same thing and is the reason to go. It is computed when a
+moderator asks and never stored, because a standing table of which groups suit
+which other groups is not something anybody asked us to keep.
