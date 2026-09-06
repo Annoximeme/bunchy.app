@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isLanguageCode, MAX_LANGUAGES_PER_PROFILE } from "@/lib/languages";
 
 /**
  * Input schemas, shared by the API routes and the onboarding UI.
@@ -25,6 +26,36 @@ export const displayNameSchema = z
   .max(40, "That name is a little too long.");
 
 const CURRENT_YEAR = new Date().getUTCFullYear();
+
+/**
+ * The languages somebody is happy to socialise in.
+ *
+ * Optional everywhere it appears, and absent is not the same as empty: an
+ * absent field means the form did not carry the question, so the stored answer
+ * is left alone, and an empty array means the member cleared it. The avatar
+ * field above learned that distinction the hard way.
+ *
+ * The code is checked against the catalogue rather than by a regular
+ * expression. A two-letter string is not a language, and the one place that
+ * knows which two-letter strings are is `src/lib/languages.ts`.
+ */
+export const languageSelectionSchema = z
+  .array(
+    z.object({
+      code: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .refine(isLanguageCode, "That is not a language we know."),
+      fluency: z
+        .enum(["LEARNING", "CONVERSATIONAL", "FLUENT"])
+        .default("CONVERSATIONAL"),
+    }),
+  )
+  .max(
+    MAX_LANGUAGES_PER_PROFILE,
+    "Six is plenty. Pick the ones you would actually meet someone in.",
+  );
 
 export const basicsSchema = z.object({
   username: usernameSchema,
@@ -75,6 +106,14 @@ export const basicsSchema = z.object({
    * same shape of string.
    */
   timezone: z.string().trim().max(64).optional(),
+  /**
+   * Which languages they would meet somebody in.
+   *
+   * Asked on the first step, next to where they are, because the two answer
+   * the same question about whether an evening is possible. Optional, so a
+   * member who joined before it was asked can still edit their name.
+   */
+  languages: languageSelectionSchema.optional(),
 });
 
 export const interestSelectionSchema = z.object({
@@ -173,6 +212,7 @@ export const privacySchema = z.object({
 });
 
 export type BasicsInput = z.infer<typeof basicsSchema>;
+export type LanguageSelectionInput = z.infer<typeof languageSelectionSchema>;
 export type InterestSelectionInput = z.infer<typeof interestSelectionSchema>;
 export type PersonalityInput = z.infer<typeof personalitySchema>;
 export type GoalsInput = z.infer<typeof goalsSchema>;

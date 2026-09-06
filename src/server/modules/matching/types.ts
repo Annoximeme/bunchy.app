@@ -1,6 +1,7 @@
 import type {
   AvailabilityWindow,
   InterestIntent,
+  LanguageFluency,
   SocialGoal,
 } from "@/generated/prisma/enums";
 
@@ -22,6 +23,19 @@ export interface MatchInterest {
   /** 1 = casual, 2 = into it, 3 = it's my thing. */
   strength: number;
   intent: InterestIntent;
+}
+
+/**
+ * A language somebody says they can spend an evening in.
+ *
+ * Carried into the scorer as flat data like everything else here, so the
+ * language signal stays a pure function of two lists and can be tested without
+ * a database.
+ */
+export interface MatchLanguage {
+  /** ISO 639-1, lowercase. */
+  code: string;
+  fluency: LanguageFluency;
 }
 
 export interface MatchLocation {
@@ -54,6 +68,11 @@ export interface MatchProfile {
   interests: MatchInterest[];
   goals: SocialGoal[];
   availability: AvailabilityWindow[];
+  /**
+   * What they can hold a conversation in. Empty means they have not said,
+   * which is not the same as none and is never scored as none.
+   */
+  languages: MatchLanguage[];
   /** IANA zone. Null falls back to UTC, see `sharedHours`. */
   timezone: string | null;
   personality: PersonalityVector | null;
@@ -98,7 +117,8 @@ export type SignalName =
   | "location"
   | "age"
   | "history"
-  | "met_well";
+  | "met_well"
+  | "language";
 
 export interface PersonMatch {
   profileId: string;

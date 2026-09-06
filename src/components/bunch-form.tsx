@@ -12,6 +12,7 @@ import {
 } from "@/components/ui";
 import { FormError, useFormSubmit } from "@/components/form-state";
 import { INTEREST_CATEGORIES, INTEREST_SEEDS } from "@/lib/interests";
+import { LANGUAGES } from "@/lib/languages";
 import { useLanguage, useLocaleRouter } from "@/components/link";
 import { interestCategory, interestLabel } from "@/lib/i18n/interests";
 
@@ -34,6 +35,7 @@ export function BunchForm({
   const { locale, t } = useLanguage();
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [type, setType] = useState("INTEREST");
+  const [languages, setLanguages] = useState<string[]>([]);
   const [visibility, setVisibility] = useState("PUBLIC");
   const [placeQuery, setPlaceQuery] = useState(defaultCity ?? "");
   const [places, setPlaces] = useState<Place[]>([]);
@@ -84,6 +86,7 @@ export function BunchForm({
         visibility,
         maxMembers: Number(data.get("maxMembers")),
         interestSlugs: [...interests],
+        languages,
         ...(place
           ? { cityLabel: place.cityLabel, countryCode: place.countryCode }
           : {}),
@@ -167,6 +170,50 @@ export function BunchForm({
           </Select>
         </Field>
       </div>
+
+      <Field
+        label={t("bunchForm.languages")}
+        hint={t("bunchForm.languagesHint")}
+      >
+        {/*
+          Codes only, no fluency, and three at most. A bunch does not have a
+          level: the evening either runs in Dutch or it does not, and the
+          member deciding whether to join needs the answer to that rather than
+          an average of eight people's self-assessments.
+        */}
+        <ul className="flex flex-wrap gap-1.5">
+          {LANGUAGES.map((language) => {
+            const on = languages.includes(language.code);
+            const full = languages.length >= 3;
+            return (
+              <li key={language.code}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  disabled={!on && full}
+                  onClick={() =>
+                    setLanguages((current) =>
+                      current.includes(language.code)
+                        ? current.filter((code) => code !== language.code)
+                        : current.length >= 3
+                          ? current
+                          : [...current, language.code],
+                    )
+                  }
+                  className={cn(
+                    "rounded-full border px-3 py-1.5 text-sm transition-colors",
+                    on
+                      ? "border-transparent bg-teal text-teal-ink"
+                      : "border-line text-ink-soft hover:border-ink-soft disabled:opacity-40",
+                  )}
+                >
+                  {language.name}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </Field>
 
       <Field
         label={t("bunchForm.maxMembers")}

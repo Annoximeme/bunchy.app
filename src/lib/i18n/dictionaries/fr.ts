@@ -33,6 +33,21 @@ export const fr: Dictionary = {
     chosen: "{language} choisi",
   },
 
+  languages: {
+    label: "Les langues dans lesquelles tu rencontrerais quelqu’un",
+    hint: "Facultatif, et ça vaut la peine. On ne te présentera pas à quelqu’un avec qui tu n’as aucune langue en commun.",
+    add: "Ajouter une langue",
+    enough: "Six, c’est déjà beaucoup. On s’arrête là.",
+    fluent: "Courant",
+    conversational: "Niveau conversation",
+    learning: "En apprentissage",
+    fluencyFor: "Ton niveau en {language}",
+    removeLanguage: "Retirer {language}",
+    speaks: "Parle",
+    speaksEmpty: "Rien pour l’instant. C’est la première chose qu’un autre membre a besoin de savoir.",
+    learningSuffix: "en apprentissage",
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",
@@ -1212,6 +1227,8 @@ export const fr: Dictionary = {
   },
 
   bunchForm: {
+    languages: "Dans quelle langue ça se passe ?",
+    languagesHint: "Facultatif, trois maximum. C’est ce qui décide à qui la bunch est proposée, donc ne dis que ce qui est vrai.",
     title: "Créer un bunch",
     subtitle:
       "Un bon bunch est précis. Cinq personnes qui veulent toutes la même soirée valent mieux que cinquante vaguement d’accord.",
@@ -1423,5 +1440,83 @@ export const fr: Dictionary = {
     anywhere: "N’importe où",
     inPerson: "En vrai",
     activity: "Activité",
+  },
+
+  doSomething: {
+    title: "Faire quelque chose",
+    subtitle:
+      "Dis ce que tu as (argent, temps, énergie) et récupère une soirée. Cinq tapes, rien à taper.",
+    budget: "Budget",
+    time: "Temps",
+    mood: "Humeur",
+    people: "Avec qui",
+    clear: "Effacer",
+    free: "Gratuit",
+    oneHour: "1 heure",
+    twoHours: "2 heures",
+    anEvening: "Une soirée",
+    allDay: "Toute la journée",
+    chill: "Tranquille",
+    social: "Sociable",
+    adventurous: "Aventureux",
+    competitive: "Compétitif",
+    surpriseMe: "Surprends-moi",
+    alone: "Tout seul",
+    withBunches: "Avec mes bunches",
+    findPeople: "Trouver des gens",
+    alreadyHappening: "Déjà prévu",
+    alreadyHappeningNote:
+      "De vraies activités que quelqu’un a déjà créées. Elles ont une heure et un lieu parce qu’un membre les y a mis.",
+    ideasThatFit: "Des idées qui collent",
+    ideasNote:
+      "Des genres de soirées, pas des adresses. {brand} ne sait pas quels lieux sont près de chez toi ni ce qu’ils coûtent, et ne fera pas semblant.",
+    nothingFits: "Rien ne colle avec tout ça à la fois.",
+    nothingFitsNote:
+      "C’est en général le temps et le budget qui se contredisent. Laisse tomber l’un des deux et réessaie.",
+    online: "En ligne",
+    makeItPlan: "En faire un plan",
+    freeRightNow: "Libre maintenant",
+    tryAnother: "En essayer une autre",
+  },
+
+  surprise: {
+    title: "Surprends-moi",
+    subtitle:
+      "L’inverse d’une recommandation : quelqu’un dont les intérêts ne ressemblent pas aux tiens, mais dont les soirées si.",
+    heading: "Quelqu’un que tu n’aurais pas trouvé",
+    body:
+      "Découvrir classe les gens selon ce que vous avez en commun. Ceci fait exprès l’inverse : des intérêts différents, des façons semblables de passer une soirée.",
+    everyone: "C’est tout le monde pour l’instant",
+    everyoneBody:
+      "Il ne reste personne qui soit à la fois assez différent pour être une surprise et assez compatible pour que ça vaille le coup. Plus de monde dans les environs est la seule chose qui change ça.",
+    startBunch: "Créer un bunch",
+    startAgain: "Recommencer",
+    unexpected: "Inattendu",
+    startSomething: "Lancer quelque chose",
+    someoneElse: "Quelqu’un d’autre",
+  },
+
+  connections: {
+    title: "Contacts",
+    subtitle: "Il faut que les deux soient d’accord. C’est toute la règle.",
+    waitingOnYou: "En attente de toi ({count})",
+    waitingSubtitle: "Rien ne presse. Refuser est silencieux, et ils n’en savent rien.",
+    asked: "Tu as demandé",
+    askedSubtitle: "Rien à faire qu’attendre.",
+    yours: "Tes contacts ({count})",
+    emptyTitle: "Personne encore, et c’est un début normal",
+    emptyBody:
+      "Découvrir propose une poignée de gens à la fois. Envoie une demande à qui te ressemble.",
+    findPeople: "Trouver des gens",
+  },
+
+  notificationsPage: {
+    title: "Notifications",
+    subtitle: "Seulement des choses qu’une personne a faites et qui te concernent.",
+    settings: "Réglages",
+    emptyTitle: "Rien en attente",
+    emptyBody:
+      "On te préviendra quand quelqu’un veut se connecter, te répond, ou que ton bunch organise quelque chose. Rien d’autre.",
+    findPeople: "Trouver des gens",
   },
 };

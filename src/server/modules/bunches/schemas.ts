@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isLanguageCode } from "@/lib/languages";
 
 export const bunchCreateSchema = z.object({
   name: z.string().trim().min(3, "Give the bunch a name.").max(60),
@@ -19,6 +20,26 @@ export const bunchCreateSchema = z.object({
   // we expect anyone to want raised.
   maxMembers: z.number().int().min(3).max(12).default(10),
   rules: z.string().trim().max(1000).optional(),
+  /**
+   * What the bunch actually runs in.
+   *
+   * Capped at three, and no fluency: a group either holds its evenings in a
+   * language or it does not, and a bunch claiming six is telling nobody
+   * anything. Empty is a real answer, meaning "we have not said", and is the
+   * default so that nothing about existing bunches changes.
+   */
+  languages: z
+    .array(
+      z
+        .string()
+        .trim()
+        .toLowerCase()
+        .refine(isLanguageCode, "That is not a language we know."),
+    )
+    .max(3, "Three at most. A bunch that runs in six runs in none of them.")
+    // Optional rather than defaulted, so "the form did not ask" and "the bunch
+    // says none" stay distinguishable all the way to `updateBunch`.
+    .optional(),
   imageUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
 });
 

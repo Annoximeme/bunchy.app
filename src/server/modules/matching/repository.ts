@@ -54,6 +54,7 @@ const PROFILE_SELECT = {
   },
   goals: { select: { goal: true } },
   availability: { select: { window: true } },
+  languages: { select: { code: true, fluency: true } },
   personality: {
     select: {
       introversionExtraversion: true,
@@ -101,6 +102,7 @@ type ProfileRow = {
   }>;
   goals: Array<{ goal: MatchProfile["goals"][number] }>;
   availability: Array<{ window: MatchProfile["availability"][number] }>;
+  languages: MatchProfile["languages"];
   personality: MatchProfile["personality"];
   bunchMemberships: Array<{ bunchId: string }>;
   activityEntries: Array<{ activityId: string }>;
@@ -148,6 +150,7 @@ function toMatchProfile(row: ProfileRow, now: Date): MatchProfile {
     })),
     goals: row.goals.map((g) => g.goal),
     availability: row.availability.map((a) => a.window),
+    languages: row.languages,
     timezone: row.timezone,
     personality: row.personality,
     bunchIds: row.bunchMemberships.map((m) => m.bunchId),
@@ -255,6 +258,7 @@ export async function loadCandidates(
   }
 
   applyCriteria(where, subject, filter, now);
+  requireASharedLanguage(where, subject);
 
   const rows = await db.profile.findMany({
     where,
@@ -265,6 +269,50 @@ export async function loadCandidates(
 
   const profiles = (rows as ProfileRow[]).map((row) => toMatchProfile(row, now));
   return filter.withinKm ? withinRadius(profiles, subject, filter) : profiles;
+}
+
+/**
+ * No shared language is a policy exclusion, not a low score.
+ *
+ * Everything the scorer measures is a guess about how well an evening would
+ * go. This is the one fact that decides whether the evening can happen at all:
+ * two people with no language in common cannot talk, online or in person,
+ * however well the rest of it lines up.
+ *
+ * Only applied when the subject has answered, and only against candidates who
+ * have also answered. Silence on either side leaves the pair in, because a
+ * member who skipped the question has not told us they speak nothing, and
+ * filtering on that assumption would empty Discover for everybody who joined
+ * before the question existed.
+ *
+ * It appends to `AND` and runs *after* `applyCriteria`, which assigns both
+ * `AND` and `OR` outright. Written as its own `OR` nested inside `AND`, so it
+ * cannot be undone by the affinity net and cannot widen it either: the net
+ * says who is worth ranking, this says who must never be ranked.
+ */
+function requireASharedLanguage(
+  where: Prisma.ProfileWhereInput,
+  subject: MatchProfile,
+): void {
+  if (subject.languages.length === 0) return;
+
+  const condition: Prisma.ProfileWhereInput = {
+    OR: [
+      { languages: { none: {} } },
+      {
+        languages: {
+          some: { code: { in: subject.languages.map((l) => l.code) } },
+        },
+      },
+    ],
+  };
+
+  const existing = where.AND;
+  where.AND = Array.isArray(existing)
+    ? [...existing, condition]
+    : existing
+      ? [existing, condition]
+      : [condition];
 }
 
 /** Mutates `where` with either the search criteria or the affinity net. */

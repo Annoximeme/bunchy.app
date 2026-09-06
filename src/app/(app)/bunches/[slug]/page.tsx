@@ -108,11 +108,22 @@ export default async function BunchPage({
 
         <p className="mt-4 max-w-2xl text-ink-soft">{bunch.description}</p>
 
-        {bunch.interests.length > 0 && (
+        {(bunch.interests.length > 0 || bunch.languages.length > 0) && (
           <div className="mt-4 flex flex-wrap gap-1.5">
             {bunch.interests.map((interest) => (
               <Chip key={interest} tone="neutral">
                 {interest}
+              </Chip>
+            ))}
+            {/*
+              The language sits with the interests rather than in a section of
+              its own, because it is the same kind of fact about the group and
+              somebody scanning the page is asking one question: is this for
+              me.
+            */}
+            {bunch.languages.map((language) => (
+              <Chip key={language.code} tone="teal">
+                {language.name}
               </Chip>
             ))}
           </div>

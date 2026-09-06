@@ -43,6 +43,31 @@ export const en = {
     chosen: "{language} chosen",
   },
 
+  /**
+   * The languages a member socialises in, which is a different question from
+   * the one above: `language` is the language this page is written in,
+   * `languages` is what somebody could spend an evening in.
+   *
+   * The names of the languages themselves are not here. Each is shown in
+   * itself, from `src/lib/languages.ts`, so there is nothing to translate and
+   * no way for the three catalogues to disagree about what a language is
+   * called.
+   */
+  languages: {
+    label: "Languages you’d meet someone in",
+    hint: "Optional, and worth answering. We won’t introduce you to someone you share no language with.",
+    add: "Add a language",
+    enough: "Six is plenty. That’s the lot.",
+    fluent: "Fluent",
+    conversational: "Conversational",
+    learning: "Learning it",
+    fluencyFor: "How well you speak {language}",
+    removeLanguage: "Remove {language}",
+    speaks: "Speaks",
+    speaksEmpty: "Nothing yet. It’s the first thing another member needs to know.",
+    learningSuffix: "learning",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",
@@ -1229,6 +1254,8 @@ export const en = {
   },
 
   bunchForm: {
+    languages: "What language does it run in?",
+    languagesHint: "Optional, up to three. This decides who it gets suggested to, so only say what is true.",
     title: "Start a bunch",
     subtitle:
       "A good bunch is specific. Five people who all want the same evening beat fifty who vaguely agree.",
@@ -1439,6 +1466,84 @@ export const en = {
     anywhere: "Anywhere",
     inPerson: "In person",
     activity: "Activity",
+  },
+
+  doSomething: {
+    title: "Do something",
+    subtitle:
+      "Say what you have (money, time, energy) and get an evening back. Five taps, no typing.",
+    budget: "Budget",
+    time: "Time",
+    mood: "Mood",
+    people: "People",
+    clear: "Clear",
+    free: "Free",
+    oneHour: "1 hour",
+    twoHours: "2 hours",
+    anEvening: "An evening",
+    allDay: "All day",
+    chill: "Chill",
+    social: "Social",
+    adventurous: "Adventurous",
+    competitive: "Competitive",
+    surpriseMe: "Surprise me",
+    alone: "On my own",
+    withBunches: "With my bunches",
+    findPeople: "Find people",
+    alreadyHappening: "Already happening",
+    alreadyHappeningNote:
+      "Real activities somebody has already created. These have a time and a place because a member put them there.",
+    ideasThatFit: "Ideas that fit",
+    ideasNote:
+      "Kinds of evening, not places. {brand} does not know which venues are near you or what they charge, so it will not pretend to.",
+    nothingFits: "Nothing fits all of that at once.",
+    nothingFitsNote:
+      "Usually it is the time and the budget disagreeing. Drop one and try again.",
+    online: "Online",
+    makeItPlan: "Make it a plan",
+    freeRightNow: "Free right now",
+    tryAnother: "Try another",
+  },
+
+  surprise: {
+    title: "Surprise me",
+    subtitle:
+      "The opposite of a recommendation: someone whose interests do not look like yours, but whose evenings do.",
+    heading: "Someone you wouldn’t have found",
+    body:
+      "Discover ranks people by how much you have in common. This does the opposite on purpose, different interests, similar ways of spending an evening.",
+    everyone: "That is everyone for now",
+    everyoneBody:
+      "There is nobody left who is both different enough to be a surprise and compatible enough to be worth one. More people nearby is the only thing that changes that.",
+    startBunch: "Start a bunch",
+    startAgain: "Start again",
+    unexpected: "Unexpected",
+    startSomething: "Start something",
+    someoneElse: "Someone else",
+  },
+
+  connections: {
+    title: "Connections",
+    subtitle: "Both people have to agree. That’s the whole rule.",
+    waitingOnYou: "Waiting on you ({count})",
+    waitingSubtitle: "No rush. Declining is silent, and they’re never told.",
+    asked: "You’ve asked",
+    askedSubtitle: "Nothing to do but wait.",
+    yours: "Your connections ({count})",
+    emptyTitle: "Nobody here yet, and that is the normal beginning",
+    emptyBody:
+      "Discover suggests a handful of people at a time. Send a request to anyone who looks like your kind of person.",
+    findPeople: "Find people",
+  },
+
+  notificationsPage: {
+    title: "Notifications",
+    subtitle: "Only things a person did that involve you.",
+    settings: "Settings",
+    emptyTitle: "Nothing waiting",
+    emptyBody:
+      "We’ll tell you when someone wants to connect, replies to you, or your bunch plans something. Nothing else.",
+    findPeople: "Find people",
   },
 } as const;
 

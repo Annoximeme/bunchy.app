@@ -3,6 +3,7 @@ import { db } from "@/server/db/client";
 import { conflict, forbidden, notFound } from "@/server/errors";
 import { consume } from "@/server/ratelimit";
 import { INTEREST_BY_SLUG, slugifyInterest } from "@/lib/interests";
+import { languageName } from "@/lib/languages";
 import { findPlace } from "@/server/modules/geo/gazetteer";
 import { snapToGrid } from "@/server/modules/geo/precision";
 import { notify } from "@/server/modules/notifications/service";
@@ -88,6 +89,7 @@ export async function createBunch(
       type: input.type,
       visibility: input.visibility,
       maxMembers: input.maxMembers,
+      languages: input.languages ?? [],
       rules: input.rules || null,
       imageUrl: input.imageUrl || null,
       cityLabel: place?.cityLabel ?? input.cityLabel ?? null,
@@ -534,6 +536,9 @@ export async function updateBunch(
       ...(input.rules !== undefined ? { rules: input.rules || null } : {}),
       ...(input.imageUrl !== undefined ? { imageUrl: input.imageUrl || null } : {}),
       ...(input.maxMembers ? { maxMembers: input.maxMembers } : {}),
+      // Undefined means the form did not carry the question; an empty array
+      // means the bunch cleared its answer. The two must not collapse.
+      ...(input.languages === undefined ? {} : { languages: input.languages }),
       ...(place
         ? {
             cityLabel: place.cityLabel,
@@ -654,6 +659,7 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
       activityScore: true,
       createdAt: true,
       archivedAt: true,
+      languages: true,
       interests: {
         select: { interest: { select: { slug: true, label: true } } },
       },
@@ -706,6 +712,10 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
     maxMembers: bunch.maxMembers,
     rules: bunch.rules,
     createdAt: bunch.createdAt.toISOString(),
+    languages: bunch.languages.map((code) => ({
+      code,
+      name: languageName(code),
+    })),
     interests: bunch.interests.map((i) => i.interest.label),
     interestSlugs: bunch.interests.map((i) => i.interest.slug),
     viewerRole: viewerMembership?.role ?? null,

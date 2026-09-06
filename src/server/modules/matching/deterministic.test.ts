@@ -33,6 +33,7 @@ function interest(
 
 function profile(overrides: Partial<MatchProfile> = {}): MatchProfile {
   return {
+    languages: overrides.languages ?? [],
     timezone: "timezone" in overrides ? (overrides.timezone ?? null) : null,
     profileId: overrides.profileId ?? "p-test",
     displayName: overrides.displayName ?? "Test",

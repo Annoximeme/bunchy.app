@@ -224,6 +224,35 @@ export default async function ProfilePage() {
             </EditableCard>
 
             <EditableCard
+              title={t("languages.speaks")}
+              href="/onboarding/basics"
+              empty={t("languages.speaksEmpty")}
+              count={profile.languages.length}
+            >
+              <ul className="flex flex-wrap gap-1.5">
+                {profile.languages.map((language) => (
+                  <li key={language.code}>
+                    {/*
+                      One chip per language, with the learners marked. A member
+                      still learning something is the case another member most
+                      needs to see, and a chip that reads the same either way
+                      hides exactly the thing worth knowing.
+                    */}
+                    <Chip tone={language.fluency === "LEARNING" ? "neutral" : "teal"}>
+                      {language.name}
+                      {language.fluency === "LEARNING" && (
+                        <span className="text-muted">
+                          {" "}
+                          · {t("languages.learningSuffix")}
+                        </span>
+                      )}
+                    </Chip>
+                  </li>
+                ))}
+              </ul>
+            </EditableCard>
+
+            <EditableCard
               title={t("profile.lookingFor")}
               href="/onboarding/goals"
               empty={t("profile.lookingForEmpty")}

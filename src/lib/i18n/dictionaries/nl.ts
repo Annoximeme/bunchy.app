@@ -32,6 +32,21 @@ export const nl: Dictionary = {
     chosen: "{language} gekozen",
   },
 
+  languages: {
+    label: "Talen waarin je iemand zou ontmoeten",
+    hint: "Optioneel, en de moeite waard. We stellen je niet voor aan iemand met wie je geen enkele taal deelt.",
+    add: "Een taal toevoegen",
+    enough: "Zes is ruim genoeg. Meer wordt het niet.",
+    fluent: "Vloeiend",
+    conversational: "Gespreksniveau",
+    learning: "Aan het leren",
+    fluencyFor: "Hoe goed je {language} spreekt",
+    removeLanguage: "{language} verwijderen",
+    speaks: "Spreekt",
+    speaksEmpty: "Nog niets. Het is het eerste dat een ander lid moet weten.",
+    learningSuffix: "aan het leren",
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",
@@ -1204,6 +1219,8 @@ export const nl: Dictionary = {
   },
 
   bunchForm: {
+    languages: "In welke taal loopt het?",
+    languagesHint: "Optioneel, maximaal drie. Dit bepaalt aan wie de bunch wordt voorgesteld, dus zeg alleen wat klopt.",
     title: "Start een bunch",
     subtitle:
       "Een goede bunch is specifiek. Vijf mensen die allemaal dezelfde avond willen, zijn beter dan vijftig die het vaag eens zijn.",
@@ -1415,5 +1432,83 @@ export const nl: Dictionary = {
     anywhere: "Overal",
     inPerson: "In het echt",
     activity: "Activiteit",
+  },
+
+  doSomething: {
+    title: "Doe iets",
+    subtitle:
+      "Zeg wat je hebt (geld, tijd, energie) en krijg er een avond voor terug. Vijf tikken, geen typwerk.",
+    budget: "Budget",
+    time: "Tijd",
+    mood: "Zin in",
+    people: "Mensen",
+    clear: "Wissen",
+    free: "Gratis",
+    oneHour: "1 uur",
+    twoHours: "2 uur",
+    anEvening: "Een avond",
+    allDay: "De hele dag",
+    chill: "Rustig",
+    social: "Sociaal",
+    adventurous: "Avontuurlijk",
+    competitive: "Competitief",
+    surpriseMe: "Verras me",
+    alone: "In mijn eentje",
+    withBunches: "Met mijn bunches",
+    findPeople: "Vind mensen",
+    alreadyHappening: "Wat al gepland staat",
+    alreadyHappeningNote:
+      "Echte activiteiten die iemand al aangemaakt heeft. Die hebben een tijd en een plek omdat een lid ze erin gezet heeft.",
+    ideasThatFit: "Ideeën die passen",
+    ideasNote:
+      "Soorten avonden, geen zaken. {brand} weet niet welke zaken bij jou in de buurt zitten of wat ze kosten, en doet ook niet alsof.",
+    nothingFits: "Niets past bij dat allemaal tegelijk.",
+    nothingFitsNote:
+      "Meestal is het de tijd die met het budget botst. Laat er een vallen en probeer opnieuw.",
+    online: "Online",
+    makeItPlan: "Maak er een plan van",
+    freeRightNow: "Nu vrij",
+    tryAnother: "Probeer een andere",
+  },
+
+  surprise: {
+    title: "Verras me",
+    subtitle:
+      "Het tegendeel van een aanbeveling: iemand wiens interesses niet op de jouwe lijken, maar wiens avonden dat wel doen.",
+    heading: "Iemand die je nooit gevonden zou hebben",
+    body:
+      "Ontdekken rangschikt mensen op hoeveel je gemeen hebt. Dit doet met opzet het omgekeerde: andere interesses, gelijkaardige manieren om een avond door te brengen.",
+    everyone: "Dat is iedereen voor nu",
+    everyoneBody:
+      "Er is niemand meer over die tegelijk anders genoeg is om een verrassing te zijn en genoeg bij je past om er een waard te zijn. Meer mensen in de buurt is het enige dat daar iets aan verandert.",
+    startBunch: "Start een bunch",
+    startAgain: "Begin opnieuw",
+    unexpected: "Onverwacht",
+    startSomething: "Start iets",
+    someoneElse: "Iemand anders",
+  },
+
+  connections: {
+    title: "Connecties",
+    subtitle: "Allebei akkoord gaan. Meer is de regel niet.",
+    waitingOnYou: "Wacht op jou ({count})",
+    waitingSubtitle: "Geen haast. Weigeren gebeurt stil, en ze horen het nooit.",
+    asked: "Jij hebt gevraagd",
+    askedSubtitle: "Niets te doen dan wachten.",
+    yours: "Jouw connecties ({count})",
+    emptyTitle: "Nog niemand hier, en dat is een normaal begin",
+    emptyBody:
+      "Ontdekken stelt telkens een handvol mensen voor. Stuur een verzoek naar iedereen die jouw soort mens lijkt.",
+    findPeople: "Vind mensen",
+  },
+
+  notificationsPage: {
+    title: "Meldingen",
+    subtitle: "Alleen dingen die een persoon deed en waar jij bij betrokken bent.",
+    settings: "Instellingen",
+    emptyTitle: "Niets in de wacht",
+    emptyBody:
+      "We laten het weten wanneer iemand wil connecteren, jou antwoordt, of je bunch iets plant. Verder niets.",
+    findPeople: "Vind mensen",
   },
 };

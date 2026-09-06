@@ -21,6 +21,7 @@ const ROW = {
   interests: [],
   goals: [],
   availability: [],
+  languages: [],
   personality: null,
 } satisfies SerializeInput;
 

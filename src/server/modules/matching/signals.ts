@@ -1,10 +1,12 @@
 import type {
   MatchInterest,
+  MatchLanguage,
   MatchProfile,
   PersonalityVector,
   ScoringContext,
   SignalResult,
 } from "@/server/modules/matching/types";
+import { languageName } from "@/lib/languages";
 import { interestAffinity } from "@/server/modules/matching/interest-graph";
 import { interestInSentence } from "@/lib/interests";
 import { overlappingWindows, sharedHours } from "@/server/modules/geo/timezone";
@@ -562,6 +564,80 @@ export function locationSignal(
   }
 
   return null;
+}
+
+// --- Language ---------------------------------------------------------------
+
+/**
+ * How usable a language is between two people, from the weaker side.
+ *
+ * The pair is only as strong as whoever is struggling, so this takes the
+ * lower of the two rather than averaging: a fluent speaker and a beginner do
+ * not add up to two conversational ones, they add up to a beginner being
+ * carried through an evening.
+ */
+const FLUENCY_SCORE: Record<MatchLanguage["fluency"], number> = {
+  FLUENT: 1,
+  CONVERSATIONAL: 0.8,
+  LEARNING: 0.45,
+};
+
+/**
+ * Whether these two could actually talk to each other.
+ *
+ * Every other signal on this page assumes the answer is yes. Two people can
+ * share an obsession, a free Thursday and a tram stop and still have no
+ * language in common, and until this existed the scorer would rank that pair
+ * in the nineties and introduce them.
+ *
+ * Returns `null` when either of them has not said, which is the same rule the
+ * rest of this file follows: silence lowers confidence, it never lowers the
+ * score. Somebody who skipped the question is not scored as speaking nothing.
+ *
+ * A score of zero means both of them answered and share no language at all.
+ * That is a real answer rather than missing data, so it is returned, and the
+ * scorer turns it into a penalty. The genuinely fatal case is handled a layer
+ * up as policy rather than as a low score: `loadCandidates` will not put those
+ * two in front of each other in the first place.
+ */
+export function languageSignal(
+  subject: MatchProfile,
+  candidate: MatchProfile,
+): SignalResult | null {
+  if (subject.languages.length === 0 || candidate.languages.length === 0) {
+    return null;
+  }
+
+  const theirs = new Map(candidate.languages.map((l) => [l.code, l.fluency]));
+
+  let best: { code: string; score: number; weakest: MatchLanguage["fluency"] } | null =
+    null;
+  for (const mine of subject.languages) {
+    const other = theirs.get(mine.code);
+    if (!other) continue;
+    const weakest =
+      FLUENCY_SCORE[mine.fluency] <= FLUENCY_SCORE[other] ? mine.fluency : other;
+    const score = FLUENCY_SCORE[weakest];
+    if (!best || score > best.score) best = { code: mine.code, score, weakest };
+  }
+
+  if (!best) {
+    // No reason, on purpose. "You share no language" is true, useless as a
+    // suggestion, and the sort of sentence that would end up on a card.
+    return { signal: "language", score: 0, weight: 1 };
+  }
+
+  const name = languageName(best.code);
+  return {
+    signal: "language",
+    score: best.score,
+    weight: 1,
+    evidence: [name],
+    reason:
+      best.weakest === "LEARNING"
+        ? `You share ${name}, and one of you is still learning it`
+        : `You both speak ${name}`,
+  };
 }
 
 // --- Age --------------------------------------------------------------------

@@ -2,6 +2,7 @@ import { db } from "@/server/db/client";
 import { distanceKm } from "@/server/modules/geo/distance";
 import { interestAffinity } from "@/server/modules/matching/interest-graph";
 import { clamp } from "@/server/modules/matching/signals";
+import { languageName } from "@/lib/languages";
 import { loadMatchProfile } from "@/server/modules/matching/repository";
 import type { MatchProfile } from "@/server/modules/matching/types";
 
@@ -47,6 +48,7 @@ interface BunchRow {
   approxLat: number | null;
   approxLng: number | null;
   interests: Array<{ interest: { id: string; slug: string; label: string; category: string } }>;
+  languages: string[];
   _count: { memberships: number };
 }
 
@@ -99,6 +101,19 @@ function scoreBunch(subject: MatchProfile, bunch: BunchRow) {
     locationScore = 0.7;
   }
 
+  // --- Language -------------------------------------------------------------
+  //
+  // Only ever a highlight, never a term in the score. Which language a bunch
+  // runs in is decided in the query below, where a group somebody could not
+  // follow is removed outright rather than ranked low: a Dutch-speaking games
+  // night is not a slightly worse suggestion for somebody who speaks no Dutch,
+  // it is the wrong room.
+  const spoken = new Set(subject.languages.map((language) => language.code));
+  const shared = bunch.languages.filter((code) => spoken.has(code));
+  if (shared.length > 0 && bunch.languages.length > 0) {
+    highlights.push(`Runs in ${languageName(shared[0]!)}`);
+  }
+
   // --- Room to join ---------------------------------------------------------
   const memberCount = bunch._count.memberships;
   const spotsLeft = bunch.maxMembers - memberCount;
@@ -134,6 +149,23 @@ export async function recommendBunches(
       archivedAt: null,
       // Never recommend a bunch they are already in, or were removed from.
       memberships: { none: { profileId } },
+      // A bunch whose evenings run in a language this member does not have is
+      // excluded rather than ranked low, for the same reason as in
+      // `requireASharedLanguage`: it is a fact about whether they could take
+      // part, not a guess about whether they would enjoy it. A bunch that has
+      // said nothing stays in, because silence is not a claim.
+      ...(subject.languages.length > 0
+        ? {
+            OR: [
+              { languages: { isEmpty: true } },
+              {
+                languages: {
+                  hasSome: subject.languages.map((language) => language.code),
+                },
+              },
+            ],
+          }
+        : {}),
     },
     select: {
       id: true,
@@ -149,6 +181,7 @@ export async function recommendBunches(
       countryCode: true,
       approxLat: true,
       approxLng: true,
+      languages: true,
       interests: {
         select: {
           interest: { select: { id: true, slug: true, label: true, category: true } },

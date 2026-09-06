@@ -26,6 +26,7 @@ export default async function BasicsPage() {
       // something else, which made it look like a field they had never filled
       // in and could not change.
       user: { select: { birthYear: true, birthMonth: true } },
+      languages: { select: { code: true, fluency: true } },
     },
   });
 
@@ -45,6 +46,7 @@ export default async function BasicsPage() {
           birthMonth: profile.user.birthMonth,
           cityLabel: profile.cityLabel,
           countryCode: profile.countryCode,
+          languages: profile.languages,
         }}
       />
     </OnboardingShell>

@@ -14,7 +14,7 @@ import { OverlapSection } from "@/components/profile/overlap";
 import { Card, Chip, SectionHeading } from "@/components/ui";
 import { CalendarCheck } from "lucide-react";
 import { hostLine, hostStats } from "@/server/modules/activities/hosting";
-import { currentLocale } from "@/server/i18n";
+import { currentLocale, getTranslations } from "@/server/i18n";
 import { interestLabel } from "@/lib/i18n/interests";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +48,7 @@ export default async function PublicProfilePage({
   params: Promise<{ username: string }>;
 }) {
   const locale = await currentLocale();
+  const t = await getTranslations();
   const viewer = await requireViewer();
   const { username } = await params;
 
@@ -198,6 +199,31 @@ export default async function PublicProfilePage({
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {profile.languages.length > 0 && (
+              <Card>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted">
+                  {t("languages.speaks")}
+                </h3>
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {profile.languages.map((language) => (
+                    <li key={language.code}>
+                      <Chip
+                        tone={language.fluency === "LEARNING" ? "neutral" : "teal"}
+                      >
+                        {language.name}
+                        {language.fluency === "LEARNING" && (
+                          <span className="text-muted">
+                            {" "}
+                            · {t("languages.learningSuffix")}
+                          </span>
+                        )}
+                      </Chip>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
+
             {profile.goals.length > 0 && (
               <Card>
                 <h3 className="text-sm font-bold uppercase tracking-widest text-muted">

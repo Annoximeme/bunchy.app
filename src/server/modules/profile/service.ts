@@ -132,6 +132,23 @@ export async function saveBasics(
         ...(input.birthMonth === undefined ? {} : { birthMonth: input.birthMonth }),
       },
     }),
+    // Languages are replaced wholesale rather than merged, because the form
+    // sends the complete answer and a member removing one is as meaningful as
+    // adding one. Skipped entirely when the field is absent: a form that did
+    // not ask has not been answered, and the avatar above is here for exactly
+    // the same reason.
+    ...(input.languages === undefined
+      ? []
+      : [
+          db.profileLanguage.deleteMany({ where: { profileId } }),
+          db.profileLanguage.createMany({
+            data: input.languages.map((language) => ({
+              profileId,
+              code: language.code,
+              fluency: language.fluency,
+            })),
+          }),
+        ]),
   ]);
 
   track({ name: ANALYTICS_EVENTS.ONBOARDING_BASICS, profileId });

@@ -12,6 +12,7 @@ import {
   clamp,
   complementaryInterestsSignal,
   historySignal,
+  languageSignal,
   metWellSignal,
   locationSignal,
   personalitySignal,
@@ -58,9 +59,11 @@ const BASE_WEIGHTS: Record<SignalName, number> = {
   location: 0.1,
   availability: 0.1,
   history: 0.05,
-  // Both applied multiplicatively instead, so the budget above stays exact.
+  // All three applied multiplicatively instead, so the budget above stays
+  // exact.
   age: 0,
   met_well: 0,
+  language: 0,
 };
 
 /**
@@ -104,6 +107,33 @@ function metWellBoost(signals: SignalResult[]): number {
   const met = signals.find((s) => s.signal === "met_well");
   if (!met) return 1;
   return 1 + MAX_MET_WELL_BOOST * clamp(met.score);
+}
+
+/**
+ * A shared language as a multiplier, and the largest one here.
+ *
+ * Same mechanism as age and met_well, for the same reason: the six weights
+ * come from the product spec and sum to exactly 1.0, so an additive term
+ * would quietly reweight every other dimension.
+ *
+ * It is bigger than either of them because it is not a dimension of
+ * compatibility at all, it is a cap on one. Everything else on the card
+ * describes an evening two people might have; this describes whether they can
+ * have it. Forty percent is enough to sink a pair who match on paper and
+ * cannot speak, and stops short of zero because this scorer is also used where
+ * a conversation is not the point, two people who both turn up to the same
+ * five-a-side are not blocked by an empty language list.
+ *
+ * The unanswerable case never reaches here. When both people have stated
+ * languages and share none, `loadCandidates` excludes them as policy, which is
+ * where a "must never appear" belongs.
+ */
+const MAX_LANGUAGE_PENALTY = 0.4;
+
+function languagePenalty(signals: SignalResult[]): number {
+  const language = signals.find((s) => s.signal === "language");
+  if (!language) return 1;
+  return 1 - MAX_LANGUAGE_PENALTY * (1 - clamp(language.score));
 }
 
 /** Goals that mean "I want to actually go somewhere with someone". */
@@ -167,7 +197,15 @@ function confidenceFactor(present: number, total: number): number {
 }
 
 export class DeterministicScorer implements CompatibilityScorer {
-  readonly id = "deterministic@1";
+  /**
+   * Bumped from 1 when language joined the scorer.
+   *
+   * The version is stored on every `Recommendation`, and the whole point of
+   * storing it is to be able to ask later why two people were put in front of
+   * each other. A change that moves scores and leaves the id alone makes every
+   * row before it indistinguishable from every row after it.
+   */
+  readonly id = "deterministic@2";
 
   async scorePeople(
     subject: MatchProfile,
@@ -207,10 +245,11 @@ export class DeterministicScorer implements CompatibilityScorer {
     push(ageSignal(subject, candidate));
     push(historySignal(subject, candidate));
     push(metWellSignal(subject, candidate));
+    push(languageSignal(subject, candidate));
 
-    // Age and met_well both carry weight 0, so they contribute only through
-    // the multipliers below and through the reasons they produce. Everything
-    // else is a weighted mean.
+    // Age, met_well and language all carry weight 0, so they contribute only
+    // through the multipliers below and through the reasons they produce.
+    // Everything else is a weighted mean.
     const totalWeight = collected.reduce((sum, s) => sum + s.weight, 0);
     const raw =
       totalWeight === 0
@@ -224,7 +263,8 @@ export class DeterministicScorer implements CompatibilityScorer {
       raw *
         confidenceFactor(collected.length, Object.keys(BASE_WEIGHTS).length) *
         agePenalty(collected) *
-        metWellBoost(collected),
+        metWellBoost(collected) *
+        languagePenalty(collected),
     );
 
     return {
@@ -256,6 +296,12 @@ const HIGHLIGHT_PRIORITY: Record<SignalName, number> = {
   history: 0.9,
   location: 0.6,
   age: 0.3,
+  /**
+   * Above location and below anything about what two people would actually
+   * do together. "You both speak Nederlands" is worth saying to somebody
+   * deciding whether to write to a stranger, and it is not the reason to.
+   */
+  language: 0.7,
   // Ranked separately below rather than through this table. Kept here so the
   // Record stays exhaustive and adding a tenth signal is still a compile error
   // rather than a silent zero.
@@ -267,6 +313,10 @@ const HIGHLIGHT_FLOOR: Partial<Record<SignalName, number>> = {
   location: 0.8,
   age: 0.9,
   personality: 0.6,
+  // A language one of them is still learning is worth printing: it is the
+  // difference between an evening in Dutch and an evening in slow Dutch, and
+  // the person reading the card is the one who can decide about that.
+  language: 0.4,
 };
 
 const DEFAULT_HIGHLIGHT_FLOOR = 0.45;

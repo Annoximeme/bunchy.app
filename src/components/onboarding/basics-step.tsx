@@ -5,6 +5,10 @@ import { api, errorMessage } from "@/lib/api";
 import { Button, ErrorNotice, Field, Input, Textarea } from "@/components/ui";
 import { useLanguage, useLocaleRouter } from "@/components/link";
 import { INTL_TAGS } from "@/lib/i18n/config";
+import {
+  LanguagePicker,
+  type PickedLanguage,
+} from "@/components/language-picker";
 
 interface Place {
   cityLabel: string;
@@ -40,12 +44,20 @@ export function BasicsStep({
     birthMonth: number | null;
     cityLabel: string | null;
     countryCode: string | null;
+    languages: PickedLanguage[];
   };
 }) {
   const router = useLocaleRouter();
   const { locale, t } = useLanguage();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Held in state rather than read out of the form on submit, because the
+  // control is a list somebody edits rather than a field with a value, and
+  // there is no sensible name/value pair for "Dutch, conversational, third".
+  const [languages, setLanguages] = useState<PickedLanguage[]>(
+    initial.languages,
+  );
 
   const [placeQuery, setPlaceQuery] = useState(initial.cityLabel ?? "");
   const [places, setPlaces] = useState<Place[]>([]);
@@ -149,6 +161,10 @@ export function BasicsStep({
           // reads as "not sent" and falls back to the country.
           timezone:
             Intl.DateTimeFormat().resolvedOptions().timeZone || undefined,
+          // Always sent, including empty, unlike the picture above. This form
+          // does ask the question, so an empty list is the member's answer and
+          // has to be able to clear what was there.
+          languages,
         },
       });
       router.push(result.next);
@@ -296,6 +312,14 @@ export function BasicsStep({
           </p>
         )}
       </div>
+
+      <Field label={t("languages.label")} hint={t("languages.hint")}>
+        <LanguagePicker
+          value={languages}
+          onChange={setLanguages}
+          disabled={pending}
+        />
+      </Field>
 
       <Field
         label={t("basics.bioLabel")}

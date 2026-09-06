@@ -1,3 +1,4 @@
+import { languageName } from "@/lib/languages";
 import type { PersonalityVector } from "@/server/modules/matching/types";
 import type { ProfileSelect } from "@/generated/prisma/models/Profile";
 
@@ -21,6 +22,20 @@ export interface PublicInterest {
   intent: "PRACTICES" | "CURIOUS";
 }
 
+/**
+ * A language the member socialises in.
+ *
+ * The name travels with the code because it is the same word in every
+ * language: this product shows each language in itself, so there is nothing
+ * here for a caller to translate and no reason to make every surface look the
+ * name up for itself.
+ */
+export interface PublicLanguage {
+  code: string;
+  name: string;
+  fluency: "LEARNING" | "CONVERSATIONAL" | "FLUENT";
+}
+
 export type ConnectionState =
   | "self"
   | "none"
@@ -42,6 +57,15 @@ export interface PublicProfile {
   interests: PublicInterest[];
   goals: string[];
   availability: string[];
+  /**
+   * What they can hold a conversation in.
+   *
+   * Public rather than privacy-gated, unlike the age and the area above. A
+   * language is not a fact about where somebody lives or how old they are, it
+   * is the thing another member needs before writing to them at all, and a
+   * profile that hides it is a profile nobody can act on.
+   */
+  languages: PublicLanguage[];
   /** Plain-language traits rather than raw axis numbers. */
   traits: string[];
   bunchCount: number;
@@ -180,6 +204,7 @@ export interface SerializeInput {
   }>;
   goals: Array<{ goal: string }>;
   availability: Array<{ window: string }>;
+  languages: Array<{ code: string; fluency: "LEARNING" | "CONVERSATIONAL" | "FLUENT" }>;
   personality: PersonalityVector | null;
   _count?: { bunchMemberships?: number };
 }
@@ -241,6 +266,11 @@ export function toPublicProfile(
     availability: row.availability.map(
       (a) => AVAILABILITY_LABELS[a.window] ?? a.window,
     ),
+    languages: row.languages.map((l) => ({
+      code: l.code,
+      name: languageName(l.code),
+      fluency: l.fluency,
+    })),
     traits: describeTraits(row.personality),
     bunchCount: row._count?.bunchMemberships ?? 0,
     connectionState: options.connectionState,
@@ -294,6 +324,7 @@ export const PUBLIC_PROFILE_SELECT = {
   },
   goals: { select: { goal: true } },
   availability: { select: { window: true } },
+  languages: { select: { code: true, fluency: true } },
   personality: {
     select: {
       introversionExtraversion: true,

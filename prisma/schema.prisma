@@ -301,6 +301,7 @@ model Profile {
   interests    UserInterest[]
   goals        ProfileSocialGoal[]
   availability ProfileAvailability[]
+  languages    ProfileLanguage[]
   /// The live "I'm free right now" status, if they have set one. At most one.
   availabilityStatus AvailabilityStatus?
   plansCreated       SocialPlan[]       @relation("PlanCreator")
@@ -526,6 +527,56 @@ model ProfileAvailability {
 }
 
 // ---------------------------------------------------------------------------
+// Languages
+// ---------------------------------------------------------------------------
+
+/// How well somebody holds a conversation in a language, in three steps.
+///
+/// Deliberately not a CEFR level. A member choosing between A2 and B1 is
+/// answering a question about a certificate, and the question this product
+/// needs answered is "could you spend an evening in this language". Three
+/// honest steps get closer to that than six graded ones, and nobody has to
+/// look up what they mean.
+enum LanguageFluency {
+  /// Learning it. Would need patience from the other side, which is a fine
+  /// thing to know in advance and a bad thing to discover at the table.
+  LEARNING
+  /// Can hold an evening's conversation.
+  CONVERSATIONAL
+  /// Native, or may as well be.
+  FLUENT
+}
+
+/// A language a member is happy to socialise in.
+///
+/// `Profile.locale` already exists and answers a different question: it is the
+/// language the product writes *to* them in, one value, picked from the three
+/// the interface is offered in. This is the set of languages they can meet a
+/// stranger in, which in this country is routinely two or three, and is often
+/// not the one they read the interface in.
+///
+/// Matching needs it because every other signal quietly assumes a conversation
+/// is possible. Two people can share an obsession, a free Thursday and a
+/// postcode and still have no way to talk to each other, and the scorer had no
+/// way to know: it would rank that pair in the nineties and introduce them.
+///
+/// The code is ISO 639-1 and is checked against the catalogue in
+/// `src/lib/languages.ts` at the service layer rather than by an enum here,
+/// because the set of languages people in one city speak is a list that grows.
+/// A new enum value is a migration; a new catalogue entry is a line.
+model ProfileLanguage {
+  profileId String
+  /// ISO 639-1, lowercase.
+  code      String
+  fluency   LanguageFluency @default(CONVERSATIONAL)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([profileId, code])
+  @@index([code])
+}
+
+// ---------------------------------------------------------------------------
 // Connections (mutual consent) and direct messaging
 // ---------------------------------------------------------------------------
 
@@ -655,6 +706,15 @@ model Bunch {
   /// Bunches are deliberately small. Enforced in the membership service.
   maxMembers Int     @default(12)
   rules      String?
+
+  /// The languages this bunch actually speaks, as ISO 639-1 codes.
+  ///
+  /// A plain array rather than a join table with a fluency, because a group
+  /// does not have a fluency: either an evening runs in Dutch or it does not.
+  /// Empty means nobody said, and is treated as "no claim" rather than "none",
+  /// so a bunch created before this existed is never filtered out of anybody's
+  /// results.
+  languages String[] @default([])
 
   createdById String?
   /// Rolling 0-1 measure of how alive the bunch is. Recomputed, never shown
