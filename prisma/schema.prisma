@@ -276,8 +276,16 @@ model Profile {
   /// Awarded once, at the moment onboarding completes, while the member base is
   /// still under `FOUNDING_MEMBER_LIMIT`. Stored rather than derived so it can
   /// never be recalculated away, and deliberately a boolean rather than an
-  /// ordinal: "here since the beginning" is a fact, "founding member #47" is a
-  /// leaderboard, and §29 rules out numbers that rank one member above another.
+  /// ordinal: "here since the beginning" is a fact and "founding member #47" is
+  /// a leaderboard.
+  ///
+  /// §29 used to be quoted here as ruling out numbers that rank one member
+  /// above another, and standing (see MemberStanding) changed that rule: points
+  /// are public and two profiles can be compared by eye. What survives, and
+  /// what this column still obeys, is narrower and worth keeping: nothing
+  /// assigns a member an ordinal, no screen orders members by anything they
+  /// have earned, and the only place members appear beside each other with a
+  /// number is inside a bunch they are both in.
   foundingMember  Boolean @default(false)
 
   /// A staff title such as "Founder & Developer of Bunchy", shown as a badge on
@@ -359,6 +367,7 @@ model Profile {
   announcementEmails AnnouncementEmail[]
   seriesOrganised    ActivitySeries[]       @relation("SeriesOrganizer")
   seriesMemberships  ActivitySeriesMember[]
+  standing           MemberStanding?
   discordLink        DiscordLink?
   discordLinkCodes   DiscordLinkCode[]
   productFeedback    ProductFeedback[]
@@ -612,6 +621,138 @@ model BunchMeetup {
   @@unique([activityId, guestBunchId])
   @@index([guestBunchId, status])
   @@index([hostBunchId, status])
+}
+
+// ---------------------------------------------------------------------------
+// Standing: what somebody has actually done here
+// ---------------------------------------------------------------------------
+
+/// The five things worth recognising, kept apart rather than summed into one
+/// number.
+///
+/// Separate tracks because they reward different behaviour and would otherwise
+/// compete: the member who goes to the same Thursday for a year and the member
+/// who has met nine different groups are both doing the thing this product is
+/// for, and one figure would quietly declare a winner between them.
+enum XpTrack {
+  /// Check-ins. The only track fed by evidence recorded at the time and place.
+  TURNING_UP
+  /// Turning up to something that repeats, or to the same group months apart.
+  KEEPING_GOING
+  /// Evenings you arranged that other people actually came to.
+  HOSTING
+  /// Introductions you made that both sides accepted.
+  INTRODUCING
+  /// The first evening with a group, or in a part of town, that is new to you.
+  SOMEWHERE_NEW
+}
+
+/// One member's standing, recomputed rather than incremented.
+///
+/// ## Why nothing here is ever added to
+///
+/// Every point is derived from rows that already exist: a check-in, an
+/// accepted introduction, an evening somebody hosted that people came to. The
+/// recompute is a pure function of those rows, so it is idempotent, a job that
+/// overlaps a deploy cannot double-count, and a bug can never leave somebody
+/// permanently inflated. The rows are the truth and this is a cache of the
+/// arithmetic.
+///
+/// It also means points can be taken back without a compensating transaction:
+/// if an activity is cancelled, a member is banned or a report is upheld, the
+/// rows underneath change and the next recompute simply produces a smaller
+/// number.
+///
+/// ## Why it cannot be earned by typing
+///
+/// `ActivityOutcome.attended` is somebody's own answer about themselves, and
+/// `hosting.ts` already refuses to publish a trust signal derived from it,
+/// because a signal that can be typed into existence looks like proof. Points
+/// would be worse, because points are the thing people try to farm. Every
+/// track here reads corroborated rows: a check-in inside a window the host
+/// opened, or somebody else's acceptance.
+model MemberStanding {
+  profileId String @id
+  /// The sum of the tracks, cached so a list does not have to add them up.
+  total     Int    @default(0)
+
+  /// Which earned title they have chosen to show, if any.
+  ///
+  /// Deliberately not `Profile.title`. That column is staff-only and set from
+  /// the CLI, because a free-text line rendered in a badge is an
+  /// impersonation surface: anybody could write "Bunchy Support" and ask a
+  /// member for their password. This holds a key from the closed catalogue in
+  /// `src/lib/titles.ts` and can never contain anything a member typed.
+  displayedTitleKey String?
+
+  computedAt DateTime @default(now())
+
+  profile Profile             @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  tracks  MemberTrackPoints[]
+  titles  EarnedTitle[]
+
+  @@index([total])
+  @@index([computedAt])
+}
+
+model MemberTrackPoints {
+  profileId String
+  track     XpTrack
+  points    Int     @default(0)
+
+  standing MemberStanding @relation(fields: [profileId], references: [profileId], onDelete: Cascade)
+
+  @@id([profileId, track])
+}
+
+/// A title somebody has earned, from the catalogue and never from a keyboard.
+///
+/// `lapsedAt` exists because two kinds of title are worth having. Most
+/// describe something that happened and are permanent, since a thing that
+/// happened does not stop having happened. A few describe something that is
+/// currently true, such as running a weekly night, and those have to be able
+/// to stop being true or they become a claim the product is making on
+/// somebody's behalf. A lapsed title is kept rather than deleted: it is still
+/// true that they once ran a weekly night.
+model EarnedTitle {
+  profileId String
+  /// Key from `src/lib/titles.ts`.
+  key       String
+  earnedAt  DateTime  @default(now())
+  lapsedAt  DateTime?
+
+  standing MemberStanding @relation(fields: [profileId], references: [profileId], onDelete: Cascade)
+
+  @@id([profileId, key])
+  @@index([profileId, lapsedAt])
+}
+
+/// What a bunch has done, as the bunch.
+///
+/// The place comparison is allowed to live. A group's record is shared, so it
+/// cannot make one member of it look better than another, and it is the thing
+/// people are actually proud of: "we have met twelve times" is a sentence
+/// members say about their own group unprompted.
+///
+/// Computed from the same corroborated evidence as a member's: an evening
+/// counts once at least two people have tapped in at it, which is also what
+/// stops a bunch of one from awarding itself anything.
+model BunchStanding {
+  bunchId      String @id
+  /// Evenings that actually happened, corroborated at the door.
+  eveningsHeld Int    @default(0)
+  /// Weeks between the first of those and the most recent.
+  weeksRunning Int    @default(0)
+  total        Int    @default(0)
+  /// The highest title the bunch has reached, from the catalogue.
+  titleKey     String?
+
+  computedAt DateTime @default(now())
+
+  bunch Bunch @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+
+  @@index([total])
+  @@index([computedAt])
 }
 
 // ---------------------------------------------------------------------------
@@ -896,6 +1037,7 @@ model Bunch {
   interests   BunchInterest[]
   memberships BunchMembership[]
   chemistry   BunchChemistry?
+  standing    BunchStanding?
   messages    BunchMessage[]
   activities  Activity[]
   series      ActivitySeries[]
@@ -1965,6 +2107,13 @@ enum ChallengeStatus {
 /// no per-member completion. §12 asks for challenges that encourage
 /// interaction rather than addiction, and every one of those fields is a
 /// mechanism for the opposite. A challenge is active or it is not.
+///
+/// Still true now that standing exists, and deliberately so. Challenges were
+/// left out of the economy because they are the one thing in this product a
+/// group does purely for its own amusement, and a thing worth points is a
+/// thing somebody does for the points. Standing is fed by evenings people
+/// actually turned up to; a challenge is a bunch messing about, and it should
+/// stay that way.
 model BunchChallenge {
   id          String          @id @default(cuid())
   bunchId     String

@@ -167,6 +167,65 @@ export const en = {
     },
   },
 
+  titles: {
+    turnsup: "Turns up",
+    alwaysthere: "Always there",
+    afixture: "A fixture",
+    stickswithit: "Sticks with it",
+    keepsaroomgoing: "Keeps a room going",
+    host: "Organises evenings",
+    keepsthelightson: "Keeps the lights on",
+    organiseseverything: "Organises everything",
+    introducer: "Makes introductions",
+    knowseverybody: "Knows everybody",
+    getsaround: "Gets around",
+    newfaceeverywhere: "A new face everywhere",
+    regular: "Regular",
+    runsaweeklynight: "Runs a weekly night",
+    gettinggoing: "Getting going",
+    goingstrong: "Going strong",
+    aninstitution: "An institution",
+  },
+
+  standing: {
+    title: "What you’ve done here",
+    subtitle:
+      "Worked out from evenings people actually turned up to, introductions both sides accepted, and nights that kept running. Nothing here can be earned by typing.",
+    otherSubtitle: "Worked out from what they turned up to, not from what they wrote.",
+    total: "{count} points",
+    wearing: "Shown on your profile",
+    wear: "Show this one",
+    wearNone: "Show none",
+    none: "Nothing yet. It fills in the first time you tap in at something.",
+    noneOther: "Nothing yet.",
+    earned: "Titles you’ve earned",
+    lapsed: "No longer true",
+    tracks: {
+      turningup: "Turning up",
+      keepinggoing: "Keeping something going",
+      hosting: "Arranging evenings",
+      introducing: "Putting people together",
+      somewherenew: "Somewhere new",
+    },
+    bunch: {
+      title: "This bunch",
+      evenings: {
+        one: "{count} evening that actually happened",
+        other: "{count} evenings that actually happened",
+      },
+      weeks: {
+        one: "Going for {count} week",
+        other: "Going for {count} weeks",
+      },
+      attendance: "Who has been coming",
+      attended: {
+        one: "{count} evening",
+        other: "{count} evenings",
+      },
+      empty: "No evenings yet. One counts once two people have tapped in at it.",
+    },
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",

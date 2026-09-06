@@ -13,6 +13,8 @@ import { BunchChat } from "@/components/bunch-chat";
 import { BunchHealth } from "@/components/bunch-health";
 import { BunchPlans } from "@/components/bunch-plans";
 import { QuietBunch } from "@/components/quiet-bunch";
+import { BunchStanding } from "@/components/bunch-standing";
+import { recomputeBunchStanding } from "@/server/modules/standing/service";
 import { bunchChallenges, listPlans } from "@/server/modules/bunches/plans";
 import {
   BunchAssistant,
@@ -79,6 +81,14 @@ export default async function BunchPage({
   const looking = bunch.isMember
     ? await hasHandUp(viewer.profileId)
     : false;
+
+  // Recomputed on read rather than taken from the cache, because it is cheap
+  // (one query over the bunch's own past evenings) and because a member
+  // opening the page the morning after an evening should see it counted.
+  const standing = await recomputeBunchStanding(bunch.id);
+  const attendance = new Map(
+    standing.attendance.map((row) => [row.profileId, row.evenings]),
+  );
   // Members only: plans, icebreakers and challenges are the bunch talking to
   // itself, and the service re-checks membership on every call regardless.
   const [plans, challenges] = bunch.isMember
@@ -212,6 +222,24 @@ export default async function BunchPage({
           */}
           {bunch.isMember && bunch.quietNoticeAt && (
             <QuietBunch bunchId={bunch.id} looking={looking} />
+          )}
+
+          {/*
+            Members only. What a group has done together is the group's, and a
+            visitor deciding whether to join gets the lifecycle label on the
+            card, which says the same thing without the register of who came.
+          */}
+          {bunch.isMember && (
+            <BunchStanding
+              standing={standing}
+              members={bunch.members.map((member) => ({
+                id: member.id,
+                username: member.username,
+                displayName: member.displayName,
+                avatarUrl: member.avatarUrl,
+                evenings: attendance.get(member.id) ?? 0,
+              }))}
+            />
           )}
 
           {isModerator && (

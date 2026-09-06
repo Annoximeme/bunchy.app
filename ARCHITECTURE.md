@@ -1324,3 +1324,109 @@ invites two groups to compare themselves; "everybody would have somebody to
 talk to" says the same thing and is the reason to go. It is computed when a
 moderator asks and never stored, because a standing table of which groups suit
 which other groups is not something anybody asked us to keep.
+
+---
+
+## 29. Standing, and the rule it changed
+
+A points system was the one thing this codebase had argued against in more
+places than any other. It exists now because it was asked for, and the shape it
+took is the interesting part: the constraints it had to satisfy were already
+written down, so the design is mostly a consequence of them.
+
+### What it changed, said plainly
+
+§29 was quoted in two different senses across this codebase. One is that the
+product does not optimise for time on site, which is untouched: there are still
+no page-view or session-duration events, and `track.test.ts` still fails if one
+appears. The other, "no numbers that rank one member above another", is
+**amended**, because per-track points are public on every profile and two
+profiles can be compared by eye whether or not a screen invites it.
+
+What survives, and what the implementation obeys:
+
+- Nothing assigns a member an ordinal. There is no position, no rank, no "12th".
+- No screen orders members by what they have earned.
+- The only place members appear beside each other with a number is inside a
+  bunch they are both in, showing how many of *that group's* evenings each of
+  them came to. It is a fact everybody in the room already knows.
+
+The two comments that quoted the old wording, on `Profile.foundingMember` and in
+`founding.ts`, say this instead. The spec text itself needs the same edit.
+
+### Points are derived, never awarded
+
+There is no "give points" call anywhere, and there must never be one. A
+standing is a pure function of rows that already exist, recomputed and
+overwritten. Three things follow, and they are the reason for the shape:
+
+- **Idempotent.** A job that overlaps a deploy cannot double-count.
+- **Reversible with no ledger.** A cancelled evening, a banned member or an
+  upheld report changes the rows underneath, so the next recompute simply
+  produces a smaller number. There is no compensating write to get wrong.
+- **Backfillable.** The economy started with every existing check-in already
+  counted, because the rows were always there.
+
+`compute.ts` is pure and knows nothing about Prisma, the same split the matching
+module uses, so the rules can be argued with in a unit test rather than
+discovered by a member who found a way to farm them.
+
+### Nothing can be earned by typing
+
+`hosting.ts` refuses to publish a trust signal derived from `ActivityOutcome`,
+because an outcome is somebody's own answer about themselves and "a signal that
+can be typed into existence is worse than none: it looks like proof". Points are
+worse, because points are the thing people farm.
+
+So every track reads corroborated evidence. A check-in happened inside a window
+a host opened, at the hour and the place. A hosted evening counts only once
+other people tapped in at it. An introduction counts only when both sides
+accepted, which is two decisions that are not the introducer's. Self-reported
+attendance earns nothing at all.
+
+### Five tracks, and why not one number
+
+The member who has gone to the same Thursday for a year and the member who has
+met nine different groups are both doing what this product is for. One figure
+would quietly declare a winner between them, so there are five, and the profile
+draws them side by side with no target and no next threshold. A bar filling
+towards a level is a chore with a bar attached, and the moment somebody is
+turning up because a bar is nearly full, the turning up has stopped being the
+point.
+
+### The ceiling, and why it is a week
+
+The obvious attack is two accounts and a fake evening, and no rule about *what*
+counts can prevent it, since two real people can genuinely meet twice a day.
+What defeats it is making it pointless: each track pays for at most a few
+events per ISO week, set above what anybody does honestly, so a farm produces
+the same number as simply turning up would and the effort buys nothing.
+
+Weeks rather than rolling windows because a cap somebody can reason about is a
+cap nobody has to think about. "Three a week" is a sentence.
+
+### Titles, and the field they could not use
+
+`Profile.title` is staff-only and set from the CLI, because a badge rendered
+from text a member wrote is an impersonation surface: anybody could write
+"Bunchy Support" and ask for a password. An earned title has to be renderable on
+a public profile, so it can only ever be a key from the closed catalogue in
+`src/lib/titles.ts`. There is no path from a keyboard to a badge, and the two
+kinds of badge are drawn differently, because one says this person can suspend
+your account and the other says they turn up to things.
+
+Most titles are permanent, since a thing that happened does not stop having
+happened. One describes a state, "runs a weekly night", and lapses when it stops
+being true rather than leaving the product making a claim on somebody's behalf.
+A lapsed title is kept rather than deleted: it is still true that they once did.
+
+### What deliberately stayed out
+
+Challenges. They are the one thing here a group does purely for its own
+amusement, and a thing worth points is a thing somebody does for the points.
+The `BunchChallenge` comment still says "no points, no streak, no leaderboard",
+and it is still accurate.
+
+Matching, too. The scorer cannot see standing, and must not: points that
+influenced who you were shown would turn the ranking into a reward for playing
+rather than an answer about compatibility.

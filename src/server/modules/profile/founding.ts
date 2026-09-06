@@ -8,8 +8,13 @@ import { db } from "@/server/db/client";
  *
  * **It is a boolean, never an ordinal.** "Here since the beginning" is a fact
  * about someone. "Founding member #47" is a leaderboard, and this product does
- * not have numbers that rank one member above another (§29). Nothing in the
- * codebase can tell you who was 12th.
+ * not assign members an ordinal. Nothing in the codebase can tell you who was
+ * 12th.
+ *
+ * §29 was quoted here as ruling out numbers that rank one member above
+ * another, and standing amended that: points are public now. What still holds
+ * is that nothing hands out a position, and no screen orders members by what
+ * they have earned.
  *
  * **It is earned by finishing, not by signing up.** Accounts that never complete
  * onboarding do not consume a place, because a half-filled profile is not a

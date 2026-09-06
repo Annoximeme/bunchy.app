@@ -132,6 +132,13 @@ Phase 1 of the roadmap is complete and working end to end.
   person most likely to stand at the edge of the room. Two groups share a night
   and go home as two groups.
 
+- **Standing**, five tracks recognising what somebody actually did: turning up,
+  keeping something going, arranging evenings people came to, putting people
+  together, and going somewhere new. Derived from corroborated rows rather than
+  awarded, capped per week so farming buys nothing, and paired with earned
+  titles from a closed catalogue. Bunches earn too, and that is where
+  comparison lives.
+
 - **Privacy policy & terms**, at `/privacy` and `/terms`, written from the
   schema rather than a template, with a test that fails if the copy drifts from
   the code. Both are engineer-written drafts pending legal review; the company

@@ -141,6 +141,65 @@ export const fr: Dictionary = {
     },
   },
 
+  titles: {
+    turnsup: "De la partie",
+    alwaysthere: "Toujours là",
+    afixture: "Une valeur sûre",
+    stickswithit: "Tient bon",
+    keepsaroomgoing: "Fait vivre le groupe",
+    host: "Organise les soirées",
+    keepsthelightson: "Garde la lumière allumée",
+    organiseseverything: "Organise tout",
+    introducer: "Fait les présentations",
+    knowseverybody: "Connaît tout le monde",
+    getsaround: "Va partout",
+    newfaceeverywhere: "Un nouveau visage partout",
+    regular: "Fidèle au poste",
+    runsaweeklynight: "Anime une soirée hebdomadaire",
+    gettinggoing: "Ça démarre",
+    goingstrong: "Ça tourne",
+    aninstitution: "Une institution",
+  },
+
+  standing: {
+    title: "Ce que tu as fait ici",
+    subtitle:
+      "Calculé à partir des soirées où des gens sont vraiment venus, des présentations acceptées des deux côtés, et des soirées qui ont continué. Rien de tout ça ne s’obtient au clavier.",
+    otherSubtitle: "Calculé à partir de ce à quoi cette personne est venue, pas de ce qu’elle a écrit.",
+    total: "{count} points",
+    wearing: "Affiché sur ton profil",
+    wear: "Afficher celui-ci",
+    wearNone: "N’en afficher aucun",
+    none: "Rien pour l’instant. Ça se remplit dès que tu pointes quelque part.",
+    noneOther: "Rien pour l’instant.",
+    earned: "Titres que tu as gagnés",
+    lapsed: "Plus d’actualité",
+    tracks: {
+      turningup: "Être là",
+      keepinggoing: "Faire durer",
+      hosting: "Organiser des soirées",
+      introducing: "Présenter des gens",
+      somewherenew: "Ailleurs",
+    },
+    bunch: {
+      title: "Cette bunch",
+      evenings: {
+        one: "{count} soirée qui a vraiment eu lieu",
+        other: "{count} soirées qui ont vraiment eu lieu",
+      },
+      weeks: {
+        one: "En route depuis {count} semaine",
+        other: "En route depuis {count} semaines",
+      },
+      attendance: "Qui vient",
+      attended: {
+        one: "{count} soirée",
+        other: "{count} soirées",
+      },
+      empty: "Pas encore de soirée. Une compte dès que deux personnes ont pointé.",
+    },
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",

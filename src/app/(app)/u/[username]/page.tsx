@@ -15,6 +15,8 @@ import { Card, Chip, SectionHeading } from "@/components/ui";
 import { CalendarCheck } from "lucide-react";
 import { hostLine, hostStats } from "@/server/modules/activities/hosting";
 import { currentLocale, getTranslations } from "@/server/i18n";
+import { standingFor } from "@/server/modules/standing/service";
+import { Standing, WornTitle } from "@/components/standing";
 import { interestLabel } from "@/lib/i18n/interests";
 
 export const dynamic = "force-dynamic";
@@ -68,6 +70,10 @@ export default async function PublicProfilePage({
     throw error;
   }
 
+  // Everything about standing is public, so it is loaded for anybody reading
+  // the profile rather than only for its owner.
+  const standing = await standingFor(profile.id);
+
   const [blocked, match, hosting] = await Promise.all([
     // Always false in practice: `getProfileByUsername` above throws not-found
     // for a blocked profile, so a blocked person's page is never reached.
@@ -104,6 +110,13 @@ export default async function PublicProfilePage({
       )}
 
       <ProfileHero profile={profile}>
+        {/*
+          The title they chose to wear, beside the connect button rather than
+          inside the hero's own badge row. The staff badge lives in there, and
+          the two must not read as the same kind of mark: one says this person
+          can suspend your account, the other says they turn up to things.
+        */}
+        <WornTitle titleKey={standing.displayedTitleKey} />
         {!isSelf && (
           <ConnectButton
             profileId={profile.id}
@@ -197,6 +210,13 @@ export default async function PublicProfilePage({
               </ul>
             </Card>
           )}
+
+          {/*
+            Below what they are into and above the rest: it answers "what do
+            they actually do here", which is the question a stranger is asking
+            once the interests have told them what they are into.
+          */}
+          <Standing standing={standing} own={isSelf} />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {profile.languages.length > 0 && (

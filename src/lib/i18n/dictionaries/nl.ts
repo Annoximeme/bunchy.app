@@ -140,6 +140,65 @@ export const nl: Dictionary = {
     },
   },
 
+  titles: {
+    turnsup: "Komt opdagen",
+    alwaysthere: "Altijd erbij",
+    afixture: "Vaste waarde",
+    stickswithit: "Houdt vol",
+    keepsaroomgoing: "Houdt de groep levend",
+    host: "Regelt avonden",
+    keepsthelightson: "Houdt de boel draaiende",
+    organiseseverything: "Regelt alles",
+    introducer: "Brengt mensen samen",
+    knowseverybody: "Kent iedereen",
+    getsaround: "Komt overal",
+    newfaceeverywhere: "Overal een nieuw gezicht",
+    regular: "Stamgast",
+    runsaweeklynight: "Organiseert een wekelijkse avond",
+    gettinggoing: "Op gang",
+    goingstrong: "Loopt goed",
+    aninstitution: "Een instituut",
+  },
+
+  standing: {
+    title: "Wat je hier gedaan hebt",
+    subtitle:
+      "Berekend uit avonden waar mensen echt zijn opgedaagd, voorstellen die allebei aanvaard zijn, en avonden die zijn blijven doorgaan. Niets hiervan valt te typen.",
+    otherSubtitle: "Berekend uit waar die persoon is opgedaagd, niet uit wat die geschreven heeft.",
+    total: "{count} punten",
+    wearing: "Staat op je profiel",
+    wear: "Deze tonen",
+    wearNone: "Geen tonen",
+    none: "Nog niets. Dit vult zich in zodra je ergens aantikt.",
+    noneOther: "Nog niets.",
+    earned: "Titels die je verdiend hebt",
+    lapsed: "Klopt niet meer",
+    tracks: {
+      turningup: "Opdagen",
+      keepinggoing: "Iets gaande houden",
+      hosting: "Avonden regelen",
+      introducing: "Mensen samenbrengen",
+      somewherenew: "Ergens nieuw",
+    },
+    bunch: {
+      title: "Deze bunch",
+      evenings: {
+        one: "{count} avond die echt is doorgegaan",
+        other: "{count} avonden die echt zijn doorgegaan",
+      },
+      weeks: {
+        one: "Al {count} week bezig",
+        other: "Al {count} weken bezig",
+      },
+      attendance: "Wie er komt",
+      attended: {
+        one: "{count} avond",
+        other: "{count} avonden",
+      },
+      empty: "Nog geen avonden. Eén telt zodra twee mensen aangetikt hebben.",
+    },
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",

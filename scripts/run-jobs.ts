@@ -10,6 +10,7 @@ import {
   releaseUnconfirmedSeats,
 } from "@/server/modules/activities/turnout";
 import { noticeQuietBunches } from "@/server/modules/bunches/dormancy";
+import { refreshStandings } from "@/server/modules/standing/service";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -61,6 +62,12 @@ async function main() {
   // conversation with the group and never a recurring reminder that it is
   // quiet.
   const quiet = await noticeQuietBunches();
+  // Standings are derived from rows that already exist, so this recomputes
+  // rather than accumulating: an overlapping pass cannot double-count and a
+  // cancelled evening simply produces a smaller number next time. Bounded and
+  // oldest first, because the members this matters for are the ones who never
+  // look at their own profile.
+  const standings = await refreshStandings();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -75,7 +82,8 @@ async function main() {
       `link codes pruned: ${codes}, ` +
       `seats asked about: ${confirmations}, ` +
       `seats released: ${releases}, ` +
-      `quiet bunches noticed: ${quiet} ` +
+      `quiet bunches noticed: ${quiet}, ` +
+      `standings refreshed: ${standings.members} members, ${standings.bunches} bunches ` +
       `(${Date.now() - started}ms)`,
   );
 }

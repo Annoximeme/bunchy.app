@@ -24,6 +24,8 @@ import { db } from "@/server/db/client";
 import { env, pushEnabled } from "@/server/env";
 import { Bell, HeartHandshake, Megaphone, Search, Sparkles, Users } from "lucide-react";
 import { currentLocale, getFormats, getTranslations } from "@/server/i18n";
+import { standingFor } from "@/server/modules/standing/service";
+import { Standing } from "@/components/standing";
 import { interestLabel } from "@/lib/i18n/interests";
 import { brand } from "@/lib/brand";
 
@@ -60,6 +62,7 @@ export default async function ProfilePage() {
     pendingRequests,
     unreadNotifications,
     unreadAnnouncements,
+    standing,
   ] = await Promise.all([
     getOwnProfile(viewer.profileId),
     listBlocked(viewer.profileId),
@@ -72,6 +75,7 @@ export default async function ProfilePage() {
     }),
     unreadCount(viewer.profileId),
     announcementsUnread(viewer.profileId),
+    standingFor(viewer.profileId),
   ]);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
@@ -159,6 +163,13 @@ export default async function ProfilePage() {
             traits={profile.traits.length}
           />
         </div>
+
+        {/*
+          Below the profile fields and above the account settings: it is about
+          them rather than about their data, and it is the one part of this
+          page that other people also see.
+        */}
+        <Standing standing={standing} own />
 
         {!viewer.emailVerified && (
           <Card className="border-yellow bg-yellow-soft">
