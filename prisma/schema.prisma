@@ -312,6 +312,10 @@ model Profile {
   sentConnections     Connection[] @relation("ConnectionRequester")
   receivedConnections Connection[] @relation("ConnectionAddressee")
 
+  introductionsMade     MemberIntroduction[] @relation("IntroductionMaker")
+  introducedAsOne       MemberIntroduction[] @relation("IntroducedOne")
+  introducedAsOther     MemberIntroduction[] @relation("IntroducedOther")
+
   conversations    ConversationParticipant[]
   directMessages   DirectMessage[]
   bunchMemberships BunchMembership[]
@@ -605,6 +609,73 @@ model Connection {
   @@unique([requesterId, addresseeId])
   @@index([addresseeId, status])
   @@index([requesterId, status])
+}
+
+/// Where an introduction somebody made has got to.
+enum IntroductionStatus {
+  PENDING
+  /// Both said yes. `connectionId` points at what it became.
+  ACCEPTED
+  /// One of them said no. Which one is deliberately not recoverable from
+  /// anything the other two can see, see the service.
+  DECLINED
+}
+
+/// "You two should meet."
+///
+/// The one place in this product where a *person* does the introducing. The
+/// ranker already suggests people, and `discovery/introductions.ts` holds
+/// itself to strict rules for doing it. This is the human version, and it is
+/// the older one: most friendships are made by somebody who knows both people
+/// deciding they would get on.
+///
+/// ## Why both halves are stored separately
+///
+/// `oneAccepted` and `otherAccepted` are nullable booleans rather than a
+/// single status, because "has not answered" and "said no" are different
+/// facts and collapsing them loses the ability to tell somebody the thing they
+/// actually want to know: whether they still have a question waiting. The
+/// combined `status` is derived from the pair and stored for the queries.
+///
+/// ## Why there is no requester
+///
+/// A connection has a requester and an addressee because one of them asked.
+/// Here neither did: a third person asked on behalf of both, so the two sides
+/// are `one` and `other` and the order between them means nothing beyond how
+/// the introducer happened to name them.
+model MemberIntroduction {
+  id           String @id @default(cuid())
+  /// Null once they delete their account. The introduction outlives them,
+  /// because it belongs to the two people who were introduced.
+  introducerId String?
+  oneId        String
+  otherId      String
+
+  /// One line from the introducer, shown to both of them. This is the whole
+  /// feature: "you both spent last summer restoring bikes" is what makes an
+  /// introduction worth answering, and a form with no room for it produces
+  /// "somebody thinks you should meet", which is not an introduction.
+  note String?
+
+  /// Null until they answer.
+  oneAccepted   Boolean?
+  otherAccepted Boolean?
+
+  status IntroductionStatus @default(PENDING)
+
+  /// What it became, when both said yes.
+  connectionId String?
+
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+
+  introducer Profile? @relation("IntroductionMaker", fields: [introducerId], references: [id], onDelete: SetNull)
+  one        Profile  @relation("IntroducedOne", fields: [oneId], references: [id], onDelete: Cascade)
+  other      Profile  @relation("IntroducedOther", fields: [otherId], references: [id], onDelete: Cascade)
+
+  @@index([oneId, status])
+  @@index([otherId, status])
+  @@index([introducerId, status])
 }
 
 model Conversation {

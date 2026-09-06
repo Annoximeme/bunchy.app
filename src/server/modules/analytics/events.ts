@@ -80,6 +80,11 @@ export const ANALYTICS_EVENTS = {
   INTRODUCTION_OFFERED: "introduction.offered",
   INTRODUCTION_ACCEPTED: "introduction.accepted",
   INTRODUCTION_DISMISSED: "introduction.dismissed",
+  /// The other kind: a member introducing two people they know. Kept separate
+  /// from the three above so the ratio that measures the product's own
+  /// suggestions is not quietly improved by people doing it themselves.
+  INTRODUCTION_MADE: "introduction.made",
+  INTRODUCTION_TOOK: "introduction.took",
 
   // --- What a bunch does to itself ------------------------------------------
   PLAN_CREATED: "plan.created",
@@ -135,6 +140,8 @@ export const RETENTION_EVENTS: readonly AnalyticsEventName[] = [
   ANALYTICS_EVENTS.INSTANT_BUNCH_STARTED,
   ANALYTICS_EVENTS.AVAILABILITY_SET,
   ANALYTICS_EVENTS.INTRODUCTION_ACCEPTED,
+  // Introducing two people you know is about as engaged as a member gets.
+  ANALYTICS_EVENTS.INTRODUCTION_MADE,
   ANALYTICS_EVENTS.PLAN_CREATED,
   ANALYTICS_EVENTS.PLAN_VOTED,
   // Turning up is the most real thing anybody does here.

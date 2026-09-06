@@ -6,23 +6,27 @@ import {
   listConnections,
   listPendingRequests,
 } from "@/server/modules/connections/service";
+import { pendingIntroductions } from "@/server/modules/connections/introduce";
 import { PageHeader, PageShell } from "@/components/page-header";
 import {
   RespondToRequest,
   WithdrawRequest,
 } from "@/components/connection-actions";
 import { Avatar, EmptyState, LinkButton, SectionHeading } from "@/components/ui";
-import { getFormats } from "@/server/i18n";
+import { Introduce, IntroductionCard } from "@/components/introduce";
+import { getFormats, getTranslations } from "@/server/i18n";
 
 export const metadata: Metadata = { title: "Connections" };
 export const dynamic = "force-dynamic";
 
 export default async function ConnectionsPage() {
   const { relativeTime } = await getFormats();
+  const t = await getTranslations();
   const viewer = await requireViewer();
-  const [connections, pending] = await Promise.all([
+  const [connections, pending, introductions] = await Promise.all([
     listConnections(viewer.profileId),
     listPendingRequests(viewer.profileId),
+    pendingIntroductions(viewer.profileId),
   ]);
 
   return (
@@ -33,6 +37,27 @@ export default async function ConnectionsPage() {
       />
 
       <div className="space-y-12">
+        {/*
+          Above the ordinary requests, because an introduction is a question
+          from somebody the reader already trusts, and because there will never
+          be many of them.
+        */}
+        {introductions.length > 0 && (
+          <section>
+            <SectionHeading
+              title={t("introduce.waitingTitle")}
+              subtitle={t("introduce.waitingSubtitle")}
+            />
+            <ul className="space-y-3">
+              {introductions.map((introduction) => (
+                <li key={introduction.id}>
+                  <IntroductionCard introduction={introduction} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         {pending.incoming.length > 0 && (
           <section>
             <SectionHeading
@@ -77,6 +102,16 @@ export default async function ConnectionsPage() {
 
         <section>
           <SectionHeading title={`Your connections (${connections.length})`} />
+          {/*
+            The control to introduce two of them sits with the list of them,
+            which is where somebody is when the thought occurs. It hides itself
+            below two connections, where it could only ever refuse.
+          */}
+          <div className="mb-4">
+            <Introduce
+              connections={connections.map((connection) => connection.profile)}
+            />
+          </div>
           {connections.length === 0 ? (
             <EmptyState
               icon={<PeopleIcon />}

@@ -90,6 +90,23 @@ export const nl: Dictionary = {
     hereCount: "{count} van {of} hebben aangetikt.",
   },
 
+  introduce: {
+    start: "Stel twee mensen aan elkaar voor",
+    hint: "Twee mensen die jij kent en die elkaar niet kennen. Ze moeten allebei ja zeggen, en geen van beiden hoort wie nee zei.",
+    first: "De ene",
+    second: "De andere",
+    note: "Waarom ze elkaar moeten leren kennen",
+    notePlaceholder: "Jullie hebben allebei de hele zomer fietsen opgeknapt en zwijgen er allebei niet over.",
+    send: "Voorstel versturen",
+    sent: "Verstuurd. We vragen het hun allebei, en je hoort het als het doorgaat.",
+    by: "{name} denkt dat jullie elkaar moeten leren kennen",
+    byGone: "Iemand die intussen weg is, dacht dat jullie elkaar moesten leren kennen",
+    yes: "Ja, stel ons voor",
+    no: "Voor mij niet",
+    waitingTitle: "Voorstellen",
+    waitingSubtitle: "Van iemand die jullie allebei kent. Nee zeggen blijft stil, zoals altijd.",
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",

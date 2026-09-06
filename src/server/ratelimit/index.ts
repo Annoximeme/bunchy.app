@@ -49,6 +49,13 @@ export const RULES = {
   // telling them to come back tomorrow is how you get four of them.
   feedback: { limit: 20, windowMs: 24 * 60 * 60 * 1000 },
   connectionRequest: { limit: 30, windowMs: 24 * 60 * 60 * 1000 },
+  // Introducing two people you know. Deliberately the tightest bucket in this
+  // table that a member can reach: an introduction spends two other people's
+  // attention rather than the sender's, and somebody who makes five in a day is
+  // not introducing friends, they are running a list. Five is well above what
+  // anybody does honestly in a day and well below the point where it becomes a
+  // channel.
+  introduction: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },
   message: { limit: 60, windowMs: 60 * 1000 },
   bunchCreate: { limit: 5, windowMs: 24 * 60 * 60 * 1000 },
   activityCreate: { limit: 10, windowMs: 24 * 60 * 60 * 1000 },

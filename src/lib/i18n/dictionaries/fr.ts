@@ -91,6 +91,23 @@ export const fr: Dictionary = {
     hereCount: "{count} sur {of} ont pointé.",
   },
 
+  introduce: {
+    start: "Présente deux personnes",
+    hint: "Deux personnes que tu connais et qui ne se connaissent pas. Il faut que les deux disent oui, et aucune ne saura qui a dit non.",
+    first: "L’une",
+    second: "L’autre",
+    note: "Pourquoi ils devraient se rencontrer",
+    notePlaceholder: "Vous avez passé l’été à retaper des vélos tous les deux, et aucun des deux n’arrête d’en parler.",
+    send: "Envoyer la présentation",
+    sent: "Envoyé. On leur demande à tous les deux, et tu sauras si ça se fait.",
+    by: "{name} pense que vous devriez vous rencontrer",
+    byGone: "Quelqu’un qui est parti depuis pensait que vous devriez vous rencontrer",
+    yes: "Oui, présente-nous",
+    no: "Pas pour moi",
+    waitingTitle: "Présentations",
+    waitingSubtitle: "De quelqu’un qui vous connaît tous les deux. Dire non reste silencieux, comme toujours.",
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",

@@ -117,6 +117,23 @@ export const en = {
     hereCount: "{count} of {of} have tapped in.",
   },
 
+  introduce: {
+    start: "Introduce two people",
+    hint: "Two people you know who don’t know each other. They both have to say yes, and neither of them is told who said no.",
+    first: "One of them",
+    second: "The other",
+    note: "Why they should meet",
+    notePlaceholder: "You both spent last summer restoring bikes, and neither of you will shut up about it.",
+    send: "Send the introduction",
+    sent: "Sent. They’ll both be asked, and you’ll hear if it goes ahead.",
+    by: "{name} thinks you two should meet",
+    byGone: "Somebody who has since left thought you two should meet",
+    yes: "Yes, introduce us",
+    no: "Not for me",
+    waitingTitle: "Introductions",
+    waitingSubtitle: "Somebody who knows you both. Saying no is silent, as always.",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",
