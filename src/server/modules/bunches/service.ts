@@ -404,6 +404,13 @@ export async function acceptInvite(
     }),
   ]);
 
+  // They are in a group again, so the hand comes down. Left standing, it would
+  // keep offering them to the next formation round for two months.
+  await db.profile.update({
+    where: { id: profileId },
+    data: { lookingForABunchAt: null },
+  });
+
   track({
     name: ANALYTICS_EVENTS.BUNCH_JOINED,
     profileId,
@@ -659,6 +666,7 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
       activityScore: true,
       createdAt: true,
       archivedAt: true,
+      quietNoticeAt: true,
       languages: true,
       interests: {
         select: { interest: { select: { slug: true, label: true } } },
@@ -712,6 +720,9 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
     maxMembers: bunch.maxMembers,
     rules: bunch.rules,
     createdAt: bunch.createdAt.toISOString(),
+    /// When the group was told it had gone quiet, which is also what unlocks
+    /// closing it by agreement rather than by rank.
+    quietNoticeAt: bunch.quietNoticeAt?.toISOString() ?? null,
     languages: bunch.languages.map((code) => ({
       code,
       name: languageName(code),

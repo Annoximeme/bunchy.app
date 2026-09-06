@@ -12,6 +12,7 @@ import { ActivityCard } from "@/components/cards";
 import { BunchChat } from "@/components/bunch-chat";
 import { BunchHealth } from "@/components/bunch-health";
 import { BunchPlans } from "@/components/bunch-plans";
+import { QuietBunch } from "@/components/quiet-bunch";
 import { bunchChallenges, listPlans } from "@/server/modules/bunches/plans";
 import {
   BunchAssistant,
@@ -20,6 +21,7 @@ import {
 } from "@/components/bunch-actions";
 import { Avatar, Card, Chip, LinkButton } from "@/components/ui";
 import { getTranslations } from "@/server/i18n";
+import { hasHandUp } from "@/server/modules/bunches/dormancy";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +72,13 @@ export default async function BunchPage({
   // The stored reading, not a fresh one: scoring every pair costs 78ms and
   // belongs in the job that already runs hourly.
   const health = bunch.isMember ? await readChemistry(bunch.id) : null;
+  // Whether this member has already put their hand up for another group. Read
+  // here rather than passed down from the bunch, because it is a fact about
+  // them and not about this bunch: the same answer holds on every quiet bunch
+  // they are in.
+  const looking = bunch.isMember
+    ? await hasHandUp(viewer.profileId)
+    : false;
   // Members only: plans, icebreakers and challenges are the bunch talking to
   // itself, and the service re-checks membership on every call regardless.
   const [plans, challenges] = bunch.isMember
@@ -196,6 +205,15 @@ export default async function BunchPage({
         </div>
 
         <aside className="space-y-4">
+          {/*
+            First in the column when it is there at all, because it is the
+            answer to the question somebody is already asking when they open a
+            bunch nobody has posted in since August.
+          */}
+          {bunch.isMember && bunch.quietNoticeAt && (
+            <QuietBunch bunchId={bunch.id} looking={looking} />
+          )}
+
           {isModerator && (
             <JoinRequestList bunchId={bunch.id} requests={bunch.joinRequests} />
           )}

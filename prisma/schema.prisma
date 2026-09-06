@@ -259,6 +259,20 @@ model Profile {
   onboardingStage OnboardingStage @default(BASICS)
   onboardedAt     DateTime?
 
+  /// When they last asked to be put in front of a new group.
+  ///
+  /// A timestamp rather than a boolean, and that is the whole design. The
+  /// formation pool is otherwise "members in no active bunch", which quietly
+  /// excludes the people who most need it: somebody sitting in a group that
+  /// stopped talking six weeks ago is not spoken for, they are stuck. This
+  /// lets them put their hand up without leaving first, which would mean
+  /// choosing between a dead group and no group.
+  ///
+  /// It ages out rather than being cleared by a job, so a request nobody acted
+  /// on stops meaning anything after a while instead of following somebody
+  /// around forever. Joining a bunch clears it outright.
+  lookingForABunchAt DateTime?
+
   /// Awarded once, at the moment onboarding completes, while the member base is
   /// still under `FOUNDING_MEMBER_LIMIT`. Stored rather than derived so it can
   /// never be recalculated away, and deliberately a boolean rather than an
@@ -793,6 +807,12 @@ model Bunch {
   /// Rolling 0-1 measure of how alive the bunch is. Recomputed, never shown
   /// as a leaderboard rank.
   activityScore Float    @default(0)
+
+  /// When the members were told the bunch had gone quiet, and offered a way
+  /// on. Set once and never cleared, because it marks a conversation that
+  /// happened rather than a state the bunch is in: a group that comes back to
+  /// life should not be told again the next time it has a slow month.
+  quietNoticeAt DateTime?
   archivedAt    DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -1515,6 +1535,14 @@ enum NotificationType {
   /// wrote to us first, which is what keeps it on the right side of the line
   /// about notifications that exist to pull people back.
   FEEDBACK_ANSWERED
+  /// A bunch you are in has stopped, and here is a way on.
+  ///
+  /// Sent once per bunch, ever. It is the one notification here that reports
+  /// an absence rather than an event, and it earns that by carrying something
+  /// to do: back into the pool a new group is formed from, or an agreement to
+  /// close the thing. A second one would be nagging somebody about a group
+  /// that ended, which is the opposite of the point.
+  BUNCH_QUIET
 }
 
 model Notification {

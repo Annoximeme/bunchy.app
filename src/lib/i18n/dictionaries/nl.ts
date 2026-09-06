@@ -107,6 +107,17 @@ export const nl: Dictionary = {
     waitingSubtitle: "Van iemand die jullie allebei kent. Nee zeggen blijft stil, zoals altijd.",
   },
 
+  quiet: {
+    title: "Deze bunch is stilgevallen",
+    body: "Er is hier al een tijd niets gezegd of geregeld. Groepen lopen af, en dat mag. Je kan twee dingen doen, en niets doen mag ook.",
+    findAnother: "Zet me op de lijst voor een andere bunch",
+    handUp: "Je staat op de lijst voor de volgende.",
+    handDown: "Toch maar niet",
+    close: "Deze bunch sluiten",
+    sure: "Hiermee sluit je ze voor iedereen. Het gesprek blijft leesbaar.",
+    closeIt: "Ja, sluit ze",
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",
@@ -1209,6 +1220,11 @@ export const nl: Dictionary = {
         label: "Je bent vernoemd",
         description:
           "Iemand heeft je naam gebruikt in een bunch.",
+      },
+      bunchquiet: {
+        label: "Een bunch van jou is stilgevallen",
+        description:
+          "Eén keer per bunch, met iets om mee verder te kunnen. Nooit een por om iets te posten.",
       },
       bunchrecommendation: {
         label: "Een bunch die je misschien ligt",

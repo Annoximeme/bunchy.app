@@ -108,6 +108,17 @@ export const fr: Dictionary = {
     waitingSubtitle: "De quelqu’un qui vous connaît tous les deux. Dire non reste silencieux, comme toujours.",
   },
 
+  quiet: {
+    title: "Cette bunch s’est arrêtée",
+    body: "Plus rien n’a été dit ni organisé ici depuis un moment. Les groupes ont une fin, et c’est normal. Deux choses possibles, et ne rien faire en est une troisième.",
+    findAnother: "Propose-moi une autre bunch",
+    handUp: "Tu es sur la liste pour la prochaine.",
+    handDown: "Finalement non",
+    close: "Fermer cette bunch",
+    sure: "Ça la ferme pour tout le monde. La conversation reste lisible.",
+    closeIt: "Oui, ferme-la",
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",
@@ -1216,6 +1227,11 @@ export const fr: Dictionary = {
         label: "On t’a mentionné",
         description:
           "Quelqu’un a utilisé ton nom dans un bunch.",
+      },
+      bunchquiet: {
+        label: "Une de tes bunches s’est arrêtée",
+        description:
+          "Une fois par bunch, avec une porte de sortie. Jamais un rappel pour publier quelque chose.",
       },
       bunchrecommendation: {
         label: "Un bunch qui pourrait te plaire",

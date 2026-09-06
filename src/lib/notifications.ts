@@ -28,6 +28,19 @@ export interface NotificationTypeInfo {
   /** True when a person is waiting, false when it is our idea. */
   person: boolean;
   /**
+   * Whether it appears in the inbox by default, when that is not simply
+   * whether a person is waiting.
+   *
+   * Omitted almost everywhere, because `person` answers it: things people are
+   * waiting on arrive, suggestions do not. It exists for the one shape that is
+   * neither, news about something the member is already part of. A bunch going
+   * quiet is not a person waiting and it is not a suggestion we thought of,
+   * and defaulting it off would mean the only members who ever heard that
+   * their group had stopped were the ones who had gone looking through the
+   * settings screen for a switch about it.
+   */
+  inApp?: boolean;
+  /**
    * Whether this is worth interrupting somebody's day for.
    *
    * Almost always the same answer as `person`, and the two types where it is
@@ -105,6 +118,18 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     description: phrase("notifications.types.bunchrecommendation.description"),
     group: "bunches",
     person: false,
+    push: false,
+  },
+  {
+    type: "BUNCH_QUIET",
+    label: phrase("notifications.types.bunchquiet.label"),
+    description: phrase("notifications.types.bunchquiet.description"),
+    group: "bunches",
+    // Not a person waiting, and not a suggestion either: it is news about a
+    // group they are already in, with something to do about it. So it shows
+    // in the inbox and interrupts nobody's evening.
+    person: false,
+    inApp: true,
     push: false,
   },
   {
@@ -197,7 +222,7 @@ export function defaultPreference(type: NotificationType): {
   // just asked for; being told about a bunch we thought they would like is
   // not, which is exactly the line `person` already draws.
   return {
-    inApp: info?.person ?? false,
+    inApp: info?.inApp ?? info?.person ?? false,
     email: false,
     push: info?.push ?? false,
   };

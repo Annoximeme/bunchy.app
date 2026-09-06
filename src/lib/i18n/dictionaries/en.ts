@@ -134,6 +134,17 @@ export const en = {
     waitingSubtitle: "Somebody who knows you both. Saying no is silent, as always.",
   },
 
+  quiet: {
+    title: "This bunch has gone quiet",
+    body: "Nothing has been said or arranged here for a while. Groups run their course, and that is allowed. Two things you can do about it, and doing neither is also fine.",
+    findAnother: "Put me forward for another bunch",
+    handUp: "Your hand is up for the next one.",
+    handDown: "Take it back down",
+    close: "Close this bunch",
+    sure: "This closes it for everybody. The conversation stays readable.",
+    closeIt: "Yes, close it",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",
@@ -1250,6 +1261,11 @@ export const en = {
         label: "You were mentioned",
         description:
           "Someone used your name in a bunch.",
+      },
+      bunchquiet: {
+        label: "A bunch of yours has gone quiet",
+        description:
+          "Once per bunch, with a way on. Never a nudge to post something.",
       },
       bunchrecommendation: {
         label: "A bunch you might like",

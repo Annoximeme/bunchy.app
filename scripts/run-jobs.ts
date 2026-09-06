@@ -9,6 +9,7 @@ import {
   askForConfirmations,
   releaseUnconfirmedSeats,
 } from "@/server/modules/activities/turnout";
+import { noticeQuietBunches } from "@/server/modules/bunches/dormancy";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -55,6 +56,11 @@ async function main() {
   // a seat that has already been given to somebody else.
   const confirmations = await askForConfirmations();
   const releases = await releaseUnconfirmedSeats();
+  // Groups that have stopped, told once, with a way on rather than a nudge to
+  // post something. Guarded by a timestamp on the bunch, so it is one
+  // conversation with the group and never a recurring reminder that it is
+  // quiet.
+  const quiet = await noticeQuietBunches();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -68,7 +74,8 @@ async function main() {
       `calls expired: ${calls.expired}, ` +
       `link codes pruned: ${codes}, ` +
       `seats asked about: ${confirmations}, ` +
-      `seats released: ${releases} ` +
+      `seats released: ${releases}, ` +
+      `quiet bunches noticed: ${quiet} ` +
       `(${Date.now() - started}ms)`,
   );
 }

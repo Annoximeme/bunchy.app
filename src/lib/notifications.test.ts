@@ -20,14 +20,33 @@ describe("notification defaults", () => {
     }
   });
 
-  it("delivers in-app only when a person is actually waiting", () => {
+  /**
+   * The rule was "in-app when a person is waiting", and it now has one
+   * deliberate exception, written on the type itself rather than inferred.
+   *
+   * There turned out to be a third shape, neither a person waiting nor an idea
+   * of ours: news about something the member is already part of. A bunch of
+   * theirs going quiet is the only one so far. Leaving it to the suggestion
+   * default would have meant the only members ever told their group had
+   * stopped were the ones who had gone hunting through the settings screen for
+   * a switch about it.
+   *
+   * What has not moved is the part that matters: it is in-app only, it happens
+   * once per bunch ever, and it carries something to do rather than a nudge to
+   * come back.
+   */
+  it("delivers in-app when a person is waiting, or when it says so itself", () => {
     for (const info of NOTIFICATION_TYPE_INFO) {
-      expect(defaultPreference(info.type).inApp).toBe(info.person);
+      expect(defaultPreference(info.type).inApp).toBe(info.inApp ?? info.person);
     }
   });
 
   it("keeps suggestions off by default", () => {
-    const suggestions = NOTIFICATION_TYPE_INFO.filter((i) => !i.person);
+    // A suggestion is a type that is neither a person waiting nor news about
+    // something the member is in. Those are still silent on every channel.
+    const suggestions = NOTIFICATION_TYPE_INFO.filter(
+      (i) => !i.person && i.inApp !== true,
+    );
     expect(suggestions.length).toBeGreaterThan(0);
     for (const info of suggestions) {
       expect(defaultPreference(info.type)).toEqual({
@@ -37,6 +56,16 @@ describe("notification defaults", () => {
         // interrupt you is not consent to be told about our own ideas.
         push: false,
       });
+    }
+  });
+
+  it("never interrupts anybody for something nobody is waiting on", () => {
+    // The line the exception above must not cross. Whatever a type says about
+    // the inbox, push stays with `person`: an inbox entry is read when
+    // somebody looks, and a push is an interruption.
+    for (const info of NOTIFICATION_TYPE_INFO) {
+      if (info.person) continue;
+      expect(defaultPreference(info.type).push, info.type).toBe(false);
     }
   });
 

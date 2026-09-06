@@ -45,4 +45,9 @@ export const NOTIFICATION_DEFAULTS: ReadonlyArray<{
   // An answer to something the member wrote. Email on, because the whole point
   // is that it reaches somebody who has stopped checking.
   { type: "FEEDBACK_ANSWERED", inApp: true, email: true, push: true },
+  // In the app, and nowhere else. A group going quiet is not urgent and never
+  // will be: nobody is waiting on the answer, and interrupting somebody's
+  // Tuesday to tell them a bunch has stopped talking would be the product
+  // being sad at them. It waits until they next look.
+  { type: "BUNCH_QUIET", inApp: true, email: false, push: false },
 ];

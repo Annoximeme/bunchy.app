@@ -10,13 +10,22 @@ import {
   type BunchProposal,
   type PairScores,
 } from "@/server/modules/bunches/formation";
+import { LOOKING_FOR_DAYS } from "@/server/modules/bunches/dormancy";
 
 /**
  * Turning "who has nobody" into proposals a human can act on.
  *
  * The pool is members who finished onboarding, are discoverable and are in no
- * active bunch. That last condition is the point of the feature: someone
- * already in two bunches does not need a third assembled for them.
+ * active bunch, plus anybody who has recently asked to be considered anyway.
+ * The first condition is the point of the feature: someone already in two
+ * bunches does not need a third assembled for them.
+ *
+ * The second exists because the first was quietly wrong for the people who
+ * needed this most. A member sitting in a bunch that stopped talking six weeks
+ * ago is not spoken for, they are stuck, and "in no active bunch" excluded
+ * exactly them. `lookingForABunchAt` is them putting a hand up without having
+ * to leave first, and it ages out so an old request stops speaking for
+ * somebody who has moved on.
  *
  * **Nothing here creates a bunch.** It returns proposals. Auto-creating a group
  * of real people and dropping them into a chat together is the kind of thing
@@ -42,7 +51,14 @@ export async function proposeBunchesForPool(): Promise<FormationReport> {
       onboardingStage: "COMPLETE",
       user: { status: "ACTIVE" },
       privacy: { discoverable: true },
-      bunchMemberships: { none: { status: "ACTIVE" } },
+      OR: [
+        { bunchMemberships: { none: { status: "ACTIVE" } } },
+        {
+          lookingForABunchAt: {
+            gte: new Date(Date.now() - LOOKING_FOR_DAYS * 24 * 60 * 60 * 1000),
+          },
+        },
+      ],
     },
     orderBy: { lastActiveAt: "desc" },
     take: MAX_POOL + 1,
