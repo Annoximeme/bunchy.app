@@ -95,7 +95,18 @@ export async function listConversations(
   return summaries.filter((s): s is ConversationSummary => s !== null);
 }
 
-async function requireParticipant(conversationId: string, profileId: string) {
+/**
+ * The other person in a conversation, or a 404.
+ *
+ * Exported because planning between two people needs the same check and the
+ * same answer, and two copies of "is this your conversation" is one copy too
+ * many for a question that gates private messages. It returns the other
+ * participant rather than a boolean because every caller wants them.
+ */
+export async function requireParticipant(
+  conversationId: string,
+  profileId: string,
+) {
   const participant = await db.conversationParticipant.findUnique({
     where: { conversationId_profileId: { conversationId, profileId } },
     select: { conversationId: true },

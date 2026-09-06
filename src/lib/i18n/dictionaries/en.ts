@@ -68,6 +68,42 @@ export const en = {
     learningSuffix: "learning",
   },
 
+  /**
+   * A plan between two people. The bunch version of this screen is still in
+   * English in `bunch-plans.tsx`; this one is written out because it is the
+   * first thing two people do together and doing it in somebody's third
+   * language is a poor start.
+   */
+  pairPlan: {
+    suggest: "Suggest something to do",
+    what: "What are you suggesting?",
+    whatPlaceholder: "Coffee, Saturday afternoon",
+    whenBoth: "Times you’re both usually free",
+    whenNone: "One of you hasn’t said when you’re usually free, so pick a time below.",
+    ownTime: "Or a time of your own",
+    note: "Anything to add?",
+    send: "Send it",
+    works: "Works",
+    maybe: "Maybe",
+    cant: "Can’t",
+    settleOnThis: "Settle on this",
+    settled: "Settled",
+    waiting: "Waiting on {name}",
+    bothAnswered: "{name} has answered",
+    callOff: "Call it off",
+    makeReal: "Make it a real plan",
+    makeRealHint:
+      "This puts it in Activities, with a reminder before it. Nothing is booked and nothing is paid for.",
+    description: "What is it, in a line",
+    descriptionPlaceholder: "Coffee at the place on the corner, then a walk if it stays dry.",
+    mode: "Online or in person",
+    online: "Online",
+    inPerson: "In person",
+    where: "Where",
+    wherePlaceholder: "Groenplaats",
+    confirm: "Put it in the diary",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",

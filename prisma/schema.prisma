@@ -616,6 +616,8 @@ model Conversation {
   connection   Connection?               @relation(fields: [connectionId], references: [id], onDelete: SetNull)
   participants ConversationParticipant[]
   messages     DirectMessage[]
+  /// Plans for two. The same model as a bunch's, see SocialPlan.
+  plans        SocialPlan[]
 
   @@index([lastMessageAt])
 }
@@ -1632,7 +1634,19 @@ enum SocialPlanStatus {
 /// problems, and this is not a quiet way to get one.
 model SocialPlan {
   id          String           @id @default(cuid())
-  bunchId     String
+  /// Set when this is a bunch's plan. Exactly one of `bunchId` and
+  /// `conversationId` is ever set, enforced by a check constraint in the
+  /// migration rather than by hope: Prisma cannot express "one of these two",
+  /// and a plan belonging to both or to neither is a row no screen can render.
+  bunchId     String?
+  /// Set when this is a plan between two people.
+  ///
+  /// The pair was the gap. A bunch got plans, icebreakers, challenges and a
+  /// chemistry reading, while two people who had just agreed to talk got a
+  /// message box and nothing else, which is the exact moment most friendships
+  /// either start or quietly do not. Same model, same votes, same refusal to
+  /// book anything by itself.
+  conversationId String?
   createdById String?
   title       String
   note        String?
@@ -1645,12 +1659,14 @@ model SocialPlan {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
-  bunch     Bunch              @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+  bunch        Bunch?             @relation(fields: [bunchId], references: [id], onDelete: Cascade)
+  conversation Conversation?      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   createdBy Profile?           @relation("PlanCreator", fields: [createdById], references: [id], onDelete: SetNull)
   activity  Activity?          @relation(fields: [activityId], references: [id], onDelete: SetNull)
   options   SocialPlanOption[]
 
   @@index([bunchId, status])
+  @@index([conversationId, status])
 }
 
 model SocialPlanOption {

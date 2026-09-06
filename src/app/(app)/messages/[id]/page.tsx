@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { requireViewer } from "@/server/auth/current-user";
 import { isAppError } from "@/server/errors";
 import { getConversation } from "@/server/modules/messaging/direct";
+import { pairPlan, suggestTimes } from "@/server/modules/messaging/plans";
 import { PageShell } from "@/components/page-header";
 import { DirectThread } from "@/components/direct-thread";
+import { PairPlan } from "@/components/pair-plan";
 import { ReportButton } from "@/components/moderation-actions";
 import { Avatar } from "@/components/ui";
 
@@ -42,6 +44,14 @@ export default async function ConversationPage({
     throw error;
   }
 
+  // Loaded here rather than fetched by the card, so somebody who opens a
+  // conversation with a plan waiting in it sees the plan in the first paint
+  // instead of a card that appears a moment later.
+  const [plan, suggestions] = await Promise.all([
+    pairPlan(id, viewer.profileId),
+    suggestTimes(id, viewer.profileId),
+  ]);
+
   return (
     <PageShell width="reading">
       <header className="mb-6 flex items-center justify-between gap-4">
@@ -72,6 +82,25 @@ export default async function ConversationPage({
           All messages
         </Link>
       </header>
+
+      <PairPlan
+        conversationId={conversation.id}
+        otherName={conversation.other.displayName}
+        plan={
+          plan && {
+            ...plan,
+            options: plan.options.map((option) => ({
+              ...option,
+              startsAt: option.startsAt.toISOString(),
+            })),
+          }
+        }
+        suggestions={suggestions.map((suggestion) => ({
+          startsAt: suggestion.startsAt.toISOString(),
+          weekend: suggestion.weekend,
+        }))}
+        readOnly={conversation.readOnly}
+      />
 
       <DirectThread
         conversationId={conversation.id}

@@ -6,6 +6,8 @@ import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { notify } from "@/server/modules/notifications/service";
 import { createActivity } from "@/server/modules/activities/service";
+import { requireParticipant } from "@/server/modules/messaging/direct";
+import type { SocialPlanSelect } from "@/generated/prisma/models/SocialPlan";
 import {
   CHALLENGES,
   findChallenge,
@@ -49,6 +51,38 @@ async function requireModerator(bunchId: string, profileId: string) {
     throw forbidden("Only moderators can do that.");
   }
   return membership;
+}
+
+/** A plan belongs to one of these two, never both, see the schema. */
+export interface PlanOwner {
+  bunchId: string | null;
+  conversationId: string | null;
+}
+
+/**
+ * Who may act on a plan, whichever kind of plan it is.
+ *
+ * The two kinds have genuinely different permission models rather than one
+ * being a special case of the other. In a bunch, deciding a time for nine
+ * people is an act that needs standing, so it is the proposer or a moderator.
+ * Between two people there are no ranks to have: either of them proposed it,
+ * both of them are voting on it, and requiring "standing" would mean one half
+ * of a pair could settle a Thursday and the other could not.
+ *
+ * `standing` is therefore only consulted for a bunch.
+ */
+async function requirePlanActor(
+  owner: PlanOwner,
+  profileId: string,
+  standing: "anyone" | "decider" = "anyone",
+): Promise<void> {
+  if (owner.conversationId) {
+    await requireParticipant(owner.conversationId, profileId);
+    return;
+  }
+  if (!owner.bunchId) throw notFound("That plan no longer exists.");
+  if (standing === "decider") await requireModerator(owner.bunchId, profileId);
+  else await requireMember(owner.bunchId, profileId);
 }
 
 // --- Social plans -----------------------------------------------------------
@@ -143,10 +177,14 @@ export async function vote(
 ): Promise<void> {
   const option = await db.socialPlanOption.findUnique({
     where: { id: optionId },
-    select: { plan: { select: { id: true, bunchId: true, status: true } } },
+    select: {
+      plan: {
+        select: { id: true, bunchId: true, conversationId: true, status: true },
+      },
+    },
   });
   if (!option) throw notFound("That option no longer exists.");
-  await requireMember(option.plan.bunchId, profileId);
+  await requirePlanActor(option.plan, profileId);
   if (option.plan.status !== "OPEN") {
     throw conflict("That plan has already been decided.");
   }
@@ -182,6 +220,7 @@ export async function decidePlan(
     where: { id: planId },
     select: {
       bunchId: true,
+      conversationId: true,
       status: true,
       createdById: true,
       title: true,
@@ -191,12 +230,13 @@ export async function decidePlan(
   if (!plan) throw notFound("That plan no longer exists.");
 
   // The person who proposed it, or any moderator. Not just anyone: deciding
-  // for a group is exactly the kind of thing that should need standing.
-  if (plan.createdById !== profileId) {
-    await requireModerator(plan.bunchId, profileId);
-  } else {
-    await requireMember(plan.bunchId, profileId);
-  }
+  // for a group is exactly the kind of thing that should need standing. A
+  // plan between two people has no ranks, so `requirePlanActor` ignores this.
+  await requirePlanActor(
+    plan,
+    profileId,
+    plan.createdById === profileId ? "anyone" : "decider",
+  );
   if (plan.status !== "OPEN") throw conflict("That plan is already settled.");
 
   const chosen = plan.options.find((o) => o.id === optionId);
@@ -211,13 +251,18 @@ export async function decidePlan(
   // timezone, and `toUTCString()` showed a Brussels member "19:30 GMT" for the
   // 19:30 they had picked. The plan card renders the time client-side, in
   // their own zone, where it is correct.
-  await db.bunchMessage.create({
-    data: {
-      bunchId: plan.bunchId,
-      kind: "SYSTEM",
-      body: `${plan.title}. A time has been settled.`,
-    },
-  });
+  // Only a bunch has a room to announce it in. A pair sees the plan card
+  // change in place, above a conversation both of them are already reading,
+  // so a message saying what they can both see would be noise.
+  if (plan.bunchId) {
+    await db.bunchMessage.create({
+      data: {
+        bunchId: plan.bunchId,
+        kind: "SYSTEM",
+        body: `${plan.title}. A time has been settled.`,
+      },
+    });
+  }
 }
 
 /** Turns a decided plan into a real activity. A second, explicit press. */
@@ -230,6 +275,7 @@ export async function planToActivity(
     where: { id: planId },
     select: {
       bunchId: true,
+      conversationId: true,
       title: true,
       status: true,
       activityId: true,
@@ -239,7 +285,7 @@ export async function planToActivity(
     },
   });
   if (!plan) throw notFound("That plan no longer exists.");
-  await requireMember(plan.bunchId, profileId);
+  await requirePlanActor(plan, profileId);
 
   if (plan.status !== "DECIDED") throw conflict("Settle on a time first.");
   if (plan.activityId) throw conflict("That plan already has an activity.");
@@ -264,10 +310,12 @@ export async function planToActivity(
     startsAt: chosen.startsAt,
     mode: input.mode,
     ...(input.location?.trim() ? { locationLabel: input.location.trim() } : {}),
-    ...(plan.bunch.cityLabel ? { cityLabel: plan.bunch.cityLabel } : {}),
-    ...(plan.bunch.countryCode ? { countryCode: plan.bunch.countryCode } : {}),
-    maxParticipants: plan.bunch.maxMembers,
-    bunchId: plan.bunchId,
+    ...(plan.bunch?.cityLabel ? { cityLabel: plan.bunch.cityLabel } : {}),
+    ...(plan.bunch?.countryCode ? { countryCode: plan.bunch.countryCode } : {}),
+    // Two seats for a plan between two people, and no bunch to hang it on.
+    // Two is not a limit imposed on them: it is what the plan was.
+    maxParticipants: plan.bunch?.maxMembers ?? 2,
+    ...(plan.bunchId ? { bunchId: plan.bunchId } : {}),
   });
 
   await db.socialPlan.update({
@@ -275,23 +323,122 @@ export async function planToActivity(
     data: { activityId: activity.id },
   });
 
+  // A bunch is told in its own room by `createActivity`. The other half of a
+  // pair has no room, so they are told directly, once, about a thing they
+  // already agreed to.
+  if (plan.conversationId) {
+    const other = await requireParticipant(plan.conversationId, profileId);
+    await notify({
+      profileId: other,
+      type: "ACTIVITY_INVITE",
+      title: `${plan.title} is on`,
+      body: "The time you agreed is now a real plan. Take your seat.",
+      linkPath: `/activities/${activity.id}`,
+    });
+  }
+
   return { activityId: activity.id };
 }
 
 export async function cancelPlan(planId: string, profileId: string): Promise<void> {
   const plan = await db.socialPlan.findUnique({
     where: { id: planId },
-    select: { bunchId: true, createdById: true },
+    select: { bunchId: true, conversationId: true, createdById: true },
   });
   if (!plan) throw notFound("That plan no longer exists.");
 
-  if (plan.createdById !== profileId) await requireModerator(plan.bunchId, profileId);
-  else await requireMember(plan.bunchId, profileId);
+  await requirePlanActor(
+    plan,
+    profileId,
+    plan.createdById === profileId ? "anyone" : "decider",
+  );
 
   await db.socialPlan.update({
     where: { id: planId },
     data: { status: "CANCELLED" },
   });
+}
+
+/**
+ * The rows a plan view is built from.
+ *
+ * Written out rather than inferred, so the pair planner can ask for the same
+ * shape and get the same view. Both kinds of plan render the same card, and
+ * that is not a coincidence to be maintained by hand: a vote between three
+ * evenings looks the same whether nine people or two are voting.
+ */
+export const PLAN_VIEW_SELECT = {
+  id: true,
+  title: true,
+  note: true,
+  status: true,
+  decidedOptionId: true,
+  activityId: true,
+  createdBy: { select: { displayName: true } },
+  options: {
+    select: {
+      id: true,
+      startsAt: true,
+      label: true,
+      votes: { select: { profileId: true, response: true } },
+    },
+    orderBy: { startsAt: "asc" as const },
+  },
+} as const satisfies SocialPlanSelect;
+
+interface PlanViewRow {
+  id: string;
+  title: string;
+  note: string | null;
+  status: "OPEN" | "DECIDED" | "CANCELLED";
+  decidedOptionId: string | null;
+  activityId: string | null;
+  createdBy: { displayName: string } | null;
+  options: Array<{
+    id: string;
+    startsAt: Date;
+    label: string | null;
+    votes: Array<{ profileId: string; response: PlanVoteResponse }>;
+  }>;
+}
+
+/**
+ * One plan as the card wants it: counts totalled, the viewer's own answer
+ * picked out, and the best option named only once somebody has said yes.
+ *
+ * `memberCount` is who the plan is being decided among, which is the bunch's
+ * active members or, for a plan between two people, two.
+ */
+export function toPlanView(row: PlanViewRow, memberCount: number, profileId: string): PlanView {
+  const options: PlanOptionView[] = row.options.map((option) => ({
+    id: option.id,
+    startsAt: option.startsAt,
+    label: option.label,
+    yes: option.votes.filter((v) => v.response === "YES").length,
+    maybe: option.votes.filter((v) => v.response === "MAYBE").length,
+    no: option.votes.filter((v) => v.response === "NO").length,
+    yourResponse:
+      option.votes.find((v) => v.profileId === profileId)?.response ?? null,
+  }));
+
+  const best = options.reduce<PlanOptionView | null>(
+    (winner, option) => (winner === null || option.yes > winner.yes ? option : winner),
+    null,
+  );
+
+  return {
+    id: row.id,
+    title: row.title,
+    note: row.note,
+    status: row.status,
+    createdBy: row.createdBy?.displayName ?? null,
+    memberCount,
+    options,
+    decidedOptionId: row.decidedOptionId,
+    activityId: row.activityId,
+    // Only worth reporting a winner once somebody has actually said yes.
+    best: best && best.yes > 0 ? { optionId: best.id, yes: best.yes, of: memberCount } : null,
+  };
 }
 
 /** Open and recently decided plans, with the counts already worked out. */
@@ -304,61 +451,14 @@ export async function listPlans(
   const [plans, memberCount] = await Promise.all([
     db.socialPlan.findMany({
       where: { bunchId, status: { in: ["OPEN", "DECIDED"] } },
-      select: {
-        id: true,
-        title: true,
-        note: true,
-        status: true,
-        decidedOptionId: true,
-        activityId: true,
-        createdBy: { select: { displayName: true } },
-        options: {
-          select: {
-            id: true,
-            startsAt: true,
-            label: true,
-            votes: { select: { profileId: true, response: true } },
-          },
-          orderBy: { startsAt: "asc" },
-        },
-      },
+      select: PLAN_VIEW_SELECT,
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
     db.bunchMembership.count({ where: { bunchId, status: "ACTIVE" } }),
   ]);
 
-  return plans.map((plan) => {
-    const options: PlanOptionView[] = plan.options.map((option) => ({
-      id: option.id,
-      startsAt: option.startsAt,
-      label: option.label,
-      yes: option.votes.filter((v) => v.response === "YES").length,
-      maybe: option.votes.filter((v) => v.response === "MAYBE").length,
-      no: option.votes.filter((v) => v.response === "NO").length,
-      yourResponse:
-        option.votes.find((v) => v.profileId === profileId)?.response ?? null,
-    }));
-
-    const best = options.reduce<PlanOptionView | null>(
-      (winner, option) => (winner === null || option.yes > winner.yes ? option : winner),
-      null,
-    );
-
-    return {
-      id: plan.id,
-      title: plan.title,
-      note: plan.note,
-      status: plan.status,
-      createdBy: plan.createdBy?.displayName ?? null,
-      memberCount,
-      options,
-      decidedOptionId: plan.decidedOptionId,
-      activityId: plan.activityId,
-      // Only worth reporting a winner once somebody has actually said yes.
-      best: best && best.yes > 0 ? { optionId: best.id, yes: best.yes, of: memberCount } : null,
-    };
-  });
+  return plans.map((plan) => toPlanView(plan, memberCount, profileId));
 }
 
 // --- Icebreakers ------------------------------------------------------------
