@@ -199,6 +199,33 @@ export const nl: Dictionary = {
     },
   },
 
+  waiting: {
+    title: "Wacht op jou",
+    subtitle: "Andere mensen die op een antwoord wachten. Niets hiervan is ons idee.",
+    all: "Alle {count}",
+    clearTitle: "Er wacht niets op jou",
+    clearBody: "En zo hoort deze pagina er meestal uit te zien.",
+    clearAction: "Zoek iets om te doen",
+    kinds: {
+      connection: "{subject} wil connecteren",
+      introduction: "{subject} denkt dat je iemand moet leren kennen",
+      plan: "{subject}: zeg welke momenten passen",
+      seat: "{subject}: bevestig je plek, anders gaat ze terug",
+      join: "{subject} vroeg om lid te worden van een bunch die jij beheert",
+      meetup: "{subject} nodigde jullie bunch uit voor een avond",
+      outcome: "{subject}: ben je gegaan?",
+    },
+  },
+
+  digest: {
+    title: "Een wekelijkse samenvatting",
+    body: "Eén e-mail per week, op een dag die jij kiest: waar anderen op wachten, en wat je zelf al gepland hebt. Geen suggesties, niets over ons.",
+    day: "Welke dag",
+    hour: "Hoe laat",
+    never: "Nooit sturen",
+    quiet: "Een week zonder inhoud wordt gewoon niet verstuurd.",
+  },
+
   nav: {
     main: "Hoofdnavigatie",
     discover: "Ontdekken",
@@ -1301,6 +1328,10 @@ export const nl: Dictionary = {
         label: "Je bent vernoemd",
         description:
           "Iemand heeft je naam gebruikt in een bunch.",
+      },
+      titleearned: {
+        label: "Een titel die je verdiend hebt",
+        description: "Eén keer per titel, alleen in de app. Nooit per e-mail, nooit als melding.",
       },
       bunchquiet: {
         label: "Een bunch van jou is stilgevallen",

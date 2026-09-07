@@ -139,6 +139,13 @@ Phase 1 of the roadmap is complete and working end to end.
   titles from a closed catalogue. Bunches earn too, and that is where
   comparison lives.
 
+- **Waiting on you**, the six kinds of pending thing collected into one list,
+  oldest first. Anything that would still be listed after a member dealt with
+  it does not belong on it.
+- **A weekly summary**, off until somebody picks a day and hour in their own
+  timezone, containing only what people are waiting on and what they already
+  planned. A week with nothing in it is not sent, which the job enforces.
+
 - **Privacy policy & terms**, at `/privacy` and `/terms`, written from the
   schema rather than a template, with a test that fails if the copy drifts from
   the code. Both are engineer-written drafts pending legal review; the company

@@ -201,6 +201,48 @@ describe("recomputing", () => {
   });
 });
 
+describe("being told about a title", () => {
+  it("says nothing on the first computation, however much history there is", async () => {
+    const host = await member("host");
+    const guest = await member("guest");
+    for (const daysAgo of [7, 14, 21]) await evening(host, [guest], { daysAgo });
+
+    // The first recompute produces "turns up" out of evenings that already
+    // happened. Announcing those would hand somebody a pile of notifications
+    // about things they did months ago.
+    await recomputeStanding(guest);
+    expect(
+      await db.notification.count({ where: { profileId: guest, type: "TITLE_EARNED" } }),
+    ).toBe(0);
+  });
+
+  it("says so once when a new one is earned, and never again", async () => {
+    const host = await member("host");
+    const guest = await member("guest");
+    await evening(host, [guest], { daysAgo: 7 });
+    await recomputeStanding(guest);
+
+    // Two more evenings, which crosses the threshold for "turns up".
+    await evening(host, [guest], { daysAgo: 14 });
+    await evening(host, [guest], { daysAgo: 21 });
+    await recomputeStanding(guest);
+
+    const told = await db.notification.findMany({
+      where: { profileId: guest, type: "TITLE_EARNED" },
+      select: { title: true },
+    });
+    expect(told).toHaveLength(1);
+    expect(told[0]!.title).toContain("Turns up");
+
+    // The job runs hourly and writes the same rows every time.
+    await recomputeStanding(guest);
+    await recomputeStanding(guest);
+    expect(
+      await db.notification.count({ where: { profileId: guest, type: "TITLE_EARNED" } }),
+    ).toBe(1);
+  });
+});
+
 describe("wearing a title", () => {
   it("refuses one that was never earned", async () => {
     const someone = await member("someone");

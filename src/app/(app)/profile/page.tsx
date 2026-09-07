@@ -7,6 +7,7 @@ import { getPreferences } from "@/server/modules/notifications/service";
 import { PageHeader, PageShell } from "@/components/page-header";
 import { PrivacySettings } from "@/components/privacy-settings";
 import { NotificationPreferences } from "@/components/notification-preferences";
+import { WeeklyDigest } from "@/components/weekly-digest";
 import { AccountData } from "@/components/account-data";
 import { AvatarUpload } from "@/components/avatar-upload";
 import { ReferralCard } from "@/components/referral-card";
@@ -63,6 +64,7 @@ export default async function ProfilePage() {
     unreadNotifications,
     unreadAnnouncements,
     standing,
+    digest,
   ] = await Promise.all([
     getOwnProfile(viewer.profileId),
     listBlocked(viewer.profileId),
@@ -76,6 +78,10 @@ export default async function ProfilePage() {
     unreadCount(viewer.profileId),
     announcementsUnread(viewer.profileId),
     standingFor(viewer.profileId),
+    db.profile.findUniqueOrThrow({
+      where: { id: viewer.profileId },
+      select: { digestDay: true, digestHour: true },
+    }),
   ]);
 
   const practices = profile.interests.filter((i) => i.intent === "PRACTICES");
@@ -359,6 +365,16 @@ export default async function ProfilePage() {
             <NotificationPreferences
               initial={notificationPreferences}
               pushPublicKey={pushEnabled() ? (env().VAPID_PUBLIC_KEY ?? null) : null}
+            />
+
+            {/*
+              Below the per-type switches, because it is a different kind of
+              thing: those decide what reaches you when somebody does
+              something, this is the one message that arrives on a schedule.
+            */}
+            <WeeklyDigest
+              initialDay={digest.digestDay}
+              initialHour={digest.digestHour}
             />
 
             {blocked.length > 0 && (

@@ -50,4 +50,8 @@ export const NOTIFICATION_DEFAULTS: ReadonlyArray<{
   // Tuesday to tell them a bunch has stopped talking would be the product
   // being sad at them. It waits until they next look.
   { type: "BUNCH_QUIET", inApp: true, email: false, push: false },
+  // In the app and nowhere else, for the same reason as the one above and one
+  // more: this is the product's own opinion of somebody, and an opinion is not
+  // worth interrupting an evening for.
+  { type: "TITLE_EARNED", inApp: true, email: false, push: false },
 ];

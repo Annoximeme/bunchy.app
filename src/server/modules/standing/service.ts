@@ -3,6 +3,9 @@ import { forbidden, validationFailed } from "@/server/errors";
 import { isTitleKey, bunchTitleFor } from "@/lib/titles";
 import type { XpTrack } from "@/generated/prisma/enums";
 import { computeStanding, type StandingInput } from "@/server/modules/standing/compute";
+import { notify } from "@/server/modules/notifications/service";
+import { DICTIONARIES } from "@/lib/i18n/dictionaries";
+import { titlePath } from "@/lib/titles";
 
 /**
  * Reading the rows that earned somebody their standing, and writing the
@@ -127,10 +130,17 @@ export async function recomputeStanding(
   const standing = computeStanding(await gather(profileId, now));
   const held = new Set(standing.titles);
 
-  const existing = await db.earnedTitle.findMany({
-    where: { profileId },
-    select: { key: true, lapsedAt: true },
-  });
+  const [existing, before] = await Promise.all([
+    db.earnedTitle.findMany({
+      where: { profileId },
+      select: { key: true, lapsedAt: true },
+    }),
+    db.memberStanding.findUnique({
+      where: { profileId },
+      select: { profileId: true },
+    }),
+  ]);
+  const known = new Set(existing.map((title) => title.key));
 
   await db.$transaction([
     db.memberStanding.upsert({
@@ -164,7 +174,56 @@ export async function recomputeStanding(
       ),
   ]);
 
+  await announceNewTitles(profileId, standing.titles, known, before !== null);
+
   return readFresh(profileId, standing, now);
+}
+
+/**
+ * Says so, once, when a title is genuinely new.
+ *
+ * Two guards, and the second is the important one.
+ *
+ * **Only titles that were not there before.** The recompute runs hourly and
+ * writes the same rows every time, so anything derived from "what it wrote"
+ * would announce the same title forever.
+ *
+ * **Never on a member's first computation.** The day this shipped, every
+ * member's first recompute produced every title their history had already
+ * earned. Announcing those would mean handing somebody six notifications about
+ * things they did months ago, which is the product shouting to look busy. A
+ * member with no standing row yet is being counted for the first time, so
+ * their titles arrive silently and the next new one is announced properly.
+ *
+ * The words come from the English catalogue, like every other notification
+ * body in this codebase. Stored notification text is not translated anywhere
+ * yet, and inventing a second convention for one type would be worse than the
+ * inconsistency.
+ */
+async function announceNewTitles(
+  profileId: string,
+  titles: string[],
+  known: Set<string>,
+  hadStandingBefore: boolean,
+): Promise<void> {
+  if (!hadStandingBefore) return;
+
+  const names = DICTIONARIES.en.titles as Record<string, string>;
+
+  for (const key of titles) {
+    if (known.has(key)) continue;
+    const name = names[titlePath(key).replace("titles.", "")] ?? key;
+
+    await notify({
+      profileId,
+      type: "TITLE_EARNED",
+      title: `You've earned a title: ${name}`,
+      body: "It shows on your profile if you choose to wear it.",
+      linkPath: "/profile",
+      // Once per title, ever, whatever the job does afterwards.
+      groupKey: `title:${key}`,
+    });
+  }
 }
 
 async function readFresh(

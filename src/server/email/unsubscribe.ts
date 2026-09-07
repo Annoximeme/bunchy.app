@@ -39,15 +39,27 @@ import { NOTIFICATION_TYPE_INFO, defaultPreference } from "@/lib/notifications";
 
 export type UnsubscribeTarget =
   | { kind: "waitlist"; email: string }
-  | { kind: "notifications"; profileId: string };
+  | { kind: "notifications"; profileId: string }
+  /**
+   * The weekly summary, which has its own switch and therefore its own way
+   * off.
+   *
+   * Kept separate from `notifications` on purpose. Somebody who unsubscribes
+   * from the digest is saying they do not want a weekly email; they have not
+   * said anything about being told that a person is waiting on them. Folding
+   * the two together would silently turn off connection-request mail as well,
+   * which is the kind of over-correction that makes people stop trusting the
+   * unsubscribe link.
+   */
+  | { kind: "digest"; profileId: string };
 
 /** Version prefix, so the format can change without honouring forged old ones. */
 const VERSION = "u1";
 
 function payloadOf(target: UnsubscribeTarget): string {
-  return target.kind === "waitlist"
-    ? `${VERSION}.w.${target.email}`
-    : `${VERSION}.n.${target.profileId}`;
+  if (target.kind === "waitlist") return `${VERSION}.w.${target.email}`;
+  if (target.kind === "digest") return `${VERSION}.d.${target.profileId}`;
+  return `${VERSION}.n.${target.profileId}`;
 }
 
 function sign(payload: string): string {
@@ -92,6 +104,7 @@ export function verifyUnsubscribe(token: string): UnsubscribeTarget | null {
 
   if (kind === "w") return { kind: "waitlist", email: subject };
   if (kind === "n") return { kind: "notifications", profileId: subject };
+  if (kind === "d") return { kind: "digest", profileId: subject };
   return null;
 }
 
@@ -149,9 +162,20 @@ export async function applyUnsubscribe(
 
   const profile = await db.profile.findUnique({
     where: { id: target.profileId },
-    select: { id: true },
+    select: { id: true, digestDay: true },
   });
   if (!profile) return "already";
+
+  if (target.kind === "digest") {
+    // Clearing the day is what turns it off, so there is one representation of
+    // "no digest" rather than a switch and a schedule that can disagree.
+    if (profile.digestDay === null) return "already";
+    await db.profile.update({
+      where: { id: profile.id },
+      data: { digestDay: null, digestHour: null },
+    });
+    return "done";
+  }
 
   // Every type, not just the one that prompted it. Somebody who presses
   // unsubscribe is asking for the email to stop, not to be re-sorted, and

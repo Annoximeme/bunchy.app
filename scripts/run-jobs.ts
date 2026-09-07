@@ -11,6 +11,7 @@ import {
 } from "@/server/modules/activities/turnout";
 import { noticeQuietBunches } from "@/server/modules/bunches/dormancy";
 import { refreshStandings } from "@/server/modules/standing/service";
+import { sendWeeklyDigests } from "@/server/modules/notifications/digest";
 
 /**
  * Scheduled work, run from outside the web process.
@@ -68,6 +69,11 @@ async function main() {
   // oldest first, because the members this matters for are the ones who never
   // look at their own profile.
   const standings = await refreshStandings();
+  // The weekly summary, to whoever asked for one, at the hour they picked in
+  // their own timezone. It refuses to send when it has nothing to say, and
+  // does not use up the slot when it refuses, so something appearing later in
+  // the day still gets there.
+  const digests = await sendWeeklyDigests();
 
   console.log(
     `[jobs] activity reminders: ${result.activityReminders}, ` +
@@ -83,7 +89,8 @@ async function main() {
       `seats asked about: ${confirmations}, ` +
       `seats released: ${releases}, ` +
       `quiet bunches noticed: ${quiet}, ` +
-      `standings refreshed: ${standings.members} members, ${standings.bunches} bunches ` +
+      `standings refreshed: ${standings.members} members, ${standings.bunches} bunches, ` +
+      `digests sent: ${digests.sent} (${digests.skipped} had nothing to say) ` +
       `(${Date.now() - started}ms)`,
   );
 }

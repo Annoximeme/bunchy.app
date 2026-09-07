@@ -130,6 +130,65 @@ export function notificationEmail(input: {
 }
 
 /**
+ * The weekly summary.
+ *
+ * The only mail this product sends that nobody asked for individually, which
+ * is why it is off until a member picks a day, has its own unsubscribe
+ * separate from notification email, and above all why it refuses to send when
+ * it has nothing to say. A weekly email that arrives with nothing in it is how
+ * a summary becomes a nag, and the caller enforces that rather than this
+ * template dressing an empty week up as news.
+ *
+ * The subject leads with what is waiting when anything is, because that is the
+ * part that involves other people. Failing that it leads with the week, which
+ * is the part the member decided themselves. There is no third case: with
+ * neither, the job does not call this.
+ */
+export function weeklyDigestEmail(input: {
+  /** What they have coming, soonest first, already worded and localised. */
+  week: string[];
+  /** What other people are waiting on them for. */
+  waiting: string[];
+  /** Absolute URL of the page that lists the pending things. */
+  waitingUrl: string;
+  /** Absolute URL of the settings screen. */
+  settingsUrl: string;
+  unsubscribe: UnsubscribeTarget;
+}): Body {
+  const subject =
+    input.waiting.length > 0
+      ? input.waiting.length === 1
+        ? "One thing is waiting on you"
+        : `${input.waiting.length} things are waiting on you`
+      : "What you have on this week";
+
+  const body: string[] = [];
+  if (input.waiting.length > 0) {
+    body.push("Waiting on you:");
+    body.push(...input.waiting.map((line) => `- ${line}`));
+  }
+  if (input.week.length > 0) {
+    body.push(input.waiting.length > 0 ? "This week:" : "You have this coming up:");
+    body.push(...input.week.map((line) => `- ${line}`));
+  }
+
+  return message(
+    subject,
+    {
+      preheader:
+        input.waiting.length > 0
+          ? input.waiting[0]!
+          : (input.week[0] ?? subject),
+      heading: subject,
+      body,
+      action: { label: `Open ${brand.name}`, href: input.waitingUrl },
+      footnote: `You get this because you asked for a weekly summary. Change the day, or stop it, at ${input.settingsUrl}`,
+    },
+    input.unsubscribe,
+  );
+}
+
+/**
  * The one message the waiting list was collected for.
  *
  * Sent by `scripts/announce-launch.ts`, by hand, once. Launch day is a

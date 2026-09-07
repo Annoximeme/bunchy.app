@@ -226,6 +226,33 @@ export const en = {
     },
   },
 
+  waiting: {
+    title: "Waiting on you",
+    subtitle: "Other people, holding on for an answer. Nothing here is our idea.",
+    all: "All {count}",
+    clearTitle: "Nothing is waiting on you",
+    clearBody: "Which is how this page is meant to look most of the time.",
+    clearAction: "Find something to do",
+    kinds: {
+      connection: "{subject} would like to connect",
+      introduction: "{subject} thinks you should meet somebody",
+      plan: "{subject}: say which times work for you",
+      seat: "{subject}: confirm your seat, or it goes back",
+      join: "{subject} asked to join a bunch you moderate",
+      meetup: "{subject} asked your bunch along to an evening",
+      outcome: "{subject}: did you go?",
+    },
+  },
+
+  digest: {
+    title: "A weekly summary",
+    body: "One email a week, on a day you pick: what other people are waiting on you for, and what you already have on. No suggestions, nothing about us.",
+    day: "Which day",
+    hour: "What time",
+    never: "Never send one",
+    quiet: "A week with nothing in it is not sent at all.",
+  },
+
   nav: {
     main: "Main",
     discover: "Discover",
@@ -1342,6 +1369,10 @@ export const en = {
         label: "You were mentioned",
         description:
           "Someone used your name in a bunch.",
+      },
+      titleearned: {
+        label: "A title you’ve earned",
+        description: "Once per title, in the app only. Never emailed, never pushed.",
       },
       bunchquiet: {
         label: "A bunch of yours has gone quiet",

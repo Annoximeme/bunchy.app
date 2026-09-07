@@ -1430,3 +1430,76 @@ and it is still accurate.
 Matching, too. The scorer cannot see standing, and must not: points that
 influenced who you were shown would turn the ranking into a reward for playing
 rather than an answer about compatibility.
+
+---
+
+## 30. Coming back, without being chased
+
+Three pieces, added together, answering a question this product had never
+answered: what brings somebody back, given that it refuses to send anything
+whose purpose is to pull them in.
+
+The distinction the whole design rests on is between **something waiting** and
+**being away**. A message about the first is true, is about them rather than
+about us, and stops being true the moment they deal with it. A message about
+the second is a nag with a friendly voice.
+
+### The structural problem, said plainly
+
+Almost nothing here could reach an absent member. Notifications live in an
+inbox that requires being in the app to read, and only three types default to
+email. So a return path had to start with the channels that actually leave the
+building: email, push where permission was granted, and the calendar file every
+activity already offers.
+
+### Waiting on you
+
+Six kinds of pending thing were scattered across six screens: a connection
+request, an unanswered vote, an introduction, a seat to confirm, a join request
+only a moderator sees, an evening to say how it went. Each was somebody else
+waiting, and none was visible from anywhere else, so the honest answer to "is
+there anything for me" was "open six pages".
+
+`waiting/service.ts` collects them, oldest first, because whoever has waited
+longest is the item that most deserves the top. The rule for belonging on that
+list is exact and worth keeping: **it has to disappear when it is answered.**
+Unread messages are not on it, because reading is not owed. Recommendations are
+not on it, because nobody is waiting for those. If ignoring something forever
+changes nothing for anybody else, it is not waiting on anybody.
+
+It renders in Discover's rail above the week, and it renders nothing at all
+when the list is empty, which is most of the time and is the point.
+
+### The weekly summary
+
+The one email nobody asked for individually, so it carries three constraints.
+
+**It is off until a member picks a day and an hour**, in their own timezone,
+because "Sunday evening" and "Monday morning" are different products: one is
+deciding what to do with a weekend, the other is planning a week.
+
+**It does not send when it has nothing to say**, and this is enforced in the
+job rather than promised in the copy. A week with no pending items and no plans
+is skipped, and the slot is deliberately not marked as used, so something
+appearing later that day still goes out that evening. An email that arrives
+empty teaches people to ignore the one that matters.
+
+**It contains nothing the product thought of.** Things people are waiting on,
+things the member already decided to do, and no recommendations at all.
+
+It has its own unsubscribe target, separate from notification email. Somebody
+stopping a weekly summary has not said anything about wanting to stop hearing
+that a person is waiting on them, and folding the two together is the kind of
+over-correction that makes people distrust the unsubscribe link.
+
+### Being told about a title
+
+In-app only, once per title, ever. Never emailed and never pushed: it is the
+product's own opinion of somebody, nobody is waiting on it, and it will still
+be true whenever they next look.
+
+One guard is worth recording, because it only bites once. On the day standing
+shipped, every member's first recompute produced every title their history had
+already earned. Announcing those would have handed people six notifications
+about things they did months ago, so a member with no standing row yet is
+counted silently, and the next new title is announced properly.

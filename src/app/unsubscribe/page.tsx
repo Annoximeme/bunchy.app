@@ -62,7 +62,7 @@ function Confirm({
   target,
 }: {
   token: string;
-  target: "waitlist" | "notifications";
+  target: "waitlist" | "notifications" | "digest";
 }) {
   return (
     <>
@@ -72,7 +72,11 @@ function Confirm({
       <p className="mt-3 text-muted">
         {target === "waitlist"
           ? `You're on the ${brand.name} waiting list. Unsubscribing removes your address from it. We won't have it any more, and you won't hear from us when it opens.`
-          : `This turns off every notification email. You'll still see notifications inside ${brand.name} when you're there, and you can turn any of them back on in your settings.`}
+          : target === "digest"
+            ? // Said precisely, because the two kinds of email are separate and
+              // somebody stopping one has not asked to stop the other.
+              `This stops the weekly summary. Email about a person waiting on you is a separate setting and stays exactly as it is.`
+            : `This turns off every notification email. You'll still see notifications inside ${brand.name} when you're there, and you can turn any of them back on in your settings.`}
       </p>
 
       <form action="/api/unsubscribe" method="post" className="mt-8">
@@ -99,7 +103,9 @@ function Done({ kind }: { kind: string }) {
       <p className="mt-3 text-muted">
         {kind === "waitlist"
           ? "Your address is off the waiting list. There's nothing left to unsubscribe from."
-          : `No more notification emails. Your ${brand.name} account and everything in it is untouched. Turn any of them back on in your settings whenever you like.`}
+          : kind === "digest"
+            ? `No more weekly summaries. Everything else about your ${brand.name} account is untouched, and you can pick a day again in your settings whenever you like.`
+            : `No more notification emails. Your ${brand.name} account and everything in it is untouched. Turn any of them back on in your settings whenever you like.`}
       </p>
       <p className="mt-6 text-sm text-muted">
         Sorry to have bothered you. {brand.tagline}

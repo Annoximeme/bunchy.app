@@ -259,6 +259,23 @@ model Profile {
   onboardingStage OnboardingStage @default(BASICS)
   onboardedAt     DateTime?
 
+  /// The day and hour they asked for a weekly summary, in their own local
+  /// time, and when the last one went out.
+  ///
+  /// Both null means off, which is the default and the only honest one: this
+  /// is the single piece of mail Bunchy sends that nobody asked for
+  /// individually, so nobody gets it until they say when.
+  ///
+  /// A day and an hour rather than a boolean because "Sunday evening" and
+  /// "Monday morning" are different products. One is deciding what to do with
+  /// a weekend, the other is planning a week, and a member knows which they
+  /// are far better than we do.
+  digestDay    Int?
+  digestHour   Int?
+  /// Set only when a digest actually went out, so a week with nothing to say
+  /// costs nothing and does not use up the slot.
+  digestSentAt DateTime?
+
   /// When they last asked to be put in front of a new group.
   ///
   /// A timestamp rather than a boolean, and that is the whole design. The
@@ -1751,6 +1768,15 @@ enum NotificationType {
   /// wrote to us first, which is what keeps it on the right side of the line
   /// about notifications that exist to pull people back.
   FEEDBACK_ANSWERED
+  /// You earned a title.
+  ///
+  /// The only notification in this product about the product's own opinion of
+  /// somebody, which is why it is in-app only and can never be pushed or
+  /// emailed: nobody is waiting on it, it is not urgent, and it will still be
+  /// true whenever they next look. It fires once per title, ever, and never on
+  /// a member's first computation, so nobody is handed a pile of them on the
+  /// day standing arrived.
+  TITLE_EARNED
   /// A bunch you are in has stopped, and here is a way on.
   ///
   /// Sent once per bunch, ever. It is the one notification here that reports

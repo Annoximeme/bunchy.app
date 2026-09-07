@@ -18,6 +18,8 @@ import { track } from "@/server/modules/analytics/track";
 import { ANALYTICS_EVENTS } from "@/server/modules/analytics/events";
 import { PageShell } from "@/components/page-header";
 import { YourWeek } from "@/components/your-week";
+import { WaitingOnYou } from "@/components/waiting";
+import { waitingOnYou } from "@/server/modules/waiting/service";
 import { FinishProfile } from "@/components/finish-profile";
 import { outstandingOnboarding } from "@/server/modules/profile/service";
 import { upcomingForProfile } from "@/server/modules/activities/series";
@@ -116,6 +118,7 @@ export default async function DiscoverPage() {
     introduction,
     week,
     outstanding,
+    waiting,
   ] = await Promise.all([
     recommendPeople(viewer.profileId, { limit: 8 }),
     recommendBunches(viewer.profileId, 6),
@@ -142,6 +145,9 @@ export default async function DiscoverPage() {
     // than storing a "they skipped it" flag means it answers itself the moment
     // the member fills either one in, from anywhere.
     outstandingOnboarding(viewer.profileId),
+    // Who is holding on for an answer from them. The one thing on this page
+    // that is not the product's own idea.
+    waitingOnYou(viewer.profileId),
   ]);
 
   if (introduction) {
@@ -222,6 +228,13 @@ export default async function DiscoverPage() {
       */}
       <div className="mt-8 flex flex-col gap-8 xl:grid xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
         <aside className="space-y-5 xl:sticky xl:top-6 xl:col-start-2 xl:row-start-1">
+          {/*
+            Above the week, and above everything the product is guessing at,
+            because it is the only thing on this page that somebody else is
+            holding on for. It renders nothing when nobody is waiting, which is
+            most of the time.
+          */}
+          <WaitingOnYou items={waiting} limit={3} />
           <YourWeek items={week} />
           <WhosUp
             status={

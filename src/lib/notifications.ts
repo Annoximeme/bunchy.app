@@ -133,6 +133,16 @@ export const NOTIFICATION_TYPE_INFO: readonly NotificationTypeInfo[] = [
     push: false,
   },
   {
+    type: "TITLE_EARNED",
+    label: phrase("notifications.types.titleearned.label"),
+    description: phrase("notifications.types.titleearned.description"),
+    group: "account",
+    // Not a person waiting, and the inbox is as far as it goes.
+    person: false,
+    inApp: true,
+    push: false,
+  },
+  {
     type: "ACTIVITY_INVITE",
     label: phrase("notifications.types.activityinvite.label"),
     description: phrase("notifications.types.activityinvite.description"),

@@ -200,6 +200,33 @@ export const fr: Dictionary = {
     },
   },
 
+  waiting: {
+    title: "On attend après toi",
+    subtitle: "D’autres personnes qui attendent une réponse. Rien ici ne vient de nous.",
+    all: "Les {count}",
+    clearTitle: "Personne n’attend après toi",
+    clearBody: "Et c’est à ça que cette page doit ressembler la plupart du temps.",
+    clearAction: "Trouve quelque chose à faire",
+    kinds: {
+      connection: "{subject} aimerait se connecter",
+      introduction: "{subject} pense que tu devrais rencontrer quelqu’un",
+      plan: "{subject} : dis quels moments te vont",
+      seat: "{subject} : confirme ta place, sinon elle repart",
+      join: "{subject} a demandé à rejoindre une bunch que tu modères",
+      meetup: "{subject} a invité ta bunch à une soirée",
+      outcome: "{subject} : tu y es allé ?",
+    },
+  },
+
+  digest: {
+    title: "Un résumé hebdomadaire",
+    body: "Un e-mail par semaine, le jour que tu choisis : ce que les autres attendent de toi, et ce que tu as déjà prévu. Aucune suggestion, rien sur nous.",
+    day: "Quel jour",
+    hour: "À quelle heure",
+    never: "Ne jamais envoyer",
+    quiet: "Une semaine sans rien dedans n’est pas envoyée du tout.",
+  },
+
   nav: {
     main: "Navigation principale",
     discover: "Découvrir",
@@ -1308,6 +1335,10 @@ export const fr: Dictionary = {
         label: "On t’a mentionné",
         description:
           "Quelqu’un a utilisé ton nom dans un bunch.",
+      },
+      titleearned: {
+        label: "Un titre que tu as gagné",
+        description: "Une fois par titre, dans l’app seulement. Jamais par e-mail, jamais en notification.",
       },
       bunchquiet: {
         label: "Une de tes bunches s’est arrêtée",
