@@ -1355,6 +1355,8 @@ export const fr: Dictionary = {
   },
 
   bunches: {
+    sortSuggested: "À regarder",
+    sortRecord: "Ce qu’elles ont fait",
     title: "Bunches",
     subtitle:
       "De petits groupes, de cinq à douze personnes. Assez petits pour qu’on te connaisse.",

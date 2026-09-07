@@ -1389,6 +1389,8 @@ export const en = {
   },
 
   bunches: {
+    sortSuggested: "Worth a look",
+    sortRecord: "What they’ve done",
     title: "Bunches",
     subtitle: "Small groups, five to twelve people. Small enough that you’re known.",
     invited: "You’ve been invited",

@@ -1348,6 +1348,8 @@ export const nl: Dictionary = {
   },
 
   bunches: {
+    sortSuggested: "De moeite waard",
+    sortRecord: "Wat ze gedaan hebben",
     title: "Bunches",
     subtitle: "Kleine groepen, vijf tot twaalf mensen. Klein genoeg dat je gekend bent.",
     invited: "Je bent uitgenodigd",

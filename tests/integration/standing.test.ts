@@ -261,3 +261,47 @@ describe("what a bunch has done", () => {
     ]);
   });
 });
+
+describe("browsing by what a bunch has done", () => {
+  it("lists only groups that have met, most first", async () => {
+    const owner = await member("owner");
+    const other = await member("other");
+
+    async function bunchWith(name: string, evenings: number) {
+      const bunch = await db.bunch.create({
+        data: {
+          slug: `browse-${counter++}`,
+          name,
+          description: "A group that meets to do a thing together, regularly.",
+          visibility: "PUBLIC",
+          memberships: {
+            create: [
+              { profileId: owner, role: "OWNER", status: "ACTIVE" },
+              { profileId: other, role: "MEMBER", status: "ACTIVE" },
+            ],
+          },
+        },
+        select: { id: true },
+      });
+      for (let i = 0; i < evenings; i++) {
+        await evening(owner, [other], { bunchId: bunch.id, daysAgo: 5 + i * 7 });
+      }
+      await recomputeBunchStanding(bunch.id);
+      return bunch.id;
+    }
+
+    const busy = await bunchWith("The busy one", 4);
+    const quiet = await bunchWith("The quiet one", 1);
+    const never = await bunchWith("Never met", 0);
+
+    const { browseBunches } = await import("@/server/modules/bunches/service");
+    const listed = await browseBunches(owner, undefined, 24, "record");
+    const ids = listed.map((bunch) => bunch.id);
+
+    expect(ids).toEqual([busy, quiet]);
+    // A bunch with nothing behind it is not ranked last, it is not in this
+    // view at all.
+    expect(ids).not.toContain(never);
+    expect(listed[0]!.titleKey).toBe("getting-going");
+  });
+});

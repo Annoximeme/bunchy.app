@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, errorMessage } from "@/lib/api";
 import { lifecycleOf } from "@/server/modules/bunches/lifecycle";
+import { titlePath } from "@/lib/titles";
 import { NameMarks, SupporterRing } from "@/components/supporter/marks";
 import { Avatar, Button, Chip, cn } from "@/components/ui";
 
@@ -260,6 +261,15 @@ export interface BunchCardData {
   nextSeriesAt?: Date | null;
   /** Evenings that have been and gone. */
   completedCount?: number;
+  /**
+   * What the bunch has earned, if anything.
+   *
+   * A group's record rather than a member's, which is why it is allowed on a
+   * card at all: it says something about the room somebody is thinking of
+   * walking into, and it cannot make one member of it look better than
+   * another.
+   */
+  titleKey?: string | null;
 }
 
 const LIFECYCLE_TONE: Record<string, string> = {
@@ -349,6 +359,11 @@ export function BunchCard({ bunch }: { bunch: BunchCardData }) {
         <span className={cn(LIFECYCLE_TONE[state.tone] ?? "text-muted")}>
           {state.label}
         </span>
+        {bunch.titleKey && (
+          <Chip tone="teal">
+            {t(titlePath(bunch.titleKey) as "titles.gettinggoing")}
+          </Chip>
+        )}
         {bunch.membershipStatus === "ACTIVE" && (
           <Chip tone="positive">{t("cards.youreIn")}</Chip>
         )}

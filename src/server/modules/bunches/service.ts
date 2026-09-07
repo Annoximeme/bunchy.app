@@ -751,15 +751,33 @@ export async function getBunch(bunchIdOrSlug: string, viewerProfileId: string) {
  * Browsable public bunches. Distinct from `recommendBunches`, which ranks by
  * compatibility, this is the plain "show me what exists" list with a search box.
  */
+/**
+ * How the browse list is ordered.
+ *
+ * "suggested" is the default and unchanged: liveliest first, newest as the
+ * tiebreak. "record" orders by what a bunch has actually done, and filters to
+ * bunches that have done something at all.
+ *
+ * The filter is what makes the ordering honest rather than a Postgres detail.
+ * A descending sort puts nulls first, so a list ordered by standing would open
+ * with every bunch that has never met. Requiring at least one evening removes
+ * the nulls entirely, and says what the view is for: these are the groups that
+ * meet, most first. A bunch with nothing behind it is not ranked last, it is
+ * simply somewhere else on the page.
+ */
+export type BunchOrder = "suggested" | "record";
+
 export async function browseBunches(
   viewerProfileId: string,
   query?: string,
   limit = 24,
+  order: BunchOrder = "suggested",
 ) {
   const bunches = await db.bunch.findMany({
     where: {
       visibility: "PUBLIC",
       archivedAt: null,
+      ...(order === "record" ? { standing: { eveningsHeld: { gt: 0 } } } : {}),
       ...(query
         ? {
             OR: [
@@ -793,8 +811,12 @@ export async function browseBunches(
         select: { status: true },
       },
       _count: { select: { memberships: { where: { status: "ACTIVE" } } } },
+      standing: { select: { titleKey: true, eveningsHeld: true } },
     },
-    orderBy: [{ activityScore: "desc" }, { createdAt: "desc" }],
+    orderBy:
+      order === "record"
+        ? [{ standing: { total: "desc" } }, { createdAt: "desc" }]
+        : [{ activityScore: "desc" }, { createdAt: "desc" }],
     take: limit,
   });
 
@@ -810,5 +832,7 @@ export async function browseBunches(
     maxMembers: c.maxMembers,
     interests: c.interests.map((i) => i.interest.label),
     membershipStatus: c.memberships[0]?.status ?? null,
+    titleKey: c.standing?.titleKey ?? null,
+    eveningsHeld: c.standing?.eveningsHeld ?? 0,
   }));
 }
